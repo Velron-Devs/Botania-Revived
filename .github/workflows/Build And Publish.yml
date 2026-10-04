@@ -4,10 +4,10 @@ on:
   push:
     branches:
       - "Neo/1.21.1"
-    # paths:
-    #   - "src/**/*.java"
-    #   - "gradle.properties"
-    #   - "build.gradle"
+    paths:
+      - "src/**/*.java"
+      - "gradle.properties"
+      - "build.gradle"
 jobs:
   build:
     runs-on: ubuntu-latest
