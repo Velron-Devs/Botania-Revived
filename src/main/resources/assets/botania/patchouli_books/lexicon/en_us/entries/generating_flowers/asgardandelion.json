@@ -1,0 +1,27 @@
+{
+  "name": "botania.entry.asgardandelion",
+  "category": "botania:generating_flowers",
+  "icon": "botania:asgardandelion",
+  "entry_color": "9208ff",
+  "flag": "botania:asg",
+  "advancement": "botania:main/elf_lexicon_pickup",
+  "pages": [
+    {
+      "type": "text",
+      "text": "botania.page.asgardandelion0"
+    },
+    {
+      "type": "text",
+      "text": "botania.page.asgardandelion1"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "botania:asgardandelion",
+      "title": "botania.entry.asgardandelion",
+      "text": "botania.page.asgardandelion2"
+    }
+  ],
+  "extra_recipe_mappings": {
+    "botania:floating_asgardandelion": 2
+  }
+}

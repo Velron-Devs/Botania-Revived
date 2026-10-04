@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "botania:item/botania_extras/iridescent_seeds",
+    "layer1": "botania:item/botania_extras/iridescent_seeds_overlay"
+  }
+}

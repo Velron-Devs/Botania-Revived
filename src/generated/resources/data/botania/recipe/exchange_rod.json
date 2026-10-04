@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "R": {
+      "item": "botania:rune_sloth"
+    },
+    "S": {
+      "item": "minecraft:stone"
+    },
+    "T": {
+      "item": "botania:livingwood_twig"
+    }
+  },
+  "pattern": [
+    " SR",
+    " TS",
+    "T  "
+  ],
+  "result": {
+    "count": 1,
+    "id": "botania:exchange_rod"
+  }
+}

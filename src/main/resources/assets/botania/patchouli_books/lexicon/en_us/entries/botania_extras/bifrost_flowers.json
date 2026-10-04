@@ -1,0 +1,44 @@
+{
+  "name": "botania.entry.bifrostFlowers",
+  "category": "botania:botania_extras",
+  "icon": "botania:mystical_bifrost_flower",
+  "flag": "botania:botania_extras",
+  "sortnum": 2,
+  "pages": [
+    {
+      "type": "text",
+      "text": "botania.page.bifrostFlowers0"
+    },
+    {
+      "type": "crafting",
+      "text": "botania.page.bifrostFlowers1",
+      "recipe": "botania:botania_extras/mystical_bifrost_petal",
+      "recipe2": "botania:botania_extras/mystical_bifrost_petal_double"
+    },
+    {
+      "type": "crafting",
+      "text": "botania.page.bifrostFlowers2",
+      "recipe": "botania:botania_extras/floral_bifrost_powder"
+    },
+    {
+      "type": "botania:mana_infusion",
+      "text": "botania.page.bifrostFlowers3",
+      "recipes": "botania:botania_extras/mana_infusion/mana_powder_bifrost"
+    },
+    {
+      "type": "crafting",
+      "recipe": "botania:botania_extras/shimmerrock",
+      "recipe2": "botania:botania_extras/shimmerwood_planks"
+    },
+    {
+      "type": "crafting",
+      "recipe": "botania:botania_extras/fertilizer_bifrost"
+    }
+  ],
+  "extra_recipe_mappings": {
+    "botania:mystical_bifrost_flower": 0,
+    "botania:tall_mystical_bifrost_flower": 0,
+    "botania:mystical_bifrost_petal": 1,
+    "botania:floral_bifrost_powder": 2
+  }
+}

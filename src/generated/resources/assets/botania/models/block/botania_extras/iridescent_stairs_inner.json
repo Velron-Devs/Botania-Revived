@@ -1,0 +1,8 @@
+{
+  "parent": "botania:block/botania_extras/shapes/tinted_stairs_inner",
+  "textures": {
+    "bottom": "botania:block/botania_extras/iridescent_planks",
+    "side": "botania:block/botania_extras/iridescent_planks",
+    "top": "botania:block/botania_extras/iridescent_planks"
+  }
+}

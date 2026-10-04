@@ -1,0 +1,125 @@
+{
+  "values": [
+    "botania:black_petal_block",
+    "botania:blue_petal_block",
+    "botania:brown_petal_block",
+    "botania:cell_block",
+    "botania:cyan_petal_block",
+    "botania:gray_petal_block",
+    "botania:green_petal_block",
+    "botania:light_blue_petal_block",
+    "botania:light_gray_petal_block",
+    "botania:lime_petal_block",
+    "botania:magenta_petal_block",
+    "botania:orange_petal_block",
+    "botania:pink_petal_block",
+    "botania:purple_petal_block",
+    "botania:red_petal_block",
+    "botania:white_petal_block",
+    "botania:yellow_petal_block",
+    {
+      "id": "botania:white_iridescent_leaves",
+      "required": false
+    },
+    {
+      "id": "botania:orange_iridescent_leaves",
+      "required": false
+    },
+    {
+      "id": "botania:magenta_iridescent_leaves",
+      "required": false
+    },
+    {
+      "id": "botania:light_blue_iridescent_leaves",
+      "required": false
+    },
+    {
+      "id": "botania:yellow_iridescent_leaves",
+      "required": false
+    },
+    {
+      "id": "botania:lime_iridescent_leaves",
+      "required": false
+    },
+    {
+      "id": "botania:pink_iridescent_leaves",
+      "required": false
+    },
+    {
+      "id": "botania:gray_iridescent_leaves",
+      "required": false
+    },
+    {
+      "id": "botania:light_gray_iridescent_leaves",
+      "required": false
+    },
+    {
+      "id": "botania:cyan_iridescent_leaves",
+      "required": false
+    },
+    {
+      "id": "botania:purple_iridescent_leaves",
+      "required": false
+    },
+    {
+      "id": "botania:blue_iridescent_leaves",
+      "required": false
+    },
+    {
+      "id": "botania:brown_iridescent_leaves",
+      "required": false
+    },
+    {
+      "id": "botania:green_iridescent_leaves",
+      "required": false
+    },
+    {
+      "id": "botania:red_iridescent_leaves",
+      "required": false
+    },
+    {
+      "id": "botania:black_iridescent_leaves",
+      "required": false
+    },
+    {
+      "id": "botania:bifrost_leaves",
+      "required": false
+    },
+    {
+      "id": "botania:dry_leaves",
+      "required": false
+    },
+    {
+      "id": "botania:golden_leaves",
+      "required": false
+    },
+    {
+      "id": "botania:vivid_leaves",
+      "required": false
+    },
+    {
+      "id": "botania:scorched_leaves",
+      "required": false
+    },
+    {
+      "id": "botania:infused_leaves",
+      "required": false
+    },
+    {
+      "id": "botania:mutated_leaves",
+      "required": false
+    },
+    {
+      "id": "botania:thunderous_leaves",
+      "required": false
+    },
+    {
+      "id": "botania:infernal_leaves",
+      "required": false
+    },
+    {
+      "id": "botania:sealing_leaves",
+      "required": false
+    }
+  ]
+}

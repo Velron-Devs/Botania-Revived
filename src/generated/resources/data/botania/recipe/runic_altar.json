@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "P": {
+      "item": "botania:mana_pearl"
+    },
+    "S": {
+      "item": "botania:livingrock"
+    }
+  },
+  "pattern": [
+    "SSS",
+    "SPS"
+  ],
+  "result": {
+    "count": 1,
+    "id": "botania:runic_altar"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "name": "botania.entry.manasealCreeper",
+  "category": "botania:botania_extras",
+  "icon": "botania:wilted_lotus",
+  "flag": "botania:botania_extras",
+  "sortnum": 42,
+  "pages": [
+    {
+      "type": "patchouli:entity",
+      "entity": "botania:manaseal_creeper",
+      "name": "botania.entry.manasealCreeper",
+      "text": "botania.page.manasealCreeper0"
+    },
+    {
+      "type": "text",
+      "text": "botania.page.manasealCreeper1"
+    }
+  ],
+  "extra_recipe_mappings": {
+    "botania:wilted_lotus": 1,
+    "botania:deathly_lotus": 1
+  }
+}

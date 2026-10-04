@@ -1,0 +1,43 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "botania:module_enabled",
+      "module": "cre"
+    }
+  ],
+  "type": "botania:terra_plate",
+  "ingredients": [
+    {
+      "item": "botania:abstruse_platform"
+    },
+    {
+      "item": "botania:abstruse_platform"
+    },
+    {
+      "item": "botania:abstruse_platform"
+    },
+    {
+      "item": "botania:abstruse_platform"
+    },
+    {
+      "item": "botania:dragonstone_block"
+    },
+    {
+      "item": "botania:terrasteel_ingot"
+    },
+    {
+      "item": "botania:terrasteel_ingot"
+    },
+    {
+      "item": "botania:terrasteel_ingot"
+    },
+    {
+      "item": "botania:terrasteel_ingot"
+    }
+  ],
+  "mana": 500000,
+  "result": {
+    "count": 4,
+    "id": "botania:infrangible_platform"
+  }
+}

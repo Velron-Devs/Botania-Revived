@@ -1,0 +1,40 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "botania:module_enabled",
+      "module": "botania_extras"
+    }
+  ],
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "add": false,
+              "conditions": [
+                {
+                  "block": "botania:vivid_slab",
+                  "condition": "minecraft:block_state_property",
+                  "properties": {
+                    "type": "double"
+                  }
+                }
+              ],
+              "count": 2.0,
+              "function": "minecraft:set_count"
+            },
+            {
+              "function": "minecraft:explosion_decay"
+            }
+          ],
+          "name": "botania:vivid_slab"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ]
+}

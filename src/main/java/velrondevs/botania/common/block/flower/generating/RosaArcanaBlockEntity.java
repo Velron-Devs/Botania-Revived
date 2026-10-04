@@ -1,0 +1,154 @@
+package velrondevs.botania.common.block.flower.generating;
+
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.EnchantmentTags;
+import net.minecraft.world.entity.ExperienceOrb;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AnvilMenu;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.ItemEnchantments;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
+
+import velrondevs.botania.api.block_entity.GeneratingFlowerBlockEntity;
+import velrondevs.botania.api.block_entity.RadiusDescriptor;
+import velrondevs.botania.common.helper.EntityHelper;
+import velrondevs.botania.mixin.ExperienceOrbAccessor;
+import velrondevs.botania.registry.BotaniaFlowerBlocks;
+import velrondevs.botania.registry.BotaniaSounds;
+
+import java.util.List;
+
+public class RosaArcanaBlockEntity extends GeneratingFlowerBlockEntity {
+	private static final int MANA_PER_XP = 50;
+	private static final int RANGE = 1;
+
+	public RosaArcanaBlockEntity(BlockPos pos, BlockState state) {
+		super(BotaniaFlowerBlocks.ROSA_ARCANA, pos, state);
+	}
+
+	@Override
+	public void tickFlower() {
+		super.tickFlower();
+
+		if (level.isClientSide || getMana() >= getMaxMana()) {
+			return;
+		}
+
+		AABB effectBounds = new AABB(Vec3.atLowerCornerOf(getEffectivePos().offset(-RANGE, -RANGE, -RANGE)), Vec3.atLowerCornerOf(getEffectivePos().offset(RANGE + 1, RANGE + 1, RANGE + 1)));
+
+		List<Player> players = getLevel().getEntitiesOfClass(Player.class, effectBounds);
+		for (Player player : players) {
+
+			if ((player.experienceLevel > 0 || player.experienceProgress > 0)
+					&& player.onGround()) {
+				player.giveExperiencePoints(-1);
+				addMana(MANA_PER_XP);
+				sync();
+				return;
+			}
+		}
+
+		List<ExperienceOrb> orbs = getLevel().getEntitiesOfClass(ExperienceOrb.class, effectBounds);
+		for (ExperienceOrb orb : orbs) {
+			int count = ((ExperienceOrbAccessor) orb).botania_getCount();
+			if (orb.isAlive() && count > 0) {
+				addMana(orb.getValue() * MANA_PER_XP);
+				((ExperienceOrbAccessor) orb).botania_setCount(count - 1);
+				if (count == 1) {
+					orb.discard();
+				}
+				float pitch = (level.random.nextFloat() - level.random.nextFloat()) * 0.35F + 0.9F;
+
+				level.playSound(null, getEffectivePos(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.BLOCKS, 0.07F, pitch);
+				sync();
+				return;
+			}
+		}
+
+		List<ItemEntity> items = getLevel().getEntitiesOfClass(ItemEntity.class, effectBounds, e -> e.isAlive() && !e.getItem().isEmpty());
+		for (ItemEntity entity : items) {
+			ItemStack stack = entity.getItem();
+			if (stack.is(Items.ENCHANTED_BOOK) || stack.isEnchanted()) {
+				int xp = getEnchantmentXpValue(stack);
+				if (xp > 0) {
+					ItemStack newStack = removeNonCurses(stack);
+					newStack.setCount(1);
+					EntityHelper.shrinkItem(entity);
+
+					ItemEntity newEntity = new ItemEntity(level, entity.getX(), entity.getY(), entity.getZ(), newStack);
+					newEntity.setDeltaMovement(entity.getDeltaMovement());
+					level.addFreshEntity(newEntity);
+
+					level.playSound(null, getEffectivePos(), BotaniaSounds.arcaneRoseDisenchant, SoundSource.BLOCKS, 1F, this.level.random.nextFloat() * 0.1F + 0.9F);
+					while (xp > 0) {
+						int i = ExperienceOrb.getExperienceValue(xp);
+						xp -= i;
+						level.addFreshEntity(new ExperienceOrb(level, getEffectivePos().getX() + 0.5D, getEffectivePos().getY() + 0.5D, getEffectivePos().getZ() + 0.5D, i));
+					}
+					return;
+				}
+			}
+		}
+	}
+
+	private static int getEnchantmentXpValue(ItemStack stack) {
+		int ret = 0;
+		ItemEnchantments map = EnchantmentHelper.getEnchantmentsForCrafting(stack);
+
+		for (Object2IntMap.Entry<Holder<Enchantment>> entry : map.entrySet()) {
+			Holder<Enchantment> enchantment = entry.getKey();
+			int integer = entry.getIntValue();
+			if (!enchantment.is(EnchantmentTags.CURSE)) {
+				ret += enchantment.value().getMinCost(integer);
+			}
+		}
+
+		return ret;
+	}
+
+	private static ItemStack removeNonCurses(ItemStack stack) {
+		ItemStack itemstack = stack.copy();
+		ItemEnchantments map = EnchantmentHelper.updateEnchantments(itemstack, mutable -> mutable.removeIf(e -> !e.is(EnchantmentTags.CURSE)));
+		itemstack.set(DataComponents.REPAIR_COST, 0);
+		if (itemstack.is(Items.ENCHANTED_BOOK) && map.isEmpty()) {
+			itemstack = new ItemStack(Items.BOOK);
+			if (stack.has(DataComponents.CUSTOM_NAME)) {
+				itemstack.set(DataComponents.CUSTOM_NAME, stack.getHoverName());
+			}
+		}
+
+		for (int i = 0; i < map.size(); ++i) {
+			itemstack.set(DataComponents.REPAIR_COST, AnvilMenu.calculateIncreasedRepairCost(itemstack.getOrDefault(DataComponents.REPAIR_COST, 0)));
+		}
+
+		return itemstack;
+	}
+
+	@Override
+	public RadiusDescriptor getRadius() {
+		return RadiusDescriptor.Rectangle.square(getEffectivePos(), RANGE);
+	}
+
+	@Override
+	public int getColor() {
+		return 0xFF8EF8;
+	}
+
+	@Override
+	public int getMaxMana() {
+		return 6000;
+	}
+
+}

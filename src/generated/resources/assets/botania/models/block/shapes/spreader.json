@@ -1,0 +1,276 @@
+{
+  "parent": "minecraft:block/block",
+  "elements": [
+    {
+      "faces": {
+        "down": {
+          "texture": "#outside",
+          "tintindex": 0
+        },
+        "east": {
+          "texture": "#inside",
+          "tintindex": 0
+        },
+        "north": {
+          "texture": "#outside",
+          "tintindex": 0
+        },
+        "south": {
+          "texture": "#back",
+          "tintindex": 0
+        },
+        "up": {
+          "texture": "#outside",
+          "tintindex": 0
+        },
+        "west": {
+          "texture": "#side",
+          "tintindex": 0
+        }
+      },
+      "from": [
+        2,
+        2,
+        2
+      ],
+      "to": [
+        3,
+        14,
+        14
+      ]
+    },
+    {
+      "faces": {
+        "down": {
+          "texture": "#outside",
+          "tintindex": 0
+        },
+        "east": {
+          "texture": "#side",
+          "tintindex": 0,
+          "uv": [
+            14.0,
+            2.0,
+            2.0,
+            14.0
+          ]
+        },
+        "north": {
+          "texture": "#outside",
+          "tintindex": 0
+        },
+        "south": {
+          "texture": "#back",
+          "tintindex": 0
+        },
+        "up": {
+          "texture": "#outside",
+          "tintindex": 0
+        },
+        "west": {
+          "texture": "#inside",
+          "tintindex": 0
+        }
+      },
+      "from": [
+        13,
+        2,
+        2
+      ],
+      "to": [
+        14,
+        14,
+        14
+      ]
+    },
+    {
+      "faces": {
+        "down": {
+          "texture": "#inside",
+          "tintindex": 0
+        },
+        "north": {
+          "texture": "#outside",
+          "tintindex": 0
+        },
+        "south": {
+          "texture": "#back",
+          "tintindex": 0
+        },
+        "up": {
+          "texture": "#outside",
+          "tintindex": 0
+        }
+      },
+      "from": [
+        3,
+        13,
+        2
+      ],
+      "to": [
+        13,
+        14,
+        14
+      ]
+    },
+    {
+      "faces": {
+        "down": {
+          "texture": "#outside",
+          "tintindex": 0
+        },
+        "north": {
+          "texture": "#outside",
+          "tintindex": 0
+        },
+        "south": {
+          "texture": "#back",
+          "tintindex": 0
+        },
+        "up": {
+          "texture": "#inside",
+          "tintindex": 0
+        }
+      },
+      "from": [
+        3,
+        2,
+        2
+      ],
+      "to": [
+        13,
+        3,
+        14
+      ]
+    },
+    {
+      "faces": {
+        "north": {
+          "texture": "#inside",
+          "tintindex": 0
+        },
+        "south": {
+          "texture": "#back",
+          "tintindex": 0
+        }
+      },
+      "from": [
+        3,
+        3,
+        13
+      ],
+      "to": [
+        13,
+        13,
+        14
+      ]
+    },
+    {
+      "faces": {
+        "down": {
+          "texture": "#outside",
+          "tintindex": 0
+        },
+        "north": {
+          "texture": "#outside",
+          "tintindex": 0
+        },
+        "south": {
+          "texture": "#inside",
+          "tintindex": 0
+        }
+      },
+      "from": [
+        6,
+        10,
+        2
+      ],
+      "to": [
+        13,
+        13,
+        3
+      ]
+    },
+    {
+      "faces": {
+        "north": {
+          "texture": "#outside",
+          "tintindex": 0
+        },
+        "south": {
+          "texture": "#inside",
+          "tintindex": 0
+        },
+        "up": {
+          "texture": "#outside",
+          "tintindex": 0
+        }
+      },
+      "from": [
+        3,
+        3,
+        2
+      ],
+      "to": [
+        10,
+        6,
+        3
+      ]
+    },
+    {
+      "faces": {
+        "east": {
+          "texture": "#outside",
+          "tintindex": 0
+        },
+        "north": {
+          "texture": "#outside",
+          "tintindex": 0
+        },
+        "south": {
+          "texture": "#inside",
+          "tintindex": 0
+        }
+      },
+      "from": [
+        3,
+        6,
+        2
+      ],
+      "to": [
+        6,
+        13,
+        3
+      ]
+    },
+    {
+      "faces": {
+        "north": {
+          "texture": "#outside",
+          "tintindex": 0
+        },
+        "south": {
+          "texture": "#inside",
+          "tintindex": 0
+        },
+        "west": {
+          "texture": "#outside",
+          "tintindex": 0
+        }
+      },
+      "from": [
+        10,
+        3,
+        2
+      ],
+      "to": [
+        13,
+        10,
+        3
+      ]
+    }
+  ],
+  "textures": {
+    "particle": "#outside"
+  }
+}

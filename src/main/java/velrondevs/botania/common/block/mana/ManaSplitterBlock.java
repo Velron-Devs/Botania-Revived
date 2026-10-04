@@ -1,0 +1,50 @@
+package velrondevs.botania.common.block.mana;
+
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import velrondevs.botania.common.block.BotaniaWaterloggedBlock;
+import velrondevs.botania.common.block.block_entity.mana.ManaSplitterBlockEntity;
+import velrondevs.botania.registry.BotaniaBlockEntities;
+
+public class ManaSplitterBlock extends BotaniaWaterloggedBlock implements EntityBlock {
+
+	private static final VoxelShape SHAPE = Block.box(4, 0, 4, 12, 16, 12);
+
+	public ManaSplitterBlock(Properties builder) {
+		super(builder);
+	}
+
+	@NotNull
+	@Override
+	public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext ctx) {
+		return SHAPE;
+	}
+
+	@NotNull
+	@Override
+	public BlockEntity newBlockEntity(@NotNull BlockPos pos, @NotNull BlockState state) {
+		return new ManaSplitterBlockEntity(pos, state);
+	}
+
+	@Nullable
+	@Override
+	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
+		if (!level.isClientSide) {
+			return createTickerHelper(type, BotaniaBlockEntities.DISTRIBUTOR, ManaSplitterBlockEntity::serverTick);
+		}
+		return null;
+	}
+}

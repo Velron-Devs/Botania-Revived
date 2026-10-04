@@ -1,0 +1,12 @@
+{
+  "values": [
+    "botania:lexicon",
+    "botania:overgrowth_seed",
+    "botania:black_lotus",
+    "botania:blacker_lotus",
+    {
+      "id": "#c:music_discs",
+      "required": false
+    }
+  ]
+}

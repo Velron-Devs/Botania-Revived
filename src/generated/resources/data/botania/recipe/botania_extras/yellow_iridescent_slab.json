@@ -1,0 +1,22 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "botania:module_enabled",
+      "module": "botania_extras"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "Q": {
+      "item": "botania:yellow_iridescent_planks"
+    }
+  },
+  "pattern": [
+    "QQQ"
+  ],
+  "result": {
+    "count": 6,
+    "id": "botania:yellow_iridescent_slab"
+  }
+}

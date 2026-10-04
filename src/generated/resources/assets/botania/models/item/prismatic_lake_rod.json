@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:item/handheld",
+  "textures": {
+    "layer0": "botania:item/botania_extras/prismatic_lake_rod",
+    "layer1": "botania:item/botania_extras/prismatic_lake_rod_overlay"
+  }
+}

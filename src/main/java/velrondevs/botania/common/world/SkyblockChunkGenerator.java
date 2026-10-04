@@ -1,0 +1,80 @@
+package velrondevs.botania.common.world;
+
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+
+import net.minecraft.core.*;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerChunkCache;
+import net.minecraft.server.level.WorldGenRegion;
+import net.minecraft.world.level.*;
+import net.minecraft.world.level.biome.*;
+import net.minecraft.world.level.chunk.*;
+import net.minecraft.world.level.levelgen.*;
+import net.minecraft.world.level.levelgen.blending.Blender;
+
+import org.jetbrains.annotations.NotNull;
+
+import java.util.concurrent.CompletableFuture;
+import java.util.function.BiConsumer;
+
+import static velrondevs.botania.common.lib.ResourceLocationHelper.prefix;
+
+public class SkyblockChunkGenerator extends NoiseBasedChunkGenerator {
+
+	public static final MapCodec<SkyblockChunkGenerator> CODEC = RecordCodecBuilder.mapCodec(
+			(instance) -> instance.group(
+					BiomeSource.CODEC.fieldOf("biome_source").forGetter((gen) -> gen.biomeSource),
+					NoiseGeneratorSettings.CODEC.fieldOf("settings").forGetter(NoiseBasedChunkGenerator::generatorSettings))
+					.apply(instance, instance.stable(SkyblockChunkGenerator::new)));
+
+	public static void submitRegistration(BiConsumer<MapCodec<? extends ChunkGenerator>, ResourceLocation> consumer) {
+		consumer.accept(SkyblockChunkGenerator.CODEC, prefix("skyblock"));
+	}
+
+	public static boolean isWorldSkyblock(Level world) {
+		return world.getChunkSource() instanceof ServerChunkCache chunkCache && chunkCache.getGenerator() instanceof SkyblockChunkGenerator;
+	}
+
+	private SkyblockChunkGenerator(BiomeSource biomeSource, Holder<NoiseGeneratorSettings> settings) {
+		super(biomeSource, settings);
+	}
+
+	@NotNull
+	@Override
+	protected MapCodec<? extends ChunkGenerator> codec() {
+		return CODEC;
+	}
+
+	@Override
+	public void buildSurface(@NotNull ChunkAccess chunkAccess, @NotNull WorldGenerationContext context,
+			@NotNull RandomState randomState, @NotNull StructureManager structureManager,
+			@NotNull BiomeManager biomeManager, @NotNull Registry<Biome> biomes, @NotNull Blender blender) {}
+
+	@Override
+	public void applyCarvers(@NotNull WorldGenRegion worldGenRegion, long seed, @NotNull RandomState randomState,
+			@NotNull BiomeManager biomeManager, @NotNull StructureManager structureManager,
+			@NotNull ChunkAccess chunkAccess, GenerationStep.@NotNull Carving carving) {}
+
+	@Override
+	public @NotNull CompletableFuture<ChunkAccess> fillFromNoise(@NotNull Blender blender,
+			@NotNull RandomState randomState, @NotNull StructureManager structureManager, @NotNull ChunkAccess chunk) {
+		return CompletableFuture.completedFuture(chunk);
+	}
+
+	@Override
+	public void spawnOriginalMobs(@NotNull WorldGenRegion region) {}
+
+	@Override
+	public void applyBiomeDecoration(@NotNull WorldGenLevel level, @NotNull ChunkAccess chunkAccess,
+			@NotNull StructureManager structureManager) {}
+
+	public int getBaseHeightInEquivalentNoiseWorld(int x, int z, Heightmap.Types heightmap, WorldGenLevel level) {
+		RandomState randomState = RandomState.create(
+				generatorSettings().value(),
+				level.registryAccess().registryOrThrow(Registries.NOISE).asLookup(),
+				level.getSeed());
+		return super.getBaseHeight(x, z, heightmap, level, randomState);
+	}
+}

@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column",
+  "textures": {
+    "end": "botania:block/botania_extras/shimmer_quartz_pillar_end",
+    "side": "botania:block/botania_extras/shimmer_quartz_pillar_side"
+  }
+}

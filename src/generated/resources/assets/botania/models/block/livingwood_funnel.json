@@ -1,0 +1,9 @@
+{
+  "parent": "minecraft:block/hopper",
+  "textures": {
+    "inside": "botania:block/botania_extras/livingwood_funnel_inside",
+    "particle": "botania:block/botania_extras/livingwood_funnel_outside",
+    "side": "botania:block/botania_extras/livingwood_funnel_outside",
+    "top": "botania:block/botania_extras/livingwood_funnel_top"
+  }
+}

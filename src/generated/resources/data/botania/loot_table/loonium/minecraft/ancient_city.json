@@ -1,0 +1,20 @@
+{
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:loot_table",
+          "value": "minecraft:chests/ancient_city",
+          "weight": 9
+        },
+        {
+          "type": "minecraft:loot_table",
+          "value": "minecraft:chests/ancient_city_ice_box"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "botania:loonium/minecraft/ancient_city"
+}

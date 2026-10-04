@@ -1,0 +1,23 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "botanypots"
+    }
+  ],
+  "type": "botanypots:pot_interaction",
+  "consume_held": true,
+  "held_item": {
+    "item": "botania:podzol_seeds"
+  },
+  "new_soil": {
+    "id": "minecraft:podzol"
+  },
+  "soil_item": {
+    "item": "minecraft:dirt"
+  },
+  "sound_effect": {
+    "category": "BLOCKS",
+    "id": "minecraft:item.bone_meal.use"
+  }
+}

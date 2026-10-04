@@ -1,0 +1,22 @@
+{
+  "variants": {
+    "facing=down": {
+      "model": "botania:block/livingwood_funnel"
+    },
+    "facing=east": {
+      "model": "botania:block/livingwood_funnel_side",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "botania:block/livingwood_funnel_side"
+    },
+    "facing=south": {
+      "model": "botania:block/livingwood_funnel_side",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "botania:block/livingwood_funnel_side",
+      "y": 270
+    }
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "botania:module_enabled",
+      "module": "botania_extras"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "C": {
+      "item": "minecraft:chest"
+    },
+    "L": {
+      "item": "minecraft:leather"
+    },
+    "P": {
+      "item": "botania:pixie_dust"
+    },
+    "S": {
+      "item": "botania:rune_sloth"
+    }
+  },
+  "pattern": [
+    "CL ",
+    "L L",
+    "PLS"
+  ],
+  "result": {
+    "count": 1,
+    "id": "botania:toolbelt"
+  }
+}

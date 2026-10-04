@@ -1,0 +1,67 @@
+{
+  "name": "botania.entry.iridescentSapling",
+  "category": "botania:botania_extras",
+  "icon": "botania:iridescent_sapling",
+  "flag": "botania:botania_extras",
+  "sortnum": 7,
+  "pages": [
+    {
+      "type": "text",
+      "text": "botania.page.iridescentSapling0"
+    },
+    {
+      "type": "text",
+      "text": "botania.page.iridescentSapling1"
+    },
+    {
+      "type": "botania:crafting_multi",
+      "heading": "botania.entry.iridescentSapling",
+      "text": "botania.page.iridescentSapling2",
+      "recipes": [
+        "botania:botania_extras/leaf_dye_white",
+        "botania:botania_extras/leaf_dye_orange",
+        "botania:botania_extras/leaf_dye_magenta",
+        "botania:botania_extras/leaf_dye_light_blue",
+        "botania:botania_extras/leaf_dye_yellow",
+        "botania:botania_extras/leaf_dye_lime",
+        "botania:botania_extras/leaf_dye_pink",
+        "botania:botania_extras/leaf_dye_gray",
+        "botania:botania_extras/leaf_dye_light_gray",
+        "botania:botania_extras/leaf_dye_cyan",
+        "botania:botania_extras/leaf_dye_purple",
+        "botania:botania_extras/leaf_dye_blue",
+        "botania:botania_extras/leaf_dye_brown",
+        "botania:botania_extras/leaf_dye_green",
+        "botania:botania_extras/leaf_dye_red",
+        "botania:botania_extras/leaf_dye_black",
+        "botania:botania_extras/leaf_dye_bifrost"
+      ]
+    }
+  ],
+  "extra_recipe_mappings": {
+    "botania:iridescent_sapling": 0,
+    "botania:dry_leaves": 1,
+    "botania:golden_leaves": 1,
+    "botania:vivid_leaves": 1,
+    "botania:scorched_leaves": 1,
+    "botania:infused_leaves": 1,
+    "botania:mutated_leaves": 1,
+    "botania:white_iridescent_leaves": 2,
+    "botania:orange_iridescent_leaves": 2,
+    "botania:magenta_iridescent_leaves": 2,
+    "botania:light_blue_iridescent_leaves": 2,
+    "botania:yellow_iridescent_leaves": 2,
+    "botania:lime_iridescent_leaves": 2,
+    "botania:pink_iridescent_leaves": 2,
+    "botania:gray_iridescent_leaves": 2,
+    "botania:light_gray_iridescent_leaves": 2,
+    "botania:cyan_iridescent_leaves": 2,
+    "botania:purple_iridescent_leaves": 2,
+    "botania:blue_iridescent_leaves": 2,
+    "botania:brown_iridescent_leaves": 2,
+    "botania:green_iridescent_leaves": 2,
+    "botania:red_iridescent_leaves": 2,
+    "botania:black_iridescent_leaves": 2,
+    "botania:bifrost_leaves": 2
+  }
+}

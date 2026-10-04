@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "botania:lens_normal"
+    },
+    {
+      "item": "botania:elf_glass"
+    },
+    {
+      "tag": "botania:elementium_ingots"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "botania:lens_flare"
+  }
+}

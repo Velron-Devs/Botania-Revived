@@ -1,0 +1,43 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "botania:module_enabled",
+      "module": "botania_extras"
+    }
+  ],
+  "type": "botania:tree_suffusion",
+  "ingredients": [
+    {
+      "tag": "botania:elementium_ingots"
+    },
+    {
+      "tag": "botania:elementium_ingots"
+    },
+    {
+      "tag": "botania:elementium_ingots"
+    },
+    {
+      "item": "botania:rune_winter"
+    },
+    {
+      "item": "botania:white_iridescent_leaves"
+    },
+    {
+      "item": "botania:white_iridescent_leaves"
+    },
+    {
+      "item": "botania:white_iridescent_leaves"
+    },
+    {
+      "tag": "minecraft:wool"
+    }
+  ],
+  "mana": 50000,
+  "output": {
+    "name": "botania:sealing_oak_sapling",
+    "properties": {
+      "stage": "0"
+    }
+  },
+  "throttle": 350
+}

@@ -1,0 +1,50 @@
+{
+  "type": "botania:gog_alternation",
+  "base": {
+    "type": "minecraft:crafting_shaped",
+    "category": "redstone",
+    "group": "botania:spreader",
+    "key": {
+      "C": {
+        "item": "minecraft:copper_ingot"
+      },
+      "P": {
+        "tag": "botania:petals"
+      },
+      "W": {
+        "tag": "botania:livingwood_logs"
+      }
+    },
+    "pattern": [
+      "WWW",
+      "CP ",
+      "WWW"
+    ],
+    "result": {
+      "count": 1,
+      "id": "botania:mana_spreader"
+    }
+  },
+  "gog": {
+    "type": "minecraft:crafting_shaped",
+    "category": "redstone",
+    "group": "botania:spreader",
+    "key": {
+      "P": {
+        "tag": "botania:petals"
+      },
+      "W": {
+        "tag": "botania:livingwood_logs"
+      }
+    },
+    "pattern": [
+      "WWW",
+      "WP ",
+      "WWW"
+    ],
+    "result": {
+      "count": 1,
+      "id": "botania:mana_spreader"
+    }
+  }
+}

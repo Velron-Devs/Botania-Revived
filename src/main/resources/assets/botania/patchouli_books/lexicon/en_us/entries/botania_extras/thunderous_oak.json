@@ -1,0 +1,42 @@
+{
+  "name": "botania.entry.thunderousOak",
+  "category": "botania:botania_extras",
+  "icon": "botania:thunderous_oak_sapling",
+  "flag": "botania:botania_extras",
+  "sortnum": 16,
+  "pages": [
+    {
+      "type": "text",
+      "text": "botania.page.thunderousOak0"
+    },
+    {
+      "type": "botania:tree_suffusion",
+      "recipe": "botania:botania_extras/tree_suffusion/thunderous_oak",
+      "text": "botania.page.thunderousOak1"
+    },
+    {
+      "type": "crafting",
+      "text": "botania.page.thunderousOak2",
+      "recipe": "botania:botania_extras/thunderous_planks",
+      "recipe2": "botania:botania_extras/thunderous_slab"
+    },
+    {
+      "type": "crafting",
+      "text": "botania.page.thunderousOak3",
+      "recipe": "botania:botania_extras/thunderous_stairs",
+      "recipe2": "botania:botania_extras/thunderous_twig"
+    },
+    {
+      "type": "text",
+      "text": "botania.page.thunderousOak4"
+    }
+  ],
+  "extra_recipe_mappings": {
+    "botania:thunderous_oak_sapling": 1,
+    "botania:thunderous_log": 2,
+    "botania:thunderous_planks": 2,
+    "botania:thunderous_slab": 2,
+    "botania:thunderous_stairs": 3,
+    "botania:thunderous_twig": 3
+  }
+}

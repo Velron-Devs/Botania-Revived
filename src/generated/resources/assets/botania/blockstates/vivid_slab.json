@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "botania:block/botania_extras/vivid_slab"
+    },
+    "type=double": {
+      "model": "botania:block/botania_extras/vivid_planks"
+    },
+    "type=top": {
+      "model": "botania:block/botania_extras/vivid_slab_top"
+    }
+  }
+}

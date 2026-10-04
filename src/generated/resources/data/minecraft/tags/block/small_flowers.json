@@ -1,0 +1,9 @@
+{
+  "values": [
+    "#botania:mystical_flowers",
+    {
+      "id": "botania:mystical_bifrost_flower",
+      "required": false
+    }
+  ]
+}

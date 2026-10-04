@@ -1,0 +1,25 @@
+{
+  "name": "botania.entry.thunderingPeaksRod",
+  "category": "botania:botania_extras",
+  "icon": "botania:thundering_peaks_rod",
+  "flag": "botania:botania_extras",
+  "sortnum": 10,
+  "pages": [
+    {
+      "type": "text",
+      "text": "botania.page.thunderingPeaksRod0"
+    },
+    {
+      "type": "crafting",
+      "text": "botania.page.thunderingPeaksRod1",
+      "recipe": "botania:botania_extras/thundering_peaks_rod"
+    },
+    {
+      "type": "text",
+      "text": "botania.page.thunderingPeaksRod2"
+    }
+  ],
+  "extra_recipe_mappings": {
+    "botania:thundering_peaks_rod": 1
+  }
+}

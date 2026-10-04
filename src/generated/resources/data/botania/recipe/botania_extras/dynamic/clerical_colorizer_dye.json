@@ -1,0 +1,10 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "botania:module_enabled",
+      "module": "botania_extras"
+    }
+  ],
+  "type": "botania:clerical_colorizer_dye",
+  "category": "misc"
+}

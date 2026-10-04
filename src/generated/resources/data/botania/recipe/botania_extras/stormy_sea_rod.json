@@ -1,0 +1,33 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "botania:module_enabled",
+      "module": "botania_extras"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "A": {
+      "item": "botania:rune_air"
+    },
+    "D": {
+      "item": "botania:dreamwood_twig"
+    },
+    "P": {
+      "item": "botania:rune_pride"
+    },
+    "S": {
+      "item": "botania:tornado_rod"
+    }
+  },
+  "pattern": [
+    " AS",
+    " DA",
+    "P  "
+  ],
+  "result": {
+    "count": 1,
+    "id": "botania:stormy_sea_rod"
+  }
+}

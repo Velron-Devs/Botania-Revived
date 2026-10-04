@@ -1,0 +1,39 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "botania:module_enabled",
+      "module": "botania_extras"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "group": "botania:vibrant_plains_rod",
+  "key": {
+    "D": {
+      "item": "botania:light_gray_iridescent_dirt"
+    },
+    "P": {
+      "item": "botania:pixie_dust"
+    },
+    "R": {
+      "item": "botania:skydirt_rod"
+    },
+    "S": {
+      "tag": "botania:dragonstone_gems"
+    }
+  },
+  "pattern": [
+    " PD",
+    " RP",
+    "S  "
+  ],
+  "result": {
+    "components": {
+      "minecraft:custom_data": {
+        "color": 8
+      }
+    },
+    "count": 1,
+    "id": "botania:vibrant_plains_rod"
+  }
+}

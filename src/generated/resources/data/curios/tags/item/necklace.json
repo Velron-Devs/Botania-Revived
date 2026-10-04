@@ -1,0 +1,98 @@
+{
+  "values": [
+    "botania:blood_pendant",
+    "botania:cloud_pendant",
+    "botania:ice_pendant",
+    "botania:lava_pendant",
+    "botania:super_cloud_pendant",
+    "botania:super_lava_pendant",
+    {
+      "id": "botania:priest_emblem_thor",
+      "required": false
+    },
+    {
+      "id": "botania:priest_emblem_sif",
+      "required": false
+    },
+    {
+      "id": "botania:priest_emblem_njord",
+      "required": false
+    },
+    {
+      "id": "botania:aesir_emblem",
+      "required": false
+    },
+    {
+      "id": "botania:coat_of_arms_chilean",
+      "required": false
+    },
+    {
+      "id": "botania:coat_of_arms_french",
+      "required": false
+    },
+    {
+      "id": "botania:coat_of_arms_japanese",
+      "required": false
+    },
+    {
+      "id": "botania:coat_of_arms_germanic",
+      "required": false
+    },
+    {
+      "id": "botania:coat_of_arms_greek",
+      "required": false
+    },
+    {
+      "id": "botania:coat_of_arms_icelandic",
+      "required": false
+    },
+    {
+      "id": "botania:coat_of_arms_irish",
+      "required": false
+    },
+    {
+      "id": "botania:coat_of_arms_israeli",
+      "required": false
+    },
+    {
+      "id": "botania:coat_of_arms_jamaican",
+      "required": false
+    },
+    {
+      "id": "botania:coat_of_arms_singaporean",
+      "required": false
+    },
+    {
+      "id": "botania:coat_of_arms_south_african",
+      "required": false
+    },
+    {
+      "id": "botania:coat_of_arms_spanish",
+      "required": false
+    },
+    {
+      "id": "botania:coat_of_arms_swiss",
+      "required": false
+    },
+    {
+      "id": "botania:coat_of_arms_texan",
+      "required": false
+    },
+    {
+      "id": "botania:coat_of_arms_ukrainian",
+      "required": false
+    },
+    {
+      "id": "botania:coat_of_arms_american",
+      "required": false
+    },
+    {
+      "id": "botania:coat_of_arms_fabulous",
+      "required": false
+    },
+    {
+      "id": "botania:coat_of_arms_parisian",
+      "required": false
+    }
+  ]
+}

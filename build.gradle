@@ -1,0 +1,319 @@
+plugins {
+    id 'java-library'
+    id 'eclipse'
+    id 'idea'
+    id 'maven-publish'
+    id 'net.neoforged.moddev' version '2.0.143'
+}
+
+version = "${minecraft_version}-${mod_version}-${tag_lanzador}"
+group = mod_group_id
+
+base {
+    archivesName = mod_name
+}
+
+java {
+    toolchain.languageVersion = JavaLanguageVersion.of(21)
+    withSourcesJar()
+}
+
+neoForge {
+    version = neo_version
+
+    accessTransformers {
+        file('src/main/resources/META-INF/accesstransformer.cfg')
+    }
+
+    parchment {
+        minecraftVersion = project.property('neogradle.subsystems.parchment.minecraftVersion')
+        mappingsVersion = project.property('neogradle.subsystems.parchment.mappingsVersion')
+    }
+
+    runs {
+        configureEach {
+            gameDirectory = file('run/')
+            systemProperty 'fml.earlyprogresswindow', 'false'
+            systemProperty 'neoforge.logging.console.level', 'debug'
+            logLevel = org.slf4j.event.Level.DEBUG
+        }
+
+        client {
+            client()
+            if (findProperty('vm_server')) {
+                programArguments.addAll '--quickPlayMultiplayer', findProperty('vm_server').toString()
+            }
+            def world = findProperty('vm_world') ?: 'world'
+            if (!findProperty('vm_server') && world && file("run/saves/${world}").isDirectory()) {
+                programArguments.addAll '--quickPlaySingleplayer', world.toString()
+            }
+        }
+
+        server {
+            server()
+            programArgument '--nogui'
+            systemProperty 'neoforge.enabledGameTestNamespaces', mod_id
+        }
+
+        gameTestServer {
+            type = 'gameTestServer'
+            systemProperty 'neoforge.enabledGameTestNamespaces', mod_id
+        }
+
+        data {
+            data()
+            programArguments.addAll '--mod', mod_id, '--all',
+                    '--output', file('src/generated/resources/').getAbsolutePath(),
+                    '--existing', file('src/main/resources/').getAbsolutePath()
+        }
+    }
+
+    mods {
+        "${mod_id}" {
+            sourceSet(sourceSets.main)
+        }
+    }
+}
+
+sourceSets.main.resources {
+    srcDir 'src/generated/resources'
+    exclude 'assets/botania/patchouli_books/lexicon/en_us/README'
+    exclude '.cache'
+}
+
+repositories {
+    mavenCentral()
+    maven {
+        name = 'Jared'
+        url = 'https://maven.blamejared.com/'
+    }
+    maven {
+        name = 'C4'
+        url = 'https://maven.theillusivec4.top/'
+    }
+    maven {
+        name = 'TerraformersMC'
+        url = 'https://maven.terraformersmc.com/'
+        content {
+            includeGroup 'dev.emi'
+        }
+    }
+    maven {
+        name = 'Shedaniel'
+        url = 'https://maven.shedaniel.me'
+        content {
+            includeGroup 'me.shedaniel'
+            includeGroup 'me.shedaniel.cloth'
+            includeGroup 'dev.architectury'
+        }
+    }
+    maven {
+        name = 'CaffeineMC'
+        url = 'https://maven.caffeinemc.net/releases'
+        content {
+            includeGroup 'net.caffeinemc'
+        }
+    }
+    maven {
+        name = 'LatvianDev'
+        url = 'https://maven.latvian.dev/releases'
+        content {
+            includeGroup 'dev.latvian.mods'
+        }
+    }
+    maven {
+        name = 'Sleeping Town'
+        url = 'https://repo.sleeping.town/'
+        content {
+            includeGroup 'com.unascribed'
+        }
+    }
+    maven {
+        name = 'Modrinth'
+        url = 'https://api.modrinth.com/maven'
+        content {
+            includeGroup 'maven.modrinth'
+        }
+    }
+    maven {
+        name = 'Bai'
+        url = 'https://maven.bai.lol'
+        content {
+            includeGroup 'mcp.mobius.waila'
+            includeGroup 'lol.bai'
+        }
+    }
+    maven {
+        name = 'CreateMod'
+        url = 'https://maven.createmod.net'
+        content {
+            includeGroup 'net.createmod.ponder'
+            includeGroup 'dev.engine-room.flywheel'
+            includeGroup 'dev.engine-room.vanillin'
+        }
+    }
+    maven {
+        name = 'GeckoLib'
+        url = 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/'
+        content {
+            includeGroup 'software.bernie.geckolib'
+        }
+    }
+}
+
+def devMod = { String name ->
+    project.hasProperty("with_${name}") || (!project.hasProperty("minimal") && !project.hasProperty("no_${name}"))
+}
+
+dependencies {
+    // Patchouli
+    implementation "vazkii.patchouli:Patchouli:${patchouli_version}"
+
+    // Just Enough Items (JEI)
+    compileOnly "mezz.jei:jei-${minecraft_version}-common-api:${jei_version}"
+    compileOnly "mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}"
+    runtimeOnly "mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}"
+
+   // Emi
+    compileOnly "dev.emi:emi-neoforge:${emi_version}:api"
+
+    // Roughly Enough Items (REI)
+    compileOnly "me.shedaniel:RoughlyEnoughItems-api-neoforge:${rei_version}"
+    compileOnly "me.shedaniel:RoughlyEnoughItems-default-plugin-neoforge:${rei_version}"
+    if (project.hasProperty('with_rei')) {
+        runtimeOnly "me.shedaniel:RoughlyEnoughItems-neoforge:${rei_version}"
+    }
+
+     // Curios
+    compileOnly "top.theillusivec4.curios:curios-neoforge:${curios_version}:api"
+    if (!project.hasProperty('no_curios')) {
+        runtimeOnly "top.theillusivec4.curios:curios-neoforge:${curios_version}"
+    }
+
+    // Ears API
+    compileOnly 'com.unascribed:ears-api:1.4.5'
+
+    compileOnly "net.caffeinemc:sodium-neoforge-api:${sodium_version}"
+
+    compileOnly "dev.latvian.mods:kubejs-neoforge:${kubejs_version}"
+    compileOnly "dev.latvian.mods:rhino:${rhino_version}"
+    if (devMod('kubejs')) {
+        runtimeOnly("dev.latvian.mods:kubejs-neoforge:${kubejs_version}") { transitive = false }
+        runtimeOnly("dev.latvian.mods:rhino:${rhino_version}") { transitive = false }
+    }
+
+    compileOnly "maven.modrinth:jade:${jade_version}"
+    if (devMod('jade')) {
+        runtimeOnly "maven.modrinth:jade:${jade_version}"
+    }
+
+    compileOnly "mcp.mobius.waila:wthit-api:neo-${wthit_version}"
+    if (project.hasProperty('with_wthit')) {
+        runtimeOnly "mcp.mobius.waila:wthit:neo-${wthit_version}"
+    }
+
+    compileOnly "net.darkhax.botanypots:botanypots-neoforge-1.21.1:${botanypots_version}"
+    compileOnly "net.darkhax.bookshelf:bookshelf-neoforge-1.21.1:${bookshelf_version}"
+    compileOnly "net.darkhax.pricklemc:prickle-neoforge-1.21.1:${prickle_version}"
+    if (devMod('botanypots')) {
+        runtimeOnly("net.darkhax.botanypots:botanypots-neoforge-1.21.1:${botanypots_version}") { transitive = false }
+        runtimeOnly("net.darkhax.bookshelf:bookshelf-neoforge-1.21.1:${bookshelf_version}") { transitive = false }
+        runtimeOnly("net.darkhax.pricklemc:prickle-neoforge-1.21.1:${prickle_version}") { transitive = false }
+    }
+
+    compileOnly "net.createmod.ponder:ponder-neoforge:${ponder_version}+mc${minecraft_version}"
+    if (devMod('ponder')) {
+        runtimeOnly("net.createmod.ponder:ponder-neoforge:${ponder_version}+mc${minecraft_version}") { transitive = false }
+        runtimeOnly("dev.engine-room.flywheel:flywheel-neoforge-${minecraft_version}:${flywheel_version}") { transitive = false }
+    }
+
+    compileOnly("com.hollingsworth.ars_nouveau:ars_nouveau-1.21.1:${ars_nouveau_version}") { transitive = false }
+    compileOnly("software.bernie.geckolib:geckolib-neoforge-1.21.1:${geckolib_version}") { transitive = false }
+    compileOnly("com.hollingsworth.nuggets:nuggets-neoforge-1.21.1:${ars_nuggets_version}") { transitive = false }
+    if (project.hasProperty('with_ars_nouveau') || (devMod('ars_nouveau') && !project.hasProperty('no_curios'))) {
+        runtimeOnly("com.hollingsworth.ars_nouveau:ars_nouveau-1.21.1:${ars_nouveau_version}") { transitive = false }
+        runtimeOnly("software.bernie.geckolib:geckolib-neoforge-1.21.1:${geckolib_version}") { transitive = false }
+    }
+
+   // Annotations
+    compileOnly 'org.jetbrains:annotations:24.0.1'
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+    options.release = 21
+    options.compilerArgs << '-Xmaxerrs' << '100000'
+}
+
+tasks.withType(ProcessResources).configureEach {
+    var replaceProperties = [
+            minecraft_version     : minecraft_version,
+            neo_version           : neo_version,
+            neo_version_range     : neo_version_range,
+            loader_version_range  : loader_version_range,
+            mod_name              : mod_name,
+            mod_id                : mod_id,
+            mod_version           : mod_version,
+            mod_description       : mod_description,
+            authors               : authors,
+            background            : background,
+            item_icon             : item_icon,
+            issue_tracker         : issue_tracker,
+            mod_license           : mod_license,
+            patchouli_version     : patchouli_version,
+            jei_version            : jei_version,
+            emi_version            : emi_version,
+            rei_version            : rei_version,
+            curios_version         : curios_version,
+            sodium_version         : sodium_version,
+            kubejs_version         : kubejs_version,
+            rhino_version          : rhino_version,
+            jade_version           : jade_version,
+            wthit_version          : wthit_version,
+            ears_version            : ears_version,
+            botanypots_version      : botanypots_version,
+            ponder_version          : ponder_version,
+            ars_nouveau_version_range: ars_nouveau_version_range,
+    ]
+    inputs.properties replaceProperties
+
+    filesMatching(['META-INF/neoforge.mods.toml']) {
+        expand replaceProperties
+    }
+
+}
+
+jar {
+    manifest {
+        attributes([
+                'Specification-Title'   : mod_name,
+                'Specification-Vendor'  : 'vazkii',
+                'Specification-Version' : '1',
+                'Implementation-Title'  : mod_name,
+                'Implementation-Version': project.version,
+                'Implementation-Vendor' : 'vazkii',
+        ])
+    }
+}
+
+tasks.register('apiJar', Jar) {
+    dependsOn classes
+    from sourceSets.main.allJava
+    from sourceSets.main.output
+    include 'velrondevs/botania/api/**'
+    archiveClassifier = 'api'
+}
+
+idea {
+    module {
+        downloadSources = true
+        downloadJavadoc = true
+    }
+}
+
+tasks.register('printCompileClasspath') {
+    def cp = sourceSets.main.compileClasspath
+    doLast {
+        new File(project.layout.buildDirectory.get().asFile, 'compile-classpath.txt').text = cp.asPath
+    }
+}

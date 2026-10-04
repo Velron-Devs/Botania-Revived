@@ -1,0 +1,36 @@
+package velrondevs.botania.client.render.block_entity;
+
+import com.mojang.blaze3d.vertex.PoseStack;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.world.item.ItemDisplayContext;
+import net.minecraft.world.item.ItemStack;
+
+import org.jetbrains.annotations.NotNull;
+
+import velrondevs.botania.common.block.block_entity.SparkTinkererBlockEntity;
+import velrondevs.botania.common.helper.VecHelper;
+
+public class SparkTinkererBlockEntityRenderer implements BlockEntityRenderer<SparkTinkererBlockEntity> {
+
+	public SparkTinkererBlockEntityRenderer(BlockEntityRendererProvider.Context ctx) {}
+
+	@Override
+	public void render(@NotNull SparkTinkererBlockEntity tileentity, float pticks, PoseStack ms, MultiBufferSource buffers, int light, int overlay) {
+		ms.pushPose();
+		ms.mulPose(VecHelper.rotateX(90));
+		ms.translate(1.0F, -0.125F, -0.25F);
+		ItemStack stack = tileentity.getItemHandler().getItem(0);
+		if (!stack.isEmpty()) {
+			ms.mulPose(VecHelper.rotateY(180));
+			ms.translate(0.5F, 0.5F, 0);
+			Minecraft.getInstance().getItemRenderer().renderStatic(stack, ItemDisplayContext.GROUND,
+					light, overlay, ms, buffers, tileentity.getLevel(), 0);
+		}
+		ms.popPose();
+	}
+
+}

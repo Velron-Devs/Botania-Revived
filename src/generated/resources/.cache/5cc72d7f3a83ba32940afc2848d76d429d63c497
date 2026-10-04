@@ -1,0 +1,19 @@
+// 1.21.1	2026-10-04T02:25:03.9113565	Botania runic altar recipes
+3a83309a491a8d71a41ba3ba9c1f9fe13a56c64e data/botania/recipe/runic_altar/air.json
+371a69a6283fd7550a053faf7e7df861ae1595fb data/botania/recipe/runic_altar/autumn.json
+1ce79ea314e42fbfa93492b3f7c4e9a3827eaff5 data/botania/recipe/runic_altar/earth.json
+b37f018a6e4de29811be597b89fc173da17e4321 data/botania/recipe/runic_altar/envy.json
+71bb7b9156fa6e6262783b87ecf29f720f3bef2b data/botania/recipe/runic_altar/fire.json
+9675d885989de23b68f263b0ef9684e66cfef9a4 data/botania/recipe/runic_altar/gluttony.json
+33ad4008b213a6425b54fb24bbc8eeb42f3dfbc6 data/botania/recipe/runic_altar/greed.json
+3610d0585961567bd3ffbf0eb6b2f16b35b8d454 data/botania/recipe/runic_altar/head.json
+4465b7fcfb06eaef0499258711fccbfe230421ae data/botania/recipe/runic_altar/lust.json
+f72931e50e93d82a5d475f18851964dd5d5f1597 data/botania/recipe/runic_altar/mana.json
+9f4fba2c7e940b981ff1c481ded48cc101abd5ff data/botania/recipe/runic_altar/pride.json
+e51f16cab909ebcd2da7a384aec7af1f3e0da80a data/botania/recipe/runic_altar/sloth.json
+25e34ec625ad74aaa5ada9eb6600330a9ac4584e data/botania/recipe/runic_altar/spring.json
+ac2e0e85b7073ba66094ea15d50ec01daf19c3c3 data/botania/recipe/runic_altar/summer.json
+ef81de2d2fab80bd8bf0081c48a2094fe5c49de8 data/botania/recipe/runic_altar/water.json
+12383201db86ef2f98e2deb6ae2aca4e5a4fef96 data/botania/recipe/runic_altar/winter.json
+3105e3df0b4da00edc388ca564e47ecf342a7b83 data/botania/recipe/runic_altar/wither_mana_rose.json
+942476003a69819d2687c4417a4a8ee640f2fcb9 data/botania/recipe/runic_altar/wrath.json

@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "group": "botania:flight_tiara_wings",
+  "ingredients": [
+    {
+      "item": "botania:flight_tiara"
+    },
+    {
+      "item": "botania:quartz_elven"
+    }
+  ],
+  "result": {
+    "components": {
+      "minecraft:custom_data": {
+        "variant": 7
+      }
+    },
+    "count": 1,
+    "id": "botania:flight_tiara"
+  }
+}

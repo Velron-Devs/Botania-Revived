@@ -1,0 +1,72 @@
+{
+  "values": [
+    {
+      "id": "botania:white_iridescent_grass",
+      "required": false
+    },
+    {
+      "id": "botania:orange_iridescent_grass",
+      "required": false
+    },
+    {
+      "id": "botania:magenta_iridescent_grass",
+      "required": false
+    },
+    {
+      "id": "botania:light_blue_iridescent_grass",
+      "required": false
+    },
+    {
+      "id": "botania:yellow_iridescent_grass",
+      "required": false
+    },
+    {
+      "id": "botania:lime_iridescent_grass",
+      "required": false
+    },
+    {
+      "id": "botania:pink_iridescent_grass",
+      "required": false
+    },
+    {
+      "id": "botania:gray_iridescent_grass",
+      "required": false
+    },
+    {
+      "id": "botania:light_gray_iridescent_grass",
+      "required": false
+    },
+    {
+      "id": "botania:cyan_iridescent_grass",
+      "required": false
+    },
+    {
+      "id": "botania:purple_iridescent_grass",
+      "required": false
+    },
+    {
+      "id": "botania:blue_iridescent_grass",
+      "required": false
+    },
+    {
+      "id": "botania:brown_iridescent_grass",
+      "required": false
+    },
+    {
+      "id": "botania:green_iridescent_grass",
+      "required": false
+    },
+    {
+      "id": "botania:red_iridescent_grass",
+      "required": false
+    },
+    {
+      "id": "botania:black_iridescent_grass",
+      "required": false
+    },
+    {
+      "id": "botania:bifrost_grass",
+      "required": false
+    }
+  ]
+}

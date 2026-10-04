@@ -1,0 +1,16 @@
+{
+  "type": "botania:mana_infusion",
+  "input": [
+    {
+      "item": "minecraft:red_mushroom"
+    },
+    {
+      "item": "minecraft:brown_mushroom"
+    }
+  ],
+  "mana": 6500,
+  "output": {
+    "count": 1,
+    "id": "botania:mycelium_seeds"
+  }
+}

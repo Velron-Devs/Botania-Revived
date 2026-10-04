@@ -1,0 +1,4 @@
+// 1.21.1	2026-10-04T02:25:04.2211651	Botania Asgard loot tables
+824be84d794147123573d88c56b94d75ab440523 data/botania/loot_table/blocks/asgardandelion.json
+66d44212510d901b7bfb890ca86f331448d09889 data/botania/loot_table/blocks/floating_asgardandelion.json
+2c88f5c4d41169453b988a22d528968cb4971370 data/botania/loot_table/blocks/potted_asgardandelion.json

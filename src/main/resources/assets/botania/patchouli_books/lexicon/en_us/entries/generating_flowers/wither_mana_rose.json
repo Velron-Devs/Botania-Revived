@@ -1,0 +1,32 @@
+{
+  "name": "botania.entry.wither_mana_rose",
+  "category": "botania:generating_flowers",
+  "icon": "botania:wither_mana_rose",
+  "entry_color": "aa00",
+  "flag": "botania:wither_mana_rose",
+  "advancement": "botania:main/elf_lexicon_pickup",
+  "pages": [
+    {
+      "type": "text",
+      "text": "botania.page.wither_mana_rose0"
+    },
+    {
+      "type": "text",
+      "text": "botania.page.wither_mana_rose1"
+    },
+    {
+      "type": "botania:petal_apothecary",
+      "text": "botania.page.wither_mana_rose2",
+      "recipe": "botania:petal_apothecary/unactivated_wither_mana_rose"
+    },
+    {
+      "type": "botania:runic_altar",
+      "text": "botania.page.wither_mana_rose3",
+      "recipe": "botania:runic_altar/wither_mana_rose"
+    }
+  ],
+  "extra_recipe_mappings": {
+    "botania:unactivated_wither_mana_rose": 1,
+    "botania:floating_wither_mana_rose": 1
+  }
+}

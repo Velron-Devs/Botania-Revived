@@ -1,0 +1,15 @@
+// 1.21.1	2026-10-04T02:25:04.1572038	Tags for minecraft:worldgen/biome mod id vanilla
+39b89d03d1ab3218f60bafc386b839c1de10564f data/botania/tags/worldgen/biome/marimorphosis_desert_bonus.json
+5dd033920ca505b5a5fda5983f915b56187a10b7 data/botania/tags/worldgen/biome/marimorphosis_forest_bonus.json
+5c610828a5ce0f92d1af6e14ce1ef8b7155a3174 data/botania/tags/worldgen/biome/marimorphosis_fungal_bonus.json
+a8313c9f87e57f91d9ad4f958e47ce3d6d2390c4 data/botania/tags/worldgen/biome/marimorphosis_mesa_bonus.json
+58f585a8e4db0dc4e00e2b883000ec363d32055d data/botania/tags/worldgen/biome/marimorphosis_mountain_bonus.json
+fe6393adf99010de546c36b2a4b80262b183d75b data/botania/tags/worldgen/biome/marimorphosis_plains_bonus.json
+83a0f9d0bbcffd12740cf88f8bfd85f24b943b2a data/botania/tags/worldgen/biome/marimorphosis_swamp_bonus.json
+4937aecc1ea4c46a3da052584e35be956beccb16 data/botania/tags/worldgen/biome/marimorphosis_taiga_bonus.json
+950e42e295d021c520ffd21ccdca1f3f449def57 data/botania/tags/worldgen/biome/mystical_flower_blocklist.json
+53656696ef56faf16fea433801c012b5cfa19047 data/botania/tags/worldgen/biome/mystical_flower_spawnlist.json
+35133e95f1c8fdd7a1c21afcc231fc0bffefb9a8 data/botania/tags/worldgen/biome/mystical_mushroom_blocklist.json
+468da3a43163c358a26ea330cc354b564c2b2a24 data/botania/tags/worldgen/biome/mystical_mushroom_spawnlist.json
+35133e95f1c8fdd7a1c21afcc231fc0bffefb9a8 data/minecraft/tags/worldgen/biome/is_nether.json
+35133e95f1c8fdd7a1c21afcc231fc0bffefb9a8 data/minecraft/tags/worldgen/biome/is_overworld.json

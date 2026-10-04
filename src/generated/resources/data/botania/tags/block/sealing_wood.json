@@ -1,0 +1,24 @@
+{
+  "values": [
+    {
+      "id": "botania:sealing_log",
+      "required": false
+    },
+    {
+      "id": "botania:sealing_planks",
+      "required": false
+    },
+    {
+      "id": "botania:sealing_leaves",
+      "required": false
+    },
+    {
+      "id": "botania:sealing_slab",
+      "required": false
+    },
+    {
+      "id": "botania:sealing_stairs",
+      "required": false
+    }
+  ]
+}

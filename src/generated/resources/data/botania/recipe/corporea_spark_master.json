@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "redstone",
+  "ingredients": [
+    {
+      "item": "botania:corporea_spark"
+    },
+    {
+      "tag": "botania:dragonstone_gems"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "botania:corporea_spark_master"
+  }
+}

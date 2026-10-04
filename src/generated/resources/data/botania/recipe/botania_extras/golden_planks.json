@@ -1,0 +1,20 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "botania:module_enabled",
+      "module": "botania_extras"
+    }
+  ],
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "group": "botania:golden_planks",
+  "ingredients": [
+    {
+      "item": "botania:golden_log"
+    }
+  ],
+  "result": {
+    "count": 4,
+    "id": "botania:golden_planks"
+  }
+}

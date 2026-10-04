@@ -1,0 +1,19 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "botania:module_enabled",
+      "module": "botania_extras"
+    }
+  ],
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "botania:mystical_bifrost_petal"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "botania:floral_bifrost_powder"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "botania:module_enabled",
+      "module": "botania_extras"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "key": {
+    "C": {
+      "item": "minecraft:chest"
+    },
+    "L": {
+      "tag": "botania:livingwood_logs"
+    }
+  },
+  "pattern": [
+    "L L",
+    "LCL",
+    " L "
+  ],
+  "result": {
+    "count": 1,
+    "id": "botania:livingwood_funnel"
+  }
+}

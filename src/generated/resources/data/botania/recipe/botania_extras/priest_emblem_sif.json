@@ -1,0 +1,36 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "botania:module_enabled",
+      "module": "botania_extras"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "botania:holy_symbol"
+    },
+    "D": {
+      "tag": "botania:dragonstone_gems"
+    },
+    "G": {
+      "item": "botania:life_essence"
+    },
+    "N": {
+      "item": "minecraft:gold_nugget"
+    },
+    "P": {
+      "item": "botania:rune_earth"
+    }
+  },
+  "pattern": [
+    "DGD",
+    "NAN",
+    " P "
+  ],
+  "result": {
+    "count": 1,
+    "id": "botania:priest_emblem_sif"
+  }
+}

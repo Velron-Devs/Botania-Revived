@@ -1,0 +1,24 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "botania:module_enabled",
+      "module": "botania_extras"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "Q": {
+      "item": "botania:lime_iridescent_planks"
+    }
+  },
+  "pattern": [
+    "Q  ",
+    "QQ ",
+    "QQQ"
+  ],
+  "result": {
+    "count": 4,
+    "id": "botania:lime_iridescent_stairs"
+  }
+}

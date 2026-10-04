@@ -1,0 +1,18 @@
+{
+  "name": "botania.entry.iridescentLantern",
+  "category": "botania:botania_extras",
+  "icon": "botania:iridescent_lantern",
+  "flag": "botania:botania_extras",
+  "sortnum": 3,
+  "pages": [
+    {
+      "type": "text",
+      "text": "botania.page.iridescentLantern0"
+    },
+    {
+      "type": "crafting",
+      "text": "botania.page.iridescentLantern1",
+      "recipe": "botania:botania_extras/iridescent_lantern"
+    }
+  ]
+}

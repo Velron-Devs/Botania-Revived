@@ -1,0 +1,12 @@
+package velrondevs.botania.common.block.decor.stairs;
+
+import net.minecraft.world.level.block.StairBlock;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
+
+public class BotaniaStairBlock extends StairBlock {
+
+	public BotaniaStairBlock(BlockState state, BlockBehaviour.Properties builder) {
+		super(state, builder);
+	}
+}

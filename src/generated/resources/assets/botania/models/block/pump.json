@@ -1,0 +1,288 @@
+{
+  "parent": "minecraft:block/block",
+  "elements": [
+    {
+      "faces": {
+        "down": {
+          "texture": "#structure",
+          "uv": [
+            8.0,
+            2.0,
+            16.0,
+            4.0
+          ]
+        },
+        "east": {
+          "rotation": 90,
+          "texture": "#structure",
+          "uv": [
+            8.0,
+            0.0,
+            16.0,
+            2.0
+          ]
+        },
+        "north": {
+          "texture": "#structure",
+          "uv": [
+            0.0,
+            8.0,
+            8.0,
+            16.0
+          ]
+        },
+        "south": {
+          "texture": "#structure",
+          "uv": [
+            0.0,
+            0.0,
+            8.0,
+            8.0
+          ]
+        },
+        "up": {
+          "texture": "#structure",
+          "uv": [
+            8.0,
+            2.0,
+            16.0,
+            4.0
+          ]
+        },
+        "west": {
+          "rotation": 90,
+          "texture": "#structure",
+          "uv": [
+            8.0,
+            2.0,
+            16.0,
+            0.0
+          ]
+        }
+      },
+      "from": [
+        4,
+        0,
+        14
+      ],
+      "to": [
+        12,
+        8,
+        16
+      ]
+    },
+    {
+      "faces": {
+        "down": {
+          "texture": "#structure",
+          "uv": [
+            8.0,
+            2.0,
+            16.0,
+            4.0
+          ]
+        },
+        "east": {
+          "rotation": 90,
+          "texture": "#structure",
+          "uv": [
+            8.0,
+            2.0,
+            16.0,
+            4.0
+          ]
+        },
+        "north": {
+          "texture": "#structure",
+          "uv": [
+            0.0,
+            0.0,
+            8.0,
+            8.0
+          ]
+        },
+        "south": {
+          "texture": "#structure",
+          "uv": [
+            0.0,
+            8.0,
+            8.0,
+            16.0
+          ]
+        },
+        "up": {
+          "texture": "#structure",
+          "uv": [
+            8.0,
+            2.0,
+            16.0,
+            4.0
+          ]
+        },
+        "west": {
+          "rotation": 90,
+          "texture": "#structure",
+          "uv": [
+            8.0,
+            4.0,
+            16.0,
+            2.0
+          ]
+        }
+      },
+      "from": [
+        4,
+        0,
+        0
+      ],
+      "to": [
+        12,
+        8,
+        2
+      ]
+    },
+    {
+      "faces": {
+        "down": {
+          "texture": "#structure",
+          "uv": [
+            12.0,
+            8.0,
+            16.0,
+            16.0
+          ]
+        },
+        "east": {
+          "texture": "#structure",
+          "uv": [
+            8.0,
+            4.0,
+            16.0,
+            8.0
+          ]
+        },
+        "north": {
+          "texture": "#structure",
+          "uv": [
+            8.0,
+            12.0,
+            12.0,
+            16.0
+          ]
+        },
+        "south": {
+          "texture": "#structure",
+          "uv": [
+            8.0,
+            8.0,
+            12.0,
+            12.0
+          ]
+        },
+        "up": {
+          "texture": "#structure",
+          "uv": [
+            12.0,
+            8.0,
+            16.0,
+            16.0
+          ]
+        },
+        "west": {
+          "texture": "#structure",
+          "uv": [
+            8.0,
+            4.0,
+            16.0,
+            8.0
+          ]
+        }
+      },
+      "from": [
+        6,
+        2,
+        2
+      ],
+      "to": [
+        10,
+        6,
+        10
+      ]
+    },
+    {
+      "faces": {
+        "down": {
+          "texture": "#head_sheet",
+          "uv": [
+            8.0,
+            4.0,
+            16.0,
+            8.0
+          ]
+        },
+        "east": {
+          "rotation": 90,
+          "texture": "#head_sheet",
+          "uv": [
+            8.0,
+            4.0,
+            16.0,
+            8.0
+          ]
+        },
+        "north": {
+          "texture": "#head_sheet",
+          "uv": [
+            0.0,
+            0.0,
+            8.0,
+            8.0
+          ]
+        },
+        "south": {
+          "texture": "#head_sheet",
+          "uv": [
+            0.0,
+            0.0,
+            8.0,
+            8.0
+          ]
+        },
+        "up": {
+          "texture": "#head_sheet",
+          "uv": [
+            8.0,
+            0.0,
+            16.0,
+            4.0
+          ]
+        },
+        "west": {
+          "rotation": 90,
+          "texture": "#head_sheet",
+          "uv": [
+            8.0,
+            8.0,
+            16.0,
+            4.0
+          ]
+        }
+      },
+      "from": [
+        4,
+        0,
+        10
+      ],
+      "to": [
+        12,
+        8,
+        14
+      ]
+    }
+  ],
+  "textures": {
+    "head_sheet": "botania:block/pump_head_sheet",
+    "particle": "botania:block/livingrock",
+    "structure": "botania:block/pump_structure"
+  }
+}

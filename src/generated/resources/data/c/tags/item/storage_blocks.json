@@ -1,0 +1,26 @@
+{
+  "values": [
+    "#c:storage_blocks/white_petal_block",
+    "#c:storage_blocks/light_gray_petal_block",
+    "#c:storage_blocks/gray_petal_block",
+    "#c:storage_blocks/black_petal_block",
+    "#c:storage_blocks/brown_petal_block",
+    "#c:storage_blocks/red_petal_block",
+    "#c:storage_blocks/orange_petal_block",
+    "#c:storage_blocks/yellow_petal_block",
+    "#c:storage_blocks/lime_petal_block",
+    "#c:storage_blocks/green_petal_block",
+    "#c:storage_blocks/cyan_petal_block",
+    "#c:storage_blocks/light_blue_petal_block",
+    "#c:storage_blocks/blue_petal_block",
+    "#c:storage_blocks/purple_petal_block",
+    "#c:storage_blocks/magenta_petal_block",
+    "#c:storage_blocks/pink_petal_block",
+    "#c:storage_blocks/elementium",
+    "#c:storage_blocks/manasteel",
+    "#c:storage_blocks/terrasteel",
+    "#c:storage_blocks/mana_diamond",
+    "#c:storage_blocks/dragonstone",
+    "#c:storage_blocks/blaze_mesh"
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "values": [
+    "botania:bifrost_perm",
+    {
+      "id": "botania:floral_bifrost_powder",
+      "required": false
+    }
+  ]
+}

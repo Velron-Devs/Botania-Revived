@@ -1,0 +1,21 @@
+{
+  "name": "botania.entry.toolbelt",
+  "category": "botania:botania_extras",
+  "icon": "botania:toolbelt",
+  "flag": "botania:botania_extras",
+  "sortnum": 41,
+  "pages": [
+    {
+      "type": "text",
+      "text": "botania.page.toolbelt0"
+    },
+    {
+      "type": "crafting",
+      "text": "botania.page.toolbelt1",
+      "recipe": "botania:botania_extras/toolbelt"
+    }
+  ],
+  "extra_recipe_mappings": {
+    "botania:toolbelt": 1
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:selector",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:crossbow"
+        }
+      ],
+      "functions": [
+        {
+          "function": "minecraft:enchant_randomly",
+          "options": "#minecraft:on_random_loot"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "botania:equipment/loonium/weapon_crossbow"
+}

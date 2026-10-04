@@ -1,0 +1,67 @@
+{
+  "name": "botania.entry.clericalColorizer",
+  "category": "botania:botania_extras",
+  "icon": "botania:clerical_colorizer",
+  "flag": "botania:botania_extras",
+  "sortnum": 43,
+  "pages": [
+    {
+      "type": "text",
+      "text": "botania.page.clericalColorizer0"
+    },
+    {
+      "type": "crafting",
+      "text": "botania.page.clericalColorizer1",
+      "recipe": "botania:botania_extras/clerical_colorizer"
+    },
+    {
+      "type": "text",
+      "text": "botania.page.clericalColorizer2"
+    },
+    {
+      "type": "botania:crafting_multi",
+      "heading": "botania.entry.coatsOfArms",
+      "text": "botania.page.clericalColorizer3",
+      "recipes": [
+        "botania:botania_extras/coat_of_arms_chilean",
+        "botania:botania_extras/coat_of_arms_french",
+        "botania:botania_extras/coat_of_arms_japanese",
+        "botania:botania_extras/coat_of_arms_germanic",
+        "botania:botania_extras/coat_of_arms_greek",
+        "botania:botania_extras/coat_of_arms_icelandic",
+        "botania:botania_extras/coat_of_arms_irish",
+        "botania:botania_extras/coat_of_arms_israeli",
+        "botania:botania_extras/coat_of_arms_jamaican",
+        "botania:botania_extras/coat_of_arms_singaporean",
+        "botania:botania_extras/coat_of_arms_south_african",
+        "botania:botania_extras/coat_of_arms_spanish",
+        "botania:botania_extras/coat_of_arms_swiss",
+        "botania:botania_extras/coat_of_arms_texan",
+        "botania:botania_extras/coat_of_arms_ukrainian",
+        "botania:botania_extras/coat_of_arms_american",
+        "botania:botania_extras/coat_of_arms_fabulous"
+      ]
+    }
+  ],
+  "extra_recipe_mappings": {
+    "botania:clerical_colorizer": 1,
+    "botania:coat_of_arms_chilean": 3,
+    "botania:coat_of_arms_french": 3,
+    "botania:coat_of_arms_japanese": 3,
+    "botania:coat_of_arms_germanic": 3,
+    "botania:coat_of_arms_greek": 3,
+    "botania:coat_of_arms_icelandic": 3,
+    "botania:coat_of_arms_irish": 3,
+    "botania:coat_of_arms_israeli": 3,
+    "botania:coat_of_arms_jamaican": 3,
+    "botania:coat_of_arms_singaporean": 3,
+    "botania:coat_of_arms_south_african": 3,
+    "botania:coat_of_arms_spanish": 3,
+    "botania:coat_of_arms_swiss": 3,
+    "botania:coat_of_arms_texan": 3,
+    "botania:coat_of_arms_ukrainian": 3,
+    "botania:coat_of_arms_american": 3,
+    "botania:coat_of_arms_fabulous": 3,
+    "botania:coat_of_arms_parisian": 3
+  }
+}

@@ -1,0 +1,267 @@
+{
+  "values": [
+    {
+      "id": "botania:white_iridescent_slab",
+      "required": false
+    },
+    {
+      "id": "botania:orange_iridescent_slab",
+      "required": false
+    },
+    {
+      "id": "botania:magenta_iridescent_slab",
+      "required": false
+    },
+    {
+      "id": "botania:light_blue_iridescent_slab",
+      "required": false
+    },
+    {
+      "id": "botania:yellow_iridescent_slab",
+      "required": false
+    },
+    {
+      "id": "botania:lime_iridescent_slab",
+      "required": false
+    },
+    {
+      "id": "botania:pink_iridescent_slab",
+      "required": false
+    },
+    {
+      "id": "botania:gray_iridescent_slab",
+      "required": false
+    },
+    {
+      "id": "botania:light_gray_iridescent_slab",
+      "required": false
+    },
+    {
+      "id": "botania:cyan_iridescent_slab",
+      "required": false
+    },
+    {
+      "id": "botania:purple_iridescent_slab",
+      "required": false
+    },
+    {
+      "id": "botania:blue_iridescent_slab",
+      "required": false
+    },
+    {
+      "id": "botania:brown_iridescent_slab",
+      "required": false
+    },
+    {
+      "id": "botania:green_iridescent_slab",
+      "required": false
+    },
+    {
+      "id": "botania:red_iridescent_slab",
+      "required": false
+    },
+    {
+      "id": "botania:black_iridescent_slab",
+      "required": false
+    },
+    {
+      "id": "botania:bifrost_slab",
+      "required": false
+    },
+    {
+      "id": "botania:dry_slab",
+      "required": false
+    },
+    {
+      "id": "botania:golden_slab",
+      "required": false
+    },
+    {
+      "id": "botania:vivid_slab",
+      "required": false
+    },
+    {
+      "id": "botania:scorched_slab",
+      "required": false
+    },
+    {
+      "id": "botania:infused_slab",
+      "required": false
+    },
+    {
+      "id": "botania:mutated_slab",
+      "required": false
+    },
+    {
+      "id": "botania:thunderous_slab",
+      "required": false
+    },
+    {
+      "id": "botania:infernal_slab",
+      "required": false
+    },
+    {
+      "id": "botania:sealing_slab",
+      "required": false
+    },
+    "botania:black_pavement_slab",
+    "botania:blaze_quartz_slab",
+    "botania:blue_pavement_slab",
+    "botania:corporea_brick_slab",
+    "botania:corporea_slab",
+    "botania:dark_quartz_slab",
+    "botania:dreamwood_planks_slab",
+    "botania:dreamwood_slab",
+    "botania:elf_quartz_slab",
+    "botania:green_pavement_slab",
+    "botania:lavender_quartz_slab",
+    "botania:livingrock_bricks_slab",
+    "botania:livingrock_slab",
+    "botania:livingwood_planks_slab",
+    "botania:livingwood_slab",
+    "botania:mana_quartz_slab",
+    "botania:metamorphic_desert_bricks_slab",
+    "botania:metamorphic_desert_cobblestone_slab",
+    "botania:metamorphic_desert_stone_slab",
+    "botania:metamorphic_forest_bricks_slab",
+    "botania:metamorphic_forest_cobblestone_slab",
+    "botania:metamorphic_forest_stone_slab",
+    "botania:metamorphic_fungal_bricks_slab",
+    "botania:metamorphic_fungal_cobblestone_slab",
+    "botania:metamorphic_fungal_stone_slab",
+    "botania:metamorphic_mesa_bricks_slab",
+    "botania:metamorphic_mesa_cobblestone_slab",
+    "botania:metamorphic_mesa_stone_slab",
+    "botania:metamorphic_mountain_bricks_slab",
+    "botania:metamorphic_mountain_cobblestone_slab",
+    "botania:metamorphic_mountain_stone_slab",
+    "botania:metamorphic_plains_bricks_slab",
+    "botania:metamorphic_plains_cobblestone_slab",
+    "botania:metamorphic_plains_stone_slab",
+    "botania:metamorphic_swamp_bricks_slab",
+    "botania:metamorphic_swamp_cobblestone_slab",
+    "botania:metamorphic_swamp_stone_slab",
+    "botania:metamorphic_taiga_bricks_slab",
+    "botania:metamorphic_taiga_cobblestone_slab",
+    "botania:metamorphic_taiga_stone_slab",
+    "botania:mossy_livingrock_bricks_slab",
+    "botania:polished_livingrock_slab",
+    "botania:red_pavement_slab",
+    "botania:red_quartz_slab",
+    "botania:shimmerrock_slab",
+    "botania:shimmerwood_planks_slab",
+    "botania:stripped_dreamwood_slab",
+    "botania:stripped_livingwood_slab",
+    "botania:sunny_quartz_slab",
+    "botania:white_pavement_slab",
+    "botania:yellow_pavement_slab",
+    {
+      "id": "botania:shimmer_quartz_slab",
+      "required": false
+    },
+    {
+      "id": "botania:white_iridescent_slab",
+      "required": false
+    },
+    {
+      "id": "botania:orange_iridescent_slab",
+      "required": false
+    },
+    {
+      "id": "botania:magenta_iridescent_slab",
+      "required": false
+    },
+    {
+      "id": "botania:light_blue_iridescent_slab",
+      "required": false
+    },
+    {
+      "id": "botania:yellow_iridescent_slab",
+      "required": false
+    },
+    {
+      "id": "botania:lime_iridescent_slab",
+      "required": false
+    },
+    {
+      "id": "botania:pink_iridescent_slab",
+      "required": false
+    },
+    {
+      "id": "botania:gray_iridescent_slab",
+      "required": false
+    },
+    {
+      "id": "botania:light_gray_iridescent_slab",
+      "required": false
+    },
+    {
+      "id": "botania:cyan_iridescent_slab",
+      "required": false
+    },
+    {
+      "id": "botania:purple_iridescent_slab",
+      "required": false
+    },
+    {
+      "id": "botania:blue_iridescent_slab",
+      "required": false
+    },
+    {
+      "id": "botania:brown_iridescent_slab",
+      "required": false
+    },
+    {
+      "id": "botania:green_iridescent_slab",
+      "required": false
+    },
+    {
+      "id": "botania:red_iridescent_slab",
+      "required": false
+    },
+    {
+      "id": "botania:black_iridescent_slab",
+      "required": false
+    },
+    {
+      "id": "botania:bifrost_slab",
+      "required": false
+    },
+    {
+      "id": "botania:dry_slab",
+      "required": false
+    },
+    {
+      "id": "botania:golden_slab",
+      "required": false
+    },
+    {
+      "id": "botania:vivid_slab",
+      "required": false
+    },
+    {
+      "id": "botania:scorched_slab",
+      "required": false
+    },
+    {
+      "id": "botania:infused_slab",
+      "required": false
+    },
+    {
+      "id": "botania:mutated_slab",
+      "required": false
+    },
+    {
+      "id": "botania:thunderous_slab",
+      "required": false
+    },
+    {
+      "id": "botania:infernal_slab",
+      "required": false
+    },
+    {
+      "id": "botania:sealing_slab",
+      "required": false
+    }
+  ]
+}

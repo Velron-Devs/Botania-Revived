@@ -1,0 +1,30 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "botania:module_enabled",
+      "module": "botania_extras"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "G": {
+      "item": "minecraft:gold_ingot"
+    },
+    "Q": {
+      "item": "minecraft:quartz"
+    },
+    "S": {
+      "item": "botania:mana_string"
+    }
+  },
+  "pattern": [
+    "S S",
+    "Q Q",
+    " G "
+  ],
+  "result": {
+    "count": 1,
+    "id": "botania:holy_symbol"
+  }
+}

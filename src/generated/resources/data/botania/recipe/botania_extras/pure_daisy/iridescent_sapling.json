@@ -1,0 +1,19 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "botania:module_enabled",
+      "module": "botania_extras"
+    }
+  ],
+  "type": "botania:pure_daisy",
+  "input": {
+    "type": "tag",
+    "tag": "minecraft:saplings"
+  },
+  "output": {
+    "name": "botania:iridescent_sapling",
+    "properties": {
+      "stage": "0"
+    }
+  }
+}

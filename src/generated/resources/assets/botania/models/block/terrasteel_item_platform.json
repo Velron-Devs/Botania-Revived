@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/slab",
+  "textures": {
+    "bottom": "botania:block/botania_extras/terrasteel_item_platform",
+    "side": "botania:block/botania_extras/terrasteel_item_platform_side",
+    "top": "botania:block/botania_extras/terrasteel_item_platform"
+  }
+}

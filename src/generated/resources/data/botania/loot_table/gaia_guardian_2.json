@@ -1,0 +1,236 @@
+{
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "condition": "botania:killed_by_player"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "add": false,
+              "count": 10.0,
+              "function": "minecraft:set_count"
+            },
+            {
+              "add": false,
+              "conditions": [
+                {
+                  "condition": "botania:true_guardian_killer"
+                }
+              ],
+              "count": 16.0,
+              "function": "minecraft:set_count"
+            }
+          ],
+          "name": "botania:life_essence"
+        }
+      ],
+      "name": "life_essence",
+      "rolls": 1.0
+    },
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "condition": "botania:killed_by_player"
+        },
+        {
+          "chance": 0.5,
+          "condition": "minecraft:random_chance"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:loot_table",
+          "value": "botania:gaia_guardian/lotuses"
+        }
+      ],
+      "name": "black_lotuses",
+      "rolls": 1.0
+    },
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "condition": "botania:killed_by_player"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "botania:ancient_will_ahrim"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "botania:ancient_will_dharok"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "botania:ancient_will_guthan"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "botania:ancient_will_torag"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "botania:ancient_will_verac"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "botania:ancient_will_karil"
+        }
+      ],
+      "name": "ancient_wills",
+      "rolls": 1.0
+    },
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "condition": "botania:killed_by_player"
+        },
+        {
+          "chance": 0.25,
+          "condition": "minecraft:random_chance"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "add": false,
+              "count": {
+                "type": "minecraft:uniform",
+                "max": 3.0,
+                "min": 1.0
+              },
+              "function": "minecraft:set_count"
+            }
+          ],
+          "name": "botania:overgrowth_seed"
+        }
+      ],
+      "name": "overgrowth_seeds",
+      "rolls": 1.0
+    },
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "condition": "botania:killed_by_player"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:loot_table",
+          "value": "botania:gaia_guardian/materials"
+        }
+      ],
+      "name": "materials",
+      "rolls": 1.0
+    },
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "condition": "botania:killed_by_player"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:loot_table",
+          "value": "botania:gaia_guardian/runes"
+        }
+      ],
+      "name": "runes",
+      "rolls": {
+        "type": "minecraft:uniform",
+        "max": 6.0,
+        "min": 1.0
+      }
+    },
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "condition": "botania:killed_by_player"
+        },
+        {
+          "chance": 0.2,
+          "condition": "minecraft:random_chance"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "botania:pinkinator"
+        }
+      ],
+      "name": "pinkinator",
+      "rolls": 1.0
+    },
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "condition": "botania:killed_by_player"
+        },
+        {
+          "chance": 0.44,
+          "condition": "minecraft:random_chance"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "botania:record_gaia_2",
+          "weight": 14
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:music_disc_13",
+          "weight": 15
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:music_disc_wait",
+          "weight": 15
+        }
+      ],
+      "name": "music_discs",
+      "rolls": 1.0
+    },
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "condition": "botania:killed_by_player"
+        },
+        {
+          "condition": "botania:enable_relics"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "function": "botania:bind_uuid"
+            }
+          ],
+          "name": "botania:dice"
+        }
+      ],
+      "name": "relics",
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "botania:gaia_guardian_2"
+}

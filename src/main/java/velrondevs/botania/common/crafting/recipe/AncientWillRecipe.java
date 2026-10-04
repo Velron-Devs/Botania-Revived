@@ -1,0 +1,88 @@
+package velrondevs.botania.common.crafting.recipe;
+
+import net.minecraft.core.HolderLookup;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
+import net.minecraft.world.item.crafting.CraftingInput;
+import net.minecraft.world.item.crafting.CustomRecipe;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.SimpleCraftingRecipeSerializer;
+import net.minecraft.world.level.Level;
+
+import org.jetbrains.annotations.NotNull;
+
+import velrondevs.botania.api.item.AncientWillContainer;
+import velrondevs.botania.common.item.AncientWillItem;
+
+public class AncientWillRecipe extends CustomRecipe {
+	public static final RecipeSerializer<AncientWillRecipe> SERIALIZER = new SimpleCraftingRecipeSerializer<>(AncientWillRecipe::new);
+
+	public AncientWillRecipe(CraftingBookCategory category) {
+		super(category);
+	}
+
+	@Override
+	public boolean matches(@NotNull CraftingInput inv, @NotNull Level world) {
+		boolean foundWill = false;
+		boolean foundItem = false;
+
+		for (int i = 0; i < inv.size(); i++) {
+			ItemStack stack = inv.getItem(i);
+			if (!stack.isEmpty()) {
+				if (stack.getItem() instanceof AncientWillItem) {
+					if (foundWill) {
+						return false;
+					}
+					foundWill = true;
+				} else if (stack.getItem() instanceof AncientWillContainer) {
+					if (foundItem) {
+						return false;
+					}
+					foundItem = true;
+				} else {
+					return false;
+				}
+			}
+		}
+
+		return foundWill && foundItem;
+	}
+
+	@NotNull
+	@Override
+	public ItemStack assemble(@NotNull CraftingInput inv, @NotNull HolderLookup.Provider registries) {
+		ItemStack item = ItemStack.EMPTY;
+		AncientWillContainer.AncientWillType will = null;
+
+		for (int i = 0; i < inv.size(); i++) {
+			ItemStack stack = inv.getItem(i);
+			if (!stack.isEmpty()) {
+				if (stack.getItem() instanceof AncientWillContainer && item.isEmpty()) {
+					item = stack;
+				} else {
+					will = ((AncientWillItem) stack.getItem()).type;
+				}
+			}
+		}
+
+		AncientWillContainer container = (AncientWillContainer) item.getItem();
+		if (container.hasAncientWill(item, will)) {
+			return ItemStack.EMPTY;
+		}
+
+		ItemStack copy = item.copy();
+		container.addAncientWill(copy, will);
+		return copy;
+	}
+
+	@Override
+	public boolean canCraftInDimensions(int width, int height) {
+		return width > 1 || height > 1;
+	}
+
+	@NotNull
+	@Override
+	public RecipeSerializer<?> getSerializer() {
+		return SERIALIZER;
+	}
+}

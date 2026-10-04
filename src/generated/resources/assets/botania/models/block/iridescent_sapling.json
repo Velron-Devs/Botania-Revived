@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cross",
+  "textures": {
+    "cross": "botania:block/botania_extras/iridescent_sapling"
+  }
+}

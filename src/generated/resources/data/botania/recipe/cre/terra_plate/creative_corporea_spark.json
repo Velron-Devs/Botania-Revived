@@ -1,0 +1,58 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "botania:module_enabled",
+      "module": "cre"
+    }
+  ],
+  "type": "botania:terra_plate",
+  "ingredients": [
+    {
+      "item": "botania:corporea_spark_master"
+    },
+    {
+      "item": "botania:rune_mana"
+    },
+    {
+      "item": "botania:elementium_block"
+    },
+    {
+      "item": "botania:elementium_block"
+    },
+    {
+      "item": "botania:elementium_block"
+    },
+    {
+      "item": "botania:elementium_block"
+    },
+    {
+      "item": "botania:pixie_dust"
+    },
+    {
+      "item": "botania:pixie_dust"
+    },
+    {
+      "item": "botania:pixie_dust"
+    },
+    {
+      "item": "botania:pixie_dust"
+    },
+    {
+      "item": "botania:life_essence"
+    },
+    {
+      "item": "botania:life_essence"
+    },
+    {
+      "item": "botania:life_essence"
+    },
+    {
+      "item": "botania:life_essence"
+    }
+  ],
+  "mana": 500000,
+  "result": {
+    "count": 1,
+    "id": "botania:corporea_spark_creative"
+  }
+}

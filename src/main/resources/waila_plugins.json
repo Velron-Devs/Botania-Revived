@@ -1,0 +1,10 @@
+{
+  "botania:plugin": {
+    "entrypoints": {
+      "common": "velrondevs.botania.integration.wthit.BotaniaWthitPlugin",
+      "client": "velrondevs.botania.integration.wthit.BotaniaWthitClientPlugin"
+    },
+    "side": "*",
+    "required": ["botania"]
+  }
+}

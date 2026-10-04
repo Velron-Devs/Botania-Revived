@@ -1,0 +1,42 @@
+{
+  "name": "botania.entry.infernalOak",
+  "category": "botania:botania_extras",
+  "icon": "botania:infernal_oak_sapling",
+  "flag": "botania:botania_extras",
+  "sortnum": 17,
+  "pages": [
+    {
+      "type": "text",
+      "text": "botania.page.infernalOak0"
+    },
+    {
+      "type": "botania:tree_suffusion",
+      "recipe": "botania:botania_extras/tree_suffusion/infernal_oak",
+      "text": "botania.page.infernalOak1"
+    },
+    {
+      "type": "crafting",
+      "text": "botania.page.infernalOak2",
+      "recipe": "botania:botania_extras/infernal_planks",
+      "recipe2": "botania:botania_extras/infernal_slab"
+    },
+    {
+      "type": "crafting",
+      "text": "botania.page.infernalOak3",
+      "recipe": "botania:botania_extras/infernal_stairs",
+      "recipe2": "botania:botania_extras/infernal_twig"
+    },
+    {
+      "type": "text",
+      "text": "botania.page.infernalOak4"
+    }
+  ],
+  "extra_recipe_mappings": {
+    "botania:infernal_oak_sapling": 1,
+    "botania:infernal_log": 2,
+    "botania:infernal_planks": 2,
+    "botania:infernal_slab": 2,
+    "botania:infernal_stairs": 3,
+    "botania:infernal_twig": 3
+  }
+}

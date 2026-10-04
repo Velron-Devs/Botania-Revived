@@ -1,0 +1,27 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "botania:module_enabled",
+      "module": "botania_extras"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "key": {
+    "N": {
+      "item": "minecraft:note_block"
+    },
+    "R": {
+      "item": "botania:sealing_planks"
+    }
+  },
+  "pattern": [
+    " N ",
+    "NRN",
+    " N "
+  ],
+  "result": {
+    "count": 1,
+    "id": "botania:sonic_amplifier"
+  }
+}

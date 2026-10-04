@@ -1,0 +1,33 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "botania:module_enabled",
+      "module": "botania_extras"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "D": {
+      "tag": "botania:dragonstone_gems"
+    },
+    "E": {
+      "item": "botania:thunderous_splinters"
+    },
+    "S": {
+      "item": "botania:thunderous_twig"
+    },
+    "W": {
+      "item": "botania:rune_wrath"
+    }
+  },
+  "pattern": [
+    " EW",
+    " SD",
+    "S  "
+  ],
+  "result": {
+    "count": 1,
+    "id": "botania:thundering_peaks_rod"
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "botania:module_enabled",
+      "module": "botania_extras"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "botania:frozen_star",
+  "key": {
+    "D": {
+      "tag": "c:dyes/red"
+    },
+    "E": {
+      "item": "botania:ender_air_bottle"
+    },
+    "G": {
+      "item": "minecraft:glowstone_dust"
+    }
+  },
+  "pattern": [
+    " E ",
+    "GDG",
+    " G "
+  ],
+  "result": {
+    "components": {
+      "minecraft:custom_data": {
+        "color": 11546150
+      }
+    },
+    "count": 3,
+    "id": "botania:frozen_star"
+  }
+}

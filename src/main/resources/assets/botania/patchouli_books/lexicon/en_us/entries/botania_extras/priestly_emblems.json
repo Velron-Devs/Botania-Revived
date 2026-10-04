@@ -1,0 +1,39 @@
+{
+  "name": "botania.entry.priestlyEmblems",
+  "category": "botania:botania_extras",
+  "icon": "botania:priest_emblem_thor",
+  "flag": "botania:botania_extras",
+  "sortnum": 13,
+  "pages": [
+    {
+      "type": "text",
+      "text": "botania.page.priestlyEmblems0"
+    },
+    {
+      "type": "crafting",
+      "text": "botania.page.priestlyEmblems1",
+      "recipe": "botania:botania_extras/holy_symbol"
+    },
+    {
+      "type": "crafting",
+      "text": "botania.page.priestlyEmblems2",
+      "recipe": "botania:botania_extras/priest_emblem_thor",
+      "recipe2": "botania:botania_extras/priest_emblem_sif"
+    },
+    {
+      "type": "crafting",
+      "recipe": "botania:botania_extras/priest_emblem_njord"
+    },
+    {
+      "type": "text",
+      "text": "botania.page.priestlyEmblems3"
+    }
+  ],
+  "extra_recipe_mappings": {
+    "botania:holy_symbol": 1,
+    "botania:priest_emblem_thor": 2,
+    "botania:priest_emblem_sif": 2,
+    "botania:priest_emblem_njord": 3,
+    "botania:aesir_emblem": 0
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column",
+  "textures": {
+    "end": "botania:block/botania_extras/bifrost_log_top",
+    "side": "botania:block/botania_extras/bifrost_log_side"
+  }
+}

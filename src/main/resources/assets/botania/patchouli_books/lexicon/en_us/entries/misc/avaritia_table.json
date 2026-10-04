@@ -1,0 +1,20 @@
+{
+  "name": "botania.entry.avaritiaTable",
+  "category": "botania:misc",
+  "icon": "botania:creative_pool",
+  "flag": "&botania:cre,mod:avaritia",
+  "pages": [
+    {
+      "type": "text",
+      "text": "botania.page.avaritiaTable0"
+    },
+    {
+      "type": "text",
+      "text": "botania.page.avaritiaTable1"
+    },
+    {
+      "type": "text",
+      "text": "botania.page.avaritiaTable2"
+    }
+  ]
+}

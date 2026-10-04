@@ -1,0 +1,221 @@
+{
+  "values": [
+    {
+      "id": "botania:white_iridescent_planks",
+      "required": false
+    },
+    {
+      "id": "botania:orange_iridescent_planks",
+      "required": false
+    },
+    {
+      "id": "botania:magenta_iridescent_planks",
+      "required": false
+    },
+    {
+      "id": "botania:light_blue_iridescent_planks",
+      "required": false
+    },
+    {
+      "id": "botania:yellow_iridescent_planks",
+      "required": false
+    },
+    {
+      "id": "botania:lime_iridescent_planks",
+      "required": false
+    },
+    {
+      "id": "botania:pink_iridescent_planks",
+      "required": false
+    },
+    {
+      "id": "botania:gray_iridescent_planks",
+      "required": false
+    },
+    {
+      "id": "botania:light_gray_iridescent_planks",
+      "required": false
+    },
+    {
+      "id": "botania:cyan_iridescent_planks",
+      "required": false
+    },
+    {
+      "id": "botania:purple_iridescent_planks",
+      "required": false
+    },
+    {
+      "id": "botania:blue_iridescent_planks",
+      "required": false
+    },
+    {
+      "id": "botania:brown_iridescent_planks",
+      "required": false
+    },
+    {
+      "id": "botania:green_iridescent_planks",
+      "required": false
+    },
+    {
+      "id": "botania:red_iridescent_planks",
+      "required": false
+    },
+    {
+      "id": "botania:black_iridescent_planks",
+      "required": false
+    },
+    {
+      "id": "botania:bifrost_planks",
+      "required": false
+    },
+    {
+      "id": "botania:dry_planks",
+      "required": false
+    },
+    {
+      "id": "botania:golden_planks",
+      "required": false
+    },
+    {
+      "id": "botania:vivid_planks",
+      "required": false
+    },
+    {
+      "id": "botania:scorched_planks",
+      "required": false
+    },
+    {
+      "id": "botania:infused_planks",
+      "required": false
+    },
+    {
+      "id": "botania:mutated_planks",
+      "required": false
+    },
+    {
+      "id": "botania:thunderous_planks",
+      "required": false
+    },
+    {
+      "id": "botania:infernal_planks",
+      "required": false
+    },
+    {
+      "id": "botania:sealing_planks",
+      "required": false
+    },
+    "botania:livingwood_planks",
+    "botania:mossy_livingwood_planks",
+    "botania:framed_livingwood",
+    "botania:pattern_framed_livingwood",
+    "botania:dreamwood_planks",
+    "botania:mossy_dreamwood_planks",
+    "botania:framed_dreamwood",
+    "botania:pattern_framed_dreamwood",
+    "botania:shimmerwood_planks",
+    {
+      "id": "botania:white_iridescent_planks",
+      "required": false
+    },
+    {
+      "id": "botania:orange_iridescent_planks",
+      "required": false
+    },
+    {
+      "id": "botania:magenta_iridescent_planks",
+      "required": false
+    },
+    {
+      "id": "botania:light_blue_iridescent_planks",
+      "required": false
+    },
+    {
+      "id": "botania:yellow_iridescent_planks",
+      "required": false
+    },
+    {
+      "id": "botania:lime_iridescent_planks",
+      "required": false
+    },
+    {
+      "id": "botania:pink_iridescent_planks",
+      "required": false
+    },
+    {
+      "id": "botania:gray_iridescent_planks",
+      "required": false
+    },
+    {
+      "id": "botania:light_gray_iridescent_planks",
+      "required": false
+    },
+    {
+      "id": "botania:cyan_iridescent_planks",
+      "required": false
+    },
+    {
+      "id": "botania:purple_iridescent_planks",
+      "required": false
+    },
+    {
+      "id": "botania:blue_iridescent_planks",
+      "required": false
+    },
+    {
+      "id": "botania:brown_iridescent_planks",
+      "required": false
+    },
+    {
+      "id": "botania:green_iridescent_planks",
+      "required": false
+    },
+    {
+      "id": "botania:red_iridescent_planks",
+      "required": false
+    },
+    {
+      "id": "botania:black_iridescent_planks",
+      "required": false
+    },
+    {
+      "id": "botania:bifrost_planks",
+      "required": false
+    },
+    {
+      "id": "botania:dry_planks",
+      "required": false
+    },
+    {
+      "id": "botania:golden_planks",
+      "required": false
+    },
+    {
+      "id": "botania:vivid_planks",
+      "required": false
+    },
+    {
+      "id": "botania:scorched_planks",
+      "required": false
+    },
+    {
+      "id": "botania:infused_planks",
+      "required": false
+    },
+    {
+      "id": "botania:mutated_planks",
+      "required": false
+    },
+    {
+      "id": "botania:thunderous_planks",
+      "required": false
+    },
+    {
+      "id": "botania:infernal_planks",
+      "required": false
+    },
+    {
+      "id": "botania:sealing_planks",
+      "required": false
+    }
+  ]
+}

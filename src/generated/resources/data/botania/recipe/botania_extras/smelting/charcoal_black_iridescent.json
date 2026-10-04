@@ -1,0 +1,19 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "botania:module_enabled",
+      "module": "botania_extras"
+    }
+  ],
+  "type": "minecraft:smelting",
+  "category": "misc",
+  "cookingtime": 200,
+  "experience": 0.15,
+  "ingredient": {
+    "item": "botania:black_iridescent_log"
+  },
+  "result": {
+    "count": 1,
+    "id": "minecraft:charcoal"
+  }
+}

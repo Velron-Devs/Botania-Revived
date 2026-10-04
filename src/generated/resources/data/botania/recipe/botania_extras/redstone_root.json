@@ -1,0 +1,22 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "botania:module_enabled",
+      "module": "botania_extras"
+    }
+  ],
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "minecraft:redstone"
+    },
+    {
+      "tag": "botania:iridescent_grass"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "botania:redstone_root"
+  }
+}

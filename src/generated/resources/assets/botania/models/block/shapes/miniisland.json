@@ -1,0 +1,314 @@
+{
+  "parent": "minecraft:block/block",
+  "display": {
+    "gui": {
+      "rotation": [
+        30,
+        225,
+        0
+      ],
+      "scale": [
+        0.75,
+        0.75,
+        0.75
+      ]
+    }
+  },
+  "elements": [
+    {
+      "faces": {
+        "down": {
+          "texture": "#bottom"
+        },
+        "east": {
+          "texture": "#side",
+          "uv": [
+            3.0,
+            0.0,
+            11.0,
+            3.0
+          ]
+        },
+        "north": {
+          "texture": "#side",
+          "uv": [
+            0.0,
+            0.0,
+            8.0,
+            3.0
+          ]
+        },
+        "south": {
+          "texture": "#side",
+          "uv": [
+            5.0,
+            0.0,
+            13.0,
+            3.0
+          ]
+        },
+        "up": {
+          "texture": "#top"
+        },
+        "west": {
+          "texture": "#side",
+          "uv": [
+            8.0,
+            0.0,
+            16.0,
+            3.0
+          ]
+        }
+      },
+      "from": [
+        4,
+        6,
+        4
+      ],
+      "to": [
+        12,
+        9,
+        12
+      ]
+    },
+    {
+      "faces": {
+        "down": {
+          "texture": "#bottom",
+          "uv": [
+            0.0,
+            0.0,
+            3.0,
+            4.0
+          ]
+        },
+        "east": {
+          "texture": "#bottom",
+          "uv": [
+            4.0,
+            10.0,
+            8.0,
+            12.0
+          ]
+        },
+        "north": {
+          "texture": "#bottom",
+          "uv": [
+            10.0,
+            10.0,
+            13.0,
+            12.0
+          ]
+        },
+        "south": {
+          "texture": "#bottom",
+          "uv": [
+            1.0,
+            3.0,
+            4.0,
+            5.0
+          ]
+        },
+        "west": {
+          "texture": "#bottom",
+          "uv": [
+            11.0,
+            11.0,
+            15.0,
+            13.0
+          ]
+        }
+      },
+      "from": [
+        7,
+        4.5,
+        7
+      ],
+      "to": [
+        10,
+        6.5,
+        11
+      ]
+    },
+    {
+      "faces": {
+        "down": {
+          "texture": "#bottom",
+          "uv": [
+            0.0,
+            0.0,
+            3.0,
+            3.0
+          ]
+        },
+        "east": {
+          "texture": "#bottom",
+          "uv": [
+            4.0,
+            11.0,
+            7.0,
+            13.0
+          ]
+        },
+        "north": {
+          "texture": "#bottom",
+          "uv": [
+            10.0,
+            3.0,
+            13.0,
+            5.0
+          ]
+        },
+        "south": {
+          "texture": "#bottom",
+          "uv": [
+            8.0,
+            6.0,
+            11.0,
+            8.0
+          ]
+        },
+        "west": {
+          "texture": "#bottom",
+          "uv": [
+            13.0,
+            2.0,
+            16.0,
+            4.0
+          ]
+        }
+      },
+      "from": [
+        5,
+        4,
+        7
+      ],
+      "to": [
+        8,
+        6,
+        10
+      ]
+    },
+    {
+      "faces": {
+        "down": {
+          "texture": "#bottom",
+          "uv": [
+            0.0,
+            0.0,
+            5.0,
+            3.0
+          ]
+        },
+        "east": {
+          "texture": "#bottom",
+          "uv": [
+            0.0,
+            0.0,
+            3.0,
+            2.0
+          ]
+        },
+        "north": {
+          "texture": "#bottom",
+          "uv": [
+            0.0,
+            0.0,
+            5.0,
+            2.0
+          ]
+        },
+        "south": {
+          "texture": "#bottom",
+          "uv": [
+            0.0,
+            0.0,
+            5.0,
+            2.0
+          ]
+        },
+        "west": {
+          "texture": "#bottom",
+          "uv": [
+            0.0,
+            0.0,
+            3.0,
+            2.0
+          ]
+        }
+      },
+      "from": [
+        6,
+        5,
+        5
+      ],
+      "to": [
+        11,
+        7,
+        8
+      ]
+    },
+    {
+      "faces": {
+        "down": {
+          "texture": "#bottom",
+          "uv": [
+            0.0,
+            0.0,
+            2.0,
+            2.0
+          ]
+        },
+        "east": {
+          "texture": "#bottom",
+          "uv": [
+            0.0,
+            0.0,
+            2.0,
+            2.0
+          ]
+        },
+        "north": {
+          "texture": "#bottom",
+          "uv": [
+            0.0,
+            0.0,
+            2.0,
+            2.0
+          ]
+        },
+        "south": {
+          "texture": "#bottom",
+          "uv": [
+            0.0,
+            0.0,
+            2.0,
+            2.0
+          ]
+        },
+        "west": {
+          "texture": "#bottom",
+          "uv": [
+            5.0,
+            5.0,
+            7.0,
+            7.0
+          ]
+        }
+      },
+      "from": [
+        7,
+        3.5,
+        6
+      ],
+      "to": [
+        9,
+        5.5,
+        8
+      ]
+    }
+  ],
+  "textures": {
+    "bottom": "minecraft:block/dirt"
+  }
+}

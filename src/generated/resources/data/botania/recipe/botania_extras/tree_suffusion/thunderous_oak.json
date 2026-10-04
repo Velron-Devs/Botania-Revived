@@ -1,0 +1,43 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "botania:module_enabled",
+      "module": "botania_extras"
+    }
+  ],
+  "type": "botania:tree_suffusion",
+  "ingredients": [
+    {
+      "tag": "botania:manasteel_ingots"
+    },
+    {
+      "tag": "botania:manasteel_ingots"
+    },
+    {
+      "tag": "botania:manasteel_ingots"
+    },
+    {
+      "item": "botania:rune_wrath"
+    },
+    {
+      "item": "botania:purple_iridescent_leaves"
+    },
+    {
+      "item": "botania:purple_iridescent_leaves"
+    },
+    {
+      "item": "botania:purple_iridescent_leaves"
+    },
+    {
+      "item": "botania:teru_teru_bozu"
+    }
+  ],
+  "mana": 50000,
+  "output": {
+    "name": "botania:thunderous_oak_sapling",
+    "properties": {
+      "stage": "0"
+    }
+  },
+  "throttle": 350
+}

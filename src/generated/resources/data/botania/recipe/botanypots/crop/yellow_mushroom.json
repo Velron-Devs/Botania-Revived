@@ -1,0 +1,44 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "botanypots"
+    }
+  ],
+  "type": "botanypots:block_derived_crop",
+  "block": "botania:yellow_mushroom",
+  "drops": [
+    {
+      "type": "botanypots:items",
+      "items": [
+        {
+          "result": {
+            "count": 1,
+            "id": "botania:yellow_mushroom"
+          }
+        }
+      ]
+    }
+  ],
+  "grow_time": 1200,
+  "soil": [
+    {
+      "tag": "botanypots:soil/dirt"
+    },
+    {
+      "tag": "botanypots:soil/mushroom"
+    },
+    {
+      "item": "minecraft:mycelium"
+    },
+    {
+      "item": "minecraft:podzol"
+    },
+    {
+      "item": "minecraft:crimson_nylium"
+    },
+    {
+      "item": "minecraft:warped_nylium"
+    }
+  ]
+}

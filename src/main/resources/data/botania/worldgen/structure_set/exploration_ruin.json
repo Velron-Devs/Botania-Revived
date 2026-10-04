@@ -1,0 +1,24 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "botania:module_enabled",
+      "module": "exploration"
+    }
+  ],
+  "structures": [
+    {
+      "structure": "botania:exploration_ruin",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 48465418,
+    "spacing": 32,
+    "separation": 8,
+    "exclusion_zone": {
+      "other_set": "minecraft:villages",
+      "chunk_count": 4
+    }
+  }
+}

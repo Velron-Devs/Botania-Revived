@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cross",
+  "textures": {
+    "cross": "botania:block/botania_extras/infernal_oak_sapling"
+  }
+}

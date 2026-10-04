@@ -1,0 +1,60 @@
+{
+  "sources": [
+    {
+      "type": "minecraft:single",
+      "resource": "botania:item/corporea_spark"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "botania:item/corporea_spark_creative"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "botania:item/corporea_spark_master"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "botania:item/corporea_spark_star"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "botania:item/spark"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "botania:item/spark_upgrade_rune_dispersive"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "botania:item/spark_upgrade_rune_dominant"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "botania:item/spark_upgrade_rune_isolated"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "botania:item/spark_upgrade_rune_recessive"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "botania:block/alfheim_portal_swirl"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "botania:block/light_relay"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "botania:block/detector_light_relay"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "botania:block/fork_light_relay"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "botania:block/toggle_light_relay"
+    }
+  ]
+}

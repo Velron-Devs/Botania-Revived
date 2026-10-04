@@ -1,0 +1,60 @@
+{
+  "name": "botania.entry.iridescentDirt",
+  "category": "botania:botania_extras",
+  "icon": "botania:bifrost_dirt",
+  "flag": "botania:botania_extras",
+  "sortnum": 0,
+  "pages": [
+    {
+      "type": "text",
+      "text": "botania.page.iridescentDirt0"
+    },
+    {
+      "type": "botania:crafting_multi",
+      "heading": "botania.entry.iridescentDirt",
+      "text": "botania.page.iridescentDirt1",
+      "recipes": [
+        "botania:botania_extras/white_iridescent_dirt",
+        "botania:botania_extras/orange_iridescent_dirt",
+        "botania:botania_extras/magenta_iridescent_dirt",
+        "botania:botania_extras/light_blue_iridescent_dirt",
+        "botania:botania_extras/yellow_iridescent_dirt",
+        "botania:botania_extras/lime_iridescent_dirt",
+        "botania:botania_extras/pink_iridescent_dirt",
+        "botania:botania_extras/gray_iridescent_dirt",
+        "botania:botania_extras/light_gray_iridescent_dirt",
+        "botania:botania_extras/cyan_iridescent_dirt",
+        "botania:botania_extras/purple_iridescent_dirt",
+        "botania:botania_extras/blue_iridescent_dirt",
+        "botania:botania_extras/brown_iridescent_dirt",
+        "botania:botania_extras/green_iridescent_dirt",
+        "botania:botania_extras/red_iridescent_dirt",
+        "botania:botania_extras/black_iridescent_dirt",
+        "botania:botania_extras/bifrost_dirt"
+      ]
+    },
+    {
+      "type": "text",
+      "text": "botania.page.iridescentDirt2"
+    }
+  ],
+  "extra_recipe_mappings": {
+    "botania:white_iridescent_dirt": 1,
+    "botania:orange_iridescent_dirt": 1,
+    "botania:magenta_iridescent_dirt": 1,
+    "botania:light_blue_iridescent_dirt": 1,
+    "botania:yellow_iridescent_dirt": 1,
+    "botania:lime_iridescent_dirt": 1,
+    "botania:pink_iridescent_dirt": 1,
+    "botania:gray_iridescent_dirt": 1,
+    "botania:light_gray_iridescent_dirt": 1,
+    "botania:cyan_iridescent_dirt": 1,
+    "botania:purple_iridescent_dirt": 1,
+    "botania:blue_iridescent_dirt": 1,
+    "botania:brown_iridescent_dirt": 1,
+    "botania:green_iridescent_dirt": 1,
+    "botania:red_iridescent_dirt": 1,
+    "botania:black_iridescent_dirt": 1,
+    "botania:bifrost_dirt": 1
+  }
+}

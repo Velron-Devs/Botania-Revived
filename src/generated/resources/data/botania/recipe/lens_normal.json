@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "G": [
+      {
+        "tag": "c:glass_blocks/colorless"
+      },
+      {
+        "tag": "c:glass_panes/colorless"
+      }
+    ],
+    "S": {
+      "tag": "botania:manasteel_ingots"
+    }
+  },
+  "pattern": [
+    " S ",
+    "SGS",
+    " S "
+  ],
+  "result": {
+    "count": 1,
+    "id": "botania:lens_normal"
+  }
+}

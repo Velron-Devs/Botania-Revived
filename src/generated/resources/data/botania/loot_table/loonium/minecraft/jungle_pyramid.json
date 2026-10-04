@@ -1,0 +1,20 @@
+{
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:loot_table",
+          "value": "minecraft:chests/jungle_temple",
+          "weight": 9
+        },
+        {
+          "type": "minecraft:loot_table",
+          "value": "minecraft:chests/jungle_temple_dispenser"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "botania:loonium/minecraft/jungle_pyramid"
+}

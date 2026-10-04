@@ -1,0 +1,29 @@
+{
+  "name": "botania.entry.crysanthermum",
+  "category": "botania:botania_extras",
+  "icon": "botania:crysanthermum",
+  "flag": "botania:botania_extras",
+  "sortnum": 30,
+  "pages": [
+    {
+      "type": "text",
+      "text": "botania.page.crysanthermum0"
+    },
+    {
+      "type": "text",
+      "text": "botania.page.crysanthermum1"
+    },
+    {
+      "type": "text",
+      "text": "botania.page.crysanthermum2"
+    },
+    {
+      "type": "botania:petal_apothecary",
+      "text": "botania.page.crysanthermum3",
+      "recipe": "botania:botania_extras/petal_apothecary/crysanthermum"
+    }
+  ],
+  "extra_recipe_mappings": {
+    "botania:floating_crysanthermum": 3
+  }
+}

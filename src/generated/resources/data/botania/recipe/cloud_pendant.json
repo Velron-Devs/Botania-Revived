@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "D": {
+      "tag": "botania:manasteel_ingots"
+    },
+    "F": {
+      "item": "botania:rune_air"
+    },
+    "M": {
+      "item": "botania:rune_autumn"
+    },
+    "S": {
+      "item": "botania:mana_string"
+    }
+  },
+  "pattern": [
+    "MS ",
+    "S S",
+    "DSF"
+  ],
+  "result": {
+    "count": 1,
+    "id": "botania:cloud_pendant"
+  }
+}

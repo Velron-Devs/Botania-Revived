@@ -1,0 +1,23 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "botania:module_enabled",
+      "module": "asg"
+    }
+  ],
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "group": "botania:floating_flower",
+  "ingredients": [
+    {
+      "tag": "botania:floating_flowers"
+    },
+    {
+      "item": "botania:asgardandelion"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "botania:floating_asgardandelion"
+  }
+}

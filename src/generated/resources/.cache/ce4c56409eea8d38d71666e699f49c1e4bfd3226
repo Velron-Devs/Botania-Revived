@@ -1,0 +1,8 @@
+// 1.21.1	2026-10-04T02:25:04.2761318	Tags for minecraft:damage_type mod id vanilla
+bdadb0a307cbcfa0be7595c009e98568e56349e7 data/botania/tags/damage_type/ring_of_odin_immune.json
+838641ecfb769049c84c0463c72d206143fcee08 data/minecraft/tags/damage_type/bypasses_armor.json
+077a5e8221cb341a608d66b087f6f911ed1be424 data/minecraft/tags/damage_type/bypasses_effects.json
+077a5e8221cb341a608d66b087f6f911ed1be424 data/minecraft/tags/damage_type/bypasses_enchantments.json
+077a5e8221cb341a608d66b087f6f911ed1be424 data/minecraft/tags/damage_type/bypasses_resistance.json
+b1f4c4007df29a12419f68ad3ca9bd5e7d27423c data/minecraft/tags/damage_type/is_explosion.json
+077a5e8221cb341a608d66b087f6f911ed1be424 data/minecraft/tags/damage_type/no_impact.json

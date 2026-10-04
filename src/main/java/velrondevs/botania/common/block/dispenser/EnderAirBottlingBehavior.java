@@ -1,0 +1,61 @@
+package velrondevs.botania.common.block.dispenser;
+
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.dispenser.BlockSource;
+import net.minecraft.core.dispenser.DispenseItemBehavior;
+import net.minecraft.core.dispenser.OptionalDispenseItemBehavior;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.DispenserBlock;
+import net.minecraft.world.phys.AABB;
+
+import org.jetbrains.annotations.NotNull;
+
+import velrondevs.botania.common.item.material.EnderAirItem;
+import velrondevs.botania.registry.BotaniaItems;
+
+public class EnderAirBottlingBehavior extends OptionalDispenseItemBehavior {
+	private final DispenseItemBehavior parent;
+
+	public EnderAirBottlingBehavior(DispenseItemBehavior parent) {
+		this.parent = parent;
+	}
+
+	@Override
+	protected void playSound(BlockSource source) {
+		if (this.isSuccess()) {
+			super.playSound(source);
+		}
+	}
+
+	@Override
+	protected void playAnimation(BlockSource source, Direction facingIn) {
+		if (this.isSuccess()) {
+			super.playAnimation(source, facingIn);
+		}
+	}
+
+	private static boolean pickupInEnd(Level world, BlockPos facingPos) {
+		return world.dimension() == Level.END
+				&& world.isEmptyBlock(facingPos) && world.isEmptyBlock(facingPos.above())
+				&& EnderAirItem.isClearFromDragonBreath(world, new AABB(facingPos).inflate(2.0D));
+	}
+
+	@NotNull
+	@Override
+	protected ItemStack execute(BlockSource source, @NotNull ItemStack stack) {
+		Level world = source.level();
+		BlockPos blockpos = source.pos().relative(source.state().getValue(DispenserBlock.FACING));
+		if (pickupInEnd(world, blockpos) || EnderAirItem.pickupFromEntity(world, new AABB(blockpos))) {
+			this.setSuccess(true);
+			return fillBottle(source, stack, new ItemStack(BotaniaItems.enderAirBottle));
+		}
+		this.setSuccess(false);
+		return parent.dispense(source, stack);
+	}
+
+	private ItemStack fillBottle(BlockSource source, ItemStack input, ItemStack output) {
+		return consumeWithRemainder(source, input, output);
+	}
+}

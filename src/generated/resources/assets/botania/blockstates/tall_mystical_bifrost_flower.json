@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "half=lower": {
+      "model": "botania:block/tall_mystical_bifrost_flower_bottom"
+    },
+    "half=upper": {
+      "model": "botania:block/tall_mystical_bifrost_flower_top"
+    }
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "botanypots"
+    }
+  ],
+  "type": "botania:mana_soil",
+  "block": "botania:infused_grass",
+  "growth_modifier": 0.15,
+  "mana_growth_bonus": 1.0,
+  "mana_per_tick": 2,
+  "pool_radius": 3
+}

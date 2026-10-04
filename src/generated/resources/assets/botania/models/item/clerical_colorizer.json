@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "botania:item/botania_extras/clerical_colorizer",
+    "layer1": "botania:item/botania_extras/clerical_colorizer_overlay"
+  }
+}

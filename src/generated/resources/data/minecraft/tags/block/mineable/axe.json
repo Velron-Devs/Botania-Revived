@@ -1,0 +1,512 @@
+{
+  "values": [
+    "botania:abstruse_platform",
+    "botania:alfheim_portal",
+    "botania:avatar",
+    "botania:bellows",
+    "botania:cacophonium_block",
+    "botania:crafty_crate",
+    "botania:dreamwood",
+    "botania:dreamwood_fence",
+    "botania:dreamwood_fence_gate",
+    "botania:dreamwood_log",
+    "botania:dreamwood_planks",
+    "botania:dreamwood_planks_slab",
+    "botania:dreamwood_planks_stairs",
+    "botania:dreamwood_slab",
+    "botania:dreamwood_stairs",
+    "botania:dreamwood_wall",
+    "botania:drum_canopy",
+    "botania:drum_gathering",
+    "botania:drum_wild",
+    "botania:elven_spreader",
+    "botania:fel_pumpkin",
+    "botania:framed_dreamwood",
+    "botania:framed_livingwood",
+    "botania:gaia_spreader",
+    "botania:glimmering_dreamwood",
+    "botania:glimmering_dreamwood_log",
+    "botania:glimmering_livingwood",
+    "botania:glimmering_livingwood_log",
+    "botania:glimmering_stripped_dreamwood",
+    "botania:glimmering_stripped_dreamwood_log",
+    "botania:glimmering_stripped_livingwood",
+    "botania:glimmering_stripped_livingwood_log",
+    "botania:incense_plate",
+    "botania:infrangible_platform",
+    "botania:livingwood",
+    "botania:livingwood_fence",
+    "botania:livingwood_fence_gate",
+    "botania:livingwood_log",
+    "botania:livingwood_planks",
+    "botania:livingwood_planks_slab",
+    "botania:livingwood_planks_stairs",
+    "botania:livingwood_slab",
+    "botania:livingwood_stairs",
+    "botania:livingwood_wall",
+    "botania:mana_bomb",
+    "botania:mana_spreader",
+    "botania:mossy_dreamwood_planks",
+    "botania:mossy_livingwood_planks",
+    "botania:open_crate",
+    "botania:pattern_framed_dreamwood",
+    "botania:pattern_framed_livingwood",
+    "botania:redstone_spreader",
+    "botania:root",
+    "botania:shimmerwood_planks",
+    "botania:shimmerwood_planks_slab",
+    "botania:shimmerwood_planks_stairs",
+    "botania:spectral_platform",
+    "botania:stripped_dreamwood",
+    "botania:stripped_dreamwood_log",
+    "botania:stripped_dreamwood_slab",
+    "botania:stripped_dreamwood_stairs",
+    "botania:stripped_dreamwood_wall",
+    "botania:stripped_livingwood",
+    "botania:stripped_livingwood_log",
+    "botania:stripped_livingwood_slab",
+    "botania:stripped_livingwood_stairs",
+    "botania:stripped_livingwood_wall",
+    "botania:turntable",
+    {
+      "id": "botania:white_iridescent_log",
+      "required": false
+    },
+    {
+      "id": "botania:white_iridescent_planks",
+      "required": false
+    },
+    {
+      "id": "botania:white_iridescent_slab",
+      "required": false
+    },
+    {
+      "id": "botania:white_iridescent_stairs",
+      "required": false
+    },
+    {
+      "id": "botania:orange_iridescent_log",
+      "required": false
+    },
+    {
+      "id": "botania:orange_iridescent_planks",
+      "required": false
+    },
+    {
+      "id": "botania:orange_iridescent_slab",
+      "required": false
+    },
+    {
+      "id": "botania:orange_iridescent_stairs",
+      "required": false
+    },
+    {
+      "id": "botania:magenta_iridescent_log",
+      "required": false
+    },
+    {
+      "id": "botania:magenta_iridescent_planks",
+      "required": false
+    },
+    {
+      "id": "botania:magenta_iridescent_slab",
+      "required": false
+    },
+    {
+      "id": "botania:magenta_iridescent_stairs",
+      "required": false
+    },
+    {
+      "id": "botania:light_blue_iridescent_log",
+      "required": false
+    },
+    {
+      "id": "botania:light_blue_iridescent_planks",
+      "required": false
+    },
+    {
+      "id": "botania:light_blue_iridescent_slab",
+      "required": false
+    },
+    {
+      "id": "botania:light_blue_iridescent_stairs",
+      "required": false
+    },
+    {
+      "id": "botania:yellow_iridescent_log",
+      "required": false
+    },
+    {
+      "id": "botania:yellow_iridescent_planks",
+      "required": false
+    },
+    {
+      "id": "botania:yellow_iridescent_slab",
+      "required": false
+    },
+    {
+      "id": "botania:yellow_iridescent_stairs",
+      "required": false
+    },
+    {
+      "id": "botania:lime_iridescent_log",
+      "required": false
+    },
+    {
+      "id": "botania:lime_iridescent_planks",
+      "required": false
+    },
+    {
+      "id": "botania:lime_iridescent_slab",
+      "required": false
+    },
+    {
+      "id": "botania:lime_iridescent_stairs",
+      "required": false
+    },
+    {
+      "id": "botania:pink_iridescent_log",
+      "required": false
+    },
+    {
+      "id": "botania:pink_iridescent_planks",
+      "required": false
+    },
+    {
+      "id": "botania:pink_iridescent_slab",
+      "required": false
+    },
+    {
+      "id": "botania:pink_iridescent_stairs",
+      "required": false
+    },
+    {
+      "id": "botania:gray_iridescent_log",
+      "required": false
+    },
+    {
+      "id": "botania:gray_iridescent_planks",
+      "required": false
+    },
+    {
+      "id": "botania:gray_iridescent_slab",
+      "required": false
+    },
+    {
+      "id": "botania:gray_iridescent_stairs",
+      "required": false
+    },
+    {
+      "id": "botania:light_gray_iridescent_log",
+      "required": false
+    },
+    {
+      "id": "botania:light_gray_iridescent_planks",
+      "required": false
+    },
+    {
+      "id": "botania:light_gray_iridescent_slab",
+      "required": false
+    },
+    {
+      "id": "botania:light_gray_iridescent_stairs",
+      "required": false
+    },
+    {
+      "id": "botania:cyan_iridescent_log",
+      "required": false
+    },
+    {
+      "id": "botania:cyan_iridescent_planks",
+      "required": false
+    },
+    {
+      "id": "botania:cyan_iridescent_slab",
+      "required": false
+    },
+    {
+      "id": "botania:cyan_iridescent_stairs",
+      "required": false
+    },
+    {
+      "id": "botania:purple_iridescent_log",
+      "required": false
+    },
+    {
+      "id": "botania:purple_iridescent_planks",
+      "required": false
+    },
+    {
+      "id": "botania:purple_iridescent_slab",
+      "required": false
+    },
+    {
+      "id": "botania:purple_iridescent_stairs",
+      "required": false
+    },
+    {
+      "id": "botania:blue_iridescent_log",
+      "required": false
+    },
+    {
+      "id": "botania:blue_iridescent_planks",
+      "required": false
+    },
+    {
+      "id": "botania:blue_iridescent_slab",
+      "required": false
+    },
+    {
+      "id": "botania:blue_iridescent_stairs",
+      "required": false
+    },
+    {
+      "id": "botania:brown_iridescent_log",
+      "required": false
+    },
+    {
+      "id": "botania:brown_iridescent_planks",
+      "required": false
+    },
+    {
+      "id": "botania:brown_iridescent_slab",
+      "required": false
+    },
+    {
+      "id": "botania:brown_iridescent_stairs",
+      "required": false
+    },
+    {
+      "id": "botania:green_iridescent_log",
+      "required": false
+    },
+    {
+      "id": "botania:green_iridescent_planks",
+      "required": false
+    },
+    {
+      "id": "botania:green_iridescent_slab",
+      "required": false
+    },
+    {
+      "id": "botania:green_iridescent_stairs",
+      "required": false
+    },
+    {
+      "id": "botania:red_iridescent_log",
+      "required": false
+    },
+    {
+      "id": "botania:red_iridescent_planks",
+      "required": false
+    },
+    {
+      "id": "botania:red_iridescent_slab",
+      "required": false
+    },
+    {
+      "id": "botania:red_iridescent_stairs",
+      "required": false
+    },
+    {
+      "id": "botania:black_iridescent_log",
+      "required": false
+    },
+    {
+      "id": "botania:black_iridescent_planks",
+      "required": false
+    },
+    {
+      "id": "botania:black_iridescent_slab",
+      "required": false
+    },
+    {
+      "id": "botania:black_iridescent_stairs",
+      "required": false
+    },
+    {
+      "id": "botania:bifrost_log",
+      "required": false
+    },
+    {
+      "id": "botania:bifrost_planks",
+      "required": false
+    },
+    {
+      "id": "botania:bifrost_slab",
+      "required": false
+    },
+    {
+      "id": "botania:bifrost_stairs",
+      "required": false
+    },
+    {
+      "id": "botania:dry_log",
+      "required": false
+    },
+    {
+      "id": "botania:dry_planks",
+      "required": false
+    },
+    {
+      "id": "botania:dry_slab",
+      "required": false
+    },
+    {
+      "id": "botania:dry_stairs",
+      "required": false
+    },
+    {
+      "id": "botania:golden_log",
+      "required": false
+    },
+    {
+      "id": "botania:golden_planks",
+      "required": false
+    },
+    {
+      "id": "botania:golden_slab",
+      "required": false
+    },
+    {
+      "id": "botania:golden_stairs",
+      "required": false
+    },
+    {
+      "id": "botania:vivid_log",
+      "required": false
+    },
+    {
+      "id": "botania:vivid_planks",
+      "required": false
+    },
+    {
+      "id": "botania:vivid_slab",
+      "required": false
+    },
+    {
+      "id": "botania:vivid_stairs",
+      "required": false
+    },
+    {
+      "id": "botania:scorched_log",
+      "required": false
+    },
+    {
+      "id": "botania:scorched_planks",
+      "required": false
+    },
+    {
+      "id": "botania:scorched_slab",
+      "required": false
+    },
+    {
+      "id": "botania:scorched_stairs",
+      "required": false
+    },
+    {
+      "id": "botania:infused_log",
+      "required": false
+    },
+    {
+      "id": "botania:infused_planks",
+      "required": false
+    },
+    {
+      "id": "botania:infused_slab",
+      "required": false
+    },
+    {
+      "id": "botania:infused_stairs",
+      "required": false
+    },
+    {
+      "id": "botania:mutated_log",
+      "required": false
+    },
+    {
+      "id": "botania:mutated_planks",
+      "required": false
+    },
+    {
+      "id": "botania:mutated_slab",
+      "required": false
+    },
+    {
+      "id": "botania:mutated_stairs",
+      "required": false
+    },
+    {
+      "id": "botania:thunderous_log",
+      "required": false
+    },
+    {
+      "id": "botania:thunderous_planks",
+      "required": false
+    },
+    {
+      "id": "botania:thunderous_slab",
+      "required": false
+    },
+    {
+      "id": "botania:thunderous_stairs",
+      "required": false
+    },
+    {
+      "id": "botania:infernal_log",
+      "required": false
+    },
+    {
+      "id": "botania:infernal_planks",
+      "required": false
+    },
+    {
+      "id": "botania:infernal_slab",
+      "required": false
+    },
+    {
+      "id": "botania:infernal_stairs",
+      "required": false
+    },
+    {
+      "id": "botania:sealing_log",
+      "required": false
+    },
+    {
+      "id": "botania:sealing_planks",
+      "required": false
+    },
+    {
+      "id": "botania:sealing_slab",
+      "required": false
+    },
+    {
+      "id": "botania:sealing_stairs",
+      "required": false
+    },
+    {
+      "id": "botania:manasteel_item_platform",
+      "required": false
+    },
+    {
+      "id": "botania:terrasteel_item_platform",
+      "required": false
+    },
+    {
+      "id": "botania:elementium_item_platform",
+      "required": false
+    },
+    {
+      "id": "botania:dendric_suffuser",
+      "required": false
+    },
+    {
+      "id": "botania:sonic_amplifier",
+      "required": false
+    },
+    {
+      "id": "botania:livingwood_funnel",
+      "required": false
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "name": "botania.category.botania_extras",
+  "description": "botania.category.botania_extras.description",
+  "icon": "botania:bifrost_dirt",
+  "flag": "botania:botania_extras",
+  "sortnum": 10
+}

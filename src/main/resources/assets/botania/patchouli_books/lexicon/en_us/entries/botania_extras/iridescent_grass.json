@@ -1,0 +1,77 @@
+{
+  "name": "botania.entry.iridescentGrass",
+  "category": "botania:botania_extras",
+  "icon": "botania:bifrost_seeds",
+  "flag": "botania:botania_extras",
+  "sortnum": 1,
+  "pages": [
+    {
+      "type": "text",
+      "text": "botania.page.iridescentGrass0"
+    },
+    {
+      "type": "botania:mana_infusion",
+      "text": "botania.page.iridescentGrass1",
+      "recipes": [
+        "botania:botania_extras/mana_infusion/white_iridescent_seeds",
+        "botania:botania_extras/mana_infusion/orange_iridescent_seeds",
+        "botania:botania_extras/mana_infusion/magenta_iridescent_seeds",
+        "botania:botania_extras/mana_infusion/light_blue_iridescent_seeds",
+        "botania:botania_extras/mana_infusion/yellow_iridescent_seeds",
+        "botania:botania_extras/mana_infusion/lime_iridescent_seeds",
+        "botania:botania_extras/mana_infusion/pink_iridescent_seeds",
+        "botania:botania_extras/mana_infusion/gray_iridescent_seeds",
+        "botania:botania_extras/mana_infusion/light_gray_iridescent_seeds",
+        "botania:botania_extras/mana_infusion/cyan_iridescent_seeds",
+        "botania:botania_extras/mana_infusion/purple_iridescent_seeds",
+        "botania:botania_extras/mana_infusion/blue_iridescent_seeds",
+        "botania:botania_extras/mana_infusion/brown_iridescent_seeds",
+        "botania:botania_extras/mana_infusion/green_iridescent_seeds",
+        "botania:botania_extras/mana_infusion/red_iridescent_seeds",
+        "botania:botania_extras/mana_infusion/black_iridescent_seeds",
+        "botania:botania_extras/mana_infusion/bifrost_seeds"
+      ]
+    },
+    {
+      "type": "crafting",
+      "text": "botania.page.iridescentGrass2",
+      "recipe": "botania:botania_extras/redstone_root"
+    }
+  ],
+  "extra_recipe_mappings": {
+    "botania:white_iridescent_grass": 0,
+    "botania:orange_iridescent_grass": 0,
+    "botania:magenta_iridescent_grass": 0,
+    "botania:light_blue_iridescent_grass": 0,
+    "botania:yellow_iridescent_grass": 0,
+    "botania:lime_iridescent_grass": 0,
+    "botania:pink_iridescent_grass": 0,
+    "botania:gray_iridescent_grass": 0,
+    "botania:light_gray_iridescent_grass": 0,
+    "botania:cyan_iridescent_grass": 0,
+    "botania:purple_iridescent_grass": 0,
+    "botania:blue_iridescent_grass": 0,
+    "botania:brown_iridescent_grass": 0,
+    "botania:green_iridescent_grass": 0,
+    "botania:red_iridescent_grass": 0,
+    "botania:black_iridescent_grass": 0,
+    "botania:bifrost_grass": 0,
+    "botania:white_iridescent_seeds": 1,
+    "botania:orange_iridescent_seeds": 1,
+    "botania:magenta_iridescent_seeds": 1,
+    "botania:light_blue_iridescent_seeds": 1,
+    "botania:yellow_iridescent_seeds": 1,
+    "botania:lime_iridescent_seeds": 1,
+    "botania:pink_iridescent_seeds": 1,
+    "botania:gray_iridescent_seeds": 1,
+    "botania:light_gray_iridescent_seeds": 1,
+    "botania:cyan_iridescent_seeds": 1,
+    "botania:purple_iridescent_seeds": 1,
+    "botania:blue_iridescent_seeds": 1,
+    "botania:brown_iridescent_seeds": 1,
+    "botania:green_iridescent_seeds": 1,
+    "botania:red_iridescent_seeds": 1,
+    "botania:black_iridescent_seeds": 1,
+    "botania:bifrost_seeds": 1
+  }
+}

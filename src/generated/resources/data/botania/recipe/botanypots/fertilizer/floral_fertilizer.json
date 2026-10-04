@@ -1,0 +1,21 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "botanypots"
+    }
+  ],
+  "type": "botanypots:fertilizer",
+  "growth": {
+    "type": "botanypots:ranged",
+    "max": 800,
+    "min": 500
+  },
+  "held_item": {
+    "item": "botania:fertilizer"
+  },
+  "sound_effect": {
+    "category": "BLOCKS",
+    "id": "minecraft:item.bone_meal.use"
+  }
+}

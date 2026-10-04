@@ -1,0 +1,9 @@
+{
+  "values": [
+    {
+      "id": "botania:toolbelt",
+      "required": false
+    },
+    "botania:bauble_box"
+  ]
+}

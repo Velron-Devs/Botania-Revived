@@ -1,0 +1,20 @@
+{
+  "name": "botania.entry.arsNouveau",
+  "category": "botania:misc",
+  "icon": "botania:mana_pool",
+  "flag": "mod:ars_nouveau",
+  "pages": [
+    {
+      "type": "text",
+      "text": "botania.page.arsNouveau0"
+    },
+    {
+      "type": "text",
+      "text": "botania.page.arsNouveau1"
+    },
+    {
+      "type": "text",
+      "text": "botania.page.arsNouveau2"
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "botania:module_enabled",
+      "module": "botania_extras"
+    }
+  ],
+  "type": "botania:tree_suffusion",
+  "ingredients": [
+    {
+      "item": "minecraft:nether_brick"
+    },
+    {
+      "item": "minecraft:nether_brick"
+    },
+    {
+      "item": "minecraft:nether_brick"
+    },
+    {
+      "item": "botania:rune_fire"
+    },
+    {
+      "item": "botania:red_iridescent_leaves"
+    },
+    {
+      "item": "botania:red_iridescent_leaves"
+    },
+    {
+      "item": "botania:red_iridescent_leaves"
+    },
+    {
+      "item": "botania:blaze_block"
+    }
+  ],
+  "mana": 10000,
+  "output": {
+    "name": "botania:infernal_oak_sapling",
+    "properties": {
+      "stage": "0"
+    }
+  },
+  "throttle": 70
+}

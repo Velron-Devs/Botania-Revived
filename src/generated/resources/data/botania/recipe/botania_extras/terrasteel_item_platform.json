@@ -1,0 +1,26 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "botania:module_enabled",
+      "module": "botania_extras"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "N": {
+      "tag": "botania:terrasteel_nuggets"
+    },
+    "W": {
+      "item": "botania:livingwood_slab"
+    }
+  },
+  "pattern": [
+    "N",
+    "W"
+  ],
+  "result": {
+    "count": 1,
+    "id": "botania:terrasteel_item_platform"
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:and",
+      "values": [
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "avaritia"
+        },
+        {
+          "type": "botania:module_enabled",
+          "module": "cre"
+        }
+      ]
+    }
+  ],
+  "type": "avaritia:shaped_table",
+  "key": {
+    "A": {
+      "item": "botania:abstruse_platform"
+    },
+    "D": {
+      "item": "botania:dragonstone_block"
+    },
+    "T": {
+      "item": "botania:terrasteel_block"
+    }
+  },
+  "pattern": [
+    "TAT",
+    "ADA",
+    "TAT"
+  ],
+  "result": {
+    "count": 4,
+    "id": "botania:infrangible_platform"
+  },
+  "tier": 4
+}

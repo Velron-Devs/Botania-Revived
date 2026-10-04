@@ -1,0 +1,243 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "botania:module_enabled",
+      "module": "botania_extras"
+    }
+  ],
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "block": "botania:dendric_suffuser",
+              "condition": "minecraft:block_state_property",
+              "properties": {
+                "color": "0"
+              }
+            }
+          ],
+          "name": "botania:white_iridescent_planks"
+        },
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "block": "botania:dendric_suffuser",
+              "condition": "minecraft:block_state_property",
+              "properties": {
+                "color": "1"
+              }
+            }
+          ],
+          "name": "botania:orange_iridescent_planks"
+        },
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "block": "botania:dendric_suffuser",
+              "condition": "minecraft:block_state_property",
+              "properties": {
+                "color": "2"
+              }
+            }
+          ],
+          "name": "botania:magenta_iridescent_planks"
+        },
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "block": "botania:dendric_suffuser",
+              "condition": "minecraft:block_state_property",
+              "properties": {
+                "color": "3"
+              }
+            }
+          ],
+          "name": "botania:light_blue_iridescent_planks"
+        },
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "block": "botania:dendric_suffuser",
+              "condition": "minecraft:block_state_property",
+              "properties": {
+                "color": "4"
+              }
+            }
+          ],
+          "name": "botania:yellow_iridescent_planks"
+        },
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "block": "botania:dendric_suffuser",
+              "condition": "minecraft:block_state_property",
+              "properties": {
+                "color": "5"
+              }
+            }
+          ],
+          "name": "botania:lime_iridescent_planks"
+        },
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "block": "botania:dendric_suffuser",
+              "condition": "minecraft:block_state_property",
+              "properties": {
+                "color": "6"
+              }
+            }
+          ],
+          "name": "botania:pink_iridescent_planks"
+        },
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "block": "botania:dendric_suffuser",
+              "condition": "minecraft:block_state_property",
+              "properties": {
+                "color": "7"
+              }
+            }
+          ],
+          "name": "botania:gray_iridescent_planks"
+        },
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "block": "botania:dendric_suffuser",
+              "condition": "minecraft:block_state_property",
+              "properties": {
+                "color": "8"
+              }
+            }
+          ],
+          "name": "botania:light_gray_iridescent_planks"
+        },
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "block": "botania:dendric_suffuser",
+              "condition": "minecraft:block_state_property",
+              "properties": {
+                "color": "9"
+              }
+            }
+          ],
+          "name": "botania:cyan_iridescent_planks"
+        },
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "block": "botania:dendric_suffuser",
+              "condition": "minecraft:block_state_property",
+              "properties": {
+                "color": "10"
+              }
+            }
+          ],
+          "name": "botania:purple_iridescent_planks"
+        },
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "block": "botania:dendric_suffuser",
+              "condition": "minecraft:block_state_property",
+              "properties": {
+                "color": "11"
+              }
+            }
+          ],
+          "name": "botania:blue_iridescent_planks"
+        },
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "block": "botania:dendric_suffuser",
+              "condition": "minecraft:block_state_property",
+              "properties": {
+                "color": "12"
+              }
+            }
+          ],
+          "name": "botania:brown_iridescent_planks"
+        },
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "block": "botania:dendric_suffuser",
+              "condition": "minecraft:block_state_property",
+              "properties": {
+                "color": "13"
+              }
+            }
+          ],
+          "name": "botania:green_iridescent_planks"
+        },
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "block": "botania:dendric_suffuser",
+              "condition": "minecraft:block_state_property",
+              "properties": {
+                "color": "14"
+              }
+            }
+          ],
+          "name": "botania:red_iridescent_planks"
+        },
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "block": "botania:dendric_suffuser",
+              "condition": "minecraft:block_state_property",
+              "properties": {
+                "color": "15"
+              }
+            }
+          ],
+          "name": "botania:black_iridescent_planks"
+        },
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "block": "botania:dendric_suffuser",
+              "condition": "minecraft:block_state_property",
+              "properties": {
+                "color": "16"
+              }
+            }
+          ],
+          "name": "botania:bifrost_planks"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ]
+}

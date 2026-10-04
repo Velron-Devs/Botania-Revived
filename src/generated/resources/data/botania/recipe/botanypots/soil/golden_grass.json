@@ -1,0 +1,11 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "botanypots"
+    }
+  ],
+  "type": "botanypots:block_derived_soil",
+  "block": "botania:golden_grass",
+  "growth_modifier": 0.05
+}

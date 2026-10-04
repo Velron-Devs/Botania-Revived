@@ -1,0 +1,14 @@
+{
+  "type": "botania:elven_trade",
+  "ingredients": [
+    {
+      "item": "botania:livingwood_log"
+    }
+  ],
+  "output": [
+    {
+      "count": 1,
+      "id": "botania:dreamwood_log"
+    }
+  ]
+}

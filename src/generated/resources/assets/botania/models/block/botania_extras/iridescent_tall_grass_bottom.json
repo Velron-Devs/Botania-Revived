@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/tinted_cross",
+  "textures": {
+    "cross": "botania:block/botania_extras/iridescent_tall_grass_bottom"
+  }
+}

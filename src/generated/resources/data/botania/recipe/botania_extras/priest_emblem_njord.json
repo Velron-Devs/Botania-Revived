@@ -1,0 +1,36 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "botania:module_enabled",
+      "module": "botania_extras"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "botania:holy_symbol"
+    },
+    "G": {
+      "item": "botania:life_essence"
+    },
+    "N": {
+      "tag": "botania:manasteel_nuggets"
+    },
+    "P": {
+      "item": "botania:rune_pride"
+    },
+    "R": {
+      "item": "botania:rune_air"
+    }
+  },
+  "pattern": [
+    "RGR",
+    "NAN",
+    " P "
+  ],
+  "result": {
+    "count": 1,
+    "id": "botania:priest_emblem_njord"
+  }
+}

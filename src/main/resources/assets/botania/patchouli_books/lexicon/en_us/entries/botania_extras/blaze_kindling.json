@@ -1,0 +1,18 @@
+{
+  "name": "botania.entry.blazeKindling",
+  "category": "botania:botania_extras",
+  "icon": "botania:blaze_kindling",
+  "flag": "botania:botania_extras",
+  "sortnum": 5,
+  "pages": [
+    {
+      "type": "text",
+      "text": "botania.page.blazeKindling0"
+    },
+    {
+      "type": "crafting",
+      "text": "botania.page.blazeKindling1",
+      "recipe": "botania:botania_extras/blaze_kindling"
+    }
+  ]
+}

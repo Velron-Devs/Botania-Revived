@@ -1,0 +1,16 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "botania:module_enabled",
+      "module": "botania_extras"
+    }
+  ],
+  "type": "botania:pure_daisy",
+  "input": {
+    "type": "tag",
+    "tag": "botania:iridescent_dirt"
+  },
+  "output": {
+    "name": "minecraft:dirt"
+  }
+}

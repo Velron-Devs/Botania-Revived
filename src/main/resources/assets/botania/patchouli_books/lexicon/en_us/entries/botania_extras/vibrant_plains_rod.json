@@ -1,0 +1,44 @@
+{
+  "name": "botania.entry.vibrantPlainsRod",
+  "category": "botania:botania_extras",
+  "icon": "botania:vibrant_plains_rod",
+  "flag": "botania:botania_extras",
+  "sortnum": 9,
+  "pages": [
+    {
+      "type": "text",
+      "text": "botania.page.vibrantPlainsRod0"
+    },
+    {
+      "type": "botania:crafting_multi",
+      "heading": "botania.entry.vibrantPlainsRod",
+      "text": "botania.page.vibrantPlainsRod1",
+      "recipes": [
+        "botania:botania_extras/vibrant_plains_rod_white",
+        "botania:botania_extras/vibrant_plains_rod_orange",
+        "botania:botania_extras/vibrant_plains_rod_magenta",
+        "botania:botania_extras/vibrant_plains_rod_light_blue",
+        "botania:botania_extras/vibrant_plains_rod_yellow",
+        "botania:botania_extras/vibrant_plains_rod_lime",
+        "botania:botania_extras/vibrant_plains_rod_pink",
+        "botania:botania_extras/vibrant_plains_rod_gray",
+        "botania:botania_extras/vibrant_plains_rod_light_gray",
+        "botania:botania_extras/vibrant_plains_rod_cyan",
+        "botania:botania_extras/vibrant_plains_rod_purple",
+        "botania:botania_extras/vibrant_plains_rod_blue",
+        "botania:botania_extras/vibrant_plains_rod_brown",
+        "botania:botania_extras/vibrant_plains_rod_green",
+        "botania:botania_extras/vibrant_plains_rod_red",
+        "botania:botania_extras/vibrant_plains_rod_black",
+        "botania:botania_extras/vibrant_plains_rod_bifrost"
+      ]
+    },
+    {
+      "type": "text",
+      "text": "botania.page.vibrantPlainsRod2"
+    }
+  ],
+  "extra_recipe_mappings": {
+    "botania:vibrant_plains_rod": 1
+  }
+}

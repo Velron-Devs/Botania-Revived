@@ -1,0 +1,40 @@
+{
+  "name": "botania.entry.frozenStar",
+  "category": "botania:botania_extras",
+  "icon": "botania:frozen_star",
+  "flag": "botania:botania_extras",
+  "sortnum": 4,
+  "pages": [
+    {
+      "type": "text",
+      "text": "botania.page.frozenStar0"
+    },
+    {
+      "type": "botania:crafting_multi",
+      "heading": "botania.entry.frozenStar",
+      "text": "botania.page.frozenStar1",
+      "recipes": [
+        "botania:botania_extras/frozen_star_white",
+        "botania:botania_extras/frozen_star_orange",
+        "botania:botania_extras/frozen_star_magenta",
+        "botania:botania_extras/frozen_star_light_blue",
+        "botania:botania_extras/frozen_star_yellow",
+        "botania:botania_extras/frozen_star_lime",
+        "botania:botania_extras/frozen_star_pink",
+        "botania:botania_extras/frozen_star_gray",
+        "botania:botania_extras/frozen_star_light_gray",
+        "botania:botania_extras/frozen_star_cyan",
+        "botania:botania_extras/frozen_star_purple",
+        "botania:botania_extras/frozen_star_blue",
+        "botania:botania_extras/frozen_star_brown",
+        "botania:botania_extras/frozen_star_green",
+        "botania:botania_extras/frozen_star_red",
+        "botania:botania_extras/frozen_star_black",
+        "botania:botania_extras/frozen_star_bifrost"
+      ]
+    }
+  ],
+  "extra_recipe_mappings": {
+    "botania:frozen_star": 1
+  }
+}

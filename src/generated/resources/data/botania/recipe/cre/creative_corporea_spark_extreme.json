@@ -1,0 +1,47 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:and",
+      "values": [
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "avaritia"
+        },
+        {
+          "type": "botania:module_enabled",
+          "module": "cre"
+        }
+      ]
+    }
+  ],
+  "type": "avaritia:shaped_table",
+  "key": {
+    "E": {
+      "item": "botania:elementium_block"
+    },
+    "L": {
+      "item": "botania:life_essence"
+    },
+    "P": {
+      "item": "botania:pixie_dust"
+    },
+    "R": {
+      "item": "botania:rune_mana"
+    },
+    "S": {
+      "item": "botania:corporea_spark_master"
+    }
+  },
+  "pattern": [
+    "E R E",
+    " L L ",
+    "P S P",
+    " L L ",
+    "E P E"
+  ],
+  "result": {
+    "count": 1,
+    "id": "botania:corporea_spark_creative"
+  },
+  "tier": 4
+}

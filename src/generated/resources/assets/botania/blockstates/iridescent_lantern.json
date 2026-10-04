@@ -1,0 +1,52 @@
+{
+  "variants": {
+    "power=0": {
+      "model": "botania:block/iridescent_lantern"
+    },
+    "power=1": {
+      "model": "botania:block/iridescent_lantern"
+    },
+    "power=10": {
+      "model": "botania:block/iridescent_lantern"
+    },
+    "power=11": {
+      "model": "botania:block/iridescent_lantern"
+    },
+    "power=12": {
+      "model": "botania:block/iridescent_lantern"
+    },
+    "power=13": {
+      "model": "botania:block/iridescent_lantern"
+    },
+    "power=14": {
+      "model": "botania:block/iridescent_lantern"
+    },
+    "power=15": {
+      "model": "botania:block/iridescent_lantern_bifrost"
+    },
+    "power=2": {
+      "model": "botania:block/iridescent_lantern"
+    },
+    "power=3": {
+      "model": "botania:block/iridescent_lantern"
+    },
+    "power=4": {
+      "model": "botania:block/iridescent_lantern"
+    },
+    "power=5": {
+      "model": "botania:block/iridescent_lantern"
+    },
+    "power=6": {
+      "model": "botania:block/iridescent_lantern"
+    },
+    "power=7": {
+      "model": "botania:block/iridescent_lantern"
+    },
+    "power=8": {
+      "model": "botania:block/iridescent_lantern"
+    },
+    "power=9": {
+      "model": "botania:block/iridescent_lantern"
+    }
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "botanypots"
+    }
+  ],
+  "type": "botanypots:pot_interaction",
+  "consume_held": true,
+  "held_item": {
+    "item": "botania:overgrowth_seed"
+  },
+  "new_soil": {
+    "id": "botania:enchanted_soil"
+  },
+  "soil_item": {
+    "item": "minecraft:grass_block"
+  },
+  "sound_effect": {
+    "category": "BLOCKS",
+    "id": "minecraft:item.bone_meal.use"
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "name": "botania.entry.shimmerquartz",
+  "category": "botania:botania_extras",
+  "icon": "botania:quartz_shimmer",
+  "flag": "botania:botania_extras",
+  "sortnum": 6,
+  "pages": [
+    {
+      "type": "text",
+      "text": "botania.page.shimmerquartz0"
+    },
+    {
+      "type": "crafting",
+      "text": "botania.page.shimmerquartz1",
+      "recipe": "botania:botania_extras/quartz_shimmer",
+      "recipe2": "botania:botania_extras/shimmer_quartz"
+    },
+    {
+      "type": "crafting",
+      "recipe": "botania:botania_extras/shimmer_quartz_pillar",
+      "recipe2": "botania:botania_extras/chiseled_shimmer_quartz"
+    },
+    {
+      "type": "crafting",
+      "text": "botania.page.shimmerquartz2",
+      "recipe": "botania:botania_extras/shimmer_quartz_slab",
+      "recipe2": "botania:botania_extras/shimmer_quartz_stairs"
+    }
+  ],
+  "extra_recipe_mappings": {
+    "botania:quartz_shimmer": 1,
+    "botania:shimmer_quartz": 1,
+    "botania:chiseled_shimmer_quartz": 2,
+    "botania:shimmer_quartz_pillar": 2,
+    "botania:shimmer_quartz_slab": 3,
+    "botania:shimmer_quartz_stairs": 3
+  }
+}

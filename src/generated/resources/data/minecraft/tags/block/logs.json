@@ -1,0 +1,108 @@
+{
+  "values": [
+    {
+      "id": "botania:white_iridescent_log",
+      "required": false
+    },
+    {
+      "id": "botania:orange_iridescent_log",
+      "required": false
+    },
+    {
+      "id": "botania:magenta_iridescent_log",
+      "required": false
+    },
+    {
+      "id": "botania:light_blue_iridescent_log",
+      "required": false
+    },
+    {
+      "id": "botania:yellow_iridescent_log",
+      "required": false
+    },
+    {
+      "id": "botania:lime_iridescent_log",
+      "required": false
+    },
+    {
+      "id": "botania:pink_iridescent_log",
+      "required": false
+    },
+    {
+      "id": "botania:gray_iridescent_log",
+      "required": false
+    },
+    {
+      "id": "botania:light_gray_iridescent_log",
+      "required": false
+    },
+    {
+      "id": "botania:cyan_iridescent_log",
+      "required": false
+    },
+    {
+      "id": "botania:purple_iridescent_log",
+      "required": false
+    },
+    {
+      "id": "botania:blue_iridescent_log",
+      "required": false
+    },
+    {
+      "id": "botania:brown_iridescent_log",
+      "required": false
+    },
+    {
+      "id": "botania:green_iridescent_log",
+      "required": false
+    },
+    {
+      "id": "botania:red_iridescent_log",
+      "required": false
+    },
+    {
+      "id": "botania:black_iridescent_log",
+      "required": false
+    },
+    {
+      "id": "botania:bifrost_log",
+      "required": false
+    },
+    {
+      "id": "botania:dry_log",
+      "required": false
+    },
+    {
+      "id": "botania:golden_log",
+      "required": false
+    },
+    {
+      "id": "botania:vivid_log",
+      "required": false
+    },
+    {
+      "id": "botania:scorched_log",
+      "required": false
+    },
+    {
+      "id": "botania:infused_log",
+      "required": false
+    },
+    {
+      "id": "botania:mutated_log",
+      "required": false
+    },
+    {
+      "id": "botania:thunderous_log",
+      "required": false
+    },
+    {
+      "id": "botania:infernal_log",
+      "required": false
+    },
+    {
+      "id": "botania:sealing_log",
+      "required": false
+    }
+  ]
+}

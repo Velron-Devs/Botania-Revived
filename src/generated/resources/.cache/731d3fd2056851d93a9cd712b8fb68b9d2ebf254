@@ -1,0 +1,19 @@
+// 1.21.1	2026-10-04T02:25:03.8404002	Botania crafting recipes (convention)
+4962690d21da59ab224c9abbed692edb91871f07 data/botania/advancement/recipes/building_blocks/azulejo_0.json
+2927380f0b3e4ee0fddc6266bbfa66abd1b068dc data/botania/advancement/recipes/decorations/prism.json
+f63d7b3be2931c496dbc4182d5ad49176117d785 data/botania/advancement/recipes/misc/fertilizer_dye.json
+b221ee5855c793dab24073446fe528bb2ff6f1c3 data/botania/advancement/recipes/misc/lens_normal.json
+056169433c8d73294bf4294845b96c078cba55a9 data/botania/advancement/recipes/misc/phantom_ink.json
+33137495fc0e0a51a6666d3865e684a78cc0144c data/botania/advancement/recipes/redstone/corporea_retainer.json
+896033a5e82cf82be0682cff0a4e5465176e88da data/botania/advancement/recipes/redstone/red_string_container.json
+19d509f7d41383e2e3e1149ddc3abb1a24706d6b data/botania/advancement/recipes/tools/bauble_box.json
+537c7a6289340bcaf0c6581e3fd24520cc0cf91c data/botania/advancement/recipes/tools/glass_pickaxe.json
+4b0b77df6ffd97139d4cef714ac83ae2f3a35e6a data/botania/recipe/azulejo_0.json
+a1558354adc056dd9fea1d015b552ff39b0a1dfd data/botania/recipe/bauble_box.json
+d3ac839778f391e3dfebf6046cd511dfb240bafa data/botania/recipe/corporea_retainer.json
+5748b83ef47bde4635865c7340fd09ec9beb06e2 data/botania/recipe/fertilizer_dye.json
+82a9959a7daa5ecf6f44fd6e257c98a4c97132ba data/botania/recipe/glass_pickaxe.json
+3be4b188f5b90cbac40e35962cba516117e9b6f7 data/botania/recipe/lens_normal.json
+ec07124834f100190c17225940bc9cf5ff75e28b data/botania/recipe/phantom_ink.json
+2b68818d9e13979abfc2dd6d589407d69b6b757c data/botania/recipe/prism.json
+fafec0994984526951e46bd7070c92894ec51b56 data/botania/recipe/red_string_container.json

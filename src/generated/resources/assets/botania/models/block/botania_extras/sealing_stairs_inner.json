@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/inner_stairs",
+  "textures": {
+    "bottom": "botania:block/botania_extras/sealing_planks",
+    "side": "botania:block/botania_extras/sealing_planks",
+    "top": "botania:block/botania_extras/sealing_planks"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/stairs",
+  "textures": {
+    "bottom": "botania:block/botania_extras/bifrost_planks",
+    "side": "botania:block/botania_extras/bifrost_planks",
+    "top": "botania:block/botania_extras/bifrost_planks"
+  }
+}

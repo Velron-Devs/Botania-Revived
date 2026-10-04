@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/outer_stairs",
+  "textures": {
+    "bottom": "botania:block/botania_extras/scorched_planks",
+    "side": "botania:block/botania_extras/scorched_planks",
+    "top": "botania:block/botania_extras/scorched_planks"
+  }
+}

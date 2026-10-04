@@ -1,0 +1,55 @@
+{
+  "variants": {
+    "color=0": {
+      "model": "botania:block/botania_extras/iridescent_planks"
+    },
+    "color=1": {
+      "model": "botania:block/botania_extras/iridescent_planks"
+    },
+    "color=10": {
+      "model": "botania:block/botania_extras/iridescent_planks"
+    },
+    "color=11": {
+      "model": "botania:block/botania_extras/iridescent_planks"
+    },
+    "color=12": {
+      "model": "botania:block/botania_extras/iridescent_planks"
+    },
+    "color=13": {
+      "model": "botania:block/botania_extras/iridescent_planks"
+    },
+    "color=14": {
+      "model": "botania:block/botania_extras/iridescent_planks"
+    },
+    "color=15": {
+      "model": "botania:block/botania_extras/iridescent_planks"
+    },
+    "color=16": {
+      "model": "botania:block/botania_extras/bifrost_planks"
+    },
+    "color=2": {
+      "model": "botania:block/botania_extras/iridescent_planks"
+    },
+    "color=3": {
+      "model": "botania:block/botania_extras/iridescent_planks"
+    },
+    "color=4": {
+      "model": "botania:block/botania_extras/iridescent_planks"
+    },
+    "color=5": {
+      "model": "botania:block/botania_extras/iridescent_planks"
+    },
+    "color=6": {
+      "model": "botania:block/botania_extras/iridescent_planks"
+    },
+    "color=7": {
+      "model": "botania:block/botania_extras/iridescent_planks"
+    },
+    "color=8": {
+      "model": "botania:block/botania_extras/iridescent_planks"
+    },
+    "color=9": {
+      "model": "botania:block/botania_extras/iridescent_planks"
+    }
+  }
+}

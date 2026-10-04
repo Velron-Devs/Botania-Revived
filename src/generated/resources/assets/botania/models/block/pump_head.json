@@ -1,0 +1,79 @@
+{
+  "parent": "minecraft:block/block",
+  "elements": [
+    {
+      "faces": {
+        "down": {
+          "texture": "#head_sheet",
+          "uv": [
+            6.0,
+            8.0,
+            12.0,
+            12.0
+          ]
+        },
+        "east": {
+          "rotation": 90,
+          "texture": "#head_sheet",
+          "uv": [
+            6.0,
+            8.0,
+            12.0,
+            12.0
+          ]
+        },
+        "north": {
+          "texture": "#head_sheet",
+          "uv": [
+            0.0,
+            8.0,
+            6.0,
+            14.0
+          ]
+        },
+        "south": {
+          "texture": "#head_sheet",
+          "uv": [
+            0.0,
+            8.0,
+            6.0,
+            14.0
+          ]
+        },
+        "up": {
+          "texture": "#head_sheet",
+          "uv": [
+            6.0,
+            8.0,
+            12.0,
+            12.0
+          ]
+        },
+        "west": {
+          "rotation": 90,
+          "texture": "#head_sheet",
+          "uv": [
+            6.0,
+            12.0,
+            12.0,
+            8.0
+          ]
+        }
+      },
+      "from": [
+        5,
+        1,
+        2
+      ],
+      "to": [
+        11,
+        7,
+        6
+      ]
+    }
+  ],
+  "textures": {
+    "head_sheet": "botania:block/pump_head_sheet",
+    "particle": "botania:block/livingrock"
+  }
+}

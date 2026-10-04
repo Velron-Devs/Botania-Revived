@@ -1,0 +1,7 @@
+{
+  "parent": "botania:block/botania_extras/shapes/tinted_cube_column",
+  "textures": {
+    "end": "botania:block/botania_extras/iridescent_log_top",
+    "side": "botania:block/botania_extras/iridescent_log_side"
+  }
+}

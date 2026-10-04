@@ -1,0 +1,26 @@
+{
+  "values": [
+    "botania:dandelifeon",
+    "botania:endoflame",
+    "botania:entropinnyum",
+    "botania:gourmaryllis",
+    "botania:hydroangeas",
+    "botania:kekimurus",
+    "botania:munchdew",
+    "botania:narslimmus",
+    "botania:rafflowsia",
+    "botania:rosa_arcana",
+    "botania:shulk_me_not",
+    "botania:spectrolus",
+    "botania:thermalily",
+    "botania:wither_mana_rose",
+    {
+      "id": "botania:crysanthermum",
+      "required": false
+    },
+    {
+      "id": "botania:asgardandelion",
+      "required": false
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:item/handheld",
+  "textures": {
+    "layer0": "botania:item/botania_extras/vibrant_plains_rod",
+    "layer1": "botania:item/botania_extras/vibrant_plains_rod_overlay"
+  }
+}

@@ -1,0 +1,91 @@
+package velrondevs.botania.common.crafting.recipe;
+
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.NonNullList;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
+import net.minecraft.world.item.crafting.CraftingInput;
+import net.minecraft.world.item.crafting.CustomRecipe;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.SimpleCraftingRecipeSerializer;
+import net.minecraft.world.item.enchantment.ItemEnchantments;
+import net.minecraft.world.level.Level;
+
+import org.jetbrains.annotations.NotNull;
+
+import velrondevs.botania.registry.BotaniaItems;
+
+public class SpellbindingClothRecipe extends CustomRecipe {
+	public static final RecipeSerializer<SpellbindingClothRecipe> SERIALIZER = new SimpleCraftingRecipeSerializer<>(SpellbindingClothRecipe::new);
+
+	public SpellbindingClothRecipe(CraftingBookCategory category) {
+		super(category);
+	}
+
+	@Override
+	public boolean matches(@NotNull CraftingInput inv, @NotNull Level world) {
+		boolean foundCloth = false;
+		boolean foundEnchanted = false;
+
+		for (int i = 0; i < inv.size(); i++) {
+			ItemStack stack = inv.getItem(i);
+			if (!stack.isEmpty()) {
+				if (stack.isEnchanted() && !foundEnchanted) {
+					foundEnchanted = true;
+				} else if (stack.is(BotaniaItems.spellCloth) && !foundCloth) {
+					foundCloth = true;
+				} else {
+					return false;
+				}
+			}
+		}
+
+		return foundCloth && foundEnchanted;
+	}
+
+	@NotNull
+	@Override
+	public ItemStack assemble(@NotNull CraftingInput inv, @NotNull HolderLookup.Provider registries) {
+		ItemStack stackToDisenchant = ItemStack.EMPTY;
+		for (int i = 0; i < inv.size(); i++) {
+			ItemStack stack = inv.getItem(i);
+			if (!stack.isEmpty() && stack.isEnchanted() && !stack.is(BotaniaItems.spellCloth)) {
+				stackToDisenchant = stack.copyWithCount(1);
+				break;
+			}
+		}
+
+		if (stackToDisenchant.isEmpty()) {
+			return ItemStack.EMPTY;
+		}
+
+		stackToDisenchant.set(DataComponents.ENCHANTMENTS, ItemEnchantments.EMPTY);
+		stackToDisenchant.remove(DataComponents.REPAIR_COST);
+		return stackToDisenchant;
+	}
+
+	@Override
+	public boolean canCraftInDimensions(int width, int height) {
+		return width * height >= 2;
+	}
+
+	@NotNull
+	@Override
+	public RecipeSerializer<?> getSerializer() {
+		return SERIALIZER;
+	}
+
+	@NotNull
+	@Override
+	public NonNullList<ItemStack> getRemainingItems(@NotNull CraftingInput inv) {
+		return RecipeUtils.getRemainingItemsSub(inv, s -> {
+			if (s.is(BotaniaItems.spellCloth)) {
+				ItemStack copy = s.copyWithCount(1);
+				copy.setDamageValue(copy.getDamageValue() + 1);
+				return copy;
+			}
+			return null;
+		});
+	}
+}

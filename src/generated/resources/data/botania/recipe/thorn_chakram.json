@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "T": {
+      "tag": "botania:terrasteel_ingots"
+    },
+    "V": {
+      "item": "minecraft:vine"
+    }
+  },
+  "pattern": [
+    "VVV",
+    "VTV",
+    "VVV"
+  ],
+  "result": {
+    "count": 2,
+    "id": "botania:thorn_chakram"
+  }
+}

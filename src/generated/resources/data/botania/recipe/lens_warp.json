@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "botania:lens_normal"
+    },
+    {
+      "item": "botania:pixie_dust"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "botania:lens_warp"
+  }
+}

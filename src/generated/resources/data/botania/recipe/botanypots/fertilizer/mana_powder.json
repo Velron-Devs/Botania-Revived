@@ -1,0 +1,21 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "botanypots"
+    }
+  ],
+  "type": "botanypots:fertilizer",
+  "growth": {
+    "type": "botanypots:ranged",
+    "max": 200,
+    "min": 100
+  },
+  "held_item": {
+    "item": "botania:mana_powder"
+  },
+  "sound_effect": {
+    "category": "BLOCKS",
+    "id": "minecraft:block.amethyst_block.chime"
+  }
+}

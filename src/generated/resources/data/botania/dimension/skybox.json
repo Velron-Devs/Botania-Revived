@@ -1,0 +1,16 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "botania:module_enabled",
+      "module": "skybox"
+    }
+  ],
+  "type": "botania:skybox",
+  "generator": {
+    "type": "minecraft:flat",
+    "settings": {
+      "biome": "minecraft:the_void",
+      "layers": []
+    }
+  }
+}

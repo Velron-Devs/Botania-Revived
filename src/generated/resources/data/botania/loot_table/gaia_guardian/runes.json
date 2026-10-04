@@ -1,0 +1,87 @@
+{
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "botania:rune_water"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "botania:rune_fire"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "botania:rune_earth"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "botania:rune_air"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "botania:rune_spring"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "botania:rune_summer"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "botania:rune_autumn"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "botania:rune_winter"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "botania:rune_mana"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "botania:rune_lust"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "botania:rune_gluttony"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "botania:rune_greed"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "botania:rune_sloth"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "botania:rune_wrath"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "botania:rune_envy"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "botania:rune_pride"
+        }
+      ],
+      "functions": [
+        {
+          "add": false,
+          "count": {
+            "type": "minecraft:uniform",
+            "max": 4.0,
+            "min": 2.0
+          },
+          "function": "minecraft:set_count"
+        }
+      ],
+      "name": "runes",
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "botania:gaia_guardian/runes"
+}

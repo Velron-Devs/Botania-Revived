@@ -1,0 +1,76 @@
+package velrondevs.botania.common.block.dispenser;
+
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.dispenser.BlockSource;
+import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.world.entity.vehicle.AbstractMinecart;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BaseRailBlock;
+import net.minecraft.world.level.block.DispenserBlock;
+import net.minecraft.world.level.block.LevelEvent;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.RailShape;
+
+import org.jetbrains.annotations.NotNull;
+
+import velrondevs.botania.common.entity.ManaPoolMinecartEntity;
+
+public class ManaPoolMinecartBehavior extends DefaultDispenseItemBehavior {
+	private final DefaultDispenseItemBehavior behaviourDefaultDispenseItem = new DefaultDispenseItemBehavior();
+
+	@NotNull
+	@Override
+	public ItemStack execute(BlockSource source, ItemStack stack) {
+		Direction direction = source.state().getValue(DispenserBlock.FACING);
+		Level world = source.level();
+		double x = source.center().x() + (double) direction.getStepX() * 1.125;
+		double y = Math.floor(source.center().y()) + (double) direction.getStepY();
+		double z = source.center().z() + (double) direction.getStepZ() * 1.125;
+		BlockPos blockpos = source.pos().relative(direction);
+		BlockState blockState = world.getBlockState(blockpos);
+		RailShape railShape = blockState.getBlock() instanceof BaseRailBlock
+				? blockState.getValue(((BaseRailBlock) blockState.getBlock()).getShapeProperty())
+				: RailShape.NORTH_SOUTH;
+		double yOffset;
+		if (blockState.is(BlockTags.RAILS)) {
+			if (railShape.isAscending()) {
+				yOffset = 0.6;
+			} else {
+				yOffset = 0.1;
+			}
+		} else {
+			if (!blockState.isAir() || !world.getBlockState(blockpos.below()).is(BlockTags.RAILS)) {
+				return this.behaviourDefaultDispenseItem.dispense(source, stack);
+			}
+
+			BlockState blockStateBelow = world.getBlockState(blockpos.below());
+			RailShape railShapeBelow = blockStateBelow.getBlock() instanceof BaseRailBlock
+					? blockStateBelow.getValue(((BaseRailBlock) blockStateBelow.getBlock()).getShapeProperty())
+					: RailShape.NORTH_SOUTH;
+			if (direction != Direction.DOWN && railShapeBelow.isAscending()) {
+				yOffset = -0.4;
+			} else {
+				yOffset = -0.9;
+			}
+		}
+
+		AbstractMinecart minecart = new ManaPoolMinecartEntity(world, x, y + yOffset, z);
+		if (stack.has(DataComponents.CUSTOM_NAME)) {
+			minecart.setCustomName(stack.get(DataComponents.CUSTOM_NAME));
+		}
+
+		world.addFreshEntity(minecart);
+		stack.shrink(1);
+		return stack;
+	}
+
+	@Override
+	protected void playSound(BlockSource source) {
+		source.level().levelEvent(LevelEvent.SOUND_DISPENSER_DISPENSE, source.pos(), 0);
+	}
+
+}

@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/stairs",
+  "textures": {
+    "bottom": "botania:block/botania_extras/infernal_planks",
+    "side": "botania:block/botania_extras/infernal_planks",
+    "top": "botania:block/botania_extras/infernal_planks"
+  }
+}

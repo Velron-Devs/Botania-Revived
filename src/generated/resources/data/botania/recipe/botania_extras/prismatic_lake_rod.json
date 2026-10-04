@@ -1,0 +1,30 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "botania:module_enabled",
+      "module": "botania_extras"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "B": {
+      "tag": "botania:bifrost_dyes"
+    },
+    "D": {
+      "item": "botania:dreamwood_twig"
+    },
+    "G": {
+      "item": "minecraft:glowstone"
+    }
+  },
+  "pattern": [
+    " GB",
+    " DG",
+    "D  "
+  ],
+  "result": {
+    "count": 1,
+    "id": "botania:prismatic_lake_rod"
+  }
+}

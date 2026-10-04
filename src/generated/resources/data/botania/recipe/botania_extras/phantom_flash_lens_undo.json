@@ -1,0 +1,22 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "botania:module_enabled",
+      "module": "botania_extras"
+    }
+  ],
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "botania:phantom_flash_lens"
+    },
+    {
+      "item": "botania:phantom_ink"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "botania:lens_light"
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "botania:module_enabled",
+      "module": "botania_extras"
+    }
+  ],
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "minecraft:bone_meal"
+    },
+    {
+      "item": "botania:floral_bifrost_powder"
+    },
+    {
+      "item": "botania:floral_bifrost_powder"
+    },
+    {
+      "item": "botania:floral_bifrost_powder"
+    },
+    {
+      "item": "botania:floral_bifrost_powder"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "botania:fertilizer"
+  }
+}
