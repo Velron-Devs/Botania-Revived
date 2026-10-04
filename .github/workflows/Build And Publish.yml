@@ -49,7 +49,7 @@ jobs:
           git push origin v${{ steps.gradle_props.outputs.release_version }}
 
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           tag_name: v${{ steps.gradle_props.outputs.release_version }}
           name: BotaniaRevived ${{ steps.gradle_props.outputs.release_version }}
