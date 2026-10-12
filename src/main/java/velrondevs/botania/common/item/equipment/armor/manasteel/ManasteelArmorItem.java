@@ -126,7 +126,7 @@ public class ManasteelArmorItem extends ArmorItem implements CustomDamageItem, P
 		}
 
 		return switch (slot) {
-			case HEAD -> stack.is(BotaniaItems.manasteelHelm);
+			case HEAD -> stack.getItem() instanceof ManasteelHelmItem;
 			case CHEST -> stack.is(BotaniaItems.manasteelChest);
 			case LEGS -> stack.is(BotaniaItems.manasteelLegs);
 			case FEET -> stack.is(BotaniaItems.manasteelBoots);

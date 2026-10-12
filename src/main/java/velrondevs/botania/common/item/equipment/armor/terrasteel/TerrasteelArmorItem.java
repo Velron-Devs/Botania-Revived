@@ -71,7 +71,7 @@ public class TerrasteelArmorItem extends ManasteelArmorItem {
 		}
 
 		return switch (slot) {
-			case HEAD -> stack.is(BotaniaItems.terrasteelHelm);
+			case HEAD -> stack.getItem() instanceof TerrasteelHelmItem;
 			case CHEST -> stack.is(BotaniaItems.terrasteelChest);
 			case LEGS -> stack.is(BotaniaItems.terrasteelLegs);
 			case FEET -> stack.is(BotaniaItems.terrasteelBoots);

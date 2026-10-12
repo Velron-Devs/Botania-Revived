@@ -238,6 +238,14 @@ public class ItemTagProvider extends ItemTagsProvider {
 		this.tag(ItemTags.FREEZE_IMMUNE_WEARABLES).add(icePendant,
 				manaweaveHelm, manaweaveChest, manaweaveLegs, manaweaveBoots);
 
+		for (String tier : new String[] {"manasteel", "elementium", "terrasteel"}) {
+			ResourceLocation helm = ResourceLocation.fromNamespaceAndPath(LibMisc.MOD_ID, tier + "_helmet_revealing");
+			this.tag(ItemTags.HEAD_ARMOR).addOptional(helm);
+			this.tag(BotaniaTags.Items.MANA_USING_ITEMS).addOptional(helm);
+		}
+		this.tag(BotaniaTags.Items.TERRA_PICK_BLACKLIST)
+				.addOptional(ResourceLocation.fromNamespaceAndPath(LibMisc.MOD_ID, "terrasteel_helmet_revealing"));
+
 		this.tag(BotaniaTags.Items.SEED_APOTHECARY_REAGENT)
 				.add(Items.WHEAT_SEEDS, Items.BEETROOT_SEEDS, Items.MELON_SEEDS, Items.PUMPKIN_SEEDS)
 				.addOptionalTag(Tags.Items.SEEDS);

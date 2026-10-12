@@ -131,3 +131,10 @@ file="META-INF/accesstransformer.cfg"
     versionRange="${ars_nouveau_version_range}"
     ordering="AFTER"
     side="BOTH"
+
+[[dependencies.${mod_id}]]
+    modId="thaumaturge"
+    type="optional"
+    versionRange="[${thaumaturge_version},)"
+    ordering="AFTER"
+    side="BOTH"

@@ -1,0 +1,28 @@
+{
+  "name": "botania.entry.thaumaturge",
+  "category": "botania:misc",
+  "icon": "botania:terrasteel_helmet",
+  "flag": "mod:thaumaturge",
+  "pages": [
+    {
+      "type": "text",
+      "text": "botania.page.thaumaturge0"
+    },
+    {
+      "type": "crafting",
+      "recipe": "botania:terrasteel_helmet_revealing",
+      "text": "botania.page.thaumaturge1",
+      "flag": "mod:thaumaturge"
+    },
+    {
+      "type": "crafting",
+      "recipe": "botania:terrasteel_helmet_revealing_upgrade",
+      "text": "botania.page.thaumaturge2",
+      "flag": "mod:thaumaturge"
+    },
+    {
+      "type": "text",
+      "text": "botania.page.thaumaturge3"
+    }
+  ]
+}

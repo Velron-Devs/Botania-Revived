@@ -3,6 +3,10 @@
     "botania:aura_ring",
     "botania:aura_ring_greater",
     "botania:terrasteel_helmet",
-    "botania:spark"
+    "botania:spark",
+    {
+      "id": "botania:terrasteel_helmet_revealing",
+      "required": false
+    }
   ]
 }

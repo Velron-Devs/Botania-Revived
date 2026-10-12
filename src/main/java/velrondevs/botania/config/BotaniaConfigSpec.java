@@ -25,6 +25,14 @@ import java.util.List;
 import java.util.Map;
 
 public final class BotaniaConfigSpec {
+	private static <T> T safe(ModConfigSpec.ConfigValue<T> value) {
+		try {
+			return value.get();
+		} catch (IllegalStateException e) {
+			return value.getDefault();
+		}
+	}
+
 
 	private static class Client implements BotaniaConfig.ClientConfigAccess {
 		public final ModConfigSpec.BooleanValue useShaders;
@@ -114,82 +122,82 @@ public final class BotaniaConfigSpec {
 
 		@Override
 		public boolean lexiconRotatingItems() {
-			return lexiconRotatingItems.get();
+			return safe(lexiconRotatingItems);
 		}
 
 		@Override
 		public boolean subtlePowerSystem() {
-			return subtlePowerSystem.get();
+			return safe(subtlePowerSystem);
 		}
 
 		@Override
 		public boolean staticWandBeam() {
-			return staticWandBeam.get();
+			return safe(staticWandBeam);
 		}
 
 		@Override
 		public boolean boundBlockWireframe() {
-			return boundBlockWireframe.get();
+			return safe(boundBlockWireframe);
 		}
 
 		@Override
 		public boolean lexicon3dModel() {
-			return lexicon3dModel.get();
+			return safe(lexicon3dModel);
 		}
 
 		@Override
 		public double flowerParticleFrequency() {
-			return flowerParticleFrequency.get();
+			return safe(flowerParticleFrequency);
 		}
 
 		@Override
 		public boolean elfPortalParticlesEnabled() {
-			return elfPortalParticlesEnabled.get();
+			return safe(elfPortalParticlesEnabled);
 		}
 
 		@Override
 		public boolean renderAccessories() {
-			return renderAccessories.get();
+			return safe(renderAccessories);
 		}
 
 		@Override
 		public boolean enableSeasonalFeatures() {
-			return enableSeasonalFeatures.get();
+			return safe(enableSeasonalFeatures);
 		}
 
 		@Override
 		public boolean enableFancySkybox() {
-			return enableFancySkybox.get();
+			return safe(enableFancySkybox);
 		}
 
 		@Override
 		public boolean enableFancySkyboxInNormalWorlds() {
-			return enableFancySkyboxInNormalWorlds.get();
+			return safe(enableFancySkyboxInNormalWorlds);
 		}
 
 		@Override
 		public int manaBarHeight() {
-			return manaBarHeight.get();
+			return safe(manaBarHeight);
 		}
 
 		@Override
 		public boolean staticFloaters() {
-			return staticFloaters.get();
+			return safe(staticFloaters);
 		}
 
 		@Override
 		public boolean debugInfo() {
-			return debugInfo.get();
+			return safe(debugInfo);
 		}
 
 		@Override
 		public boolean referencesEnabled() {
-			return referencesEnabled.get();
+			return safe(referencesEnabled);
 		}
 
 		@Override
 		public boolean splashesEnabled() {
-			return splashesEnabled.get();
+			return safe(splashesEnabled);
 		}
 
 		@Override
@@ -361,142 +369,142 @@ public final class BotaniaConfigSpec {
 
 		@Override
 		public boolean blockBreakParticles() {
-			return blockBreakParticles.get();
+			return safe(blockBreakParticles);
 		}
 
 		@Override
 		public boolean blockBreakParticlesTool() {
-			return blockBreakParticlesTool.get();
+			return safe(blockBreakParticlesTool);
 		}
 
 		@Override
 		public boolean chargingAnimationEnabled() {
-			return chargingAnimationEnabled.get();
+			return safe(chargingAnimationEnabled);
 		}
 
 		@Override
 		public boolean silentSpreaders() {
-			return silentSpreaders.get();
+			return safe(silentSpreaders);
 		}
 
 		@Override
 		public int spreaderTraceTime() {
-			return spreaderTraceTime.get();
+			return safe(spreaderTraceTime);
 		}
 
 		@Override
 		public boolean enderPickpocketEnabled() {
-			return enderPickpocketEnabled.get();
+			return safe(enderPickpocketEnabled);
 		}
 
 		@Override
 		public boolean enchanterEnabled() {
-			return enchanterEnabled.get();
+			return safe(enchanterEnabled);
 		}
 
 		@Override
 		public boolean relicsEnabled() {
-			return relicsEnabled.get();
+			return safe(relicsEnabled);
 		}
 
 		@Override
 		public boolean invertMagnetRing() {
-			return invertMagnetRing.get();
+			return safe(invertMagnetRing);
 		}
 
 		@Override
 		public int harvestLevelWeight() {
-			return harvestLevelWeight.get();
+			return safe(harvestLevelWeight);
 		}
 
 		@Override
 		public int harvestLevelBore() {
-			return harvestLevelBore.get();
+			return safe(harvestLevelBore);
 		}
 
 		@Override
 		public boolean gogSpawnWithLexicon() {
-			return gogSpawnWithLexicon.get();
+			return safe(gogSpawnWithLexicon);
 		}
 
 		@Override
 		public int gogIslandScaleMultiplier() {
-			return gogIslandScaleMultiplier.get();
+			return safe(gogIslandScaleMultiplier);
 		}
 
 		@Override
 		public boolean witherManaRoseEnabled() {
-			return witherManaRoseEnabled.get();
+			return safe(witherManaRoseEnabled);
 		}
 
 		@Override
 		public int witherManaRoseManaPerStar() {
-			return witherManaRoseManaPerStar.get();
+			return safe(witherManaRoseManaPerStar);
 		}
 
 		@Override
 		public int witherManaRoseGenerationInterval() {
-			return witherManaRoseGenerationInterval.get();
+			return safe(witherManaRoseGenerationInterval);
 		}
 
 		@Override
 		public int witherManaRoseGenerationPerCycle() {
-			return witherManaRoseGenerationPerCycle.get();
+			return safe(witherManaRoseGenerationPerCycle);
 		}
 
 		@Override
 		public int witherManaRoseBufferSize() {
-			return witherManaRoseBufferSize.get();
+			return safe(witherManaRoseBufferSize);
 		}
 
 		@Override
 		public int witherManaRoseOutputPerTick() {
-			return witherManaRoseOutputPerTick.get();
+			return safe(witherManaRoseOutputPerTick);
 		}
 
 		@Override
 		public int witherManaRoseCooldown() {
-			return witherManaRoseCooldown.get();
+			return safe(witherManaRoseCooldown);
 		}
 
 		@Override
 		public boolean asgardandelionEnabled() {
-			return asgardandelionEnabled.get();
+			return safe(asgardandelionEnabled);
 		}
 
 		@Override
 		public int asgardandelionManaPerTick() {
-			return asgardandelionManaPerTick.get();
+			return safe(asgardandelionManaPerTick);
 		}
 
 		@Override
 		public LooniumMode looniumMode() {
-			return looniumMode.get();
+			return safe(looniumMode);
 		}
 
 		@Override
 		public int looniumLootManaCost() {
-			return looniumLootManaCost.get();
+			return safe(looniumLootManaCost);
 		}
 
 		@Override
 		public int looniumLootCooldown() {
-			return looniumLootCooldown.get();
+			return safe(looniumLootCooldown);
 		}
 
 		@Override
 		public int looniumLootItemsPerCycle() {
-			return looniumLootItemsPerCycle.get();
+			return safe(looniumLootItemsPerCycle);
 		}
 
 		@Override
 		public int looniumLootRange() {
-			return looniumLootRange.get();
+			return safe(looniumLootRange);
 		}
 
 		@Override
 		public int terraShattererMaxLevel() {
-			return terraShattererMaxLevel.get();
+			return safe(terraShattererMaxLevel);
 		}
 
 		@SuppressWarnings("unchecked")

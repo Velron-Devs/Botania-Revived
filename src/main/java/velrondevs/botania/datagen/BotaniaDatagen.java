@@ -17,6 +17,7 @@ import velrondevs.botania.datagen.providers.integration.BotanyPotsDataProvider;
 import velrondevs.botania.datagen.providers.integration.CuriosSlotProvider;
 import velrondevs.botania.datagen.providers.integration.PatchouliBookProvider;
 import velrondevs.botania.datagen.providers.integration.QuarkAttributeTooltipProvider;
+import velrondevs.botania.datagen.providers.integration.ThaumaturgeDataProvider;
 import velrondevs.botania.datagen.providers.lang.BotaniaLanguageProvider;
 import velrondevs.botania.datagen.providers.loot.BotaniaLootTableProvider;
 import velrondevs.botania.datagen.providers.models.BlockShapeModelProvider;
@@ -96,6 +97,8 @@ public class BotaniaDatagen {
 		generator.addProvider(server, new CuriosSlotProvider(output, fileHelper, lookup));
 		generator.addProvider(server, new PatchouliBookProvider(output));
 		generator.addProvider(server, new BotanyPotsDataProvider(output));
+		generator.addProvider(server, new ThaumaturgeDataProvider(output, false));
+		generator.addProvider(client, new ThaumaturgeDataProvider(output, true));
 
 		generator.addProvider(client, new BlockstateProvider(output));
 		generator.addProvider(client, new FloatingFlowerModelProvider(output));

@@ -3,6 +3,18 @@
     "botania:manasteel_helmet",
     "botania:manaweave_helmet",
     "botania:elementium_helmet",
-    "botania:terrasteel_helmet"
+    "botania:terrasteel_helmet",
+    {
+      "id": "botania:manasteel_helmet_revealing",
+      "required": false
+    },
+    {
+      "id": "botania:elementium_helmet_revealing",
+      "required": false
+    },
+    {
+      "id": "botania:terrasteel_helmet_revealing",
+      "required": false
+    }
   ]
 }

@@ -65,6 +65,18 @@
     "botania:water_ring",
     "botania:water_rod",
     {
+      "id": "botania:manasteel_helmet_revealing",
+      "required": false
+    },
+    {
+      "id": "botania:elementium_helmet_revealing",
+      "required": false
+    },
+    {
+      "id": "botania:terrasteel_helmet_revealing",
+      "required": false
+    },
+    {
       "id": "botania:vibrant_plains_rod",
       "required": false
     },

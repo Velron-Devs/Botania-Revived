@@ -1,0 +1,22 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "thaumaturge"
+    }
+  ],
+  "type": "botania:helm_revealing",
+  "category": "equipment",
+  "ingredients": [
+    {
+      "item": "botania:elementium_helmet"
+    },
+    {
+      "item": "thaumaturge:goggles_revealing"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "botania:elementium_helmet_revealing"
+  }
+}

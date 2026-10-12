@@ -129,6 +129,7 @@ import velrondevs.botania.integration.botanypots.BotaniaBotanyPotsIntegration;
 import velrondevs.botania.integration.corporea.ItemHandlerCorporeaNodeDetector;
 import velrondevs.botania.integration.curios.CurioIntegration;
 import velrondevs.botania.integration.kubejs.BotaniaKubeJSIntegration;
+import velrondevs.botania.integration.thaumaturge.ThaumaturgeIntegration;
 import velrondevs.botania.module.BotaniaModules;
 import velrondevs.botania.network.BotaniaPayloads;
 import velrondevs.botania.registry.BotaniaArmorMaterials;
@@ -189,6 +190,9 @@ public class Botania {
 		}
 		if (ModList.get().isLoaded("ars_nouveau")) {
 			ArsNouveauIntegration.init(modBus, container);
+		}
+		if (ModList.get().isLoaded(ThaumaturgeIntegration.MOD_ID)) {
+			ThaumaturgeIntegration.init(modBus);
 		}
 	}
 

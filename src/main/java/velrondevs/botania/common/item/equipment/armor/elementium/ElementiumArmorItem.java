@@ -52,7 +52,7 @@ public abstract class ElementiumArmorItem extends ManasteelArmorItem {
 		}
 
 		return switch (slot) {
-			case HEAD -> stack.is(BotaniaItems.elementiumHelm);
+			case HEAD -> stack.getItem() instanceof ElementiumHelmItem;
 			case CHEST -> stack.is(BotaniaItems.elementiumChest);
 			case LEGS -> stack.is(BotaniaItems.elementiumLegs);
 			case FEET -> stack.is(BotaniaItems.elementiumBoots);

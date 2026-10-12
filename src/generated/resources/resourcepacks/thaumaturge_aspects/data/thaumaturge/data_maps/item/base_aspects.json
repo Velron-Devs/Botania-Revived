@@ -1,0 +1,540 @@
+{
+  "values": {
+    "#botania:elementium_ingots": [
+      {
+        "amount": 15,
+        "aspect": "thaumaturge:metallum"
+      },
+      {
+        "amount": 10,
+        "aspect": "thaumaturge:permutatio"
+      },
+      {
+        "amount": 10,
+        "aspect": "thaumaturge:praecantatio"
+      }
+    ],
+    "#botania:elementium_nuggets": [
+      {
+        "amount": 2,
+        "aspect": "thaumaturge:metallum"
+      },
+      {
+        "amount": 1,
+        "aspect": "thaumaturge:permutatio"
+      },
+      {
+        "amount": 1,
+        "aspect": "thaumaturge:praecantatio"
+      }
+    ],
+    "#botania:manasteel_ingots": [
+      {
+        "amount": 15,
+        "aspect": "thaumaturge:metallum"
+      },
+      {
+        "amount": 5,
+        "aspect": "thaumaturge:praecantatio"
+      }
+    ],
+    "#botania:manasteel_nuggets": [
+      {
+        "amount": 2,
+        "aspect": "thaumaturge:metallum"
+      },
+      {
+        "amount": 1,
+        "aspect": "thaumaturge:praecantatio"
+      }
+    ],
+    "#botania:mystical_flowers": [
+      {
+        "amount": 5,
+        "aspect": "thaumaturge:herba"
+      },
+      {
+        "amount": 2,
+        "aspect": "thaumaturge:victus"
+      },
+      {
+        "amount": 2,
+        "aspect": "thaumaturge:praecantatio"
+      }
+    ],
+    "#botania:petals": [
+      {
+        "amount": 2,
+        "aspect": "thaumaturge:herba"
+      },
+      {
+        "amount": 1,
+        "aspect": "thaumaturge:praecantatio"
+      }
+    ],
+    "#botania:terrasteel_ingots": [
+      {
+        "amount": 15,
+        "aspect": "thaumaturge:metallum"
+      },
+      {
+        "amount": 10,
+        "aspect": "thaumaturge:terra"
+      },
+      {
+        "amount": 10,
+        "aspect": "thaumaturge:praecantatio"
+      },
+      {
+        "amount": 5,
+        "aspect": "thaumaturge:victus"
+      }
+    ],
+    "#botania:terrasteel_nuggets": [
+      {
+        "amount": 2,
+        "aspect": "thaumaturge:metallum"
+      },
+      {
+        "amount": 1,
+        "aspect": "thaumaturge:terra"
+      },
+      {
+        "amount": 1,
+        "aspect": "thaumaturge:praecantatio"
+      }
+    ],
+    "botania:dragonstone": [
+      {
+        "amount": 15,
+        "aspect": "thaumaturge:vitreus"
+      },
+      {
+        "amount": 10,
+        "aspect": "thaumaturge:praecantatio"
+      },
+      {
+        "amount": 5,
+        "aspect": "thaumaturge:alienis"
+      }
+    ],
+    "botania:dreamwood_log": [
+      {
+        "amount": 20,
+        "aspect": "thaumaturge:herba"
+      },
+      {
+        "amount": 5,
+        "aspect": "thaumaturge:aer"
+      },
+      {
+        "amount": 5,
+        "aspect": "thaumaturge:praecantatio"
+      }
+    ],
+    "botania:ender_air_bottle": [
+      {
+        "amount": 10,
+        "aspect": "thaumaturge:aer"
+      },
+      {
+        "amount": 5,
+        "aspect": "thaumaturge:alienis"
+      },
+      {
+        "amount": 2,
+        "aspect": "thaumaturge:vitreus"
+      }
+    ],
+    "botania:gaia_ingot": [
+      {
+        "amount": 20,
+        "aspect": "thaumaturge:metallum"
+      },
+      {
+        "amount": 20,
+        "aspect": "thaumaturge:praecantatio"
+      },
+      {
+        "amount": 10,
+        "aspect": "thaumaturge:spiritus"
+      },
+      {
+        "amount": 10,
+        "aspect": "thaumaturge:terra"
+      },
+      {
+        "amount": 10,
+        "aspect": "thaumaturge:victus"
+      }
+    ],
+    "botania:life_essence": [
+      {
+        "amount": 20,
+        "aspect": "thaumaturge:victus"
+      },
+      {
+        "amount": 5,
+        "aspect": "thaumaturge:spiritus"
+      },
+      {
+        "amount": 5,
+        "aspect": "thaumaturge:praecantatio"
+      }
+    ],
+    "botania:living_root": [
+      {
+        "amount": 5,
+        "aspect": "thaumaturge:herba"
+      },
+      {
+        "amount": 5,
+        "aspect": "thaumaturge:praecantatio"
+      }
+    ],
+    "botania:livingrock": [
+      {
+        "amount": 10,
+        "aspect": "thaumaturge:terra"
+      },
+      {
+        "amount": 3,
+        "aspect": "thaumaturge:ordo"
+      },
+      {
+        "amount": 3,
+        "aspect": "thaumaturge:praecantatio"
+      }
+    ],
+    "botania:livingwood_log": [
+      {
+        "amount": 20,
+        "aspect": "thaumaturge:herba"
+      },
+      {
+        "amount": 5,
+        "aspect": "thaumaturge:victus"
+      },
+      {
+        "amount": 3,
+        "aspect": "thaumaturge:praecantatio"
+      }
+    ],
+    "botania:mana_diamond": [
+      {
+        "amount": 15,
+        "aspect": "thaumaturge:vitreus"
+      },
+      {
+        "amount": 10,
+        "aspect": "thaumaturge:desiderium"
+      },
+      {
+        "amount": 10,
+        "aspect": "thaumaturge:praecantatio"
+      }
+    ],
+    "botania:mana_pearl": [
+      {
+        "amount": 10,
+        "aspect": "thaumaturge:motus"
+      },
+      {
+        "amount": 5,
+        "aspect": "thaumaturge:alienis"
+      },
+      {
+        "amount": 10,
+        "aspect": "thaumaturge:praecantatio"
+      }
+    ],
+    "botania:mana_powder": [
+      {
+        "amount": 5,
+        "aspect": "thaumaturge:praecantatio"
+      },
+      {
+        "amount": 5,
+        "aspect": "thaumaturge:potentia"
+      }
+    ],
+    "botania:mana_quartz": [
+      {
+        "amount": 5,
+        "aspect": "thaumaturge:vitreus"
+      },
+      {
+        "amount": 3,
+        "aspect": "thaumaturge:praecantatio"
+      }
+    ],
+    "botania:mana_string": [
+      {
+        "amount": 5,
+        "aspect": "thaumaturge:bestia"
+      },
+      {
+        "amount": 1,
+        "aspect": "thaumaturge:fabrico"
+      },
+      {
+        "amount": 3,
+        "aspect": "thaumaturge:praecantatio"
+      }
+    ],
+    "botania:pebble": [
+      {
+        "amount": 1,
+        "aspect": "thaumaturge:terra"
+      }
+    ],
+    "botania:pixie_dust": [
+      {
+        "amount": 10,
+        "aspect": "thaumaturge:volatus"
+      },
+      {
+        "amount": 5,
+        "aspect": "thaumaturge:auram"
+      },
+      {
+        "amount": 5,
+        "aspect": "thaumaturge:praecantatio"
+      }
+    ],
+    "botania:redstone_root": [
+      {
+        "amount": 5,
+        "aspect": "thaumaturge:herba"
+      },
+      {
+        "amount": 5,
+        "aspect": "thaumaturge:potentia"
+      }
+    ],
+    "botania:rune_air": [
+      {
+        "amount": 10,
+        "aspect": "thaumaturge:aer"
+      },
+      {
+        "amount": 5,
+        "aspect": "thaumaturge:praecantatio"
+      },
+      {
+        "amount": 5,
+        "aspect": "thaumaturge:ordo"
+      }
+    ],
+    "botania:rune_autumn": [
+      {
+        "amount": 10,
+        "aspect": "thaumaturge:perditio"
+      },
+      {
+        "amount": 5,
+        "aspect": "thaumaturge:tenebrae"
+      },
+      {
+        "amount": 5,
+        "aspect": "thaumaturge:praecantatio"
+      }
+    ],
+    "botania:rune_earth": [
+      {
+        "amount": 10,
+        "aspect": "thaumaturge:terra"
+      },
+      {
+        "amount": 5,
+        "aspect": "thaumaturge:praecantatio"
+      },
+      {
+        "amount": 5,
+        "aspect": "thaumaturge:ordo"
+      }
+    ],
+    "botania:rune_envy": [
+      {
+        "amount": 10,
+        "aspect": "thaumaturge:desiderium"
+      },
+      {
+        "amount": 5,
+        "aspect": "thaumaturge:aversio"
+      },
+      {
+        "amount": 5,
+        "aspect": "thaumaturge:praecantatio"
+      }
+    ],
+    "botania:rune_fire": [
+      {
+        "amount": 10,
+        "aspect": "thaumaturge:ignis"
+      },
+      {
+        "amount": 5,
+        "aspect": "thaumaturge:praecantatio"
+      },
+      {
+        "amount": 5,
+        "aspect": "thaumaturge:ordo"
+      }
+    ],
+    "botania:rune_gluttony": [
+      {
+        "amount": 10,
+        "aspect": "thaumaturge:victus"
+      },
+      {
+        "amount": 5,
+        "aspect": "thaumaturge:desiderium"
+      },
+      {
+        "amount": 5,
+        "aspect": "thaumaturge:praecantatio"
+      }
+    ],
+    "botania:rune_greed": [
+      {
+        "amount": 10,
+        "aspect": "thaumaturge:desiderium"
+      },
+      {
+        "amount": 5,
+        "aspect": "thaumaturge:metallum"
+      },
+      {
+        "amount": 5,
+        "aspect": "thaumaturge:praecantatio"
+      }
+    ],
+    "botania:rune_lust": [
+      {
+        "amount": 10,
+        "aspect": "thaumaturge:desiderium"
+      },
+      {
+        "amount": 5,
+        "aspect": "thaumaturge:humanus"
+      },
+      {
+        "amount": 5,
+        "aspect": "thaumaturge:praecantatio"
+      }
+    ],
+    "botania:rune_mana": [
+      {
+        "amount": 10,
+        "aspect": "thaumaturge:potentia"
+      },
+      {
+        "amount": 10,
+        "aspect": "thaumaturge:praecantatio"
+      },
+      {
+        "amount": 5,
+        "aspect": "thaumaturge:ordo"
+      }
+    ],
+    "botania:rune_pride": [
+      {
+        "amount": 10,
+        "aspect": "thaumaturge:praemunio"
+      },
+      {
+        "amount": 5,
+        "aspect": "thaumaturge:spiritus"
+      },
+      {
+        "amount": 5,
+        "aspect": "thaumaturge:praecantatio"
+      }
+    ],
+    "botania:rune_sloth": [
+      {
+        "amount": 10,
+        "aspect": "thaumaturge:vacuos"
+      },
+      {
+        "amount": 5,
+        "aspect": "thaumaturge:motus"
+      },
+      {
+        "amount": 5,
+        "aspect": "thaumaturge:praecantatio"
+      }
+    ],
+    "botania:rune_spring": [
+      {
+        "amount": 10,
+        "aspect": "thaumaturge:herba"
+      },
+      {
+        "amount": 5,
+        "aspect": "thaumaturge:victus"
+      },
+      {
+        "amount": 5,
+        "aspect": "thaumaturge:praecantatio"
+      }
+    ],
+    "botania:rune_summer": [
+      {
+        "amount": 10,
+        "aspect": "thaumaturge:lux"
+      },
+      {
+        "amount": 5,
+        "aspect": "thaumaturge:ignis"
+      },
+      {
+        "amount": 5,
+        "aspect": "thaumaturge:praecantatio"
+      }
+    ],
+    "botania:rune_water": [
+      {
+        "amount": 10,
+        "aspect": "thaumaturge:aqua"
+      },
+      {
+        "amount": 5,
+        "aspect": "thaumaturge:praecantatio"
+      },
+      {
+        "amount": 5,
+        "aspect": "thaumaturge:ordo"
+      }
+    ],
+    "botania:rune_winter": [
+      {
+        "amount": 10,
+        "aspect": "thaumaturge:gelum"
+      },
+      {
+        "amount": 5,
+        "aspect": "thaumaturge:praecantatio"
+      },
+      {
+        "amount": 5,
+        "aspect": "thaumaturge:ordo"
+      }
+    ],
+    "botania:rune_wrath": [
+      {
+        "amount": 10,
+        "aspect": "thaumaturge:aversio"
+      },
+      {
+        "amount": 5,
+        "aspect": "thaumaturge:ignis"
+      },
+      {
+        "amount": 5,
+        "aspect": "thaumaturge:praecantatio"
+      }
+    ]
+  }
+}
