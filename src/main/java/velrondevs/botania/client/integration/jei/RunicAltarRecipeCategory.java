@@ -11,6 +11,7 @@ import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
@@ -85,4 +86,8 @@ public class RunicAltarRecipeCategory implements IRecipeCategory<RunicAltarRecip
 				recipe.getResultItem(RegistryAccess.EMPTY), LIVINGROCK);
 	}
 
+	@Override
+	public ResourceLocation getRegistryName(@NotNull RunicAltarRecipe recipe) {
+		return JEIRecipeIds.idOf(recipe);
+	}
 }

@@ -14,6 +14,7 @@ import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -114,5 +115,10 @@ public class PureDaisyRecipeCategory implements IRecipeCategory<PureDaisyRecipe>
 						.addItemStack(new ItemStack(outBlock));
 			}
 		}
+	}
+
+	@Override
+	public ResourceLocation getRegistryName(@NotNull PureDaisyRecipe recipe) {
+		return JEIRecipeIds.idOf(recipe);
 	}
 }

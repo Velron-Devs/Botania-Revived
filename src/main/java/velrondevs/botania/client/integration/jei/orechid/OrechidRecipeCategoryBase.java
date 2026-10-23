@@ -13,6 +13,7 @@ import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -23,6 +24,7 @@ import net.minecraft.world.item.crafting.RecipeType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import velrondevs.botania.client.integration.jei.JEIRecipeIds;
 import velrondevs.botania.api.recipe.OrechidRecipe;
 import velrondevs.botania.client.integration.shared.OrechidUIHelper;
 
@@ -114,5 +116,10 @@ public abstract class OrechidRecipeCategoryBase<T extends OrechidRecipe> impleme
 	@Nullable
 	protected Double getChance(@NotNull OrechidRecipe recipe) {
 		return OrechidUIHelper.getChance(recipe, null);
+	}
+
+	@Override
+	public ResourceLocation getRegistryName(@NotNull T recipe) {
+		return JEIRecipeIds.idOf(recipe);
 	}
 }

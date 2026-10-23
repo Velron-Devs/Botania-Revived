@@ -14,6 +14,7 @@ import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -114,5 +115,10 @@ public class ElvenTradeRecipeCategory implements IRecipeCategory<ElvenTradeRecip
 					.addItemStack(stack);
 			outIdx++;
 		}
+	}
+
+	@Override
+	public ResourceLocation getRegistryName(@NotNull ElvenTradeRecipe recipe) {
+		return JEIRecipeIds.idOf(recipe);
 	}
 }

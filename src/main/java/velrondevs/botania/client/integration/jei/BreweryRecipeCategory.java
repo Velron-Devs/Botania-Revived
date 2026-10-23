@@ -122,4 +122,9 @@ public class BreweryRecipeCategory implements IRecipeCategory<BotanicalBreweryRe
 		}
 		return other;
 	}
+
+	@Override
+	public ResourceLocation getRegistryName(@NotNull BotanicalBreweryRecipe recipe) {
+		return JEIRecipeIds.idOf(recipe);
+	}
 }

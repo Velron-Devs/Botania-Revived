@@ -13,6 +13,7 @@ import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
@@ -121,5 +122,10 @@ public class PetalApothecaryRecipeCategory implements IRecipeCategory<PetalApoth
 		double newX = Math.cos(rad) * (in.x - about.x) - Math.sin(rad) * (in.y - about.y) + about.x;
 		double newY = Math.sin(rad) * (in.x - about.x) + Math.cos(rad) * (in.y - about.y) + about.y;
 		return new Vec2((float) newX, (float) newY);
+	}
+
+	@Override
+	public ResourceLocation getRegistryName(@NotNull PetalApothecaryRecipe recipe) {
+		return JEIRecipeIds.idOf(recipe);
 	}
 }

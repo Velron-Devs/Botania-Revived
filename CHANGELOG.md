@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.3 (2026-10-22)
+
+- JEI categories now expose the id of every Botania recipe (runic altar, petal apothecary, mana infusion, elven trade, brewery, pure daisy, terrestrial agglomeration, Orechid, Orechid Ignem and Marimorphosis). This fixes the `No registry name for recipe` warning of Just Enough Recipe Sharing, recipe bookmarks and mods that decorate Botania recipe categories.
+
 ## 1.0.2 (2026-10-12)
 
 - Fixed a crash on startup caused by Botania reading its client config before it was loaded (issue #6).

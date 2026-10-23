@@ -106,4 +106,9 @@ public class TerrestrialAgglomerationRecipeCategory implements IRecipeCategory<T
 		builder.addSlot(RecipeIngredientRole.CATALYST, 48, 92)
 				.addItemStack(new ItemStack(BotaniaBlocks.terraPlate));
 	}
+
+	@Override
+	public ResourceLocation getRegistryName(@NotNull TerrestrialAgglomerationRecipe recipe) {
+		return JEIRecipeIds.idOf(recipe);
+	}
 }
