@@ -1,0 +1,64 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:and",
+      "values": [
+        {
+          "type": "botania:module_enabled",
+          "module": "sophisticated"
+        },
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "sophisticatedcore"
+        },
+        {
+          "type": "neoforge:or",
+          "values": [
+            {
+              "type": "neoforge:mod_loaded",
+              "modid": "sophisticatedbackpacks"
+            },
+            {
+              "type": "neoforge:mod_loaded",
+              "modid": "sophisticatedstorage"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "masterfulbotany"
+    }
+  ],
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_item": {
+      "conditions": {
+        "items": [
+          {
+            "items": "botania:gaia_stack_upgrade"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "botania:sophisticated/alfsteel_stack_upgrade"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_item"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "botania:sophisticated/alfsteel_stack_upgrade"
+    ]
+  }
+}

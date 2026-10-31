@@ -1,0 +1,42 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "masterfulbotany"
+    },
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "sophisticatedcore"
+    },
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "sophisticatedbackpacks"
+    },
+    {
+      "type": "botania:module_enabled",
+      "module": "sophisticated"
+    },
+    {
+      "type": "botania:backpacks_enabled"
+    }
+  ],
+  "type": "sophisticatedbackpacks:backpack_upgrade",
+  "category": "misc",
+  "key": {
+    "B": {
+      "item": "botania:gaia_backpack"
+    },
+    "I": {
+      "item": "masterfulbotany:alfsteel_ingot"
+    }
+  },
+  "pattern": [
+    " I ",
+    "IBI",
+    " I "
+  ],
+  "result": {
+    "count": 1,
+    "id": "botania:alfsteel_backpack"
+  }
+}

@@ -17,6 +17,9 @@ configBackground="${background}"
 [[mixins]]
 config="botania.mixins.json"
 
+[[mixins]]
+config="botania_sophisticated.mixins.json"
+
 [[accessTransformers]]
 file="META-INF/accesstransformer.cfg"
 
@@ -128,7 +131,7 @@ file="META-INF/accesstransformer.cfg"
 [[dependencies.${mod_id}]]
     modId="ars_nouveau"
     type="optional"
-    versionRange="${ars_nouveau_version_range}"
+    versionRange="${arsnouveau_version}"
     ordering="AFTER"
     side="BOTH"
 
@@ -136,5 +139,26 @@ file="META-INF/accesstransformer.cfg"
     modId="thaumaturge"
     type="optional"
     versionRange="[${thaumaturge_version},)"
+    ordering="AFTER"
+    side="BOTH"
+
+[[dependencies.${mod_id}]]
+    modId="sophisticatedcore"
+    type="optional"
+    versionRange="[${sc_version},)"
+    ordering="AFTER"
+    side="BOTH"
+
+[[dependencies.${mod_id}]]
+    modId="sophisticatedstorage"
+    type="optional"
+    versionRange="[${ss_version},)"
+    ordering="AFTER"
+    side="BOTH"
+
+[[dependencies.${mod_id}]]
+    modId="sophisticatedbackpacks"
+    type="optional"
+    versionRange="[${sb_version},)"
     ordering="AFTER"
     side="BOTH"

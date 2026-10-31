@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "botania:item/manasteel_to_elementium_tier_upgrade"
+  }
+}

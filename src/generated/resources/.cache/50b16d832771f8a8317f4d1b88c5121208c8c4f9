@@ -1,4 +1,4 @@
-// 1.21.1	2026-10-04T02:25:03.8244105	Tags for minecraft:block mod id vanilla
+// 1.21.1	2026-10-30T18:55:24.0004929	Tags for minecraft:block mod id vanilla
 7a68ff158ad853180a69e6a2276ae92648e36622 data/botania/tags/block/agricarnation/apply_bonemeal.json
 875c72992696488f2f82f9474864d8b56c9c7c85 data/botania/tags/block/agricarnation/growth_candidate.json
 e016f3ffb8b5cd781715f6f9dbbd57a21d8a0e31 data/botania/tags/block/agricarnation/growth_excluded.json
@@ -52,6 +52,8 @@ b2fa3d698e295620056cd88eb6225ad1b2da6238 data/botania/tags/block/unethical_tnt_c
 35133e95f1c8fdd7a1c21afcc231fc0bffefb9a8 data/botania/tags/block/unsupported_platform_disguise.json
 fe541fc12bc978f6f71844ecddde271e0ab25390 data/botania/tags/block/unwandable.json
 35133e95f1c8fdd7a1c21afcc231fc0bffefb9a8 data/botania/tags/block/weight_lens_whitelist.json
+2611668d96f4094728033048c12f98eaddf4fa61 data/c/tags/block/barrels.json
+fa20bfaa5140c4de8f77b07965aa98518232db48 data/c/tags/block/chests.json
 adaca5770638de00a54b51b571726f4734e24671 data/minecraft/tags/block/beacon_base_blocks.json
 457fba9cf6e125f19c4ab3bb9dfe8691cc2ca548 data/minecraft/tags/block/climbable.json
 4dca49fc88082ce4f1a8f316b4514d9c0835173d data/minecraft/tags/block/dirt.json
@@ -65,7 +67,7 @@ c949f38c97b56ea057fe936f646be3298a2b8592 data/minecraft/tags/block/fences.json
 2bdc3755618941c77515391fe8fa5945ebe32b96 data/minecraft/tags/block/leaves.json
 054414ee9ae35c596e174ed10c300e61f9565db3 data/minecraft/tags/block/logs.json
 7178a1048e93e3b2d31ebb36164e305e1b531c9e data/minecraft/tags/block/logs_that_burn.json
-a3e86d5d2f88a59c888b62212cbd5b5e22fc2767 data/minecraft/tags/block/mineable/axe.json
+497755a14a3db343bf1e444313dcbfcdc6f3629f data/minecraft/tags/block/mineable/axe.json
 5e66b3d79f118695669bb6c0b2cc327833ae26dd data/minecraft/tags/block/mineable/hoe.json
 31a75586ecc65cace6949fbd16e105a2dfe68893 data/minecraft/tags/block/mineable/pickaxe.json
 df1ea6aeabe19b94eb8f0c20de8459bc2bfc25a6 data/minecraft/tags/block/mineable/shovel.json

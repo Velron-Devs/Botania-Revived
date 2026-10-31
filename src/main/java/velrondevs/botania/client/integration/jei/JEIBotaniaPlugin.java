@@ -44,6 +44,8 @@ import velrondevs.botania.common.crafting.LexiconElvenTradeRecipe;
 import velrondevs.botania.common.crafting.recipe.AncientWillRecipe;
 import velrondevs.botania.common.crafting.recipe.CompositeLensRecipe;
 import velrondevs.botania.common.crafting.recipe.TerraShattererTippingRecipe;
+import velrondevs.botania.compat.sophisticated.SophisticatedModule;
+import velrondevs.botania.compat.sophisticated.jei.SophisticatedJei;
 import velrondevs.botania.registry.BotaniaBlocks;
 import velrondevs.botania.registry.BotaniaFlowerBlocks;
 import velrondevs.botania.registry.BotaniaItems;
@@ -139,6 +141,9 @@ public class JEIBotaniaPlugin implements IModPlugin {
 	@Override
 	public void registerRecipeTransferHandlers(IRecipeTransferRegistration registry) {
 		registry.addRecipeTransferHandler(AssemblyHaloContainer.class, null, RecipeTypes.CRAFTING, 1, 9, 10, 36);
+		if (SophisticatedModule.INSTANCE.isAvailable()) {
+			SophisticatedJei.registerTransfers(registry);
+		}
 	}
 
 	@Override

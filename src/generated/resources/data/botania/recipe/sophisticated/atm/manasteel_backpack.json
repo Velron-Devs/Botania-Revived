@@ -1,0 +1,42 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "sophisticatedatm"
+    },
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "sophisticatedcore"
+    },
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "sophisticatedbackpacks"
+    },
+    {
+      "type": "botania:module_enabled",
+      "module": "sophisticated"
+    },
+    {
+      "type": "botania:backpacks_enabled"
+    }
+  ],
+  "type": "sophisticatedbackpacks:backpack_upgrade",
+  "category": "misc",
+  "key": {
+    "B": {
+      "item": "sophisticatedatm:unobtainium_backpack"
+    },
+    "I": {
+      "tag": "botania:manasteel_ingots"
+    }
+  },
+  "pattern": [
+    " I ",
+    "IBI",
+    " I "
+  ],
+  "result": {
+    "count": 1,
+    "id": "botania:manasteel_backpack"
+  }
+}

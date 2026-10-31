@@ -1,0 +1,53 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:and",
+      "values": [
+        {
+          "type": "botania:module_enabled",
+          "module": "sophisticated"
+        },
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "sophisticatedcore"
+        },
+        {
+          "type": "neoforge:or",
+          "values": [
+            {
+              "type": "neoforge:mod_loaded",
+              "modid": "sophisticatedbackpacks"
+            },
+            {
+              "type": "neoforge:mod_loaded",
+              "modid": "sophisticatedstorage"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "sophisticatedatm"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": {
+      "tag": "botania:sophisticated_unobtainium_stack_upgrades"
+    },
+    "I": {
+      "tag": "botania:manasteel_ingots"
+    }
+  },
+  "pattern": [
+    "III",
+    "ICI",
+    "III"
+  ],
+  "result": {
+    "count": 1,
+    "id": "botania:manasteel_stack_upgrade"
+  }
+}

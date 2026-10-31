@@ -2,7 +2,7 @@
   "name": "botania.entry.avaritiaTable",
   "category": "botania:misc",
   "icon": "botania:creative_pool",
-  "flag": "&botania:cre,mod:avaritia",
+  "flag": "&botania:creative,mod:avaritia",
   "pages": [
     {
       "type": "text",

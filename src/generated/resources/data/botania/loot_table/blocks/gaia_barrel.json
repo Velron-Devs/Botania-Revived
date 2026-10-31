@@ -1,0 +1,43 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "sophisticatedcore"
+    },
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "sophisticatedstorage"
+    },
+    {
+      "type": "botania:module_enabled",
+      "module": "sophisticated"
+    },
+    {
+      "type": "botania:storage_enabled"
+    }
+  ],
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "botania:gaia_barrel"
+        }
+      ],
+      "functions": [
+        {
+          "function": "minecraft:copy_name",
+          "source": "block_entity"
+        },
+        {
+          "function": "sophisticatedstorage:copy_storage_data"
+        }
+      ],
+      "name": "main",
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "botania:blocks/gaia_barrel"
+}

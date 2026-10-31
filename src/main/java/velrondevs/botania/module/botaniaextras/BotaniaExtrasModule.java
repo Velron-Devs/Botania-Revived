@@ -74,7 +74,7 @@ public final class BotaniaExtrasModule extends BotaniaModule {
 		ctx.bind(Registries.RECIPE_TYPE, r -> r.accept(BotaniaExtrasRecipeTypes.TREE_SUFFUSION_TYPE, BotaniaExtrasRecipeTypes.TREE_SUFFUSION_ID));
 		ctx.bind(Registries.RECIPE_SERIALIZER, r -> r.accept(BotaniaExtrasRecipeTypes.TREE_SUFFUSION_SERIALIZER, BotaniaExtrasRecipeTypes.TREE_SUFFUSION_ID));
 		BotaniaExtrasUtilitiesSetup.register(ctx);
-		ctx.creativeTab(() -> new ItemStack(BotaniaExtrasBlocks.bifrostDirt));
+		ctx.creativeSection("botania_extras", () -> new ItemStack(BotaniaExtrasBlocks.bifrostDirt));
 
 		IEventBus modBus = ctx.modBus();
 		modBus.addListener((FMLCommonSetupEvent e) -> e.enqueueWork(BotaniaExtrasModule::commonSetup));

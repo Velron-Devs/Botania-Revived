@@ -17,6 +17,9 @@ import net.neoforged.neoforge.registries.RegisterEvent;
 
 import velrondevs.botania.api.BotaniaAPI;
 import velrondevs.botania.common.lib.LibMisc;
+import velrondevs.botania.compat.sophisticated.SophisticatedModule;
+import velrondevs.botania.compat.sophisticated.backpack.BackpacksEnabledCondition;
+import velrondevs.botania.compat.sophisticated.storage.StorageEnabledCondition;
 import velrondevs.botania.module.asgard.AsgardModule;
 import velrondevs.botania.module.botaniaextras.BotaniaExtrasModule;
 import velrondevs.botania.module.magicskies.MagicSkiesModule;
@@ -43,7 +46,8 @@ public final class BotaniaModules {
 			MagicSkiesModule.INSTANCE,
 			ExplorationModule.INSTANCE,
 			CreativeCraftingModule.INSTANCE,
-			AsgardModule.INSTANCE
+			AsgardModule.INSTANCE,
+			SophisticatedModule.INSTANCE
 	);
 
 	private static final Map<String, Boolean> STATE = new HashMap<>();
@@ -96,11 +100,17 @@ public final class BotaniaModules {
 		modBus.addListener((RegisterEvent event) -> {
 			if (event.getRegistryKey().equals(NeoForgeRegistries.Keys.CONDITION_CODECS)) {
 				event.register(NeoForgeRegistries.Keys.CONDITION_CODECS, MODULE_ENABLED_CONDITION, () -> ModuleEnabledCondition.CODEC);
+				event.register(NeoForgeRegistries.Keys.CONDITION_CODECS, BackpacksEnabledCondition.ID, () -> BackpacksEnabledCondition.CODEC);
+				event.register(NeoForgeRegistries.Keys.CONDITION_CODECS, StorageEnabledCondition.ID, () -> StorageEnabledCondition.CODEC);
 			}
 		});
 		for (BotaniaModule module : ALL) {
 			if (!module.isEnabled()) {
 				BotaniaAPI.LOGGER.info("Botania module {} is disabled", module.id());
+				continue;
+			}
+			if (!module.isAvailable()) {
+				BotaniaAPI.LOGGER.info("Botania module {} is unavailable because a required mod is not installed", module.id());
 				continue;
 			}
 			ModuleContext ctx = new ModuleContext(module, modBus);

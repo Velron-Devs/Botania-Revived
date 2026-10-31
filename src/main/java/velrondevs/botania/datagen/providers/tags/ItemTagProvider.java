@@ -137,7 +137,8 @@ public class ItemTagProvider extends ItemTagsProvider {
 				runeWater, runeFire, runeEarth, runeAir,
 				runeSpring, runeSummer, runeAutumn, runeWinter,
 				runeMana, runeLust, runeGluttony, runeGreed,
-				runeSloth, runeWrath, runeEnvy, runePride
+				runeSloth, runeWrath, runeEnvy, runePride,
+				runeDeception
 		);
 
 		TagAppender<Item> allPetals = this.tag(BotaniaTags.Items.PETALS);

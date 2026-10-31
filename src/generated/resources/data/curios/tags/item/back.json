@@ -1,0 +1,24 @@
+{
+  "values": [
+    {
+      "id": "botania:manasteel_backpack",
+      "required": false
+    },
+    {
+      "id": "botania:elementium_backpack",
+      "required": false
+    },
+    {
+      "id": "botania:terrasteel_backpack",
+      "required": false
+    },
+    {
+      "id": "botania:gaia_backpack",
+      "required": false
+    },
+    {
+      "id": "botania:alfsteel_backpack",
+      "required": false
+    }
+  ]
+}

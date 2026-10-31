@@ -1,0 +1,15 @@
+{
+  "parent": "sophisticatedstorage:block/barrel",
+  "flat_top_model": "botania:block/flat/manasteel_barrel",
+  "loader": "sophisticatedstorage:barrel",
+  "model_parts": {
+    "tier": {
+      "textures": {
+        "bottom": "botania:block/manasteel_barrel_bottom",
+        "side": "botania:block/manasteel_barrel_side",
+        "top": "botania:block/manasteel_barrel_top",
+        "top_trim": "botania:block/manasteel_barrel_top"
+      }
+    }
+  }
+}

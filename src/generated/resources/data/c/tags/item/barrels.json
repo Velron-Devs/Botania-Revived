@@ -1,0 +1,24 @@
+{
+  "values": [
+    {
+      "id": "botania:manasteel_barrel",
+      "required": false
+    },
+    {
+      "id": "botania:elementium_barrel",
+      "required": false
+    },
+    {
+      "id": "botania:terrasteel_barrel",
+      "required": false
+    },
+    {
+      "id": "botania:gaia_barrel",
+      "required": false
+    },
+    {
+      "id": "botania:alfsteel_barrel",
+      "required": false
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "values": [
+    {
+      "id": "botania:manasteel_chest",
+      "required": false
+    },
+    {
+      "id": "botania:elementium_chest",
+      "required": false
+    },
+    {
+      "id": "botania:terrasteel_chest",
+      "required": false
+    },
+    {
+      "id": "botania:gaia_chest",
+      "required": false
+    },
+    {
+      "id": "botania:alfsteel_chest",
+      "required": false
+    }
+  ]
+}

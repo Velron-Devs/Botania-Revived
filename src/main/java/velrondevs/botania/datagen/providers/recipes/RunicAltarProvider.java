@@ -13,6 +13,7 @@ import net.minecraft.world.level.block.Blocks;
 import velrondevs.botania.common.crafting.RunicAltarRecipe;
 import velrondevs.botania.common.crafting.recipe.HeadRecipe;
 import velrondevs.botania.common.lib.BotaniaTags;
+import velrondevs.botania.registry.BotaniaBlocks;
 import velrondevs.botania.registry.BotaniaFlowerBlocks;
 import velrondevs.botania.registry.BotaniaItems;
 
@@ -35,7 +36,7 @@ public class RunicAltarProvider extends BotaniaRecipeProvider {
 		final int costTier1 = 5200;
 		final int costTier2 = 8000;
 		final int costTier3 = 12000;
-		final int costWitherManaRose = 100000;
+		final int costWitherManaRose = 20000;
 
 		Ingredient manaSteel = Ingredient.of(BotaniaTags.Items.INGOTS_MANASTEEL);
 		Ingredient manaDiamond = Ingredient.of(BotaniaTags.Items.GEMS_MANA_DIAMOND);
@@ -78,13 +79,20 @@ public class RunicAltarProvider extends BotaniaRecipeProvider {
 		rune(consumer, idFor("envy"), new ItemStack(BotaniaItems.runeEnvy), costTier3, manaDiamond, manaDiamond, winter, water);
 		rune(consumer, idFor("pride"), new ItemStack(BotaniaItems.runePride), costTier3, manaDiamond, manaDiamond, summer, fire);
 
+		rune(consumer, idFor("deception"), new ItemStack(BotaniaItems.runeDeception), 20000, spring, water, Ingredient.of(BotaniaItems.pixieDust), Ingredient.of(BotaniaItems.dreamwoodTwig), Ingredient.of(BotaniaBlocks.manaDiamondBlock));
+
 		head(consumer, idFor("head"), new ItemStack(Items.PLAYER_HEAD), 22500, Ingredient.of(Items.SKELETON_SKULL), Ingredient.of(BotaniaItems.pixieDust), Ingredient.of(Items.PRISMARINE_CRYSTALS), Ingredient.of(Items.NAME_TAG, Items.WRITTEN_BOOK), Ingredient.of(Items.GOLDEN_APPLE));
 		rune(consumer, idFor("wither_mana_rose"), new ItemStack(BotaniaFlowerBlocks.witherManaRose), costWitherManaRose,
 				Ingredient.of(BotaniaItems.unactivatedWitherManaRose),
-				manaDiamond, manaDiamond, manaDiamond, manaDiamond,
-				Ingredient.of(BotaniaItems.manaPearl), Ingredient.of(BotaniaItems.manaPearl), Ingredient.of(BotaniaItems.manaPearl), Ingredient.of(BotaniaItems.manaPearl),
-				manaPowder, manaPowder,
-				Ingredient.of(BotaniaItems.runePride));
+				manaDiamond,
+				Ingredient.of(BotaniaItems.manaPearl),
+				manaPowder,
+				Ingredient.of(BotaniaFlowerBlocks.loonium),
+				Ingredient.of(BotaniaBlocks.motifDaybloom),
+				Ingredient.of(BotaniaItems.runePride),
+				Ingredient.of(BotaniaItems.runeDeception),
+				fire,
+				water);
 	}
 
 	private static ResourceLocation idFor(String s) {

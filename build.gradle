@@ -161,6 +161,13 @@ repositories {
     }
 }
 
+configurations {
+    fractalJarJar {
+        canBeConsumed = false
+        canBeResolved = true
+    }
+}
+
 def devMod = { String name ->
     project.hasProperty("with_${name}") || (!project.hasProperty("minimal") && !project.hasProperty("no_${name}"))
 }
@@ -225,10 +232,33 @@ dependencies {
         runtimeOnly("software.bernie.geckolib:geckolib-neoforge-1.21.1:${geckolib_version}") { transitive = false }
     }
 
+    compileOnly "maven.modrinth:sophisticated-core:${sophisticated_core_version}"
+    compileOnly "maven.modrinth:sophisticated-storage:${sophisticated_storage_version}"
+    compileOnly "maven.modrinth:sophisticated-backpacks:${sophisticated_backpacks_version}"
+    if (devMod('sophisticated')) {
+        runtimeOnly("maven.modrinth:sophisticated-core:${sophisticated_core_version}") { transitive = false }
+        runtimeOnly("maven.modrinth:sophisticated-storage:${sophisticated_storage_version}") { transitive = false }
+        runtimeOnly("maven.modrinth:sophisticated-backpacks:${sophisticated_backpacks_version}") { transitive = false }
+    }
+
     if (devMod('spectrum') && !project.hasProperty('no_curios')) {
         runtimeOnly "maven.modrinth:spectrum:${spectrum_version}"
         runtimeOnly "maven.modrinth:revelationary:${revelationary_version}"
         runtimeOnly "maven.modrinth:modonomicon:${modonomicon_version}"
+    }
+
+    compileOnly "maven.modrinth:fractal-lib:${fractal_version}"
+    if (!(devMod('spectrum') && !project.hasProperty('no_curios'))) {
+        runtimeOnly "maven.modrinth:fractal-lib:${fractal_version}"
+    }
+    fractalJarJar("maven.modrinth:fractal-lib:${fractal_version}") { transitive = false }
+
+    if (project.hasProperty('extra_mod_jars')) {
+        project.property('extra_mod_jars').toString().split(';').each { jar ->
+            if (jar.trim()) {
+                runtimeOnly files(jar.trim())
+            }
+        }
     }
 
     if (project.hasProperty('with_thaumaturge') || project.hasProperty('thaumaturge_jar')) {
@@ -247,7 +277,7 @@ dependencies {
             runtimeOnly "me.shedaniel:RoughlyEnoughItems-neoforge:${rei_version}"
             break
         case 'jei':
-            runtimeOnly "mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}"
+            runtimeOnly "mezz.jei:jei-${minecraft_version}-neoforge:${devMod('sophisticated') ? dev_jei_version : jei_version}"
             break
     }
 
@@ -288,20 +318,23 @@ tasks.withType(ProcessResources).configureEach {
             issue_tracker         : issue_tracker,
             mod_license           : mod_license,
             patchouli_version     : patchouli_version,
-            jei_version            : jei_version,
-            emi_version            : emi_version,
-            rei_version            : rei_version,
-            curios_version         : curios_version,
-            sodium_version         : sodium_version,
-            kubejs_version         : kubejs_version,
-            rhino_version          : rhino_version,
-            jade_version           : jade_version,
-            wthit_version          : wthit_version,
-            ears_version            : ears_version,
-            botanypots_version      : botanypots_version,
-            ponder_version          : ponder_version,
-            ars_nouveau_version_range: ars_nouveau_version_range,
-            thaumaturge_version     : thaumaturge_version,
+            jei_version           : jei_version,
+            emi_version           : emi_version,
+            rei_version           : rei_version,
+            curios_version        : curios_version,
+            sodium_version        : sodium_version,
+            kubejs_version        : kubejs_version,
+            rhino_version         : rhino_version,
+            jade_version          : jade_version,
+            wthit_version         : wthit_version,
+            ears_version          : ears_version,
+            botanypots_version    : botanypots_version,
+            ponder_version        : ponder_version,
+            arsnouveau_version: arsnouveau_version,
+            thaumaturge_version   : thaumaturge_version,
+            sc_version            : sc_version,
+            ss_version            : ss_version,
+            sb_version            : sb_version,
     ]
     inputs.properties replaceProperties
 
@@ -353,12 +386,16 @@ tasks.register('coremodMetadata') {
     def version = mod_version
     def artifact = coremodArtifact
     def file = coremodFile
+    def fractalVersion = fractal_version
     inputs.property('version', version)
+    inputs.property('fractalVersion', fractalVersion)
     outputs.file(out)
     doLast {
         def target = out.get().asFile
         target.parentFile.mkdirs()
-        target.text = "{\"jars\":[{\"identifier\":{\"group\":\"velrondevs.botania\",\"artifact\":\"${artifact}\"},\"version\":{\"range\":\"[${version},)\",\"artifactVersion\":\"${version}\"},\"path\":\"META-INF/jarjar/${file}\",\"isObfuscated\":false}]}"
+        def coremodEntry = "{\"identifier\":{\"group\":\"velrondevs.botania\",\"artifact\":\"${artifact}\"},\"version\":{\"range\":\"[${version},)\",\"artifactVersion\":\"${version}\"},\"path\":\"META-INF/jarjar/${file}\",\"isObfuscated\":false}"
+        def fractalEntry = "{\"identifier\":{\"group\":\"de.dafuqs\",\"artifact\":\"Fractal\"},\"version\":{\"range\":\"[${fractalVersion},)\",\"artifactVersion\":\"${fractalVersion}\"},\"path\":\"META-INF/jarjar/Fractal-${fractalVersion}.jar\",\"isObfuscated\":false}"
+        target.text = "{\"jars\":[${coremodEntry},${fractalEntry}]}"
     }
 }
 
@@ -366,6 +403,10 @@ tasks.named('jar') {
     dependsOn tasks.named('coremodJar'), tasks.named('coremodMetadata')
     from(tasks.named('coremodJar').flatMap { it.archiveFile }) {
         into 'META-INF/jarjar'
+    }
+    from(configurations.fractalJarJar) {
+        into 'META-INF/jarjar'
+        rename { "Fractal-${fractal_version}.jar" }
     }
     from(layout.buildDirectory.file('coremod/jarjar/metadata.json')) {
         into 'META-INF/jarjar'

@@ -23,6 +23,7 @@ public class BotaniaRunes {
 		event.register(prefix(LibItemNames.RUNE_WRATH), BotaniaItems.runeWrath);
 		event.register(prefix(LibItemNames.RUNE_ENVY), BotaniaItems.runeEnvy);
 		event.register(prefix(LibItemNames.RUNE_PRIDE), BotaniaItems.runePride);
+		event.register(prefix(LibItemNames.RUNE_DECEPTION), BotaniaItems.runeDeception);
 	}
 
 	private BotaniaRunes() {}

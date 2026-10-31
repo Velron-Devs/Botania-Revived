@@ -507,6 +507,46 @@
     {
       "id": "botania:livingwood_funnel",
       "required": false
+    },
+    {
+      "id": "botania:manasteel_barrel",
+      "required": false
+    },
+    {
+      "id": "botania:manasteel_chest",
+      "required": false
+    },
+    {
+      "id": "botania:elementium_barrel",
+      "required": false
+    },
+    {
+      "id": "botania:elementium_chest",
+      "required": false
+    },
+    {
+      "id": "botania:terrasteel_barrel",
+      "required": false
+    },
+    {
+      "id": "botania:terrasteel_chest",
+      "required": false
+    },
+    {
+      "id": "botania:gaia_barrel",
+      "required": false
+    },
+    {
+      "id": "botania:gaia_chest",
+      "required": false
+    },
+    {
+      "id": "botania:alfsteel_barrel",
+      "required": false
+    },
+    {
+      "id": "botania:alfsteel_chest",
+      "required": false
     }
   ]
 }

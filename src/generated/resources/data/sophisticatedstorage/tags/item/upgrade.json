@@ -1,0 +1,45 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "botania:manasteel_stack_upgrade",
+      "required": false
+    },
+    {
+      "id": "botania:elementium_stack_upgrade",
+      "required": false
+    },
+    {
+      "id": "botania:terrasteel_stack_upgrade",
+      "required": false
+    },
+    {
+      "id": "botania:gaia_stack_upgrade",
+      "required": false
+    },
+    {
+      "id": "botania:alfsteel_stack_upgrade",
+      "required": false
+    },
+    {
+      "id": "botania:mana_pile_upgrade",
+      "required": false
+    },
+    {
+      "id": "botania:mana_link_upgrade",
+      "required": false
+    },
+    {
+      "id": "botania:runic_altar_upgrade",
+      "required": false
+    },
+    {
+      "id": "botania:elven_portal_upgrade",
+      "required": false
+    },
+    {
+      "id": "botania:brewery_upgrade",
+      "required": false
+    }
+  ]
+}

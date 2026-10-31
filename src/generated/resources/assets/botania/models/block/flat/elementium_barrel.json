@@ -1,0 +1,14 @@
+{
+  "parent": "sophisticatedstorage:block/flat/barrel",
+  "loader": "sophisticatedstorage:barrel",
+  "model_parts": {
+    "tier": {
+      "textures": {
+        "bottom": "botania:block/elementium_barrel_bottom",
+        "side": "botania:block/elementium_barrel_side",
+        "top": "botania:block/elementium_barrel_top",
+        "top_trim": "botania:block/elementium_barrel_top"
+      }
+    }
+  }
+}

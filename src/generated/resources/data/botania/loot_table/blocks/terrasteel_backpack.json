@@ -1,0 +1,39 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "sophisticatedcore"
+    },
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "sophisticatedbackpacks"
+    },
+    {
+      "type": "botania:module_enabled",
+      "module": "sophisticated"
+    },
+    {
+      "type": "botania:backpacks_enabled"
+    }
+  ],
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "botania:terrasteel_backpack"
+        }
+      ],
+      "functions": [
+        {
+          "function": "sophisticatedbackpacks:copy_backpack_data"
+        }
+      ],
+      "name": "main",
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "botania:blocks/terrasteel_backpack"
+}

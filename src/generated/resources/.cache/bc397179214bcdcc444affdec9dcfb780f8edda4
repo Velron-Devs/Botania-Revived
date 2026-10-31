@@ -1,5 +1,7 @@
-// 1.21.1	2026-10-04T02:25:04.1472101	Botania item tags (convention)
+// 1.21.1	2026-10-30T18:55:24.1214175	Botania item tags (convention)
+24db234b39e37dd921ec944d7b5290b133c21839 data/accessories/tags/item/back.json
 16f0556ee0ba73f2f9247478c29a27904f7f16a3 data/botania/tags/item/lens_glue.json
+24db234b39e37dd921ec944d7b5290b133c21839 data/curios/tags/item/back.json
 87abc0c56c427d0fd7c9ca4acba0c33123bf5834 data/curios/tags/item/belt.json
 9bde6528555b75249a73b900157d7bc104d2baec data/curios/tags/item/body.json
 22dfca4dc9ed4dc390fadc33f03c602031f80fb1 data/curios/tags/item/charm.json

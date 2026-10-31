@@ -3,6 +3,7 @@ package velrondevs.botania.module;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.common.conditions.ICondition;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 
@@ -29,6 +30,15 @@ public abstract class BotaniaModule {
 
 	public boolean enabledByDefault() {
 		return true;
+	}
+
+	public boolean isAvailable() {
+		return true;
+	}
+
+	protected static boolean isModLoaded(String modId) {
+		ModList list = ModList.get();
+		return list != null && list.isLoaded(modId);
 	}
 
 	public final boolean isEnabled() {

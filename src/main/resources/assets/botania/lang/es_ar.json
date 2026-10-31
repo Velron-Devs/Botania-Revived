@@ -20,7 +20,7 @@
   "botaniamisc.filter2": "Recoge todos los objetos.",
   "botaniamisc.creativePool0": "Pileta de Maná de Creativo. Tiene Maná infinito.",
   "botaniamisc.creativePool1": "Propio de un Egoista",
-  "botaniamisc.toolRank": "%s&7 Rank",
+  "botaniamisc.toolRank": "%s\u00a77 Rank",
   "botaniamisc.lexiconcover0": "Tu guía para todas",
   "botaniamisc.lexiconcover1": "tus necesidades botánicas",
   "botaniamisc.lexiconcover2": "del autor de bestsellers",
@@ -67,7 +67,7 @@
   "worldgen.flower.density": "Densidad de las Flores al Generar el Mundo",
   "worldgen.flower.quantity": "Cantidad de Flores al Generar el Mundo",
 
-  "botania.baubletooltip": "Oprime la &b%s&7 para abrir el menú de Baubles",
+  "botania.baubletooltip": "Oprime la \u00a7b%s\u00a77 para abrir el menú de Baubles",
 
   "block.botania.white_mystical_flower": "Flor Mística Blanca",
   "block.botania.orange_mystical_flower": "Flor Mística Naranja",

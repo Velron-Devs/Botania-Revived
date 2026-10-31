@@ -1,0 +1,15 @@
+{
+  "parent": "sophisticatedstorage:block/barrel",
+  "flat_top_model": "botania:block/flat/gaia_barrel",
+  "loader": "sophisticatedstorage:barrel",
+  "model_parts": {
+    "tier": {
+      "textures": {
+        "bottom": "botania:block/gaia_barrel_bottom",
+        "side": "botania:block/gaia_barrel_side",
+        "top": "botania:block/gaia_barrel_top",
+        "top_trim": "botania:block/gaia_barrel_top"
+      }
+    }
+  }
+}

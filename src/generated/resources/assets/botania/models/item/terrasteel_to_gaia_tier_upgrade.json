@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "botania:item/terrasteel_to_gaia_tier_upgrade"
+  }
+}

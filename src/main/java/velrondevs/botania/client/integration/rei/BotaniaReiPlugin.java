@@ -6,6 +6,7 @@ import me.shedaniel.rei.api.client.plugins.REIClientPlugin;
 import me.shedaniel.rei.api.client.registry.category.CategoryRegistry;
 import me.shedaniel.rei.api.client.registry.display.DisplayRegistry;
 import me.shedaniel.rei.api.client.registry.screen.ScreenRegistry;
+import me.shedaniel.rei.api.client.registry.transfer.TransferHandlerRegistry;
 import me.shedaniel.rei.api.common.entry.EntryIngredient;
 import me.shedaniel.rei.api.common.entry.EntryStack;
 import me.shedaniel.rei.api.common.entry.comparison.ItemComparatorRegistry;
@@ -42,6 +43,8 @@ import velrondevs.botania.common.item.AncientWillItem;
 import velrondevs.botania.common.item.equipment.tool.terrasteel.TerraShattererItem;
 import velrondevs.botania.common.item.lens.LensItem;
 import velrondevs.botania.common.lib.BotaniaTags;
+import velrondevs.botania.compat.sophisticated.SophisticatedModule;
+import velrondevs.botania.compat.sophisticated.rei.SophisticatedRei;
 import velrondevs.botania.registry.BotaniaBlocks;
 import velrondevs.botania.registry.BotaniaFlowerBlocks;
 import velrondevs.botania.registry.BotaniaItems;
@@ -80,6 +83,13 @@ public class BotaniaReiPlugin implements REIClientPlugin {
 	@Override
 	public String getPluginProviderName() {
 		return "Botania";
+	}
+
+	@Override
+	public void registerTransferHandlers(TransferHandlerRegistry registry) {
+		if (SophisticatedModule.INSTANCE.isAvailable()) {
+			SophisticatedRei.registerTransfers(registry);
+		}
 	}
 
 	@Override

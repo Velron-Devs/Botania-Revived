@@ -1,5 +1,5 @@
-// 1.21.1	2026-10-04T02:25:03.815416	Botania Creative Crafting recipes
-b40dee60cb7434261c67f4ab54a72addecefbf5a data/botania/recipe/cre/terra_plate/creative_corporea_spark.json
-ee63f273f3d01150aabedbd2f86d04a758154de1 data/botania/recipe/cre/terra_plate/creative_mana_tablet.json
-0e12198c5cd9fd718b26e5a6f36491c6e83bdc15 data/botania/recipe/cre/terra_plate/creative_pool.json
-9863e8feb9a501c851214a2bc5c68b2a96d41792 data/botania/recipe/cre/terra_plate/infrangible_platform.json
+// 1.21.1	2026-10-30T18:55:23.9924984	Botania Creative Crafting recipes
+6bef09893f818f742d3da8fd3f77c30f5d9efc09 data/botania/recipe/creative/terra_plate/creative_corporea_spark.json
+e804fbf9f66e75701d958f367ec30a291e298545 data/botania/recipe/creative/terra_plate/creative_mana_tablet.json
+eef7b24ea17d1273505098b904728bb2e2d48093 data/botania/recipe/creative/terra_plate/creative_pool.json
+6aa2449142151d22340d18fa815f2986a23dc2c1 data/botania/recipe/creative/terra_plate/infrangible_platform.json

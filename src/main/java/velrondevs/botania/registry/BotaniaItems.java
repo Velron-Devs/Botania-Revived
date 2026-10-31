@@ -207,6 +207,7 @@ public final class BotaniaItems {
 	public static final Item runeWrath = new RuneItem(defaultBuilder());
 	public static final Item runeEnvy = new RuneItem(defaultBuilder());
 	public static final Item runePride = new RuneItem(defaultBuilder());
+	public static final Item runeDeception = new RuneItem(defaultBuilder());
 
 	public static final Item grassSeeds = make(prefix(LibItemNames.GRASS_SEEDS), new GrassSeedsItem(FloatingFlower.IslandType.GRASS, defaultBuilder()));
 	public static final Item podzolSeeds = make(prefix(LibItemNames.PODZOL_SEEDS), new GrassSeedsItem(FloatingFlower.IslandType.PODZOL, defaultBuilder()));

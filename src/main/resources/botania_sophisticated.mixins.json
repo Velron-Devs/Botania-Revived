@@ -1,0 +1,15 @@
+{
+  "required": false,
+  "minVersion": "0.8",
+  "package": "velrondevs.botania.compat.sophisticated.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "plugin": "velrondevs.botania.compat.sophisticated.SophisticatedMixinPlugin",
+  "mixins": [],
+  "client": [
+    "ChestSubRendererMixin",
+    "StorageScreenHeightMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 0
+  }
+}

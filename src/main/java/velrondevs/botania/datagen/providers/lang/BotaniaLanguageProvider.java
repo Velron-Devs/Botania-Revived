@@ -14,6 +14,7 @@ import net.minecraft.resources.ResourceLocation;
 import org.slf4j.Logger;
 
 import velrondevs.botania.common.lib.LibMisc;
+import velrondevs.botania.compat.sophisticated.storage.BotaniaStorageTier;
 
 import java.nio.file.Path;
 import java.util.Map;
@@ -126,6 +127,7 @@ public final class BotaniaLanguageProvider implements DataProvider {
 		items1();
 		items2();
 		items3();
+		sophisticated();
 		entities();
 		effects();
 		advancements();
@@ -169,9 +171,18 @@ public final class BotaniaLanguageProvider implements DataProvider {
 
 	private void tabs() {
 		same("itemGroup.botania", "Botania");
+		both("itemGroup.botania.generating_flowers", "Generating", "Generadoras");
+		both("itemGroup.botania.functional_flowers", "Functional", "Funcionales");
+		both("itemGroup.botania.mana", "Mana Network", "Red de maná");
+		both("itemGroup.botania.gear", "Gear", "Equipo");
+		both("itemGroup.botania.accessories", "Accessories", "Accesorios");
+		both("itemGroup.botania.ingredients", "Ingredients", "Ingredientes");
+		both("itemGroup.botania.brewing", "Brewing", "Brebajes");
+		both("itemGroup.botania.decoration", "Decoration", "Decoración");
+		both("itemGroup.botania.misc", "Misc", "Varios");
 		same("itemGroup.botania.botania_extras", "Botania Extras");
-		same("itemGroup.botania.cre", "botania:cre");
-		same("itemGroup.botania.asg", "botania:asg");
+		same("itemGroup.botania.asgard", "Asgard");
+		same("itemGroup.botania.sophisticated", "Sophisticated");
 		both("key.botania_corporea_request", "Corporea Request", "Petici\u00f3n de corporea");
 	}
 
@@ -1691,6 +1702,7 @@ public final class BotaniaLanguageProvider implements DataProvider {
 		both("item.botania.redstone_root", "Redstone Root", "Raiz de redstone");
 		both("item.botania.rune_air", "Rune of Air", "Runa de aire");
 		both("item.botania.rune_autumn", "Rune of Autumn", "Runa de oto\u00f1o");
+		both("item.botania.rune_deception", "Rune of Deception", "Runa del engaño");
 		both("item.botania.rune_earth", "Rune of Earth", "Runa de tierra");
 		both("item.botania.rune_envy", "Rune of Envy", "Runa de envidia");
 		both("item.botania.rune_fire", "Rune of Fire", "Runa de fuego");
@@ -1766,6 +1778,76 @@ public final class BotaniaLanguageProvider implements DataProvider {
 		both("item.botania.world_seed", "World Seed", "Semilla del mundo");
 		both("item.botania.yellow_iridescent_seeds", "Yellow Iridescent Seeds", "Semillas iridiscentes amarillas");
 		both("item.botania.yellow_petal", "Mystical Yellow Petal", "P\u00e9talo m\u00edstico amarillo");
+	}
+
+	private void sophisticated() {
+		both("item.botania.manasteel_stack_upgrade", "Manasteel Stack Upgrade", "Mejora de pila de manacero");
+		both("item.botania.manasteel_stack_upgrade.tooltip", "Multiplies the number of stacks that can fit in a slot by 1,000,000 (x1M)", "Multiplica por 1.000.000 (x1M) el número de pilas que caben en una ranura");
+		both("item.botania.elementium_stack_upgrade", "Elementium Stack Upgrade", "Mejora de pila de elementio");
+		both("item.botania.elementium_stack_upgrade.tooltip", "Multiplies the number of stacks that can fit in a slot by 2,000,000 (x2M)", "Multiplica por 2.000.000 (x2M) el número de pilas que caben en una ranura");
+		both("item.botania.terrasteel_stack_upgrade", "Terrasteel Stack Upgrade", "Mejora de pila de terracero");
+		both("item.botania.terrasteel_stack_upgrade.tooltip", "Multiplies the number of stacks that can fit in a slot by 3,000,000 (x3M)", "Multiplica por 3.000.000 (x3M) el número de pilas que caben en una ranura");
+		both("item.botania.gaia_stack_upgrade", "Gaia Stack Upgrade", "Mejora de pila de Gaia");
+		both("item.botania.gaia_stack_upgrade.tooltip", "Multiplies the number of stacks that can fit in a slot by 12,000,000,000 (x12B). The limit of a slot is capped at 2,147,483,647 items", "Multiplica por 12.000.000.000 (x12B) el número de pilas que caben en una ranura. El límite de una ranura se topa en 2.147.483.647 objetos");
+		both("item.botania.alfsteel_stack_upgrade", "Alfsteel Stack Upgrade", "Mejora de pila de alfsteel");
+		both("item.botania.alfsteel_stack_upgrade.tooltip", "Practically infinite: raises the limit of every slot to the maximum of 2,147,483,647 items (x2.1B)", "Prácticamente infinita: sube el límite de cada ranura al máximo de 2.147.483.647 objetos (x2.1B)");
+		both("item.botania.mana_pile_upgrade", "Mana Pile Upgrade", "Mejora de pila de maná");
+		both("item.botania.mana_pile_upgrade.tooltip", "Stores mana inside the storage. It is filled by the Mana Tablets and Mirrors kept in the storage, in its own slot or carried in your inventory, and holds more with each Stack Upgrade. Place the container next to a Mana Spreader or Spark to fill it", "Almacena man\u00e1 dentro del almacenamiento. Se llena con las tablillas y espejos de man\u00e1 guardados en el almacenamiento, en su propia ranura o llevados en tu inventario, y guarda m\u00e1s con cada mejora de pila. Coloca el contenedor junto a un esparcidor de man\u00e1 o una chispa para llenarlo");
+		both("item.botania.mana_link_upgrade", "Mana Support Upgrade", "Mejora de soporte de maná");
+		both("item.botania.mana_link_upgrade.tooltip", "In a backpack that also has a Mana Pile Upgrade, lets the Botania items you carry spend the mana stored in that pile", "En una mochila que también tenga una mejora de pila de maná, permite que los objetos de Botania que llevas gasten el maná guardado en esa pila");
+		both("item.botania.manasteel_backpack", "Manasteel Backpack", "Mochila de manacero");
+		both("block.botania.manasteel_backpack", "Manasteel Backpack", "Mochila de manacero");
+		both("item.botania.elementium_backpack", "Elementium Backpack", "Mochila de elementium");
+		both("block.botania.elementium_backpack", "Elementium Backpack", "Mochila de elementium");
+		both("item.botania.terrasteel_backpack", "Terrasteel Backpack", "Mochila de terracero");
+		both("block.botania.terrasteel_backpack", "Terrasteel Backpack", "Mochila de terracero");
+		both("item.botania.gaia_backpack", "Gaia Backpack", "Mochila de Gaia");
+		both("block.botania.gaia_backpack", "Gaia Backpack", "Mochila de Gaia");
+		both("item.botania.alfsteel_backpack", "Alfsteel Backpack", "Mochila de alfsteel");
+		both("block.botania.alfsteel_backpack", "Alfsteel Backpack", "Mochila de alfsteel");
+		both("botania.sophisticated.stored_mana", "Stored mana: %s", "Maná almacenado: %s");
+		both("gui.botania.sophisticated.mana_pile", "Mana Pile", "Pila de maná");
+		both("gui.botania.sophisticated.mana_pile.tooltip", "Holds a Mana Tablet or Mirror whose mana flows into the pile", "Guarda una tablilla o un espejo de man\u00e1 cuyo man\u00e1 pasa a la pila");
+		both("gui.botania.sophisticated.mana_pile.slot", "Mana Tablet or Mirror", "Tablilla o espejo de man\u00e1");
+		both("gui.botania.sophisticated.mana_pile.contents", "%1$s of a total of %2$s mana", "%1$s de un total de %2$s de man\u00e1");
+		both("item.botania.runic_altar_upgrade", "Runic Altar Upgrade", "Mejora de altar rúnico");
+		both("item.botania.runic_altar_upgrade.tooltip", "Performs Runic Altar crafting inside the storage. Put the ingredients and a Livingrock in its tab and it spends the mana of the Mana Pile Upgrade of the same storage, leaving the result in the storage", "Realiza las recetas del altar rúnico dentro del almacenamiento. Coloca los ingredientes y una roca viva en su pestaña y gasta el maná de la mejora de pila de maná del mismo almacenamiento, dejando el resultado en el almacenamiento");
+		both("item.botania.elven_portal_upgrade", "Elven Portal Upgrade", "Mejora de portal élfico");
+		both("item.botania.elven_portal_upgrade.tooltip", "Performs Elven Gateway trades inside the storage. Items placed in its tab are traded automatically, spending the mana of the Mana Pile Upgrade of the same storage", "Realiza los intercambios del acceso élfico dentro del almacenamiento. Los objetos de su pestaña se intercambian solos, gastando el maná de la mejora de pila de maná del mismo almacenamiento");
+		both("item.botania.brewery_upgrade", "Botanical Brewery Upgrade", "Mejora de fermentador botánico");
+		both("item.botania.brewery_upgrade.tooltip", "Brews inside the storage. Put a Vial, Flask, Incense Stick or Blood Pendant and the reagents in its tab and it spends the mana of the Mana Pile Upgrade of the same storage, leaving the brew in the storage", "Prepara fermentos dentro del almacenamiento. Coloca un vial, un matraz, una barra de incienso o un colgante de sangre y los reactivos en su pestaña y gasta el maná de la mejora de pila de maná del mismo almacenamiento, dejando el fermento en el almacenamiento");
+		both("gui.botania.sophisticated.runic_altar", "Runic Altar", "Altar rúnico");
+		both("gui.botania.sophisticated.runic_altar.tooltip", "Ingredients and Livingrock for the Runic Altar recipes", "Ingredientes y roca viva para las recetas del altar rúnico");
+		both("gui.botania.sophisticated.elven_portal", "Elven Portal", "Portal élfico");
+		both("gui.botania.sophisticated.elven_portal.tooltip", "Items to trade with the elves", "Objetos para intercambiar con los elfos");
+		both("gui.botania.sophisticated.brewery", "Botanical Brewery", "Fermentador botánico");
+		both("gui.botania.sophisticated.brewery.tooltip", "Container and reagents for the brews", "Recipiente y reactivos para los fermentos");
+		both("gui.botania.sophisticated.status.idle", "Waiting for a valid recipe", "Esperando una receta válida");
+		both("gui.botania.sophisticated.status.no_pile", "Needs a Mana Pile Upgrade in this storage", "Necesita una mejora de pila de maná en este almacenamiento");
+		both("gui.botania.sophisticated.status.need_mana", "Waiting for mana", "Esperando maná");
+		both("gui.botania.sophisticated.status.no_space", "Not enough room in the storage", "No hay espacio en el almacenamiento");
+		both("gui.botania.sophisticated.status.no_reagent", "Needs a Livingrock", "Necesita una roca viva");
+		both("gui.botania.sophisticated.status.working", "Crafting", "Fabricando");
+		both("gui.botania.sophisticated.transfer.invalid", "This recipe cannot be placed in the upgrade", "Esta receta no se puede colocar en la mejora");
+		both("gui.botania.sophisticated.transfer.missing", "Missing ingredients for this recipe", "Faltan ingredientes para esta receta");
+		both("gui.botania.sophisticated.transfer.no_upgrade.runic_altar", "Open a storage with a Runic Altar Upgrade to transfer this recipe", "Abre un almacenamiento con una mejora de altar rúnico para transferir esta receta");
+		both("gui.botania.sophisticated.transfer.no_upgrade.elven_portal", "Open a storage with an Elven Portal Upgrade to transfer this recipe", "Abre un almacenamiento con una mejora de portal élfico para transferir esta receta");
+		both("gui.botania.sophisticated.transfer.no_upgrade.brewery", "Open a storage with a Botanical Brewery Upgrade to transfer this recipe", "Abre un almacenamiento con una mejora de fermentador botánico para transferir esta receta");
+		for (BotaniaStorageTier tier : BotaniaStorageTier.values()) {
+			both("block.botania." + tier.barrelName(), "%s%s" + tier.english() + " Barrel", "Barril de " + tier.spanish() + "%2$s%1$s");
+			both("block.botania." + tier.chestName(), "%s%s" + tier.english() + " Chest", "Cofre de " + tier.spanish() + "%2$s%1$s");
+			both("botania.sophisticated.tier." + tier.id(), tier.english(), tier.spanish());
+			String from = tier.previous() == null ? "Netherite" : tier.previous().english();
+			String fromEs = tier.previous() == null ? "netherita" : tier.previous().spanish();
+			both("item.botania." + tier.upgradeName(), from + " to " + tier.english() + " Tier Upgrade", "Mejora de tier de " + fromEs + " a " + tier.spanish());
+			both("item.botania." + tier.upgradeName() + ".tooltip", "Right-click a placed " + from + " Sophisticated Barrel or Chest to upgrade it to " + tier.english() + ", keeping its contents and upgrades. A double chest uses two", "Haz clic derecho sobre un barril o cofre sophisticated de " + fromEs + " ya colocado para mejorarlo a " + tier.spanish() + ", conservando su contenido y mejoras. Un cofre doble usa dos");
+		}
+		both("botania.sophisticated.tier.netherite", "Netherite", "netherita");
+		both("botania.sophisticated.tier.netherite_or_unobtainium", "Netherite or Unobtainium", "netherita o unobtainium");
+		both("item.botania.netherite_to_manasteel_tier_upgrade.tooltip.atm", "Also works on Unobtainium barrels and chests from Sophisticated ATM Tiers", "También funciona en barriles y cofres de unobtainium de Sophisticated ATM Tiers");
+		both("message.botania.storage_tier_upgrade.wrong_tier", "This upgrade only works on %s barrels and chests", "Esta mejora solo funciona en barriles y cofres de %s");
+		both("message.botania.storage_tier_upgrade.count", "You need %s of %s to upgrade this storage", "Necesitas %s de %s para mejorar este almacenamiento");
+		both("message.botania.storage_tier_upgrade.linked_main_only", "Only the main linked storage can be upgraded", "Solo se puede mejorar el almacenamiento principal enlazado");
 	}
 
 	private void entities() {
@@ -2064,6 +2146,7 @@ public final class BotaniaLanguageProvider implements DataProvider {
 		both("botania.page.runeAltar17", "The $(item)Rune of Wrath$(0).", "$(item)Runa de ira$(0).");
 		both("botania.page.runeAltar18", "The $(item)Rune of Envy$(0).", "$(item)Runa de envidia$(0).");
 		both("botania.page.runeAltar19", "The $(item)Rune of Pride$(0).", "$(item)Runa de orgullo$(0).");
+		both("botania.page.runeAltar23", "The $(item)Rune of Deception$(0). Unlike the other runes, it is not tied to a season or a sin, and is a crafting ingredient for illusory creations.", "$(item)Runa del engaño$(0). A diferencia de las otras runas, no está ligada a una estación ni a un pecado, y es un ingrediente para creaciones ilusorias.");
 		both("botania.page.runeAltar20", "Right clicking the $(item)Runic Altar$(0) with an empty hand while it's not accepting mana will pull out the last item input.$(p)Additionally, an attached $(item)Comparator$(0) will emit signal strength $(thing)1$(0) if the altar is accepting $(thing)Mana$(0), and signal strength $(thing)2$(0) if it's ready to craft the rune.", "Haciendo shift-clic derecho en el $(item)altar r\u00fanico$(0) con la mano vac\u00eda mientras este no reciba man\u00e1 devolver\u00e1 el \u00faltimo objeto colocado.$(p)Por \u00faltimo pero no menos importante, adjunt\u00e1ndole un $(item)comparador$(0) emitir\u00e1 una se\u00f1al de fuerza $(thing)1$(0) si el altar est\u00e1 aceptando man\u00e1 y una se\u00f1al de fuerza $(thing)2$(0) si est\u00e1 listo para crear la runa.");
 		both("botania.page.runeAltar21", "Runic creation is a complex topic, but an important one for the advancement of any botanist's career. However, this mode of crafting requires a firm grasp on the concepts of $(thing)Mana Manipulation$(0) to use. Before proceeding further, a read through the important entries (those in $(o)Italics$()) in that section of the $(l:basics/lexicon)$(item)Lexica Botania$(0)$(/l) might prove helpful.", "La creaci\u00f3n r\u00fanica es bastante importante para el avance en la magia bot\u00e1nica. Antes que nada, este tipo de creaciones requiere de un conocimiento decente de la $(item)manipulaci\u00f3n de man\u00e1$(0). Antes de continuar con m\u00e1s detalle, echarle un vistazo a las entradas importantes (esas en $(o)it\u00e1licas$(r)) de esta secci\u00f3n del $(item)Lexica Botania$(0) puede ser revelador.");
 		both("botania.page.runeAltar22", "Any runes used for recipes in the $(item)Runic Altar$(0) function as catalysts, and will be returned upon completion of the runic recipe.$(p)Similarly to the $(l:basics/apothecary)$(item)Petal Apothecary$(0)$(/l), right-clicking this block with an empty hand after a recipe is complete will pull another set of the items used for the last recipe, for faster crafting in bulk.", "De forma similar a la $(item)botica de p\u00e9talos$(0), haciendo clic derecho con una mano vac\u00eda despu\u00e9s de completar una receta colocar\u00e1 de nuevo los objetos usados la \u00faltima vez, permitiendo una hacer runas en masa.");
@@ -2482,7 +2565,7 @@ public final class BotaniaLanguageProvider implements DataProvider {
 		both("botania.page.wither_mana_rose0", "The $(item)Wither Mana Rose$(0) is a generating flower that creates $(thing)Mana$(0) from $(item)Nether Stars$(0). It will absorb one star dropped next to it and slowly turn it into a large amount of $(thing)Mana$(0), handing it over to the bound $(l:mana/spreader)$(item)Mana Spreader$(0)$(/l).$(p)The amount of mana per star, the generation speed and the size of its buffer are set in the mod's common configuration file, so the exact numbers depend on your server or modpack.", "La $(item)rosa del man\u00e1 wither$(0) es una flor generadora que crea $(thing)man\u00e1$(0) a partir de $(item)estrellas del Nether$(0). Absorbe una estrella soltada a su lado y la convierte poco a poco en una gran cantidad de $(thing)man\u00e1$(0), que entrega al $(l:mana/spreader)$(item)esparcidor de man\u00e1$(0)$(/l) vinculado.$(p)El man\u00e1 por estrella, la velocidad de generaci\u00f3n y el tama\u00f1o de su b\u00fafer se definen en el archivo de configuraci\u00f3n com\u00fan del mod, as\u00ed que las cifras exactas dependen de tu servidor o modpack.");
 		both("botania.page.wither_mana_rose1", "A few extra points should be made:$(p)The flower only takes a new $(item)Nether Star$(0) once it has used up the previous one, and only while its own buffer is not full. A star that is not picked up will despawn like any other item.$(p)Breaking the flower keeps the remaining mana of the absorbed star.", "Hay que tener en cuenta algunas cosas:$(p)La flor solo toma una nueva $(item)estrella del Nether$(0) cuando ha gastado la anterior y mientras su propio b\u00fafer no est\u00e9 lleno. Una estrella que no se recoge desaparece como cualquier otro objeto.$(p)Al romper la flor se conserva el man\u00e1 restante de la estrella absorbida.");
 		both("botania.page.wither_mana_rose2", "The $(item)Wither Mana Rose$(0) is not made in one step. First, black petals, four $(item)Nether Stars$(0) and four $(item)Wither Roses$(0) are brewed in the $(l:basics/apothecary)$(item)Petal Apothecary$(0)$(/l) into an $(item)Unactivated Wither Mana Rose$(0), a lifeless flower that does not generate anything yet.", "La $(item)rosa del man\u00e1 wither$(0) no se fabrica en un solo paso. Primero se mezclan en la $(l:basics/apothecary)$(item)botica$(0)$(/l) p\u00e9talos negros, cuatro $(item)estrellas del Nether$(0) y cuatro $(item)rosas wither$(0) para obtener una $(item)rosa del man\u00e1 wither sin activar$(0), una flor sin vida que todav\u00eda no genera nada.");
-		both("botania.page.wither_mana_rose3", "The flower is brought to life in the $(l:basics/rune_altar)$(item)Runic Altar$(0)$(/l) with four $(item)Mana Diamonds$(0), four $(item)Mana Pearls$(0), two $(item)Mana Powder$(0) and a $(item)Rune of Pride$(0). The ritual needs a great deal of $(thing)Mana$(0), 100,000 in total.", "La flor cobra vida en el $(l:basics/rune_altar)$(item)altar r\u00fanico$(0)$(/l) con cuatro $(item)diamantes de man\u00e1$(0), cuatro $(item)perlas de man\u00e1$(0), dos $(item)polvos de man\u00e1$(0) y una $(item)runa del orgullo$(0). El ritual necesita much\u00edsimo $(thing)man\u00e1$(0), 100.000 en total.");
+		both("botania.page.wither_mana_rose3", "The flower is brought to life in the $(l:basics/rune_altar)$(item)Runic Altar$(0)$(/l) with a $(item)Mana Diamond$(0), a $(item)Mana Pearl$(0), $(item)Mana Powder$(0), a $(thing)Loonium$(0), a $(thing)Daybloom Motif$(0) and the $(item)Runes$(0) of Pride, Deception, Fire and Water. The ritual needs $(thing)Mana$(0), 20,000 in total.", "La flor cobra vida en el $(l:basics/rune_altar)$(item)altar r\u00fanico$(0)$(/l) con un $(item)diamante de man\u00e1$(0), una $(item)perla de man\u00e1$(0), $(item)polvo de man\u00e1$(0), un $(thing)Loonium$(0), un $(thing)motivo de Daybloom$(0) y las $(item)runas$(0) del orgullo, del enga\u00f1o, del fuego y del agua. El ritual necesita $(thing)man\u00e1$(0), 20.000 en total.");
 		both("botania.entry.pylon", "Mana Pylon", "Pil\u00f3n de man\u00e1");
 		both("botania.tagline.pylon", "Enchantment catalyst", "Catalizador de encantamientos");
 		both("botania.page.pylon0", "A $(item)Mana Pylon$(0) is a structure that pulls natural energies from the earth and uses them to power enchanting processes.$(p)Setting one adjacent to an $(item)Enchanting Table$(0) as if it was a $(item)Bookshelf$(0) will dramatically increase the power of the table: just two pylons are enough for a table to reach $(thing)Level 30$(0).", "El $(item)pil\u00f3n de man\u00e1$(0) es una estructura que puede extraer energ\u00eda de la tierra y usarla para potenciar procesos de encantamiento.$(p)Por ejemplo, colocar uno junto a una $(item)mesa de encantamiento$(0) como si fuese una $(item)librer\u00eda$(0) incrementar\u00e1 el poder que puede transmitir, dos son suficientes para que alcance el $(thing)nivel 30$(0).");
@@ -3492,7 +3575,7 @@ public final class BotaniaLanguageProvider implements DataProvider {
 		both("botania.armorset.will_torag.shortDesc", "Critical Hits apply slowness", "Los golpes cr\u00edticos infligen un fuerte efecto de lentitud");
 		both("botania.armorset.will_verac.desc", "Verac: Critical Hits pierce through armor", "Los golpes cr\u00edticos atraviesan la armadura (Legado de Verac)");
 		both("botania.armorset.will_verac.shortDesc", "Critical Hits pierce through armor", "Los golpes cr\u00edticos atraviesan la armadura");
-		both("botania.baubletooltip", "Press %s to open the accessory menu", "Oprime la &b%s&7 para abrir el men\u00fa de ornamentos");
+		both("botania.baubletooltip", "Press %s to open the accessory menu", "Oprime la \u00a7b%s\u00a77 para abrir el men\u00fa de ornamentos");
 		both("botania.challenge.animalFarm", "Animal Farm", "Granja de animales");
 		both("botania.challenge.animalFarm.desc", "Create an automated animal farm with all farmable animal types. Bonus points if the food doesn't need to be input manually.", "Crea una granja autom\u00e1tica con todos los tipos disponibles que se puedan criar. Puntos adicionales si no es necesario meter la la comida manualmente.");
 		both("botania.challenge.apothecaryRefill", "Apothecary Refiller", "Rellenador de botica");
@@ -3641,11 +3724,11 @@ public final class BotaniaLanguageProvider implements DataProvider {
 		both("botania.wings7", "Wings: Sylph", "Alas: S\u00edlfide");
 		both("botania.wings8", "Wings: Mega Ultra Chicken", "Alas: Mega ultra pollo");
 		both("botania.wings9", "Wings: The One", "Alas: El \u00fanico");
-		both("botaniamisc.active", "\u00a7aActive", "&aActivo");
+		both("botaniamisc.active", "\u00a7aActive", "\u00a7aActivo");
 		both("botaniamisc.advancements", "Botania Advancements", "Logros de Botania");
 		both("botaniamisc.altarRefill0", "Right click with an empty hand to", "Clic derecho con la mano vac\u00eda para");
 		both("botaniamisc.altarRefill1", "add back the last recipe", "volver a a\u00f1adir la \u00faltima receta");
-		both("botaniamisc.armorset", "\u00a7bArmor Set\u00a7r:", "&bConjunto de armadura&r:");
+		both("botaniamisc.armorset", "\u00a7bArmor Set\u00a7r:", "\u00a7bConjunto de armadura\u00a7r:");
 		both("botaniamisc.badArena", "As hard as you try, the Beacon will not accept your sacrifice. You believe the ritual grounds might be improper. It might be a good idea to check for obstructions in the nearby area or large gaps in the floor.", "Por m\u00e1s que lo intentes, el faro no aceptar\u00e1 tu sacrificio. Crees que el terreno del ritual podr\u00eda no ser adecuado. Puede ser buena idea comprobar si hay obstrucciones en la zona cercana o grandes huecos en el suelo.");
 		both("botaniamisc.blockAway", "1 Block Away", "1 bloque de distancia");
 		both("botaniamisc.blocksAway", "%s Blocks Away", "%s bloques de distancia");
@@ -3681,7 +3764,7 @@ public final class BotaniaLanguageProvider implements DataProvider {
 		both("botaniamisc.composite_lens", "Composite with %s", "Compuesto de %s");
 		both("botaniamisc.conversionChanceBiome", "%s in %s biome", "%s en el bioma %s");
 		both("botaniamisc.conversionRatio", "About %s out of %s", "Aproximadamente %s de cada %s");
-		both("botaniamisc.cosmeticBauble", "Cosmetic", "&oCosm\u00e9tico");
+		both("botaniamisc.cosmeticBauble", "Cosmetic", "\u00a7oCosm\u00e9tico");
 		both("botaniamisc.cosmeticThinking", "Really makes you think", "Da mucho que pensar");
 		both("botaniamisc.craftToAddWill", "Terrasteel Helmet Upgrade:", "Juntar con un casco de terracero para a\u00f1adir los siguientes efectos:");
 		both("botaniamisc.creative", "Creative", "Creativo");
@@ -3691,7 +3774,7 @@ public final class BotaniaLanguageProvider implements DataProvider {
 		both("botaniamisc.crystalCubeLocked", "This Crystal Cube is locked. To change the displayed item, unlock it with a Wand of the Forest.", "Este cubo de cristal est\u00e1 bloqueado. Para cambiar el objeto mostrado, desbloqu\u00e9alo con una varita del bosque.");
 		both("botaniamisc.diceRoll", "The dice lands on a %s and transforms into something else!", "El dado cae en %s, percibes que se transforma en otra cosa.");
 		both("botaniamisc.drop", "Drop", "Deja caer");
-		both("botaniamisc.dropIkea", "\u00a7bDropping this item will break it down into its components", "&bDejando caer ese artefacto se descompondr\u00e1 en todos sus componentes");
+		both("botaniamisc.dropIkea", "\u00a7bDropping this item will break it down into its components", "\u00a7bDejando caer ese artefacto se descompondr\u00e1 en todos sus componentes");
 		both("botaniamisc.dropTip1", "CTRL-%s will drop a full stack", "CTRL-%s dejar\u00e1 caer el mont\u00f3n entero");
 		both("botaniamisc.dropTip2", "Tip: Press %s to drop", "Consejo: puedes presionar %s");
 		both("botaniamisc.dropTip3", "items from your inventory", "en tu inventario para dejarlo caer");
@@ -3704,12 +3787,12 @@ public final class BotaniaLanguageProvider implements DataProvider {
 		both("botaniamisc.flugelBound", "Bound to %s in %s", "Vinculado a %s en %s");
 		both("botaniamisc.flugelUnbound", "Unbound in %s", "Desvinculado en %s");
 		both("botaniamisc.getALife", "Get a Life", "Consigue una vida");
-		both("botaniamisc.hasClip", "\u00a76Has Lens Clip", "&6Tiene cartucho de lentes");
-		both("botaniamisc.hasCosmetic", "Cosmetic: %s", "&oTiene anulaci\u00f3n cosm\u00e9tica: &r%s");
+		both("botaniamisc.hasClip", "\u00a76Has Lens Clip", "\u00a76Tiene cartucho de lentes");
+		both("botaniamisc.hasCosmetic", "Cosmetic: %s", "\u00a7oTiene anulaci\u00f3n cosm\u00e9tica: \u00a7r%s");
 		both("botaniamisc.hasKeepIvy", "Has Resolute Ivy", "Tiene hiedra resuelta");
-		both("botaniamisc.hasPhantomInk", "Tinged with Phantom Ink", "&bTe\u00f1ido con tinta fantasma");
+		both("botaniamisc.hasPhantomInk", "Tinged with Phantom Ink", "\u00a7bTe\u00f1ido con tinta fantasma");
 		both("botaniamisc.hourglassLock", "This Hourglass is locked. Right-click it with a Wand of the Forest to unlock it.", "Este reloj de arena est\u00e1 cerrado. Clic derecho con una varita del bosque para abrirlo.");
-		both("botaniamisc.inactive", "\u00a7cInactive", "&cInactivo");
+		both("botaniamisc.inactive", "\u00a7cInactive", "\u00a7cInactivo");
 		both("botaniamisc.inputtingPower", "Accepting Mana from Items", "Aceptando man\u00e1 de objetos");
 		both("botaniamisc.invFull", "Your inventory is full.", "Tu inventario est\u00e1 lleno.");
 		both("botaniamisc.invalidDodge", "Invalid Dodge Packet", "Paquete de esquiva no v\u00e1lido");
@@ -3737,7 +3820,7 @@ public final class BotaniaLanguageProvider implements DataProvider {
 		both("botaniamisc.nearIndex2", "intercepted as a request", "interceptado como una petici\u00f3n");
 		both("botaniamisc.needsCatalysts", "No matter how hard you try to push the Ingot into the Beacon, nothing seems to happen. Perhaps your configuration of catalyst pylons is off.", "No importa cuan fuerte intentas empuja al lingote dentro del faro, no pasa nada, quiz\u00e1s tu configuraci\u00f3n de pilones est\u00e9 mal.");
 		both("botaniamisc.notInfused", "Not Infused", "Sin infundir");
-		both("botaniamisc.notYourSagittarius", "\u00a74This relic is not yours", "&4Esta reliquia no es tuya");
+		both("botaniamisc.notYourSagittarius", "\u00a74This relic is not yours", "\u00a74Esta reliquia no es tuya");
 		both("botaniamisc.optifine_warning", "\u00a74[WARNING]\u00a7r <Botania>: Optifine detected. Please be aware that Optifine causes a lot of issues with botania, and you might experience issues such as mana not moving between flowers and spreaders, and no information being displayed when you hold a wand and look at a mana pool or spreader. We recommend Sodium as an alternative to Optifine's performance improvements.", "\u00a74[AVISO]\u00a7r <Botania>: Se ha detectado Optifine. Ten en cuenta que Optifine causa muchos problemas con Botania, y puede que experimentes fallos como que el man\u00e1 no se mueva entre flores y esparcidores, o que no se muestre informaci\u00f3n al sostener una varita y mirar una pila de man\u00e1 o un esparcidor. Recomendamos Sodium como alternativa a las mejoras de rendimiento de Optifine.");
 		both("botaniamisc.outputtingPower", "Sparing Mana to Items", "Transfiriendo man\u00e1 a objetos");
 		both("botaniamisc.pay2win", "Upgrade your Mana Pool to infuse this item", "Mejora la pila de man\u00e1 para infundir ese objeto");
@@ -3750,8 +3833,8 @@ public final class BotaniaLanguageProvider implements DataProvider {
 		both("botaniamisc.rannuncarpus.state_insensitive", "Match Block Only", "Coincidir solo con el bloque");
 		both("botaniamisc.rannuncarpus.state_sensitive", "Match Exact State", "Coincidir con el estado exacto");
 		both("botaniamisc.ratio", "%sx Zoom (hover to zoom out)", "Zoom: %sx");
-		both("botaniamisc.relicSoulbound", "\u00a76Relic\u00a77, Soulbound to \u00a7f%s", "&6Reliquia&7, vinculada al alma de &f%s");
-		both("botaniamisc.relicUnbound", "\u00a76Relic\u00a77, Unbound", "&6Reliquia&7, desvinculada");
+		both("botaniamisc.relicSoulbound", "\u00a76Relic\u00a77, Soulbound to \u00a7f%s", "\u00a76Reliquia\u00a77, vinculada al alma de \u00a7f%s");
+		both("botaniamisc.relicUnbound", "\u00a76Relic\u00a77, Unbound", "\u00a76Reliquia\u00a77, desvinculada");
 		both("botaniamisc.requestMsg", "Requested %d x %s out of %d. %d taken.", "Pedido %d x %s de %d. %d tomados.");
 		both("botaniamisc.retainer.retain_all", "Retain original number of items requested", "Retener el n\u00famero original de objetos pedidos");
 		both("botaniamisc.retainer.retain_missing", "Retain number of missing items", "Retener el n\u00famero de objetos que faltan");
@@ -3768,7 +3851,7 @@ public final class BotaniaLanguageProvider implements DataProvider {
 		both("botaniamisc.speedrun_category.gaia_ii", "Defeat Gaia Guardian II", "Derrotar al guardi\u00e1n de Gaia II");
 		both("botaniamisc.speedrun_category.obtain_dreamwood", "Obtain Dreamwood", "Obtener madera on\u00edrica");
 		both("botaniamisc.stopped", "Stopped", "Parado");
-		both("botaniamisc.toolRank", "%s\u00a77 Rank", "Rango %s&7");
+		both("botaniamisc.toolRank", "%s\u00a77 Rank", "Rango %s\u00a77");
 	}
 
 	private void tooltips3() {

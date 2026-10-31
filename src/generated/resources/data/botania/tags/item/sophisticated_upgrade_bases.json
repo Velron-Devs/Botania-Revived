@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "sophisticatedbackpacks:upgrade_base",
+      "required": false
+    },
+    {
+      "id": "sophisticatedstorage:upgrade_base",
+      "required": false
+    }
+  ]
+}

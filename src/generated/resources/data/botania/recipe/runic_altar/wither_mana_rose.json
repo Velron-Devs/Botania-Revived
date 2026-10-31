@@ -8,37 +8,31 @@
       "tag": "botania:mana_diamond_gems"
     },
     {
-      "tag": "botania:mana_diamond_gems"
-    },
-    {
-      "tag": "botania:mana_diamond_gems"
-    },
-    {
-      "tag": "botania:mana_diamond_gems"
-    },
-    {
-      "item": "botania:mana_pearl"
-    },
-    {
-      "item": "botania:mana_pearl"
-    },
-    {
-      "item": "botania:mana_pearl"
-    },
-    {
       "item": "botania:mana_pearl"
     },
     {
       "tag": "botania:mana_dusts"
     },
     {
-      "tag": "botania:mana_dusts"
+      "item": "botania:loonium"
+    },
+    {
+      "item": "botania:daybloom_motif"
     },
     {
       "item": "botania:rune_pride"
+    },
+    {
+      "item": "botania:rune_deception"
+    },
+    {
+      "item": "botania:rune_fire"
+    },
+    {
+      "item": "botania:rune_water"
     }
   ],
-  "mana": 100000,
+  "mana": 20000,
   "output": {
     "count": 1,
     "id": "botania:wither_mana_rose"

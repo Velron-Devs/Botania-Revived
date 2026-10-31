@@ -115,6 +115,11 @@
       "type": "botania:runic_altar",
       "text": "botania.page.runeAltar19",
       "recipe": "botania:runic_altar/pride"
+    },
+    {
+      "type": "botania:runic_altar",
+      "text": "botania.page.runeAltar23",
+      "recipe": "botania:runic_altar/deception"
     }
   ]
 }

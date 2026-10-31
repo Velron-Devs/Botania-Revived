@@ -1,4 +1,4 @@
-// 1.21.1	2026-10-04T02:25:03.9273464	Botania item models
+// 1.21.1	2026-10-30T18:55:24.0914362	Botania item models
 4cae5cd75a63ce0abdde7ecd83a340181824e1c4 assets/botania/models/icon/blood_pendant_chain.json
 d74f6e6e34ce9c1fe3e9aa0212b337432ae574af assets/botania/models/icon/blood_pendant_gem.json
 a0d5d6dc1330e818c8c8062caa1497cea5b7e163 assets/botania/models/icon/cloud_pendant_gem.json
@@ -721,6 +721,7 @@ a0d96c81b2eab22d30c84a6fba0a1c62928f3427 assets/botania/models/item/red_string.j
 789f6f6538c520024470dea85774e02de5fced4b assets/botania/models/item/rosa_arcana.json
 05a774493bbae291f1c25f77a61d19edfced9bfc assets/botania/models/item/rune_air.json
 9518f21b58b702008064fba699cc295e394fbb9f assets/botania/models/item/rune_autumn.json
+5e1d5f5d976f684580739e2fc1f1bb77ceed603f assets/botania/models/item/rune_deception.json
 730069c2d1f0e9e2ccdc6868f12b81888a8164fe assets/botania/models/item/rune_earth.json
 4f850ac15c970f820129cd9b33d2cf9caea90f30 assets/botania/models/item/rune_envy.json
 05ec50368ebc5574b91205f66638dac318602288 assets/botania/models/item/rune_fire.json

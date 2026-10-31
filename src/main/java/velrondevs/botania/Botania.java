@@ -137,6 +137,7 @@ import velrondevs.botania.registry.BotaniaAttachments;
 import velrondevs.botania.registry.BotaniaBlockEntities;
 import velrondevs.botania.registry.BotaniaBlocks;
 import velrondevs.botania.registry.BotaniaBrews;
+import velrondevs.botania.compat.fractal.FractalSubTabs;
 import velrondevs.botania.registry.BotaniaCreativeTabs;
 import velrondevs.botania.registry.BotaniaCriteriaTriggers;
 import velrondevs.botania.registry.BotaniaEntities;
@@ -198,6 +199,7 @@ public class Botania {
 
 	public void commonSetup(FMLCommonSetupEvent evt) {
 		evt.enqueueWork(BotaniaBlocks::addDispenserBehaviours);
+		evt.enqueueWork(FractalSubTabs::register);
 		evt.enqueueWork(() -> {
 			BiConsumer<ResourceLocation, Supplier<? extends Block>> consumer = (resourceLocation, blockSupplier) -> ((FlowerPotBlock) Blocks.FLOWER_POT).addPlant(resourceLocation, blockSupplier);
 			BotaniaBlocks.registerFlowerPotPlants(consumer);
@@ -278,7 +280,6 @@ public class Botania {
 			}
 		});
 		bind(Registries.CREATIVE_MODE_TAB, BotaniaCreativeTabs::registerTabs);
-		modBus.addListener(BotaniaCreativeTabs::buildContents);
 	}
 
 	private static <T> void bind(ResourceKey<? extends Registry<T>> registry, Consumer<BiConsumer<T, ResourceLocation>> source) {

@@ -26,6 +26,7 @@ public final class LibItemNames {
 	public static final String RUNE_WRATH = "rune_wrath";
 	public static final String RUNE_ENVY = "rune_envy";
 	public static final String RUNE_PRIDE = "rune_pride";
+	public static final String RUNE_DECEPTION = "rune_deception";
 
 	public static final String MANA_TABLET = "mana_tablet";
 	public static final String MANA_GUN = "mana_gun";

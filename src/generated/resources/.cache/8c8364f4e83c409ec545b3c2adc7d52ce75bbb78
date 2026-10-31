@@ -1,4 +1,4 @@
-// 1.21.1	2026-10-04T02:25:04.2551429	Tags for minecraft:item mod id vanilla
+// 1.21.1	2026-10-30T18:55:24.2353465	Tags for minecraft:item mod id vanilla
 8196a897630f861df1aa6850f0d027e6fd903391 data/botania/tags/item/bifrost_dyes.json
 a584506e7718c335115a9e3ee750260df4aa395b data/botania/tags/item/burst_viewers.json
 8ee9628e70cfdeee54a220e5d95216feedd99407 data/botania/tags/item/contributor_headflowers.json
@@ -29,7 +29,7 @@ bf2089fef0d19867b41cde9812d69320d55446ff data/botania/tags/item/loonium_blacklis
 71f2eaa6d15bbd439afda07d2a30c9439b926645 data/botania/tags/item/manasteel_nuggets.json
 ee0b3503c8673a0ca35b4a2057b5b40eea2e9757 data/botania/tags/item/mana_diamond_gems.json
 3b82ebfea27abfd970b1e746c92de795a2627931 data/botania/tags/item/mana_dusts.json
-fd46357c921519ccc06863f9543162f888895dd4 data/botania/tags/item/mana_using_items.json
+c500ac4c0dcf66f3acb2ded74875705e6f9465e1 data/botania/tags/item/mana_using_items.json
 9a4ebe9c9db467b9ab60b8be5eedcce82f2277ed data/botania/tags/item/mini_flowers.json
 b8ed0a7ebc7fbf3d53c814cbcc9d2eed94d5aba5 data/botania/tags/item/misc_floating_flowers.json
 08e5fb1ab74b0805a8a0b50ebab2a05f29851b2a data/botania/tags/item/misc_special_flowers.json
@@ -54,7 +54,7 @@ d24ddfa8438fb7efd6dc3a6308403f50d509df06 data/botania/tags/item/petals/white.jso
 f8db66008eb02f50f19fd4667d927fde08329f98 data/botania/tags/item/petals/yellow.json
 c326c960501cbaf7c3d5fa607710961676ac9817 data/botania/tags/item/pickable_block_providers.json
 23ebb2075465a68674edc24a25fffa1544421bd7 data/botania/tags/item/rods.json
-498c9105b95ec2244beb768724e31b23938ccfc3 data/botania/tags/item/runes.json
+96dc0bb63fd17b3ab4b0b48d794cd7c0e3332e89 data/botania/tags/item/runes.json
 59bf12509f4453b608009ceb0b4759604c641c87 data/botania/tags/item/seed_apothecary_reagent.json
 b3e901e6961e758d2af56cfd3b9dfc6d492bd493 data/botania/tags/item/semi_disposable.json
 dd1e587761f42b287b76aff2eb9c8d8adead4853 data/botania/tags/item/shimmering_mushrooms.json
@@ -63,8 +63,10 @@ f9cbec686df06a01e62d90f653c978deb25369f9 data/botania/tags/item/special_flowers.
 15ce809b95f059b30de6478da2785dd82a6257fb data/botania/tags/item/terrasteel_blocks.json
 7a11bd85a16d2a2d2df94cc9f27d6f1c4e108b03 data/botania/tags/item/terrasteel_ingots.json
 65c8ecb9d4af26abf5b4dae913dd7a26703b0b15 data/botania/tags/item/terrasteel_nuggets.json
-f6be9ce2a782960385e562badfbc9a0e3760c891 data/botania/tags/item/terra_pick_blacklist.json
+aacf373d4622c60beaec0d3eb52003877702168b data/botania/tags/item/terra_pick_blacklist.json
 941863bf46bbf11d4f2a7a33dc478a4441c6b777 data/botania/tags/item/toolbelt_blacklisted.json
+2611668d96f4094728033048c12f98eaddf4fa61 data/c/tags/item/barrels.json
+fa20bfaa5140c4de8f77b07965aa98518232db48 data/c/tags/item/chests.json
 336d4eadc6fa23defadbd67aa4c2a6b1c19a1fb7 data/c/tags/item/music_discs.json
 35133e95f1c8fdd7a1c21afcc231fc0bffefb9a8 data/minecraft/tags/item/arrows.json
 654bf143138e6ea86444c2555908f7bda9a63c45 data/minecraft/tags/item/axes.json
@@ -81,7 +83,7 @@ db17fc2533475e8c4f17ebbe21ec3cf98f2bf4ea data/minecraft/tags/item/cluster_max_ha
 c949f38c97b56ea057fe936f646be3298a2b8592 data/minecraft/tags/item/fences.json
 a1cc6f7061a825b4d500aa250d6d6ec1c46fbb81 data/minecraft/tags/item/foot_armor.json
 3e6cf94b6e0293310b7521ad0cc7858561699b1b data/minecraft/tags/item/freeze_immune_wearables.json
-c9b0a9bd8676707e50b53de627069bd04c99b781 data/minecraft/tags/item/head_armor.json
+50d03616e32e8e02ef3b5b5b6327b07385810099 data/minecraft/tags/item/head_armor.json
 1fa80afc4bcc610940c69c0d531c1fa61cdc9a59 data/minecraft/tags/item/hoes.json
 2bdc3755618941c77515391fe8fa5945ebe32b96 data/minecraft/tags/item/leaves.json
 85878dc98076b7f58e746da580cdd6d27c0c1e82 data/minecraft/tags/item/lectern_books.json
@@ -104,3 +106,4 @@ bc87fd6f3d1c9d48c82da09b7c5424e689923ce6 data/minecraft/tags/item/stairs.json
 88772bf1fbd655cb754dc8b3dc6a0e234426aa79 data/minecraft/tags/item/wooden_fences.json
 7af77070146a190d5651609bd6e290c974838ed2 data/minecraft/tags/item/wooden_slabs.json
 1807a02c6356acb86fca4e3f91cf0a844e543095 data/minecraft/tags/item/wooden_stairs.json
+d6dcc0994aaebf6f83c535072e1a4cca6d7ec093 data/sophisticatedstorage/tags/item/all_storage.json

@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "sophisticatedatm:unobtainium_stack_upgrade",
+      "required": false
+    },
+    {
+      "id": "sophisticatedatm:unobtainium_storage_stack_upgrade",
+      "required": false
+    }
+  ]
+}

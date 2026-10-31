@@ -29,7 +29,7 @@ public final class AsgardModule extends BotaniaModule {
 		ctx.bindBlocks(AsgardFlowers::registerBlocks);
 		ctx.bindItems(AsgardFlowers::registerItemBlocks);
 		ctx.bind(Registries.BLOCK_ENTITY_TYPE, AsgardFlowers::registerBlockEntities);
-		ctx.creativeTab(() -> new ItemStack(AsgardFlowers.asgardandelion), false, output -> {});
+		ctx.creativeSection("asgard", () -> new ItemStack(AsgardFlowers.asgardandelion));
 		ctx.modBus().addListener((FMLCommonSetupEvent e) -> e.enqueueWork(AsgardFlowers::registerPottedPlants));
 	}
 

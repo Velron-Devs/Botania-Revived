@@ -8,13 +8,12 @@ import velrondevs.botania.common.item.ManaTabletItem;
 import velrondevs.botania.datagen.providers.creativecrafting.CreativeCraftingDatagen;
 import velrondevs.botania.module.BotaniaModule;
 import velrondevs.botania.module.ModuleContext;
-import velrondevs.botania.registry.BotaniaBlocks;
 import velrondevs.botania.registry.BotaniaItems;
 
 import java.util.concurrent.CompletableFuture;
 
 public final class CreativeCraftingModule extends BotaniaModule {
-	public static final String ID = "cre";
+	public static final String ID = "creative";
 	public static final CreativeCraftingModule INSTANCE = new CreativeCraftingModule();
 
 	private CreativeCraftingModule() {
@@ -29,14 +28,7 @@ public final class CreativeCraftingModule extends BotaniaModule {
 	}
 
 	@Override
-	public void register(ModuleContext ctx) {
-		ctx.creativeTab(() -> new ItemStack(BotaniaBlocks.creativePool), false, output -> {
-			output.accept(new ItemStack(BotaniaBlocks.creativePool));
-			output.accept(creativeTablet());
-			output.accept(new ItemStack(BotaniaItems.corporeaSparkCreative));
-			output.accept(new ItemStack(BotaniaBlocks.infrangiblePlatform));
-		});
-	}
+	public void register(ModuleContext ctx) {}
 
 	@Override
 	public void gatherData(GatherDataEvent evt, CompletableFuture<HolderLookup.Provider> lookup) {
