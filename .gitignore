@@ -88,3 +88,6 @@ Xplat/logs/latest.log
 *.rar
 /trabajo.md
 /continuar.md
+
+## datagen cache
+/src/generated/resources/.cache/

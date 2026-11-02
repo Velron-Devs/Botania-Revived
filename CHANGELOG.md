@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.5 (2026-11-02)
+
+- Fixed the recipe ids of the JEI categories showing as `Unknown` after running `/reload` (issue #11).
+
 ## 1.0.4 (2026-10-30)
 
 - New Rune of Deception (`botania:rune_deception`). It is made in the Runic Altar from a Rune of Spring, a Rune of Water, Pixie Dust, a Dreamwood Twig and a Block of Mana Diamond for 20000 mana, has its own Lexicon page, counts as a rune for catalysts and advancements, and is registered like any other rune (KubeJS and `RegisterRunes` keep working).

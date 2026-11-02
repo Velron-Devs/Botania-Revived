@@ -137,8 +137,6 @@ The following integrations are separate projects whose authors have no connectio
 *   **L0neKitsune** and **WireSegal** for Botanical Addons, the base of the Botania Extras module.
 *   **Kononets** for Simple Structure Botania, the base of the Exploration module.
 *   **Beecube31** for the Asgardandelion addon, the base of the Asgard module.
-*   **GrafKakashi** for Sophisticated ATM Tiers (MIT): the textures of the Sophisticated module upgrades are based on it, recolored.
-*   **Unascribed**, **DaFuqs** and **EmmaTheMartian** for Fractal (MIT), the library that provides the creative tab sections; it is bundled inside the mod with its license in `LICENSE-fractal.txt`.
 *   **xypp / zxy19** for Ars Botania, the concept behind the Ars Nouveau integration.
 *   **Nova-Committee** for Re-Avaritia, the inspiration for the Creative Crafting module (and the 9x9 table recipes when Re-Avaritia is installed).
 *   **ExtraMeteorP** for Extra Botany .
