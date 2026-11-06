@@ -1834,8 +1834,8 @@ public final class BotaniaLanguageProvider implements DataProvider {
 		both("gui.botania.sophisticated.transfer.no_upgrade.elven_portal", "Open a storage with an Elven Portal Upgrade to transfer this recipe", "Abre un almacenamiento con una mejora de portal élfico para transferir esta receta");
 		both("gui.botania.sophisticated.transfer.no_upgrade.brewery", "Open a storage with a Botanical Brewery Upgrade to transfer this recipe", "Abre un almacenamiento con una mejora de fermentador botánico para transferir esta receta");
 		for (BotaniaStorageTier tier : BotaniaStorageTier.values()) {
-			both("block.botania." + tier.barrelName(), "%s%s" + tier.english() + " Barrel", "Barril de " + tier.spanish() + "%2$s%1$s");
-			both("block.botania." + tier.chestName(), "%s%s" + tier.english() + " Chest", "Cofre de " + tier.spanish() + "%2$s%1$s");
+			both("block.botania." + tier.barrelName(), tier.english() + " Barrel", "Barril de " + tier.spanish());
+			both("block.botania." + tier.chestName(), tier.english() + " Chest", "Cofre de " + tier.spanish());
 			both("botania.sophisticated.tier." + tier.id(), tier.english(), tier.spanish());
 			String from = tier.previous() == null ? "Netherite" : tier.previous().english();
 			String fromEs = tier.previous() == null ? "netherita" : tier.previous().spanish();

@@ -96,6 +96,9 @@ public class BotaniaReiPlugin implements REIClientPlugin {
 	public void registerItemComparators(ItemComparatorRegistry registry) {
 		registry.registerComponents(BotaniaItems.lexicon, BotaniaItems.brewFlask, BotaniaItems.brewVial,
 				BotaniaItems.bloodPendant, BotaniaItems.incenseStick, BotaniaItems.flightTiara, BotaniaItems.laputaShard);
+		if (SophisticatedModule.INSTANCE.isAvailable()) {
+			SophisticatedRei.registerComparators(registry);
+		}
 	}
 
 	@Override

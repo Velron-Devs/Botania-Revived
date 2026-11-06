@@ -203,6 +203,9 @@ public class BotaniaStorageTierUpgradeItem extends Item {
 		StorageBlockEntity fresh = ((StorageBlockBase) newState.getBlock()).newBlockEntity(pos, newState);
 		fresh.setBeingUpgraded(true);
 		fresh.loadAdditional(data, level.registryAccess());
+		if (fresh instanceof WoodStorageBlockEntity wood) {
+			BotaniaStorageStacks.applyDefaultWood(wood);
+		}
 		old.setBeingUpgraded(true);
 		old.closeMenusForThisBlock();
 		level.removeBlockEntity(pos);

@@ -24,7 +24,7 @@ public final class SophisticatedMixinPlugin implements IMixinConfigPlugin {
 		if (mods == null || mods.getModFileById("sophisticatedcore") == null) {
 			return false;
 		}
-		if (mixinClassName.endsWith("StorageScreenHeightMixin")) {
+		if (mixinClassName.endsWith("StorageScreenHeightMixin") || mixinClassName.endsWith("StorageScreenWideMixin")) {
 			return true;
 		}
 		return mods.getModFileById("sophisticatedstorage") != null;

@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.6 (2026-11-05)
+
+- Botania backpacks, barrels and chests (Manasteel, Elementium, Terrasteel, Gaia and Alfsteel) now open a wide inventory screen with 18 slot columns instead of 12, so they need far fewer rows and much less scrolling (695 slots take 39 rows instead of 58); the upgrade tabs stay on the left, the search and sort buttons on top, the scroll bar on the right and your inventory is centered below. It is purely visual and only active when Sophisticated Core is installed; other storages keep the normal screen. The panel backgrounds are based on Sophisticated ATM Tiers by GrafKakashi (MIT).
+- Fixed the look of the Botania Barrel and Chest tiers (Manasteel, Elementium, Terrasteel, Gaia and Alfsteel): items and placed blocks now always carry an explicit wood type (also when obtained with `/give`, crafting or loot) instead of rendering with a stray pink body, the tier upgrade keeps the wood, paint and materials of the original, and the names of the barrels and chests no longer show broken text. The creative tab and the JEI/REI lists now show every variant (all wood types and the flat top barrel) of each tier like Sophisticated Storage does for its own tiers, instead of a single entry.
+
 ## 1.0.5 (2026-11-02)
 
 - Fixed the recipe ids of the JEI categories showing as `Unknown` after running `/reload` (issue #11).

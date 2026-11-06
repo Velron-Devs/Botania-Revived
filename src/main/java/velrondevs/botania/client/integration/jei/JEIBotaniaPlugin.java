@@ -76,6 +76,9 @@ public class JEIBotaniaPlugin implements IModPlugin {
 				return fn.apply(stack, ctx == UidContext.Recipe);
 			}
 		}));
+		if (SophisticatedModule.INSTANCE.isAvailable()) {
+			SophisticatedJei.registerSubtypes(registry);
+		}
 	}
 
 	@Override

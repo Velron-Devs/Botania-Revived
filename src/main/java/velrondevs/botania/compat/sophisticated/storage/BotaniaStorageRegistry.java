@@ -10,8 +10,6 @@ import net.neoforged.neoforge.event.BlockEntityTypeAddBlocksEvent;
 import net.p3pp3rf1y.sophisticatedstorage.block.BarrelBlock;
 import net.p3pp3rf1y.sophisticatedstorage.block.ChestBlock;
 import net.p3pp3rf1y.sophisticatedstorage.init.ModBlocks;
-import net.p3pp3rf1y.sophisticatedstorage.item.BarrelBlockItem;
-import net.p3pp3rf1y.sophisticatedstorage.item.ChestBlockItem;
 
 import velrondevs.botania.common.lib.LibMisc;
 import velrondevs.botania.compat.sophisticated.SophisticatedConfig;
@@ -61,8 +59,8 @@ public final class BotaniaStorageRegistry {
 
 	public static void addCreativeTabItems(CreativeModeTab.Output output) {
 		for (BotaniaStorageTier tier : BotaniaStorageTier.active()) {
-			BARRELS.get(tier).addCreativeTabItems(output::accept);
-			CHESTS.get(tier).addCreativeTabItems(output::accept);
+			BotaniaStorageStacks.addCreativeVariants(output, BARRELS.get(tier));
+			BotaniaStorageStacks.addCreativeVariants(output, CHESTS.get(tier));
 		}
 	}
 
@@ -77,8 +75,8 @@ public final class BotaniaStorageRegistry {
 					() -> SophisticatedConfig.storageUpgradeSlots(tier), tier.explosionResistance());
 			BARRELS.put(tier, barrel);
 			CHESTS.put(tier, chest);
-			BARREL_ITEMS.put(tier, new BarrelBlockItem(barrel, properties(tier)));
-			CHEST_ITEMS.put(tier, new ChestBlockItem(chest, properties(tier)));
+			BARREL_ITEMS.put(tier, new BotaniaBarrelBlockItem(barrel, properties(tier)));
+			CHEST_ITEMS.put(tier, new BotaniaChestBlockItem(chest, properties(tier)));
 			UPGRADES.put(tier, new BotaniaStorageTierUpgradeItem(tier));
 			TIERS.put(barrel, tier);
 			TIERS.put(chest, tier);
