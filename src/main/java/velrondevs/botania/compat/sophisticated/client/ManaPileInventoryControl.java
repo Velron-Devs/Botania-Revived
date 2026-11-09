@@ -85,8 +85,8 @@ public class ManaPileInventoryControl extends UpgradeInventoryControlBase {
 		int capacity = Math.max(1, container.getCapacity());
 		int segmentHeight = SEGMENT.getHeight();
 		int segments = height / segmentHeight;
-		int filled = (int) (segments * ((float) mana / capacity));
-		if (mana > 0 && filled == 0) {
+		int filled = (int) Math.min((long) segments, (long) (segments * ((double) mana / capacity)));
+		if (mana > 0 && filled == 0 && segments > 0) {
 			filled = 1;
 		}
 		boolean enabled = container.isPileEnabled();

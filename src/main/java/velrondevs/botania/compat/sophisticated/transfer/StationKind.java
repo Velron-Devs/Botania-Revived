@@ -4,15 +4,18 @@ import org.jetbrains.annotations.Nullable;
 
 import velrondevs.botania.api.recipe.BotanicalBreweryRecipe;
 import velrondevs.botania.api.recipe.ElvenTradeRecipe;
+import velrondevs.botania.api.recipe.ManaInfusionRecipe;
 import velrondevs.botania.api.recipe.RunicAltarRecipe;
 import velrondevs.botania.compat.sophisticated.BreweryUpgradeContainer;
 import velrondevs.botania.compat.sophisticated.ElvenPortalUpgradeContainer;
+import velrondevs.botania.compat.sophisticated.ManaPileUpgradeContainer;
 import velrondevs.botania.compat.sophisticated.RunicAltarUpgradeContainer;
 
 public enum StationKind {
 	RUNIC_ALTAR("runic_altar", RunicAltarUpgradeContainer.class, RunicAltarRecipe.class),
 	ELVEN_PORTAL("elven_portal", ElvenPortalUpgradeContainer.class, ElvenTradeRecipe.class),
-	BREWERY("brewery", BreweryUpgradeContainer.class, BotanicalBreweryRecipe.class);
+	BREWERY("brewery", BreweryUpgradeContainer.class, BotanicalBreweryRecipe.class),
+	MANA_INFUSION("mana_infusion", ManaPileUpgradeContainer.class, ManaInfusionRecipe.class);
 
 	private final String key;
 	private final Class<?> containerClass;

@@ -58,10 +58,16 @@ final class BotaniaPonderScenes {
 				.addStoryBoard("sparks", SparkScenes::sparks, BotaniaPonderTags.MANA_NETWORK);
 		helper.forComponents(itemIds(BotaniaItems.sparkUpgradeDispersive, BotaniaItems.sparkUpgradeDominant, BotaniaItems.sparkUpgradeRecessive, BotaniaItems.sparkUpgradeIsolated))
 				.addStoryBoard("spark_upgrades", SparkScenes::augments, BotaniaPonderTags.MANA_NETWORK);
-		helper.forComponents(flowerIds(true))
-				.addStoryBoard("generating_flowers", FlowerScenes::generating, BotaniaPonderTags.FLOWERS);
-		helper.forComponents(flowerIds(false))
-				.addStoryBoard("functional_flowers", FlowerScenes::functional, BotaniaPonderTags.FLOWERS);
+		for (ResourceLocation flowerId : flowerIds(true)) {
+			Block flowerBlock = BuiltInRegistries.BLOCK.get(flowerId);
+			helper.forComponents(List.of(flowerId))
+					.addStoryBoard("generating_flowers", (scene, util) -> FlowerScenes.generating(scene, util, flowerBlock), BotaniaPonderTags.FLOWERS);
+		}
+		for (ResourceLocation flowerId : flowerIds(false)) {
+			Block flowerBlock = BuiltInRegistries.BLOCK.get(flowerId);
+			helper.forComponents(List.of(flowerId))
+					.addStoryBoard("functional_flowers", (scene, util) -> FlowerScenes.functional(scene, util, flowerBlock), BotaniaPonderTags.FLOWERS);
+		}
 		helper.forComponents(ids(BotaniaBlocks.brewery))
 				.addStoryBoard("brewery", MachineScenes::brewery, BotaniaPonderTags.CRAFTING_DEVICES);
 		helper.forComponents(ids(BotaniaBlocks.alchemyCatalyst, BotaniaBlocks.conjurationCatalyst))

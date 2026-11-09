@@ -16,13 +16,13 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import net.neoforged.neoforge.network.PacketDistributor;
+import net.p3pp3rf1y.sophisticatedcore.common.gui.UpgradeContainerBase;
 import net.p3pp3rf1y.sophisticatedcore.common.gui.StorageContainerMenuBase;
 
 import org.jetbrains.annotations.Nullable;
 
 import velrondevs.botania.client.integration.rei.BotaniaReiCategories;
 import velrondevs.botania.client.integration.rei.BotaniaReiDisplay;
-import velrondevs.botania.compat.sophisticated.StationUpgradeContainer;
 import velrondevs.botania.compat.sophisticated.transfer.StationKind;
 import velrondevs.botania.compat.sophisticated.transfer.StationTransfer;
 import velrondevs.botania.compat.sophisticated.transfer.StationTransferPayload;
@@ -41,7 +41,7 @@ public class StationReiTransferHandler implements TransferHandler {
 		if (kind == null || player == null || player.level() == null) {
 			return Result.createNotApplicable();
 		}
-		Optional<StationUpgradeContainer<?, ?>> container = StationTransfer.find(menu, kind);
+		Optional<UpgradeContainerBase<?, ?>> container = StationTransfer.find(menu, kind);
 		if (container.isEmpty()) {
 			return Result.createFailed(Component.translatable(kind.missingUpgradeKey())).blocksFurtherHandling();
 		}
@@ -58,10 +58,11 @@ public class StationReiTransferHandler implements TransferHandler {
 		if (needs == null) {
 			return Result.createFailed(Component.translatable("gui.botania.sophisticated.transfer.invalid")).blocksFurtherHandling();
 		}
-		IItemHandlerModifiable target = container.get().getUpgradeWrapper().getInventory();
+		IItemHandlerModifiable target = StationTransfer.inventory(container.get());
+		boolean[] managed = StationTransfer.managed(kind, needs, target.getSlots());
 		List<Slot> sources = StationTransfer.sources(menu, player);
 		StationTransfer.Plan plan = StationTransfer.plan(needs, StationTransfer.snapshot(sources), target,
-				kind == StationKind.ELVEN_PORTAL, context.isStackedCrafting(), true);
+				kind == StationKind.ELVEN_PORTAL, context.isStackedCrafting(), true, managed);
 		if (!plan.ok()) {
 			return Result.createFailed(Component.translatable("gui.botania.sophisticated.transfer.missing")).blocksFurtherHandling();
 		}
@@ -74,6 +75,9 @@ public class StationReiTransferHandler implements TransferHandler {
 
 	@Nullable
 	private static StationKind kindOf(BotaniaReiDisplay display) {
+		if (display.getCategoryIdentifier().equals(BotaniaReiCategories.MANA_INFUSION)) {
+			return StationKind.MANA_INFUSION;
+		}
 		if (display.getCategoryIdentifier().equals(BotaniaReiCategories.RUNIC_ALTAR)) {
 			return StationKind.RUNIC_ALTAR;
 		}

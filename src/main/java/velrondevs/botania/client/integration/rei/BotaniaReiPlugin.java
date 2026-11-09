@@ -122,6 +122,9 @@ public class BotaniaReiPlugin implements REIClientPlugin {
 		registry.addWorkstations(BotaniaReiCategories.TERRESTRIAL_AGGLOMERATION, EntryStacks.of(BotaniaBlocks.terraPlate));
 		registry.addWorkstations(BotaniaReiCategories.ELVEN_TRADE, EntryStacks.of(BotaniaBlocks.alfPortal));
 		registry.addWorkstations(BotaniaReiCategories.BOTANICAL_BREWERY, EntryStacks.of(BotaniaBlocks.brewery));
+		if (SophisticatedModule.INSTANCE.isAvailable()) {
+			SophisticatedRei.registerWorkstations(registry);
+		}
 		registry.addWorkstations(BotaniaReiCategories.PURE_DAISY,
 				EntryStacks.of(BotaniaFlowerBlocks.pureDaisy),
 				EntryStacks.of(BotaniaFlowerBlocks.pureDaisyFloating));

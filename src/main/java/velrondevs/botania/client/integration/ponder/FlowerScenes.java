@@ -28,7 +28,7 @@ final class FlowerScenes {
 		scene.world().modifyBlockEntityNBT(util.select().position(pool), ManaPoolBlockEntity.class, tag -> tag.putInt("mana", mana));
 	}
 
-	static void generating(SceneBuilder scene, SceneBuildingUtil util) {
+	static void generating(SceneBuilder scene, SceneBuildingUtil util, Block flowerBlock) {
 		PonderText text = new PonderText("generating_flowers");
 		scene.title("generating_flowers", PonderStrings.title("generating_flowers"));
 		scene.configureBasePlate(0, 0, 7);
@@ -43,6 +43,10 @@ final class FlowerScenes {
 		Vec3 flowerCenter = util.vector().centerOf(flower);
 		Vec3 spreaderCenter = util.vector().centerOf(spreader);
 		Vec3 poolCenter = util.vector().centerOf(pool);
+		boolean endoflame = flowerBlock == BotaniaFlowerBlocks.endoflame;
+		if (!endoflame) {
+			scene.world().setBlock(flower, flowerBlock.defaultBlockState(), false);
+		}
 
 		scene.world().showSection(util.select().position(flower), Direction.DOWN);
 		scene.idle(10);
@@ -51,11 +55,15 @@ final class FlowerScenes {
 
 		scene.overlay().showText(90).text(text.next()).attachKeyFrame().pointAt(util.vector().topOf(flower)).placeNearTarget();
 		scene.idle(15);
-		ElementLink<EntityElement> coal = scene.world().createItemEntity(util.vector().centerOf(1, 4, 3), Vec3.ZERO, new ItemStack(Items.COAL));
-		scene.idle(20);
-		scene.world().modifyEntity(coal, Entity::discard);
-		scene.world().modifyBlockEntityNBT(util.select().position(flower), EndoflameBlockEntity.class, tag -> tag.putInt("burnTime", 3000));
-		SceneHelper.sparkles(scene, util.vector().topOf(flower), 0xFF8800, 12);
+		if (endoflame) {
+			ElementLink<EntityElement> coal = scene.world().createItemEntity(util.vector().centerOf(1, 4, 3), Vec3.ZERO, new ItemStack(Items.COAL));
+			scene.idle(20);
+			scene.world().modifyEntity(coal, Entity::discard);
+			scene.world().modifyBlockEntityNBT(util.select().position(flower), EndoflameBlockEntity.class, tag -> tag.putInt("burnTime", 3000));
+			SceneHelper.sparkles(scene, util.vector().topOf(flower), 0xFF8800, 12);
+		} else {
+			scene.idle(20);
+		}
 		scene.idle(60);
 
 		scene.world().showSection(util.select().position(spreader), Direction.DOWN);
@@ -81,7 +89,9 @@ final class FlowerScenes {
 		scene.world().setBlock(waterNorth, Blocks.WATER.defaultBlockState(), true);
 		scene.world().setBlock(waterSouth, Blocks.WATER.defaultBlockState(), true);
 		scene.idle(15);
-		scene.world().setBlock(flower, BotaniaFlowerBlocks.hydroangeas.defaultBlockState(), true);
+		if (endoflame) {
+			scene.world().setBlock(flower, BotaniaFlowerBlocks.hydroangeas.defaultBlockState(), true);
+		}
 		scene.idle(20);
 		for (int shot = 4; shot <= 5; shot++) {
 			SceneHelper.sparkles(scene, util.vector().topOf(flower), 0x3366FF, 10);
@@ -95,7 +105,7 @@ final class FlowerScenes {
 		scene.idle(120);
 	}
 
-	static void functional(SceneBuilder scene, SceneBuildingUtil util) {
+	static void functional(SceneBuilder scene, SceneBuildingUtil util, Block flowerBlock) {
 		PonderText text = new PonderText("functional_flowers");
 		scene.title("functional_flowers", PonderStrings.title("functional_flowers"));
 		scene.configureBasePlate(0, 0, 11);
@@ -108,6 +118,10 @@ final class FlowerScenes {
 		BlockPos pool = util.grid().at(10, 1, 5);
 		int[][] stones = { { 2, 3 }, { 3, 8 }, { 7, 2 }, { 8, 8 }, { 1, 5 }, { 5, 9 } };
 		Block[] ores = { Blocks.IRON_ORE, Blocks.COAL_ORE, Blocks.GOLD_ORE, Blocks.REDSTONE_ORE, Blocks.LAPIS_ORE, Blocks.COPPER_ORE };
+		boolean orechid = flowerBlock == BotaniaFlowerBlocks.orechid;
+		if (!orechid) {
+			scene.world().setBlock(flower, flowerBlock.defaultBlockState(), false);
+		}
 
 		scene.world().showSection(util.select().position(flower), Direction.DOWN);
 		scene.idle(10);
@@ -131,25 +145,32 @@ final class FlowerScenes {
 
 		scene.overlay().showText(110).text(text.next()).attachKeyFrame().pointAt(util.vector().topOf(flower)).placeNearTarget();
 		scene.overlay().showControls(util.vector().blockSurface(flower, Direction.UP), Pointing.DOWN, 40).rightClick().withItem(new ItemStack(BotaniaItems.twigWand));
-		scene.overlay().showOutline(PonderPalette.GREEN, "orechid_range", util.select().fromTo(0, 1, 0, 10, 1, 10), 110);
+		if (orechid) {
+			scene.overlay().showOutline(PonderPalette.GREEN, "orechid_range", util.select().fromTo(0, 1, 0, 10, 1, 10), 110);
+		}
 		scene.idle(120);
 
-		for (int[] stone : stones) {
-			scene.world().showSection(util.select().position(stone[0], 1, stone[1]), Direction.DOWN);
-			scene.idle(3);
-		}
-		scene.idle(10);
-		scene.overlay().showText(120).text(text.next()).attachKeyFrame().pointAt(util.vector().topOf(flower)).placeNearTarget();
-		scene.idle(20);
-		for (int i = 0; i < stones.length; i++) {
-			BlockPos target = util.grid().at(stones[i][0], 1, stones[i][1]);
-			SceneHelper.burst(scene, from, to, 8, SceneHelper.MANA_COLOR);
-			SceneHelper.path(scene, 0xFF4FD8, 6, util.vector().topOf(flower), util.vector().centerOf(target));
-			scene.world().setBlock(target, ores[i].defaultBlockState(), true);
-			SceneHelper.sparkles(scene, util.vector().topOf(target), 0xFF4FD8, 8);
+		if (orechid) {
+			for (int[] stone : stones) {
+				scene.world().showSection(util.select().position(stone[0], 1, stone[1]), Direction.DOWN);
+				scene.idle(3);
+			}
+			scene.idle(10);
+			scene.overlay().showText(120).text(text.next()).attachKeyFrame().pointAt(util.vector().topOf(flower)).placeNearTarget();
+			scene.idle(20);
+			for (int i = 0; i < stones.length; i++) {
+				BlockPos target = util.grid().at(stones[i][0], 1, stones[i][1]);
+				SceneHelper.burst(scene, from, to, 8, SceneHelper.MANA_COLOR);
+				SceneHelper.path(scene, 0xFF4FD8, 6, util.vector().topOf(flower), util.vector().centerOf(target));
+				scene.world().setBlock(target, ores[i].defaultBlockState(), true);
+				SceneHelper.sparkles(scene, util.vector().topOf(target), 0xFF4FD8, 8);
+				scene.idle(10);
+			}
+			scene.idle(40);
+		} else {
+			text.next();
 			scene.idle(10);
 		}
-		scene.idle(40);
 
 		scene.overlay().showText(110).text(text.next()).attachKeyFrame().pointAt(util.vector().topOf(flower)).placeNearTarget();
 		scene.idle(120);

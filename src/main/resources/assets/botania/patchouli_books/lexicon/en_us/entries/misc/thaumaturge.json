@@ -21,6 +21,12 @@
       "flag": "mod:thaumaturge"
     },
     {
+      "type": "crafting",
+      "recipe": "botania:mana_inkwell",
+      "text": "botania.page.thaumaturge4",
+      "flag": "mod:thaumaturge"
+    },
+    {
       "type": "text",
       "text": "botania.page.thaumaturge3"
     }

@@ -17,10 +17,10 @@ import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.neoforged.neoforge.network.handling.IPayloadHandler;
 import net.p3pp3rf1y.sophisticatedcore.common.gui.StorageContainerMenuBase;
+import net.p3pp3rf1y.sophisticatedcore.common.gui.UpgradeContainerBase;
 import net.p3pp3rf1y.sophisticatedcore.util.InventoryHelper;
 
 import velrondevs.botania.common.lib.LibMisc;
-import velrondevs.botania.compat.sophisticated.StationUpgradeContainer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,7 +59,7 @@ public record StationTransferPayload(int containerId, int kind, ResourceLocation
 		if (stationKind == null) {
 			return;
 		}
-		Optional<StationUpgradeContainer<?, ?>> container = StationTransfer.find(menu, stationKind);
+		Optional<UpgradeContainerBase<?, ?>> container = StationTransfer.find(menu, stationKind);
 		if (container.isEmpty()) {
 			notify(player, stationKind.missingUpgradeKey());
 			return;
@@ -76,21 +76,22 @@ public record StationTransferPayload(int containerId, int kind, ResourceLocation
 			return;
 		}
 		boolean multi = stationKind == StationKind.ELVEN_PORTAL;
-		IItemHandlerModifiable target = container.get().getUpgradeWrapper().getInventory();
+		IItemHandlerModifiable target = StationTransfer.inventory(container.get());
+		boolean[] managed = StationTransfer.managed(stationKind, needs, target.getSlots());
 		List<Slot> sources = StationTransfer.sources(menu, player);
-		StationTransfer.Plan check = StationTransfer.plan(needs, StationTransfer.snapshot(sources), target, multi, max, true);
+		StationTransfer.Plan check = StationTransfer.plan(needs, StationTransfer.snapshot(sources), target, multi, max, true, managed);
 		if (!check.ok()) {
 			notify(player, "gui.botania.sophisticated.transfer.missing");
 			return;
 		}
 		for (int slot = 0; slot < target.getSlots(); slot++) {
 			ItemStack current = target.getStackInSlot(slot);
-			if (!check.kept()[slot] && !current.isEmpty()) {
+			if (managed[slot] && !check.kept()[slot] && !current.isEmpty()) {
 				target.setStackInSlot(slot, ItemStack.EMPTY);
 				giveBack(menu, player, current.copy());
 			}
 		}
-		StationTransfer.Plan plan = StationTransfer.plan(needs, StationTransfer.snapshot(sources), target, multi, max, false);
+		StationTransfer.Plan plan = StationTransfer.plan(needs, StationTransfer.snapshot(sources), target, multi, max, false, managed);
 		if (!plan.ok()) {
 			notify(player, "gui.botania.sophisticated.transfer.missing");
 			return;

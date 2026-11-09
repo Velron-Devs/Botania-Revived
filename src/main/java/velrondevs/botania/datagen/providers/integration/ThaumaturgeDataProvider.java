@@ -19,6 +19,8 @@ import java.util.concurrent.CompletableFuture;
 
 public class ThaumaturgeDataProvider extends JsonFileProvider {
 	private static final String GOGGLES = "thaumaturge:goggles_revealing";
+	private static final String SCRIBING_TOOLS = "thaumaturge:scribing_tools";
+	private static final String INKWELL_TEXTURE = "thaumaturge:item/scribing_tools";
 	private static final List<String> HELMETS = List.of("manasteel", "elementium", "terrasteel");
 
 	private final boolean assets;
@@ -62,13 +64,18 @@ public class ThaumaturgeDataProvider extends JsonFileProvider {
 
 	private static void addModels(Map<ResourceLocation, JsonObject> files) {
 		for (String tier : HELMETS) {
-			JsonObject model = new JsonObject();
-			model.addProperty("parent", "minecraft:item/generated");
-			JsonObject textures = new JsonObject();
-			textures.addProperty("layer0", botania("item/" + tier + "_helmet_revealing"));
-			model.add("textures", textures);
-			files.put(id("models/item/" + tier + "_helmet_revealing"), model);
+			itemModel(files, tier + "_helmet_revealing", botania("item/" + tier + "_helmet_revealing"));
 		}
+		itemModel(files, ThaumaturgeIntegration.MANA_INKWELL, INKWELL_TEXTURE);
+	}
+
+	private static void itemModel(Map<ResourceLocation, JsonObject> files, String name, String texture) {
+		JsonObject model = new JsonObject();
+		model.addProperty("parent", "minecraft:item/generated");
+		JsonObject textures = new JsonObject();
+		textures.addProperty("layer0", texture);
+		model.add("textures", textures);
+		files.put(id("models/item/" + name), model);
 	}
 
 	private static void addRecipes(Map<ResourceLocation, JsonObject> files) {
@@ -106,6 +113,29 @@ public class ThaumaturgeDataProvider extends JsonFileProvider {
 		files.put(id("recipe/terrasteel_helmet_revealing_upgrade"), upgrade);
 		files.put(id("advancement/recipes/combat/terrasteel_helmet_revealing_upgrade"),
 				advancement("terrasteel_helmet_revealing_upgrade", botania("manasteel_helmet_revealing"), null));
+
+		String inkwell = ThaumaturgeIntegration.MANA_INKWELL;
+		JsonObject inkwellRecipe = conditioned();
+		inkwellRecipe.addProperty("type", "minecraft:crafting_shapeless");
+		inkwellRecipe.addProperty("category", "equipment");
+		JsonArray inkwellIngredients = new JsonArray();
+		inkwellIngredients.add(item(SCRIBING_TOOLS));
+		inkwellIngredients.add(item(botania("mana_pearl")));
+		inkwellIngredients.add(tag(botania("manasteel_ingots")));
+		inkwellIngredients.add(item(botania("mana_powder")));
+		inkwellRecipe.add("ingredients", inkwellIngredients);
+		inkwellRecipe.add("result", result(botania(inkwell)));
+		files.put(id("recipe/" + inkwell), inkwellRecipe);
+		files.put(id("advancement/recipes/tools/" + inkwell), advancement(inkwell, botania("mana_pearl"), SCRIBING_TOOLS));
+
+		JsonObject scribingTag = new JsonObject();
+		JsonArray scribingValues = new JsonArray();
+		JsonObject inkwellEntry = new JsonObject();
+		inkwellEntry.addProperty("id", botania(inkwell));
+		inkwellEntry.addProperty("required", false);
+		scribingValues.add(inkwellEntry);
+		scribingTag.add("values", scribingValues);
+		files.put(ResourceLocation.fromNamespaceAndPath(ThaumaturgeIntegration.MOD_ID, "tags/item/scribing_tools"), scribingTag);
 	}
 
 	private static JsonObject advancement(String recipe, String itemA, String itemB) {
@@ -225,6 +255,12 @@ public class ThaumaturgeDataProvider extends JsonFileProvider {
 	private static JsonObject item(String id) {
 		JsonObject json = new JsonObject();
 		json.addProperty("item", id);
+		return json;
+	}
+
+	private static JsonObject tag(String id) {
+		JsonObject json = new JsonObject();
+		json.addProperty("tag", id);
 		return json;
 	}
 

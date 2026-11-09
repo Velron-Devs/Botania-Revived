@@ -5,10 +5,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import net.p3pp3rf1y.sophisticatedcore.api.IStorageWrapper;
-import net.p3pp3rf1y.sophisticatedcore.init.ModCoreDataComponents;
-import net.p3pp3rf1y.sophisticatedcore.inventory.StatefulComponentItemHandler;
 import net.p3pp3rf1y.sophisticatedcore.upgrades.ITickableUpgrade;
 import net.p3pp3rf1y.sophisticatedcore.upgrades.UpgradeItemBase;
 import net.p3pp3rf1y.sophisticatedcore.upgrades.UpgradeWrapperBase;
@@ -21,14 +18,14 @@ import java.util.function.Consumer;
 public abstract class StationUpgradeWrapper<W extends StationUpgradeWrapper<W, I>, I extends UpgradeItemBase<W>> extends UpgradeWrapperBase<W, I> implements ITickableUpgrade {
 	protected record Plan(int cost, List<ItemStack> outputs, boolean missingReagent, Runnable commit) {}
 
-	private final Inventory inventory;
+	private final UpgradeSlots inventory;
 
 	protected StationUpgradeWrapper(IStorageWrapper storageWrapper, ItemStack upgrade, Consumer<ItemStack> upgradeSaveHandler, int slots) {
 		super(storageWrapper, upgrade, upgradeSaveHandler);
-		inventory = new Inventory(slots);
+		inventory = new UpgradeSlots(upgrade, slots, (slot, stack) -> accepts(slot, stack), this::slotLimit, this::save);
 	}
 
-	public IItemHandlerModifiable getInventory() {
+	public UpgradeSlots getInventory() {
 		return inventory;
 	}
 
@@ -61,47 +58,67 @@ public abstract class StationUpgradeWrapper<W extends StationUpgradeWrapper<W, I
 			return;
 		}
 		setCooldown(level, interval());
-		run(level);
+		int maxCrafts = SophisticatedConfig.stationMaxPerInterval();
+		for (int craft = 0; craft < maxCrafts; craft++) {
+			if (!run(level)) {
+				return;
+			}
+		}
 	}
 
-	private void run(Level level) {
+	private boolean run(Level level) {
 		Plan plan = plan(level);
 		if (plan == null) {
 			setState(StationState.EMPTY);
-			return;
+			return false;
 		}
 		long total = ManaPileUpgradeItem.availableMana(storageWrapper);
 		int available = (int) Math.min(Integer.MAX_VALUE, total);
 		if (plan.missingReagent()) {
 			setState(new StationState(StationState.NO_REAGENT, available, plan.cost()));
-			return;
+			return false;
 		}
 		if (plan.cost() > 0) {
 			if (!ManaPileUpgradeItem.hasPile(storageWrapper)) {
 				setState(new StationState(StationState.NO_PILE, 0, plan.cost()));
-				return;
+				return false;
 			}
 			if (total < plan.cost()) {
 				setState(new StationState(StationState.NEED_MANA, available, plan.cost()));
-				return;
+				return false;
 			}
 		}
 		IItemHandler target = storageWrapper.getInventoryForUpgradeProcessing();
 		if (!canStore(target, plan.outputs())) {
 			setState(new StationState(StationState.NO_SPACE, available, plan.cost()));
-			return;
+			return false;
 		}
 		if (plan.cost() > 0 && ManaPileUpgradeItem.drainMana(storageWrapper, plan.cost(), false) < plan.cost()) {
 			setState(new StationState(StationState.NEED_MANA, available, plan.cost()));
-			return;
+			return false;
 		}
+		ItemStack[] pattern = snapshot();
 		plan.commit().run();
 		for (ItemStack output : plan.outputs()) {
 			if (!output.isEmpty()) {
 				InventoryHelper.insertIntoInventory(output.copy(), target, false);
 			}
 		}
+		if (SophisticatedConfig.stationAutoFeed()) {
+			for (int slot = 0; slot < pattern.length; slot++) {
+				StationAutomation.refill(inventory, slot, pattern[slot], pattern[slot].getCount(), target);
+			}
+		}
 		setState(new StationState(StationState.WORKING, (int) Math.min(Integer.MAX_VALUE, Math.max(0L, total - plan.cost())), plan.cost()));
+		return true;
+	}
+
+	private ItemStack[] snapshot() {
+		ItemStack[] pattern = new ItemStack[inventory.getSlots()];
+		for (int slot = 0; slot < pattern.length; slot++) {
+			pattern[slot] = inventory.getStackInSlot(slot).copy();
+		}
+		return pattern;
 	}
 
 	private void setState(StationState state) {
@@ -164,26 +181,5 @@ public abstract class StationUpgradeWrapper<W extends StationUpgradeWrapper<W, I
 			}
 		}
 		return false;
-	}
-
-	private final class Inventory extends StatefulComponentItemHandler {
-		private Inventory(int slots) {
-			super(StationUpgradeWrapper.this.upgrade, ModCoreDataComponents.LENIENT_CONTAINER.get(), slots);
-		}
-
-		@Override
-		public boolean isItemValid(int slot, ItemStack stack) {
-			return stack.isEmpty() || accepts(slot, stack);
-		}
-
-		@Override
-		public int getSlotLimit(int slot) {
-			return slotLimit(slot);
-		}
-
-		@Override
-		protected void onContentsChanged(int slot, ItemStack oldStack, ItemStack newStack) {
-			save();
-		}
 	}
 }

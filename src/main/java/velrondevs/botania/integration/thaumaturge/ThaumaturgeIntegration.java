@@ -1,6 +1,7 @@
 package velrondevs.botania.integration.thaumaturge;
 
 import net.minecraft.core.component.DataComponentType;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -19,10 +20,14 @@ import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModList;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.event.AddPackFindersEvent;
 import net.neoforged.neoforge.registries.RegisterEvent;
 
+import org.jetbrains.annotations.Nullable;
+
 import velrondevs.botania.api.BotaniaAPI;
+import velrondevs.botania.api.BotaniaCapabilities;
 import velrondevs.botania.module.BotaniaModules;
 import velrondevs.botania.registry.BotaniaCreativeTabs;
 import velrondevs.botania.registry.BotaniaItems;
@@ -38,11 +43,15 @@ public final class ThaumaturgeIntegration {
 	public static final String MANASTEEL_HELM_REVEALING = "manasteel_helmet_revealing";
 	public static final String ELEMENTIUM_HELM_REVEALING = "elementium_helmet_revealing";
 	public static final String TERRASTEEL_HELM_REVEALING = "terrasteel_helmet_revealing";
+	public static final String MANA_INKWELL = "mana_inkwell";
 	public static final int VIS_DISCOUNT = 5;
 	public static final String ASPECT_PACK_PATH = "resourcepacks/thaumaturge_aspects";
 
 	private static final ResourceLocation GOGGLES_UPGRADE = ResourceLocation.fromNamespaceAndPath(MOD_ID, "goggles_upgrade");
 	private static final ResourceLocation VIS_DISCOUNT_ATTRIBUTE = ResourceLocation.fromNamespaceAndPath(MOD_ID, "vis_discount");
+
+	@Nullable
+	private static Item manaInkwell;
 
 	private ThaumaturgeIntegration() {}
 
@@ -58,10 +67,15 @@ public final class ThaumaturgeIntegration {
 		BotaniaCreativeTabs.bindForItems(modBus, ThaumaturgeIntegration::registerItems);
 		modBus.addListener(ThaumaturgeIntegration::registerRecipeSerializers);
 		modBus.addListener(ThaumaturgeIntegration::addAspectPack);
+		modBus.addListener(ThaumaturgeIntegration::registerCapabilities);
 	}
 
 	@SuppressWarnings("unchecked")
 	private static void registerItems(BiConsumer<Item, ResourceLocation> consumer) {
+		manaInkwell = new ManaInkwellItem(new Item.Properties().durability(ManaInkwellItem.MAX_INK)
+				.component(DataComponents.DAMAGE, ManaInkwellItem.MAX_INK).rarity(Rarity.UNCOMMON));
+		register(consumer, MANA_INKWELL, manaInkwell);
+
 		DataComponentType<?> type = BuiltInRegistries.DATA_COMPONENT_TYPE.get(GOGGLES_UPGRADE);
 		if (type == null) {
 			BotaniaAPI.LOGGER.warn("Thaumaturge is loaded but {} is not registered, the Helmets of Revealing are disabled", GOGGLES_UPGRADE);
@@ -90,6 +104,12 @@ public final class ThaumaturgeIntegration {
 		Pack pack = Pack.readMetaAndCreate(info, new PathPackResources.PathResourcesSupplier(path), PackType.SERVER_DATA, new PackSelectionConfig(true, Pack.Position.TOP, false));
 		if (pack != null) {
 			event.addRepositorySource(consumer -> consumer.accept(pack));
+		}
+	}
+
+	private static void registerCapabilities(RegisterCapabilitiesEvent event) {
+		if (manaInkwell != null) {
+			event.registerItem(BotaniaCapabilities.MANA_ITEM, (stack, ctx) -> new ManaInkwellItem.ManaItemImpl(stack), manaInkwell);
 		}
 	}
 

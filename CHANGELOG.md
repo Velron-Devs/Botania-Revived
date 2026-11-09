@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.0.7 (2026-11-09)
+
+- The Mana Pile Upgrade for Sophisticated Backpacks, Storage and chests has a Load/Unload mode button. Load keeps the old behavior (your Mana Tablets and Mirrors fill the pile); Unload makes the pile charge the Botania item in its slot and, with a Mana Support Upgrade in the same backpack, the Botania items you carry in your hotbar, inventory, off hand and accessories, wherever the backpack is carried.
+- The Mana Pile Upgrade can infuse items like a Mana Pool: an infusion button, an input slot, an output slot and an optional catalyst slot. It refills the input from the storage with items of the same kind and puts the results back in it, spending the mana of the pile. Recipes without a catalyst work with the catalyst slot empty. Pile base capacity is now 1,000,000 like a Mana Pool.
+- The mana bar of the Mana Pile Upgrade now reserves its own columns like the Tank, so it no longer overlaps it or goes missing, and it never fills past its height.
+- The Runic Altar, Elven Gateway and Botanical Brewery upgrades now craft automatically: the items of their tab are the pattern, refilled from the storage after every craft, and the results go back into the storage. Their recipes now use a Glimmering Livingwood Log on top and an Elven Gateway Core at the bottom of the middle column.
+- The Mana Pile Upgrade shows up as a workstation of Mana Infusion in JEI and REI, and the "+" button transfers an infusion recipe to its input and catalyst slots.
+- New Botanurgist's Inkwell for Thaumaturge: a scribing tool that refills with mana (500 mana per point of ink) instead of ink.
+- Ponder: every flower now has its own scene and shows the flower you pick instead of a shared one.
+
 ## 1.0.6 (2026-11-05)
 
 - Botania backpacks, barrels and chests (Manasteel, Elementium, Terrasteel, Gaia and Alfsteel) now open a wide inventory screen with 18 slot columns instead of 12, so they need far fewer rows and much less scrolling (695 slots take 39 rows instead of 58); the upgrade tabs stay on the left, the search and sort buttons on top, the scroll bar on the right and your inventory is centered below. It is purely visual and only active when Sophisticated Core is installed; other storages keep the normal screen. The panel backgrounds are based on Sophisticated ATM Tiers by GrafKakashi (MIT).

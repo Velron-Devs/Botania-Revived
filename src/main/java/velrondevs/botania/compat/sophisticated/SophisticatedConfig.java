@@ -22,6 +22,13 @@ public final class SophisticatedConfig {
 	private static final ModConfigSpec.BooleanValue PILE_ABSORB_FROM_SLOT;
 	private static final ModConfigSpec.BooleanValue PILE_PULL_FROM_PLAYER;
 	private static final ModConfigSpec.BooleanValue PILE_RECEIVE_FROM_WORLD;
+	private static final ModConfigSpec.BooleanValue PILE_CHARGE_ITEMS;
+	private static final ModConfigSpec.IntValue PILE_CHARGE_INTERVAL;
+	private static final ModConfigSpec.IntValue PILE_CHARGE_RATE;
+	private static final ModConfigSpec.IntValue PILE_INFUSION_INTERVAL;
+	private static final ModConfigSpec.IntValue PILE_INFUSION_MAX;
+	private static final ModConfigSpec.BooleanValue PILE_INFUSION_AUTO_FEED;
+	private static final ModConfigSpec.BooleanValue PILE_INFUSION_AUTO_OUTPUT;
 	private static final ModConfigSpec.BooleanValue LINK_ENABLED;
 	private static final ModConfigSpec.IntValue LINK_MAX_PER_STORAGE;
 	private static final ModConfigSpec.BooleanValue BACKPACKS_ENABLED;
@@ -42,12 +49,14 @@ public final class SophisticatedConfig {
 	private static final ModConfigSpec.IntValue BREWERY_MAX_PER_STORAGE;
 	private static final ModConfigSpec.IntValue BREWERY_INTERVAL;
 	private static final ModConfigSpec.IntValue BREWERY_COST_PERCENT;
+	private static final ModConfigSpec.BooleanValue STATION_AUTO_FEED;
+	private static final ModConfigSpec.IntValue STATION_MAX_PER_INTERVAL;
 	private static final ModConfigSpec SPEC;
 
 	static {
 		ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
 		builder.push("mana_pile");
-		PILE_BASE_CAPACITY = builder.defineInRange("base_capacity", 500000, 1, Integer.MAX_VALUE);
+		PILE_BASE_CAPACITY = builder.defineInRange("base_capacity", 1000000, 1, Integer.MAX_VALUE);
 		PILE_STACK_RATIO = builder.defineInRange("stack_upgrade_ratio", 0.5, 0.0, 1000.0);
 		PILE_MAX_PER_STORAGE = builder.defineInRange("max_per_storage", 1, 1, 64);
 		PILE_ABSORB_FROM_ITEMS = builder.define("absorb_from_items", true);
@@ -56,6 +65,13 @@ public final class SophisticatedConfig {
 		PILE_ABSORB_FROM_SLOT = builder.define("absorb_from_slot", true);
 		PILE_PULL_FROM_PLAYER = builder.define("pull_from_player_items", true);
 		PILE_RECEIVE_FROM_WORLD = builder.define("receive_from_world", true);
+		PILE_CHARGE_ITEMS = builder.define("charge_items", true);
+		PILE_CHARGE_INTERVAL = builder.defineInRange("charge_interval_ticks", 20, 1, 1200);
+		PILE_CHARGE_RATE = builder.defineInRange("charge_rate", 10000, 1, Integer.MAX_VALUE);
+		PILE_INFUSION_INTERVAL = builder.defineInRange("infusion_interval_ticks", 20, 1, 1200);
+		PILE_INFUSION_MAX = builder.defineInRange("infusion_max_per_interval", 4, 1, 64);
+		PILE_INFUSION_AUTO_FEED = builder.define("infusion_auto_feed", true);
+		PILE_INFUSION_AUTO_OUTPUT = builder.define("infusion_auto_output", true);
 		builder.pop();
 		builder.push("mana_link");
 		LINK_ENABLED = builder.define("enabled", true);
@@ -93,6 +109,10 @@ public final class SophisticatedConfig {
 		BREWERY_MAX_PER_STORAGE = builder.defineInRange("max_per_storage", 1, 1, 64);
 		BREWERY_INTERVAL = builder.defineInRange("interval_ticks", 20, 1, 1200);
 		BREWERY_COST_PERCENT = builder.defineInRange("cost_percent", 100, 0, 10000);
+		builder.pop();
+		builder.push("stations");
+		STATION_AUTO_FEED = builder.define("auto_feed", true);
+		STATION_MAX_PER_INTERVAL = builder.defineInRange("max_per_interval", 1, 1, 64);
 		builder.pop();
 		SPEC = builder.build();
 	}
@@ -152,6 +172,42 @@ public final class SophisticatedConfig {
 
 	public static boolean pileReceiveFromWorld() {
 		return safe(PILE_RECEIVE_FROM_WORLD);
+	}
+
+	public static int pileInfusionInterval() {
+		return safe(PILE_INFUSION_INTERVAL);
+	}
+
+	public static int pileInfusionMaxPerInterval() {
+		return safe(PILE_INFUSION_MAX);
+	}
+
+	public static boolean pileInfusionAutoFeed() {
+		return safe(PILE_INFUSION_AUTO_FEED);
+	}
+
+	public static boolean pileInfusionAutoOutput() {
+		return safe(PILE_INFUSION_AUTO_OUTPUT);
+	}
+
+	public static boolean stationAutoFeed() {
+		return safe(STATION_AUTO_FEED);
+	}
+
+	public static int stationMaxPerInterval() {
+		return safe(STATION_MAX_PER_INTERVAL);
+	}
+
+	public static boolean pileChargeItems() {
+		return safe(PILE_CHARGE_ITEMS);
+	}
+
+	public static int pileChargeInterval() {
+		return safe(PILE_CHARGE_INTERVAL);
+	}
+
+	public static int pileChargeRate() {
+		return safe(PILE_CHARGE_RATE);
 	}
 
 	public static boolean altarEnabled() {

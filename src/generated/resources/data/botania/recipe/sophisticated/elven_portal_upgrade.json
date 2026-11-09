@@ -30,6 +30,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
+    "A": {
+      "item": "botania:alfheim_portal"
+    },
     "B": {
       "tag": "botania:sophisticated_upgrade_bases"
     },
@@ -39,14 +42,14 @@
     "E": {
       "tag": "botania:elementium_ingots"
     },
-    "W": {
-      "tag": "botania:dreamwood_logs"
+    "G": {
+      "item": "botania:glimmering_livingwood_log"
     }
   },
   "pattern": [
-    "DWD",
+    "DGD",
     "EBE",
-    "DWD"
+    "DAD"
   ],
   "result": {
     "count": 1,

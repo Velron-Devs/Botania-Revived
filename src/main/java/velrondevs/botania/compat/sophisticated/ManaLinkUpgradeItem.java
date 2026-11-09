@@ -28,6 +28,15 @@ public class ManaLinkUpgradeItem extends UpgradeItemBase<ManaLinkUpgradeItem.Wra
 		return List.of();
 	}
 
+	public static boolean isActive(IStorageWrapper storage) {
+		for (Wrapper link : storage.getUpgradeHandler().getTypeWrappers(TYPE)) {
+			if (link.isEnabled()) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	public static class Wrapper extends UpgradeWrapperBase<Wrapper, ManaLinkUpgradeItem> {
 		protected Wrapper(IStorageWrapper storageWrapper, ItemStack upgrade, Consumer<ItemStack> upgradeSaveHandler) {
 			super(storageWrapper, upgrade, upgradeSaveHandler);

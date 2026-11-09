@@ -98,32 +98,34 @@ public final class SophisticatedDataProvider extends JsonFileProvider {
 		files.put(id("recipe/sophisticated/" + SophisticatedItems.MANA_LINK), link);
 		files.put(id("advancement/recipes/misc/sophisticated/" + SophisticatedItems.MANA_LINK), advancement("sophisticated/" + SophisticatedItems.MANA_LINK, botania("rune_mana")));
 
-		JsonObject altar = recipe(SophisticatedItems.RUNIC_ALTAR, "SRS", "PBP", "SRS");
+		JsonObject altar = recipe(SophisticatedItems.RUNIC_ALTAR, "SGS", "PBP", "SAS");
 		JsonObject altarKey = new JsonObject();
 		altarKey.add("S", item(botania("livingrock")));
-		altarKey.add("R", item(botania("rune_mana")));
+		altarKey.add("G", item(botania("glimmering_livingwood_log")));
+		altarKey.add("A", item(botania("alfheim_portal")));
 		altarKey.add("P", item(botania("mana_pearl")));
 		altarKey.add("B", tag(BASES_TAG));
 		altar.add("key", altarKey);
 		files.put(id("recipe/sophisticated/" + SophisticatedItems.RUNIC_ALTAR), altar);
 		files.put(id("advancement/recipes/misc/sophisticated/" + SophisticatedItems.RUNIC_ALTAR), advancement("sophisticated/" + SophisticatedItems.RUNIC_ALTAR, botania("livingrock")));
 
-		JsonObject portal = recipe(SophisticatedItems.ELVEN_PORTAL, "DWD", "EBE", "DWD");
+		JsonObject portal = recipe(SophisticatedItems.ELVEN_PORTAL, "DGD", "EBE", "DAD");
 		JsonObject portalKey = new JsonObject();
 		portalKey.add("D", tag(LibMisc.MOD_ID + ":dragonstone_gems"));
-		portalKey.add("W", tag(LibMisc.MOD_ID + ":dreamwood_logs"));
+		portalKey.add("G", item(botania("glimmering_livingwood_log")));
+		portalKey.add("A", item(botania("alfheim_portal")));
 		portalKey.add("E", tag(LibMisc.MOD_ID + ":elementium_ingots"));
 		portalKey.add("B", tag(BASES_TAG));
 		portal.add("key", portalKey);
 		files.put(id("recipe/sophisticated/" + SophisticatedItems.ELVEN_PORTAL), portal);
 		files.put(id("advancement/recipes/misc/sophisticated/" + SophisticatedItems.ELVEN_PORTAL), advancement("sophisticated/" + SophisticatedItems.ELVEN_PORTAL, "#botania:dragonstone_gems"));
 
-		JsonObject brewery = recipe(SophisticatedItems.BREWERY, "VNV", "FBF", "VPV");
+		JsonObject brewery = recipe(SophisticatedItems.BREWERY, "VGV", "FBF", "VAV");
 		JsonObject breweryKey = new JsonObject();
 		breweryKey.add("V", item(botania("vial")));
-		breweryKey.add("N", item("minecraft:nether_wart"));
+		breweryKey.add("G", item(botania("glimmering_livingwood_log")));
+		breweryKey.add("A", item(botania("alfheim_portal")));
 		breweryKey.add("F", item(botania("flask")));
-		breweryKey.add("P", item(botania("mana_pearl")));
 		breweryKey.add("B", tag(BASES_TAG));
 		brewery.add("key", breweryKey);
 		files.put(id("recipe/sophisticated/" + SophisticatedItems.BREWERY), brewery);

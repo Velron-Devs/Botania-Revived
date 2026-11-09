@@ -177,6 +177,9 @@ public class JEIBotaniaPlugin implements IModPlugin {
 		registry.addRecipeCatalyst(new ItemStack(BotaniaBlocks.terraPlate), TerrestrialAgglomerationRecipeCategory.TYPE);
 		registry.addRecipeCatalyst(new ItemStack(BotaniaItems.autocraftingHalo), RecipeTypes.CRAFTING);
 		registry.addRecipeCatalyst(new ItemStack(BotaniaItems.craftingHalo), RecipeTypes.CRAFTING);
+		if (SophisticatedModule.INSTANCE.isAvailable()) {
+			SophisticatedJei.registerCatalysts(registry);
+		}
 	}
 
 	@Override
