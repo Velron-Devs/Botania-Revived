@@ -9,15 +9,10 @@
   "category": "misc",
   "group": "botania:floating_flower",
   "ingredients": [
-    {
-      "tag": "botania:floating_flowers"
-    },
-    {
-      "item": "botania:asgardandelion"
-    }
+    "#botania:floating_flowers",
+    "botania:asgardandelion"
   ],
   "result": {
-    "count": 1,
     "id": "botania:floating_asgardandelion"
   }
 }

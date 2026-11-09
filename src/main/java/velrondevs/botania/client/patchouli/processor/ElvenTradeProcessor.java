@@ -3,7 +3,7 @@ package velrondevs.botania.client.patchouli.processor;
 import com.google.common.collect.ImmutableList;
 
 import net.minecraft.core.HolderLookup;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
@@ -26,7 +26,7 @@ public class ElvenTradeProcessor implements IComponentProcessor {
 	public void setup(Level level, IVariableProvider variables) {
 		ImmutableList.Builder<ElvenTradeRecipe> builder = ImmutableList.builder();
 		for (IVariable s : variables.get("recipes", level.registryAccess()).asListOrSingleton(level.registryAccess())) {
-			ElvenTradeRecipe recipe = PatchouliUtils.getRecipe(level, BotaniaRecipeTypes.ELVEN_TRADE_TYPE, ResourceLocation.parse(s.asString()));
+			ElvenTradeRecipe recipe = PatchouliUtils.getRecipe(level, BotaniaRecipeTypes.ELVEN_TRADE_TYPE, Identifier.parse(s.asString()));
 			if (recipe != null) {
 				builder.add(recipe);
 			}
@@ -35,7 +35,7 @@ public class ElvenTradeProcessor implements IComponentProcessor {
 		for (ElvenTradeRecipe recipe : recipes) {
 			List<Ingredient> inputs = recipe.getIngredients();
 			for (Ingredient ingredient : inputs) {
-				int length = ingredient.getItems().length;
+				int length = PatchouliUtils.getItems(ingredient).length;
 				if (length > longestIngredientSize) {
 					longestIngredientSize = length;
 				}
@@ -81,7 +81,7 @@ public class ElvenTradeProcessor implements IComponentProcessor {
 			if (inputIndex < ingredients.size()) {
 				return ingredients.get(inputIndex);
 			} else {
-				return Ingredient.EMPTY;
+				return (Ingredient) null;
 			}
 		}).collect(Collectors.toList());
 		return PatchouliUtils.interweaveIngredients(recipes, longestIngredientSize, registries);

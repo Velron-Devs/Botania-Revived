@@ -1,7 +1,7 @@
 package velrondevs.botania.api;
 
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 
 import velrondevs.botania.api.block.FloatingFlower;
@@ -16,13 +16,13 @@ public interface BotaniaAPIClient {
 		return INSTANCE;
 	}
 
-	default void registerIslandTypeModel(FloatingFlower.IslandType islandType, ResourceLocation model) {}
+	default void registerIslandTypeModel(FloatingFlower.IslandType islandType, Identifier model) {}
 
-	default Map<FloatingFlower.IslandType, ResourceLocation> getRegisteredIslandTypeModels() {
+	default Map<FloatingFlower.IslandType, Identifier> getRegisteredIslandTypeModels() {
 		return Collections.emptyMap();
 	}
 
-	default void drawSimpleManaHUD(GuiGraphics gui, int color, int mana, int maxMana, String name) {}
+	default void drawSimpleManaHUD(GuiGraphicsExtractor gui, int color, int mana, int maxMana, String name) {}
 
-	default void drawComplexManaHUD(GuiGraphics gui, int color, int mana, int maxMana, String name, ItemStack bindDisplay, boolean properlyBound) {}
+	default void drawComplexManaHUD(GuiGraphicsExtractor gui, int color, int mana, int maxMana, String name, ItemStack bindDisplay, boolean properlyBound) {}
 }

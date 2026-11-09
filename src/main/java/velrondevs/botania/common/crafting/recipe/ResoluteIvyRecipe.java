@@ -6,7 +6,6 @@ import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.SimpleCraftingRecipeSerializer;
 import net.minecraft.world.level.Level;
 
 import org.jetbrains.annotations.NotNull;
@@ -16,11 +15,9 @@ import velrondevs.botania.common.item.ResoluteIvyItem;
 import velrondevs.botania.registry.BotaniaItems;
 
 public class ResoluteIvyRecipe extends CustomRecipe {
-	public static final RecipeSerializer<ResoluteIvyRecipe> SERIALIZER = new SimpleCraftingRecipeSerializer<>(ResoluteIvyRecipe::new);
+	public static final RecipeSerializer<ResoluteIvyRecipe> SERIALIZER = RecipeUtils.simpleSerializer(ResoluteIvyRecipe::new);
 
-	public ResoluteIvyRecipe(CraftingBookCategory category) {
-		super(category);
-	}
+	public ResoluteIvyRecipe() {}
 
 	@Override
 	public boolean matches(@NotNull CraftingInput inv, @NotNull Level world) {
@@ -34,7 +31,7 @@ public class ResoluteIvyRecipe extends CustomRecipe {
 					foundIvy = true;
 				} else if (!foundItem
 						&& !(ItemNBTHelper.hasTag(stack) && ItemNBTHelper.getBoolean(stack, ResoluteIvyItem.TAG_KEEP, false))
-						&& !stack.getItem().hasCraftingRemainingItem()) {
+						&& !(stack.getItem().getCraftingRemainder() != null)) {
 					foundItem = true;
 				} else {
 					return false;
@@ -47,7 +44,7 @@ public class ResoluteIvyRecipe extends CustomRecipe {
 
 	@NotNull
 	@Override
-	public ItemStack assemble(@NotNull CraftingInput inv, @NotNull HolderLookup.Provider registries) {
+	public ItemStack assemble(@NotNull CraftingInput inv) {
 		ItemStack item = ItemStack.EMPTY;
 
 		for (int i = 0; i < inv.size(); i++) {
@@ -62,14 +59,9 @@ public class ResoluteIvyRecipe extends CustomRecipe {
 		return copy;
 	}
 
-	@Override
-	public boolean canCraftInDimensions(int width, int height) {
-		return width * height >= 2;
-	}
-
 	@NotNull
 	@Override
-	public RecipeSerializer<?> getSerializer() {
+	public RecipeSerializer<? extends CustomRecipe> getSerializer() {
 		return SERIALIZER;
 	}
 }

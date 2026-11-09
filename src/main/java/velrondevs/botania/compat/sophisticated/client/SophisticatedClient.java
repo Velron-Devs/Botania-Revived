@@ -17,7 +17,6 @@ public final class SophisticatedClient {
 	public static void init(IEventBus modBus) {
 		modBus.addListener((RegisterMenuScreensEvent event) -> {
 			UpgradeGuiManager.registerTab(ManaPileUpgradeContainer.TYPE, ManaPileUpgradeTab::new);
-			UpgradeGuiManager.registerInventoryControl(ManaPileUpgradeContainer.TYPE, ManaPileInventoryControl::new);
 			UpgradeGuiManager.registerTab(RunicAltarUpgradeContainer.TYPE,
 					(RunicAltarUpgradeContainer container, Position position, StorageScreenBase<?> screen) -> new StationUpgradeTab<RunicAltarUpgradeContainer>(container, position, screen, "runic_altar", StationUpgradeTab.runicAltar()));
 			UpgradeGuiManager.registerTab(ElvenPortalUpgradeContainer.TYPE,

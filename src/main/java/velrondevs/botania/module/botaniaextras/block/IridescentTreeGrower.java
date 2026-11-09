@@ -34,7 +34,7 @@ public final class IridescentTreeGrower {
 
 	public static boolean grow(ServerLevel level, BlockPos pos, RandomSource random, Block logBlock, Block leavesBlock) {
 		int height = random.nextInt(3) + MIN_HEIGHT;
-		if (pos.getY() < level.getMinBuildHeight() + 1 || pos.getY() + height + 1 > level.getMaxBuildHeight()) {
+		if (pos.getY() < level.getMinY() + 1 || pos.getY() + height + 1 > level.getMaxY() + 1) {
 			return false;
 		}
 		BlockPos.MutableBlockPos cursor = new BlockPos.MutableBlockPos();

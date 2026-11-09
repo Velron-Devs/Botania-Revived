@@ -1,5 +1,6 @@
 package velrondevs.botania.common.crafting;
 
+import velrondevs.botania.common.crafting.recipe.RecipeUtils;
 import com.google.common.base.Preconditions;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
@@ -10,6 +11,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 
@@ -23,14 +25,18 @@ import velrondevs.botania.registry.BotaniaRecipeTypes;
 import java.util.Optional;
 
 public class ManaInfusionRecipe implements velrondevs.botania.api.recipe.ManaInfusionRecipe {
-	private final ItemStack output;
+	private final ItemStackTemplate output;
 	private final Ingredient input;
 	private final int mana;
 	@Nullable
 	private final StateIngredient catalyst;
 	private final String group;
 
-	public ManaInfusionRecipe(ItemStack output, Ingredient input, int mana,
+	public ManaInfusionRecipe(ItemStack output, Ingredient input, int mana, @Nullable String group, @Nullable StateIngredient catalyst) {
+		this(ItemStackTemplate.fromNonEmptyStack(output), input, mana, group, catalyst);
+	}
+
+	public ManaInfusionRecipe(ItemStackTemplate output, Ingredient input, int mana,
 			@Nullable String group, @Nullable StateIngredient catalyst) {
 		Preconditions.checkArgument(mana > 0, "Mana cost must be positive");
 		Preconditions.checkArgument(mana <= 1_000_001, "Mana cost must be at most a pool");
@@ -65,18 +71,18 @@ public class ManaInfusionRecipe implements velrondevs.botania.api.recipe.ManaInf
 	@NotNull
 	@Override
 	public ItemStack getResultItem(@NotNull HolderLookup.Provider registries) {
-		return output;
+		return output.create();
 	}
 
 	@NotNull
 	@Override
 	public NonNullList<Ingredient> getIngredients() {
-		return NonNullList.of(Ingredient.EMPTY, input);
+		return RecipeUtils.ingredientList(input);
 	}
 
 	@NotNull
 	@Override
-	public String getGroup() {
+	public String group() {
 		return group;
 	}
 
@@ -86,9 +92,9 @@ public class ManaInfusionRecipe implements velrondevs.botania.api.recipe.ManaInf
 		return new ItemStack(BotaniaBlocks.manaPool);
 	}
 
-	public static class Serializer implements RecipeSerializer<ManaInfusionRecipe> {
+	public static class Serializer implements BotaniaRecipeSerializer<ManaInfusionRecipe> {
 		public static final MapCodec<ManaInfusionRecipe> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-				ItemStack.STRICT_CODEC.fieldOf("output").forGetter(recipe -> recipe.output),
+				net.minecraft.world.item.ItemStackTemplate.CODEC.fieldOf("output").forGetter(recipe -> recipe.output),
 				Ingredient.CODEC.fieldOf("input").forGetter(recipe -> recipe.input),
 				Codec.INT.fieldOf("mana").forGetter(recipe -> recipe.mana),
 				Codec.STRING.optionalFieldOf("group", "").forGetter(recipe -> recipe.group),
@@ -109,7 +115,7 @@ public class ManaInfusionRecipe implements velrondevs.botania.api.recipe.ManaInf
 
 		private static ManaInfusionRecipe fromNetwork(RegistryFriendlyByteBuf buf) {
 			Ingredient input = Ingredient.CONTENTS_STREAM_CODEC.decode(buf);
-			ItemStack output = ItemStack.STREAM_CODEC.decode(buf);
+			ItemStackTemplate output = ItemStackTemplate.STREAM_CODEC.decode(buf);
 			int mana = buf.readVarInt();
 			StateIngredient catalyst = null;
 			if (buf.readBoolean()) {
@@ -121,14 +127,14 @@ public class ManaInfusionRecipe implements velrondevs.botania.api.recipe.ManaInf
 
 		private static void toNetwork(RegistryFriendlyByteBuf buf, ManaInfusionRecipe recipe) {
 			Ingredient.CONTENTS_STREAM_CODEC.encode(buf, recipe.input);
-			ItemStack.STREAM_CODEC.encode(buf, recipe.output);
+			ItemStackTemplate.STREAM_CODEC.encode(buf, recipe.output);
 			buf.writeVarInt(recipe.getManaToConsume());
 			boolean hasCatalyst = recipe.getRecipeCatalyst() != null;
 			buf.writeBoolean(hasCatalyst);
 			if (hasCatalyst) {
 				recipe.getRecipeCatalyst().write(buf);
 			}
-			buf.writeUtf(recipe.getGroup());
+			buf.writeUtf(recipe.group());
 		}
 	}
 }

@@ -3,18 +3,11 @@
   "category": "redstone",
   "group": "botania:spreader",
   "ingredients": [
-    {
-      "item": "botania:elven_spreader"
-    },
-    {
-      "tag": "botania:dragonstone_gems"
-    },
-    {
-      "item": "botania:life_essence"
-    }
+    "botania:elven_spreader",
+    "#botania:dragonstone_gems",
+    "botania:life_essence"
   ],
   "result": {
-    "count": 1,
     "id": "botania:gaia_spreader"
   }
 }

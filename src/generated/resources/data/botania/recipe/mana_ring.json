@@ -2,12 +2,8 @@
   "type": "botania:mana_upgrade",
   "category": "equipment",
   "key": {
-    "I": {
-      "item": "botania:manasteel_ingot"
-    },
-    "T": {
-      "item": "botania:mana_tablet"
-    }
+    "I": "botania:manasteel_ingot",
+    "T": "botania:mana_tablet"
   },
   "pattern": [
     "TI ",
@@ -15,7 +11,6 @@
     " I "
   ],
   "result": {
-    "count": 1,
     "id": "botania:mana_ring"
   }
 }

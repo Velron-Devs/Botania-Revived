@@ -5,11 +5,12 @@ import com.google.gson.annotations.SerializedName;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.Level;
 
+import velrondevs.botania.api.recipe.BotaniaRecipe;
 import velrondevs.botania.registry.BotaniaRecipeTypes;
 import vazkii.patchouli.api.IVariable;
 
@@ -27,7 +28,7 @@ public class RotatingRecipeComponent extends RotatingItemListComponentBase {
 	@Override
 	protected List<Ingredient> makeIngredients() {
 		Level world = Minecraft.getInstance().level;
-		Map<ResourceLocation, ? extends Recipe<?>> map;
+		Map<Identifier, ? extends Recipe<?>> map;
 		if ("runic_altar".equals(recipeType)) {
 			map = BotaniaRecipeTypes.getRecipes(world, BotaniaRecipeTypes.RUNE_TYPE);
 		} else if ("petal_apothecary".equals(recipeType)) {
@@ -35,11 +36,11 @@ public class RotatingRecipeComponent extends RotatingItemListComponentBase {
 		} else {
 			throw new IllegalArgumentException("Type must be 'runic_altar' or 'petal_apothecary'!");
 		}
-		Recipe<?> recipe = map.get(ResourceLocation.parse(recipeName));
+		Recipe<?> recipe = map.get(Identifier.parse(recipeName));
 		if (recipe == null) {
 			return ImmutableList.of();
 		}
-		return recipe.getIngredients();
+		return recipe instanceof BotaniaRecipe botaniaRecipe ? botaniaRecipe.getIngredients() : ImmutableList.of();
 	}
 
 	@Override

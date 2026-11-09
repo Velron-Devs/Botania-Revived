@@ -1,0 +1,11 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "botania:item/mystical_bifrost_petal",
+    "tints": [
+      {
+        "type": "botania:extras_rainbow"
+      }
+    ]
+  }
+}

@@ -17,13 +17,15 @@ import mezz.jei.api.runtime.IJeiRuntime;
 import mezz.jei.api.runtime.IRecipesGui;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeInput;
-import net.minecraft.world.item.crafting.RecipeManager;
+import net.minecraft.world.item.crafting.RecipeMap;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.Block;
 
@@ -55,24 +57,20 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import static velrondevs.botania.common.lib.ResourceLocationHelper.prefix;
 
 @JeiPlugin
 public class JEIBotaniaPlugin implements IModPlugin {
-	private static final ResourceLocation ID = prefix("main");
+	private static final Identifier ID = prefix("main");
 
 	@Override
 	public void registerItemSubtypes(@NotNull ISubtypeRegistration registry) {
 		BotaniaSubtypes.interpreters().forEach((item, fn) -> registry.registerSubtypeInterpreter(item, new ISubtypeInterpreter<ItemStack>() {
 			@Override
 			public Object getSubtypeData(ItemStack stack, UidContext ctx) {
-				return fn.apply(stack, ctx == UidContext.Recipe);
-			}
-
-			@Override
-			public String getLegacyStringSubtypeInfo(ItemStack stack, UidContext ctx) {
 				return fn.apply(stack, ctx == UidContext.Recipe);
 			}
 		}));
@@ -120,8 +118,8 @@ public class JEIBotaniaPlugin implements IModPlugin {
 		registry.addRecipes(MarimorphosisRecipeCategory.TYPE, sortRecipes(BotaniaRecipeTypes.MARIMORPHOSIS_TYPE, comp));
 	}
 
-	private static final Comparator<RecipeHolder<? extends Recipe<?>>> BY_ID = Comparator.comparing(RecipeHolder::id);
-	private static final Comparator<RecipeHolder<? extends Recipe<?>>> BY_GROUP = Comparator.comparing(holder -> holder.value().getGroup());
+	private static final Comparator<RecipeHolder<? extends Recipe<?>>> BY_ID = Comparator.comparing(holder -> holder.id().identifier());
+	private static final Comparator<RecipeHolder<? extends Recipe<?>>> BY_GROUP = Comparator.comparing(holder -> holder.value().group());
 	private static final Comparator<RecipeHolder<? extends OrechidRecipe>> BY_WEIGHT = Comparator.<RecipeHolder<? extends OrechidRecipe>, Integer>comparing(holder -> holder.value().getWeight()).reversed();
 	private static final Comparator<RecipeHolder<ManaInfusionRecipe>> BY_CATALYST = (l, r) -> {
 		StateIngredient left = l.value().getRecipeCatalyst();
@@ -136,7 +134,7 @@ public class JEIBotaniaPlugin implements IModPlugin {
 	};
 
 	private static <I extends RecipeInput, T extends Recipe<I>> List<T> sortRecipes(RecipeType<T> type, Comparator<? super RecipeHolder<T>> comparator) {
-		List<RecipeHolder<T>> list = new ArrayList<>(Minecraft.getInstance().level.getRecipeManager().getAllRecipesFor(type));
+		List<RecipeHolder<T>> list = new ArrayList<>(BotaniaRecipeTypes.getAllRecipesFor(Minecraft.getInstance().level, type));
 		list.sort(comparator);
 		return list.stream().map(RecipeHolder::value).toList();
 	}
@@ -177,6 +175,9 @@ public class JEIBotaniaPlugin implements IModPlugin {
 		registry.addRecipeCatalyst(new ItemStack(BotaniaBlocks.terraPlate), TerrestrialAgglomerationRecipeCategory.TYPE);
 		registry.addRecipeCatalyst(new ItemStack(BotaniaItems.autocraftingHalo), RecipeTypes.CRAFTING);
 		registry.addRecipeCatalyst(new ItemStack(BotaniaItems.craftingHalo), RecipeTypes.CRAFTING);
+		if (SophisticatedModule.INSTANCE.isAvailable()) {
+			SophisticatedJei.registerCatalysts(registry);
+		}
 	}
 
 	@Override
@@ -194,14 +195,14 @@ public class JEIBotaniaPlugin implements IModPlugin {
 			}
 		}
 
-		RecipeManager recipeManager = Minecraft.getInstance().level.getRecipeManager();
-		recipeManager.byKey(prefix("petal_apothecary/daybloom_motif"))
+		RecipeMap recipeMap = BotaniaRecipeTypes.recipeMap(Minecraft.getInstance().level);
+		Optional.ofNullable(recipeMap.byKey(ResourceKey.create(Registries.RECIPE, prefix("petal_apothecary/daybloom_motif"))))
 				.ifPresent(r -> {
 					if (r.value() instanceof PetalApothecaryRecipe pr) {
 						recipeRegistry.hideRecipes(PetalApothecaryRecipeCategory.TYPE, List.of(pr));
 					}
 				});
-		recipeManager.byKey(prefix("petal_apothecary/nightshade_motif"))
+		Optional.ofNullable(recipeMap.byKey(ResourceKey.create(Registries.RECIPE, prefix("petal_apothecary/nightshade_motif"))))
 				.ifPresent(r -> {
 					if (r.value() instanceof PetalApothecaryRecipe pr) {
 						recipeRegistry.hideRecipes(PetalApothecaryRecipeCategory.TYPE, List.of(pr));
@@ -217,7 +218,7 @@ public class JEIBotaniaPlugin implements IModPlugin {
 
 	@NotNull
 	@Override
-	public ResourceLocation getPluginUid() {
+	public Identifier getPluginUid() {
 		return ID;
 	}
 

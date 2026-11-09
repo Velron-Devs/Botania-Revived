@@ -5,15 +5,9 @@
     "category": "redstone",
     "group": "botania:spreader",
     "key": {
-      "C": {
-        "item": "minecraft:copper_ingot"
-      },
-      "P": {
-        "tag": "botania:petals"
-      },
-      "W": {
-        "tag": "botania:livingwood_logs"
-      }
+      "C": "minecraft:copper_ingot",
+      "P": "#botania:petals",
+      "W": "#botania:livingwood_logs"
     },
     "pattern": [
       "WWW",
@@ -21,7 +15,6 @@
       "WWW"
     ],
     "result": {
-      "count": 1,
       "id": "botania:mana_spreader"
     }
   },
@@ -30,12 +23,8 @@
     "category": "redstone",
     "group": "botania:spreader",
     "key": {
-      "P": {
-        "tag": "botania:petals"
-      },
-      "W": {
-        "tag": "botania:livingwood_logs"
-      }
+      "P": "#botania:petals",
+      "W": "#botania:livingwood_logs"
     },
     "pattern": [
       "WWW",
@@ -43,7 +32,6 @@
       "WWW"
     ],
     "result": {
-      "count": 1,
       "id": "botania:mana_spreader"
     }
   }

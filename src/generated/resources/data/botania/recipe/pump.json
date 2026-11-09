@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "B": {
-      "item": "minecraft:bucket"
-    },
-    "I": {
-      "tag": "botania:manasteel_ingots"
-    },
-    "S": {
-      "item": "botania:livingrock"
-    }
+    "B": "minecraft:bucket",
+    "I": "#botania:manasteel_ingots",
+    "S": "botania:livingrock"
   },
   "pattern": [
     "SSS",
@@ -18,7 +12,6 @@
     "SSS"
   ],
   "result": {
-    "count": 1,
     "id": "botania:pump"
   }
 }

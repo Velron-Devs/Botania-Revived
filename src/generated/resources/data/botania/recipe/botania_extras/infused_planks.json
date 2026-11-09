@@ -9,9 +9,7 @@
   "category": "building",
   "group": "botania:infused_planks",
   "ingredients": [
-    {
-      "item": "botania:infused_log"
-    }
+    "botania:infused_log"
   ],
   "result": {
     "count": 4,

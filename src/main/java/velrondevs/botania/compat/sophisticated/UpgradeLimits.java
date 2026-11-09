@@ -1,6 +1,6 @@
 package velrondevs.botania.compat.sophisticated;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.p3pp3rf1y.sophisticatedcore.upgrades.IUpgradeCountLimitConfig;
 import net.p3pp3rf1y.sophisticatedcore.upgrades.UpgradeGroup;
 
@@ -14,7 +14,7 @@ final class UpgradeLimits {
 	static IUpgradeCountLimitConfig of(IntSupplier perStorage) {
 		return new IUpgradeCountLimitConfig() {
 			@Override
-			public int getMaxUpgradesPerStorage(String storageType, ResourceLocation upgradeName) {
+			public int getMaxUpgradesPerStorage(String storageType, Identifier upgradeName) {
 				return perStorage.getAsInt();
 			}
 

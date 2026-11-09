@@ -1,5 +1,7 @@
 package velrondevs.botania.common.item.equipment.bauble;
 
+import velrondevs.botania.client.core.helper.RenderHelper;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
@@ -11,7 +13,7 @@ import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.LongArrayTag;
 import net.minecraft.world.Container;
@@ -19,10 +21,10 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.animal.allay.Allay;
-import net.minecraft.world.entity.animal.horse.AbstractChestedHorse;
+import net.minecraft.world.entity.animal.equine.AbstractChestedHorse;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.vehicle.AbstractMinecartContainer;
+import net.minecraft.world.entity.vehicle.minecart.AbstractMinecartContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.trading.Merchant;
 import net.minecraft.world.item.trading.MerchantOffer;
@@ -62,7 +64,7 @@ public class SpectatorItem extends BaubleItem {
 			return;
 		}
 
-		if (living.level().isClientSide) {
+		if (living.level().isClientSide()) {
 			this.showScanResults(stack, player);
 		} else if (living.tickCount % SCAN_INTERVAL_TICKS == 0) {
 			this.scanForItems(stack, player);
@@ -77,16 +79,15 @@ public class SpectatorItem extends BaubleItem {
 
 	public static class Renderer implements AccessoryRenderer {
 		@Override
-		public void doRender(HumanoidModel<?> bipedModel, ItemStack stack, LivingEntity living, PoseStack ms, MultiBufferSource buffers, int light, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+		public void doRender(HumanoidModel<?> bipedModel, ItemStack stack, LivingEntity living, PoseStack ms, SubmitNodeCollector collector, int light, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+			MultiBufferSource buffers = RenderHelper.buffers(collector);
 			boolean armor = !living.getItemBySlot(EquipmentSlot.HEAD).isEmpty();
 			bipedModel.head.translateAndRotate(ms);
 			ms.translate(-0.35, -0.2, armor ? 0.05 : 0.1);
 			ms.scale(0.75F, -0.75F, -0.75F);
 
-			BakedModel model = MiscellaneousModels.INSTANCE.itemFinderGem;
-			VertexConsumer buffer = buffers.getBuffer(Sheets.cutoutBlockSheet());
-			Minecraft.getInstance().getBlockRenderer().getModelRenderer()
-					.renderModel(ms.last(), buffer, null, model, 1, 1, 1, light, OverlayTexture.NO_OVERLAY);
+			BlockStateModelPart model = MiscellaneousModels.INSTANCE.itemFinderGem;
+			RenderHelper.renderModelPart(model, ms, buffers, light, OverlayTexture.NO_OVERLAY);
 		}
 	}
 

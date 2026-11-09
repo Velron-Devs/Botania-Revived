@@ -3,7 +3,7 @@ package velrondevs.botania.integration.jade;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import snownee.jade.api.BlockAccessor;
 import snownee.jade.api.IBlockComponentProvider;
@@ -19,7 +19,7 @@ import velrondevs.botania.common.block.block_entity.AlfheimPortalBlockEntity;
 
 import java.util.List;
 
-public enum AlfheimPortalProvider implements IBlockComponentProvider, IServerDataProvider<BlockAccessor> {
+public enum AlfheimPortalProvider implements IBlockComponentProvider {
 	INSTANCE;
 
 	private static final String PYLONS = "pylons";
@@ -37,35 +37,16 @@ public enum AlfheimPortalProvider implements IBlockComponentProvider, IServerDat
 
 		CompoundTag data = accessor.getServerData();
 		if (data.contains(PYLONS)) {
-			tooltip.add(Component.translatable("botania.jade.portal.pylons", data.getInt(PYLONS), AlfheimPortalBlockEntity.MIN_REQUIRED_PYLONS));
-			int max = data.getInt(JadeManaHelper.MAX);
+			tooltip.add(Component.translatable("botania.jade.portal.pylons", data.getIntOr(PYLONS, 0), AlfheimPortalBlockEntity.MIN_REQUIRED_PYLONS));
+			int max = data.getIntOr(JadeManaHelper.MAX, 0);
 			if (max > 0) {
-				JadeManaHelper.addManaBar(tooltip, config, data.getInt(JadeManaHelper.MANA), max, JadeManaHelper.manaColor(config, 0x0095FF));
+				JadeManaHelper.addManaBar(tooltip, config, data.getIntOr(JadeManaHelper.MANA, 0), max, JadeManaHelper.manaColor(config, 0x0095FF));
 			}
 		}
 	}
 
 	@Override
-	public void appendServerData(CompoundTag data, BlockAccessor accessor) {
-		if (!(accessor.getBlockEntity() instanceof AlfheimPortalBlockEntity portal)) {
-			return;
-		}
-		List<BlockPos> pylons = portal.locatePylons(false);
-		long mana = 0;
-		long max = 0;
-		for (BlockPos pylon : pylons) {
-			if (accessor.getLevel().getBlockEntity(pylon.below()) instanceof ManaPool pool) {
-				mana += pool.getCurrentMana();
-				max += pool.getMaxMana();
-			}
-		}
-		data.putInt(PYLONS, pylons.size());
-		data.putInt(JadeManaHelper.MANA, (int) Math.min(Integer.MAX_VALUE, mana));
-		data.putInt(JadeManaHelper.MAX, (int) Math.min(Integer.MAX_VALUE, max));
-	}
-
-	@Override
-	public ResourceLocation getUid() {
+	public Identifier getUid() {
 		return BotaniaJadeIds.ALFHEIM_PORTAL;
 	}
 }

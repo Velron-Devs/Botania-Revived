@@ -26,15 +26,9 @@
   "type": "sophisticatedstorage:double_chest_tier_upgrade_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "sophisticatedstorage:netherite_chest"
-    },
-    {
-      "tag": "botania:manasteel_ingots"
-    },
-    {
-      "tag": "botania:manasteel_ingots"
-    }
+    "sophisticatedstorage:netherite_chest",
+    "#botania:manasteel_ingots",
+    "#botania:manasteel_ingots"
   ],
   "result": {
     "count": 1,

@@ -1,10 +1,11 @@
 package velrondevs.botania.datagen.providers.tags;
 
+import net.minecraft.tags.TagEntry;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.IntrinsicHolderTagsProvider;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
 import net.neoforged.neoforge.common.Tags;
@@ -31,7 +32,7 @@ public class EntityTagProvider extends IntrinsicHolderTagsProvider<EntityType<?>
 
 		tag(BotaniaTags.Entities.COCOON_COMMON_AQUATIC)
 				.add(EntityType.COD, EntityType.SALMON, EntityType.TROPICAL_FISH, EntityType.PUFFERFISH, EntityType.SQUID, EntityType.FROG)
-				.addOptional(ResourceLocation.fromNamespaceAndPath("quark", "crab"));
+				.add(TagEntry.optionalElement(Identifier.fromNamespaceAndPath("quark", "crab")));
 		tag(BotaniaTags.Entities.COCOON_RARE_AQUATIC).add(EntityType.DOLPHIN, EntityType.GLOW_SQUID, EntityType.AXOLOTL);
 
 		tag(BotaniaTags.Entities.DRUM_MILKABLE).add(EntityType.COW, EntityType.MOOSHROOM, EntityType.GOAT);
@@ -47,6 +48,6 @@ public class EntityTagProvider extends IntrinsicHolderTagsProvider<EntityType<?>
 		tag(BotaniaTags.Entities.KEY_IMMUNE).add(EntityType.ITEM, EntityType.ITEM_FRAME, EntityType.PAINTING, EntityType.EXPERIENCE_ORB);
 
 		tag(Tags.EntityTypes.BOSSES).add(BotaniaEntities.DOPPLEGANGER);
-		tag(TagKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath("neoforge", "bosses"))).add(BotaniaEntities.DOPPLEGANGER);
+		tag(TagKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath("neoforge", "bosses"))).add(BotaniaEntities.DOPPLEGANGER);
 	}
 }

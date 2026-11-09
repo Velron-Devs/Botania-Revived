@@ -39,7 +39,7 @@ public class LightningRodBlockEntity extends BlockEntity {
 	@Override
 	public void setLevel(Level level) {
 		super.setLevel(level);
-		if (!level.isClientSide) {
+		if (!level.isClientSide()) {
 			RODS.computeIfAbsent(level.dimension(), k -> ConcurrentHashMap.newKeySet()).add(worldPosition.immutable());
 		}
 	}
@@ -47,7 +47,7 @@ public class LightningRodBlockEntity extends BlockEntity {
 	@Override
 	public void setRemoved() {
 		super.setRemoved();
-		if (level != null && !level.isClientSide) {
+		if (level != null && !level.isClientSide()) {
 			Set<BlockPos> set = RODS.get(level.dimension());
 			if (set != null) {
 				set.remove(worldPosition);
@@ -61,7 +61,7 @@ public class LightningRodBlockEntity extends BlockEntity {
 	}
 
 	public static void onBoltJoin(EntityJoinLevelEvent e) {
-		if (e.getLevel().isClientSide() || !(e.getEntity() instanceof LightningBolt bolt) || bolt.getTags().contains(REDIRECTED_TAG)) {
+		if (e.getLevel().isClientSide() || !(e.getEntity() instanceof LightningBolt bolt) || bolt.entityTags().contains(REDIRECTED_TAG)) {
 			return;
 		}
 		if (bolt.getCause() != null || !(e.getLevel() instanceof ServerLevel level) || !level.isThundering()) {
@@ -96,7 +96,7 @@ public class LightningRodBlockEntity extends BlockEntity {
 		}
 		BlockPos strike = top.above();
 		bolt.addTag(REDIRECTED_TAG);
-		bolt.moveTo(strike.getX() + 0.5, strike.getY(), strike.getZ() + 0.5);
+		bolt.snapTo(strike.getX() + 0.5, strike.getY(), strike.getZ() + 0.5);
 		STRIKES.computeIfAbsent(level.dimension(), k -> new ArrayList<>()).add(new Strike(strike, level.getGameTime() + EXTINGUISH_TICKS));
 	}
 

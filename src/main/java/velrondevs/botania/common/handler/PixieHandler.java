@@ -3,14 +3,14 @@ package velrondevs.botania.common.handler;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.neoforged.neoforge.registries.DeferredHolder;
-import net.minecraft.Util;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Util;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.RangedAttribute;
@@ -41,11 +41,11 @@ public final class PixieHandler {
 	private static final List<Supplier<MobEffectInstance>> effectSuppliers = List.of(
 			() -> new MobEffectInstance(MobEffects.BLINDNESS, 40, 0),
 			() -> new MobEffectInstance(MobEffects.WITHER, 50, 0),
-			() -> new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 40, 0),
+			() -> new MobEffectInstance(MobEffects.SLOWNESS, 40, 0),
 			() -> new MobEffectInstance(MobEffects.WEAKNESS, 40, 0)
 	);
 
-	public static void registerAttribute(BiConsumer<Attribute, ResourceLocation> r) {
+	public static void registerAttribute(BiConsumer<Attribute, Identifier> r) {
 		r.accept(new RangedAttribute("attribute.name.botania.pixieSpawnChance", 0, 0, 1), prefix("pixie_spawn_chance"));
 	}
 
@@ -54,7 +54,7 @@ public final class PixieHandler {
 	}
 
 	public static void onDamageTaken(Player player, DamageSource source) {
-		if (!player.level().isClientSide && source.getEntity() instanceof LivingEntity livingSource) {
+		if (!player.level().isClientSide() && source.getEntity() instanceof LivingEntity livingSource) {
 
 			double chance = player.getAttributes().hasAttribute(PIXIE_SPAWN_CHANCE)
 					? player.getAttributeValue(PIXIE_SPAWN_CHANCE) : 0;
@@ -65,7 +65,7 @@ public final class PixieHandler {
 				pixie.setPos(player.getX(), player.getY() + 2, player.getZ());
 
 				if (((ElementiumHelmItem) BotaniaItems.elementiumHelm).hasArmorSet(player)) {
-					pixie.setApplyPotionEffect(effectSuppliers.get(player.level().random.nextInt(effectSuppliers.size())).get());
+					pixie.setApplyPotionEffect(effectSuppliers.get(player.level().getRandom().nextInt(effectSuppliers.size())).get());
 				}
 
 				float dmg = 4;
@@ -74,8 +74,8 @@ public final class PixieHandler {
 				}
 
 				pixie.setProps(livingSource, player, 0, dmg);
-				pixie.finalizeSpawn((ServerLevelAccessor) player.level(), player.level().getCurrentDifficultyAt(pixie.blockPosition()),
-						MobSpawnType.EVENT, null);
+				pixie.finalizeSpawn((ServerLevelAccessor) player.level(), ((ServerLevelAccessor) player.level()).getCurrentDifficultyAt(pixie.blockPosition()),
+						EntitySpawnReason.EVENT, null);
 				player.level().addFreshEntity(pixie);
 			}
 		}

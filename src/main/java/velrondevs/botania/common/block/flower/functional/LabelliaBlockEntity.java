@@ -49,7 +49,7 @@ public class LabelliaBlockEntity extends FunctionalFlowerBlockEntity {
 	public void tickFlower() {
 		super.tickFlower();
 
-		if (!level.isClientSide && redstoneSignal == 0 && getMana() >= COST) {
+		if (!level.isClientSide() && redstoneSignal == 0 && getMana() >= COST) {
 			BlockPos effPos = getEffectivePos();
 			BlockPos realPos = getBlockPos();
 			int x = effPos.getX();
@@ -87,7 +87,7 @@ public class LabelliaBlockEntity extends FunctionalFlowerBlockEntity {
 						for (ItemEntity i : nameableItems) {
 							i.getItem().set(DataComponents.CUSTOM_NAME, name);
 							EntityHelper.syncItem(i);
-							((ServerLevel) level).sendParticles(ParticleTypes.INSTANT_EFFECT,
+							((ServerLevel) level).sendParticles(net.minecraft.core.particles.SpellParticleOption.create(ParticleTypes.INSTANT_EFFECT, 0xFFFFFFFF, 1F),
 									i.getX(), i.getY(), i.getZ(),
 									3, 0, 0, 0, 0);
 

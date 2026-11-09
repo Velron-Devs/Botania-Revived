@@ -26,13 +26,13 @@ public class MedumoneBlockEntity extends FunctionalFlowerBlockEntity {
 	public void tickFlower() {
 		super.tickFlower();
 
-		if (!getLevel().isClientSide && getMana() > 0 && redstoneSignal == 0) {
+		if (!getLevel().isClientSide() && getMana() > 0 && redstoneSignal == 0) {
 			List<LivingEntity> entities = getLevel().getEntitiesOfClass(LivingEntity.class, new AABB(Vec3.atLowerCornerOf(getEffectivePos().offset(-RANGE, -RANGE, -RANGE)), Vec3.atLowerCornerOf(getEffectivePos().offset(RANGE + 1, RANGE + 1, RANGE + 1))));
 
 			boolean did = false;
 			for (LivingEntity entity : entities) {
 				if (!(entity instanceof Player)) {
-					entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 2, 100));
+					entity.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 2, 100));
 					addMana(-1);
 					did = true;
 					if (getMana() == 0) {

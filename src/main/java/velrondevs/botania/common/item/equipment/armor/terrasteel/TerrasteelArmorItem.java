@@ -1,5 +1,7 @@
 package velrondevs.botania.common.item.equipment.armor.terrasteel;
 
+import net.minecraft.world.item.equipment.ArmorType;
+import java.util.function.Consumer;
 import com.google.common.base.Suppliers;
 
 import net.minecraft.ChatFormatting;
@@ -28,7 +30,7 @@ import static velrondevs.botania.common.lib.ResourceLocationHelper.prefix;
 
 public class TerrasteelArmorItem extends ManasteelArmorItem {
 
-	public TerrasteelArmorItem(Type type, Properties props) {
+	public TerrasteelArmorItem(ArmorType type, Properties props) {
 		super(type, BotaniaAPI.instance().getTerrasteelArmorMaterial(), props);
 	}
 
@@ -41,7 +43,7 @@ public class TerrasteelArmorItem extends ManasteelArmorItem {
 	@Override
 	public ItemAttributeModifiers getDefaultAttributeModifiers(@NotNull ItemStack stack) {
 		EquipmentSlot slot = getType().getSlot();
-		int reduction = getMaterial().value().getDefense(getType());
+		int reduction = getMaterial().defense().getOrDefault(getType(), 0);
 		return super.getDefaultAttributeModifiers(stack).withModifierAdded(Attributes.KNOCKBACK_RESISTANCE,
 				new AttributeModifier(prefix("terrasteel_armor_knockback_resistance/" + getType().getName()), (double) reduction / 20, AttributeModifier.Operation.ADD_VALUE),
 				EquipmentSlotGroup.bySlot(slot));
@@ -86,10 +88,10 @@ public class TerrasteelArmorItem extends ManasteelArmorItem {
 	}
 
 	@Override
-	public void addArmorSetDescription(ItemStack stack, List<Component> list) {
-		list.add(Component.translatable("botania.armorset.terrasteel.desc0").withStyle(ChatFormatting.GRAY));
-		list.add(Component.translatable("botania.armorset.terrasteel.desc1").withStyle(ChatFormatting.GRAY));
-		list.add(Component.translatable("botania.armorset.terrasteel.desc2").withStyle(ChatFormatting.GRAY));
+	public void addArmorSetDescription(ItemStack stack, Consumer<Component> list) {
+		list.accept(Component.translatable("botania.armorset.terrasteel.desc0").withStyle(ChatFormatting.GRAY));
+		list.accept(Component.translatable("botania.armorset.terrasteel.desc1").withStyle(ChatFormatting.GRAY));
+		list.accept(Component.translatable("botania.armorset.terrasteel.desc2").withStyle(ChatFormatting.GRAY));
 	}
 
 	@Override

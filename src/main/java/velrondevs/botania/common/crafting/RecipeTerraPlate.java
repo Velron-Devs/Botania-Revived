@@ -1,5 +1,6 @@
 package velrondevs.botania.common.crafting;
 
+import velrondevs.botania.api.recipe.BotaniaRecipe;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -12,6 +13,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -26,9 +28,13 @@ import velrondevs.botania.registry.BotaniaRecipeTypes;
 public class RecipeTerraPlate implements TerrestrialAgglomerationRecipe {
 	private final int mana;
 	private final NonNullList<Ingredient> inputs;
-	private final ItemStack output;
+	private final ItemStackTemplate output;
 
 	public RecipeTerraPlate(int mana, NonNullList<Ingredient> inputs, ItemStack output) {
+		this(mana, inputs, ItemStackTemplate.fromNonEmptyStack(output));
+	}
+
+	public RecipeTerraPlate(int mana, NonNullList<Ingredient> inputs, ItemStackTemplate output) {
 		this.mana = mana;
 		this.inputs = inputs;
 		this.output = output;
@@ -58,13 +64,13 @@ public class RecipeTerraPlate implements TerrestrialAgglomerationRecipe {
 	@NotNull
 	@Override
 	public ItemStack assemble(@NotNull RecipeInput inv, @NotNull HolderLookup.Provider registries) {
-		return output.copy();
+		return output.create();
 	}
 
 	@NotNull
 	@Override
 	public ItemStack getResultItem(@NotNull HolderLookup.Provider registries) {
-		return output;
+		return output.create();
 	}
 
 	@NotNull
@@ -79,17 +85,17 @@ public class RecipeTerraPlate implements TerrestrialAgglomerationRecipe {
 		return BotaniaRecipeTypes.TERRA_PLATE_SERIALIZER;
 	}
 
-	public static class Serializer implements RecipeSerializer<RecipeTerraPlate> {
+	public static class Serializer implements BotaniaRecipeSerializer<RecipeTerraPlate> {
 		public static final MapCodec<RecipeTerraPlate> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
 				Codec.INT.fieldOf("mana").forGetter(RecipeTerraPlate::getMana),
 				RecipeUtils.INGREDIENTS_CODEC.fieldOf("ingredients").forGetter(RecipeTerraPlate::getIngredients),
-				ItemStack.STRICT_CODEC.fieldOf("result").forGetter(recipe -> recipe.output)
-		).apply(instance, (mana, inputs, output) -> new RecipeTerraPlate(mana, NonNullList.of(Ingredient.EMPTY, inputs.toArray(new Ingredient[0])), output)));
+				net.minecraft.world.item.ItemStackTemplate.CODEC.fieldOf("result").forGetter(recipe -> recipe.output)
+		).apply(instance, (mana, inputs, output) -> new RecipeTerraPlate(mana, RecipeUtils.ingredientList(inputs.toArray(new Ingredient[0])), output)));
 		public static final StreamCodec<RegistryFriendlyByteBuf, RecipeTerraPlate> STREAM_CODEC = StreamCodec.composite(
 				ByteBufCodecs.VAR_INT, RecipeTerraPlate::getMana,
 				RecipeUtils.INGREDIENTS_STREAM_CODEC, RecipeTerraPlate::getIngredients,
-				ItemStack.STREAM_CODEC, recipe -> recipe.output,
-				(mana, inputs, output) -> new RecipeTerraPlate(mana, NonNullList.of(Ingredient.EMPTY, inputs.toArray(new Ingredient[0])), output));
+				ItemStackTemplate.STREAM_CODEC, recipe -> recipe.output,
+				(mana, inputs, output) -> new RecipeTerraPlate(mana, RecipeUtils.ingredientList(inputs.toArray(new Ingredient[0])), output));
 
 		@Override
 		public MapCodec<RecipeTerraPlate> codec() {

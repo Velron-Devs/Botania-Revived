@@ -8,15 +8,10 @@
   "type": "botania:helm_revealing",
   "category": "equipment",
   "ingredients": [
-    {
-      "item": "botania:manasteel_helmet"
-    },
-    {
-      "item": "thaumaturge:goggles_revealing"
-    }
+    "botania:manasteel_helmet",
+    "thaumaturge:goggles_revealing"
   ],
   "result": {
-    "count": 1,
     "id": "botania:manasteel_helmet_revealing"
   }
 }

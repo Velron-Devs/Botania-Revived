@@ -2,15 +2,12 @@
   "type": "minecraft:crafting_shaped",
   "category": "building",
   "key": {
-    "Q": {
-      "item": "botania:livingrock_slab"
-    }
+    "Q": "botania:livingrock_slab"
   },
   "pattern": [
     "QQ"
   ],
   "result": {
-    "count": 1,
     "id": "botania:livingrock"
   }
 }

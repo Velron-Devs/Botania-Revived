@@ -8,12 +8,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "redstone",
   "key": {
-    "C": {
-      "item": "minecraft:chest"
-    },
-    "L": {
-      "tag": "botania:livingwood_logs"
-    }
+    "C": "minecraft:chest",
+    "L": "#botania:livingwood_logs"
   },
   "pattern": [
     "L L",
@@ -21,7 +17,6 @@
     " L "
   ],
   "result": {
-    "count": 1,
     "id": "botania:livingwood_funnel"
   }
 }

@@ -5,7 +5,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -14,6 +14,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -21,6 +22,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.ChestType;
 import net.minecraft.world.level.block.state.properties.Property;
+import net.p3pp3rf1y.sophisticatedcore.util.ValueIOHelper;
 import net.p3pp3rf1y.sophisticatedstorage.block.BarrelBlock;
 import net.p3pp3rf1y.sophisticatedstorage.block.ChestBlock;
 import net.p3pp3rf1y.sophisticatedstorage.block.ChestBlockEntity;
@@ -32,7 +34,7 @@ import net.p3pp3rf1y.sophisticatedstorage.init.ModBlocks;
 import velrondevs.botania.api.BotaniaAPI;
 import velrondevs.botania.compat.sophisticated.SophisticatedOptional;
 
-import java.util.List;
+import java.util.function.Consumer;
 import java.util.Optional;
 
 public class BotaniaStorageTierUpgradeItem extends Item {
@@ -53,12 +55,12 @@ public class BotaniaStorageTierUpgradeItem extends Item {
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
-		tooltip.add(Component.translatable(getDescriptionId() + ".tooltip").withStyle(ChatFormatting.GRAY));
+	public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> tooltip, TooltipFlag flag) {
+		tooltip.accept(Component.translatable(getDescriptionId() + ".tooltip").withStyle(ChatFormatting.GRAY));
 		if (target.previous() == null && SophisticatedOptional.atmTiers()) {
-			tooltip.add(Component.translatable(getDescriptionId() + ".tooltip.atm").withStyle(ChatFormatting.AQUA));
+			tooltip.accept(Component.translatable(getDescriptionId() + ".tooltip.atm").withStyle(ChatFormatting.AQUA));
 		}
-		super.appendHoverText(stack, context, tooltip, flag);
+		super.appendHoverText(stack, context, display, tooltip, flag);
 	}
 
 	@Override
@@ -72,9 +74,9 @@ public class BotaniaStorageTierUpgradeItem extends Item {
 		}
 		Player player = context.getPlayer();
 		if (!isSource(block)) {
-			if (!level.isClientSide && player != null) {
-				player.displayClientMessage(Component.translatable("message.botania.storage_tier_upgrade.wrong_tier",
-						Component.translatable("botania.sophisticated.tier." + sourceTierKey())), true);
+			if (!level.isClientSide() && player != null) {
+				player.sendOverlayMessage(Component.translatable("message.botania.storage_tier_upgrade.wrong_tier",
+						Component.translatable("botania.sophisticated.tier." + sourceTierKey())));
 			}
 			return InteractionResult.FAIL;
 		}
@@ -91,8 +93,8 @@ public class BotaniaStorageTierUpgradeItem extends Item {
 		}
 		if (!authority.canUpgradeStorageTier(serverLevel)) {
 			if (player != null) {
-				player.playNotifySound(SoundEvents.NOTE_BLOCK_BASS.value(), SoundSource.PLAYERS, 1.0F, 0.7F);
-				player.displayClientMessage(Component.translatable("message.botania.storage_tier_upgrade.linked_main_only"), true);
+				level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.NOTE_BLOCK_BASS.value(), SoundSource.PLAYERS, 1.0F, 0.7F);
+				player.sendOverlayMessage(Component.translatable("message.botania.storage_tier_upgrade.linked_main_only"));
 			}
 			return InteractionResult.FAIL;
 		}
@@ -104,7 +106,7 @@ public class BotaniaStorageTierUpgradeItem extends Item {
 		boolean creative = player != null && player.getAbilities().instabuild;
 		if (!creative && stack.getCount() < required) {
 			if (player != null) {
-				player.displayClientMessage(Component.translatable("message.botania.storage_tier_upgrade.count", required, stack.getHoverName()), true);
+				player.sendOverlayMessage(Component.translatable("message.botania.storage_tier_upgrade.count", required, stack.getHoverName()));
 			}
 			return InteractionResult.FAIL;
 		}
@@ -145,7 +147,7 @@ public class BotaniaStorageTierUpgradeItem extends Item {
 	}
 
 	private static boolean isRegistered(String id, Block block) {
-		ResourceLocation key = ResourceLocation.tryParse(id);
+		Identifier key = Identifier.tryParse(id);
 		if (key == null) {
 			return false;
 		}
@@ -192,17 +194,16 @@ public class BotaniaStorageTierUpgradeItem extends Item {
 		newOther.setBeingUpgraded(false);
 		otherTargetState.updateNeighbourShapes(level, otherPos, 3);
 		if ((clickedIsMain ? newClicked : newOther) instanceof ChestBlockEntity main) {
-			main.changeSlots(main.getStorageWrapper().getInventoryHandler().getSlots());
+			main.changeSlots(main.getStorageWrapper().getInventoryHandler().size());
 		}
 		return true;
 	}
 
 	private static StorageBlockEntity replace(ServerLevel level, BlockPos pos, StorageBlockEntity old, BlockState newState, int inventorySlots, int upgradeSlots) {
-		CompoundTag data = new CompoundTag();
-		old.saveAdditional(data, level.registryAccess());
+		CompoundTag data = ValueIOHelper.collectOutputToTag(level.registryAccess(), old::saveAdditional);
 		StorageBlockEntity fresh = ((StorageBlockBase) newState.getBlock()).newBlockEntity(pos, newState);
 		fresh.setBeingUpgraded(true);
-		fresh.loadAdditional(data, level.registryAccess());
+		fresh.loadAdditional(ValueIOHelper.inputFromCompoundTag(level.registryAccess(), data));
 		if (fresh instanceof WoodStorageBlockEntity wood) {
 			BotaniaStorageStacks.applyDefaultWood(wood);
 		}
@@ -217,8 +218,8 @@ public class BotaniaStorageTierUpgradeItem extends Item {
 				BotaniaAPI.LOGGER.warn("Could not update the linked storage at {} after a tier upgrade", pos);
 			}
 		} else {
-			fresh.changeStorageSize(inventorySlots - fresh.getStorageWrapper().getInventoryHandler().getSlots(),
-					upgradeSlots - fresh.getStorageWrapper().getUpgradeHandler().getSlots());
+			fresh.changeStorageSize(inventorySlots - fresh.getStorageWrapper().getInventoryHandler().size(),
+					upgradeSlots - fresh.getStorageWrapper().getUpgradeHandler().size());
 		}
 		fresh.setChanged();
 		level.sendBlockUpdated(pos, newState, newState, 3);

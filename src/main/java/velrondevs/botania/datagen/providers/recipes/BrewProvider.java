@@ -3,7 +3,7 @@ package velrondevs.botania.datagen.providers.recipes;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -46,18 +46,18 @@ public class BrewProvider extends BotaniaRecipeProvider {
 
 		brew(consumer, idFor("overload"), BotaniaBrews.overload, Ingredient.of(Items.NETHER_WART), Ingredient.of(Items.BLAZE_POWDER), Ingredient.of(Items.SUGAR), Ingredient.of(Items.GLOWSTONE_DUST), Ingredient.of(BotaniaItems.manaSteel), Ingredient.of(Items.SPIDER_EYE));
 		brew(consumer, idFor("soul_cross"), BotaniaBrews.soulCross, Ingredient.of(Items.NETHER_WART), Ingredient.of(Blocks.SOUL_SAND), Ingredient.of(Items.PAPER), Ingredient.of(Items.APPLE), Ingredient.of(Items.BONE));
-		brew(consumer, idFor("feather_feet"), BotaniaBrews.featherfeet, Ingredient.of(Items.NETHER_WART), Ingredient.of(Items.FEATHER), Ingredient.of(Items.LEATHER), Ingredient.of(ItemTags.WOOL));
+		brew(consumer, idFor("feather_feet"), BotaniaBrews.featherfeet, Ingredient.of(Items.NETHER_WART), Ingredient.of(Items.FEATHER), Ingredient.of(Items.LEATHER), tag(ItemTags.WOOL));
 		brew(consumer, idFor("emptiness"), BotaniaBrews.emptiness, Ingredient.of(Items.NETHER_WART), Ingredient.of(Items.GUNPOWDER), Ingredient.of(Items.ROTTEN_FLESH), Ingredient.of(Items.BONE), Ingredient.of(Items.STRING), Ingredient.of(Items.ENDER_PEARL));
 		brew(consumer, idFor("bloodthirst"), BotaniaBrews.bloodthirst, Ingredient.of(Items.NETHER_WART), Ingredient.of(Items.FERMENTED_SPIDER_EYE), Ingredient.of(Items.LAPIS_LAZULI), Ingredient.of(Items.FIRE_CHARGE), Ingredient.of(Items.IRON_INGOT));
 		brew(consumer, idFor("allure"), BotaniaBrews.allure, Ingredient.of(Items.NETHER_WART), Ingredient.of(Items.COD), Ingredient.of(Items.QUARTZ), Ingredient.of(Items.GOLDEN_CARROT));
 		brew(consumer, idFor("clear"), BotaniaBrews.clear, Ingredient.of(Items.NETHER_WART), Ingredient.of(Items.QUARTZ), Ingredient.of(Items.EMERALD), Ingredient.of(Items.MELON_SLICE));
 	}
 
-	private static ResourceLocation idFor(String s) {
+	private static Identifier idFor(String s) {
 		return prefix("brew/" + s);
 	}
 
-	private static void brew(RecipeOutput consumer, ResourceLocation id, Brew brew, Ingredient... inputs) {
-		consumer.accept(id, new BotanicalBreweryRecipe(brew, inputs), null);
+	private static void brew(RecipeOutput consumer, Identifier id, Brew brew, Ingredient... inputs) {
+		consumer.accept(key(id), new BotanicalBreweryRecipe(brew, inputs), null);
 	}
 }

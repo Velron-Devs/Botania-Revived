@@ -1,5 +1,9 @@
 package velrondevs.botania.common.item;
 
+import net.minecraft.world.attribute.EnvironmentAttributes;
+import net.minecraft.server.level.ServerLevel;
+import java.util.function.Consumer;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
@@ -14,7 +18,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.UseAnim;
+import net.minecraft.world.item.ItemUseAnimation;
 import net.minecraft.world.item.component.ResolvableProfile;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
@@ -64,7 +68,7 @@ public class BottledManaItem extends Item {
 	}
 
 	private static void effectWater(Level level, LivingEntity living) {
-		if (!level.isClientSide && !level.dimensionType().ultraWarm()) {
+		if (!level.isClientSide() && !level.environmentAttributes().getValue(EnvironmentAttributes.WATER_EVAPORATES, living.blockPosition())) {
 			BlockPos playerPos = living.blockPosition();
 			BlockState state = level.getBlockState(playerPos);
 			BlockState replacedState;
@@ -95,36 +99,36 @@ public class BottledManaItem extends Item {
 					placed = level.setBlockAndUpdate(waterPos, Blocks.WATER.defaultBlockState());
 				}
 				if (placed) {
-					level.playSound(living, waterPos, SoundEvents.WATER_AMBIENT, SoundSource.BLOCKS, 1.0f, level.random.nextFloat() + 0.5f);
+					level.playSound(living, waterPos, SoundEvents.WATER_AMBIENT, SoundSource.BLOCKS, 1.0f, level.getRandom().nextFloat() + 0.5f);
 				}
 			}
 		}
 	}
 
 	private static void effectSetOnFire(Level level, LivingEntity living) {
-		if (!level.isClientSide) {
+		if (!level.isClientSide()) {
 			living.igniteForSeconds(4);
 		}
 	}
 
 	private static void effectMiniExplosion(Level level, LivingEntity living) {
-		if (!level.isClientSide) {
+		if (!level.isClientSide()) {
 			level.explode(null, living.getX(), living.getY(),
 					living.getZ(), 0.25F, Level.ExplosionInteraction.NONE);
 		}
 	}
 
 	private static void effectMegaJump(Level level, LivingEntity living) {
-		if (!level.dimensionType().ultraWarm()) {
-			if (!level.isClientSide) {
-				living.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 300, 5));
+		if (!level.environmentAttributes().getValue(EnvironmentAttributes.WATER_EVAPORATES, living.blockPosition())) {
+			if (!level.isClientSide()) {
+				living.addEffect(new MobEffectInstance(MobEffects.RESISTANCE, 300, 5));
 			}
 			living.setDeltaMovement(living.getDeltaMovement().x(), 6, living.getDeltaMovement().z());
 		}
 	}
 
 	private static void effectSetRandomHp(Level level, LivingEntity living) {
-		if (!level.isClientSide) {
+		if (!level.isClientSide()) {
 			float nextHealth = (float) (Math.random() * living.getMaxHealth());
 			if (Mth.equal(nextHealth, 0.0F)) {
 				nextHealth = 0.5F;
@@ -134,7 +138,7 @@ public class BottledManaItem extends Item {
 	}
 
 	private static void effectLotsOfHearts(Level level, LivingEntity living) {
-		if (!level.isClientSide) {
+		if (!level.isClientSide()) {
 			living.addEffect(new MobEffectInstance(MobEffects.ABSORPTION, 20 * 60 * 2, 9));
 		}
 	}
@@ -147,7 +151,7 @@ public class BottledManaItem extends Item {
 	private static void effectHighestPossible(Level level, LivingEntity living) {
 		int x = Mth.floor(living.getX());
 		int z = Mth.floor(living.getZ());
-		for (int i = level.getMaxBuildHeight(); i > level.getMinBuildHeight(); i--) {
+		for (int i = level.getMaxY() + 1; i > level.getMinY(); i--) {
 			BlockState state = level.getBlockState(new BlockPos(x, i, z));
 			if (!state.isAir()) {
 				living.teleportTo(living.getX(), i, living.getZ());
@@ -157,25 +161,25 @@ public class BottledManaItem extends Item {
 	}
 
 	private static void effectDropAllItems(Level level, LivingEntity living) {
-		if (!level.isClientSide && living instanceof Player player) {
+		if (!level.isClientSide() && living instanceof Player player) {
 			player.getInventory().dropAll();
 		}
 	}
 
 	private static void effectHyperspeed(Level level, LivingEntity living) {
-		if (!level.isClientSide) {
-			living.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 60, 200));
+		if (!level.isClientSide()) {
+			living.addEffect(new MobEffectInstance(MobEffects.SPEED, 60, 200));
 		}
 	}
 
 	private static void effectNightVision(Level level, LivingEntity living) {
-		if (!level.isClientSide) {
+		if (!level.isClientSide()) {
 			living.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, 6000, 0));
 		}
 	}
 
 	private static void effectPixieFriend(Level level, LivingEntity living) {
-		if (!level.isClientSide) {
+		if (!level.isClientSide()) {
 			PixieEntity pixie = new PixieEntity(level);
 			pixie.setPos(living.getX(), living.getY() + 1.5, living.getZ());
 			level.addFreshEntity(pixie);
@@ -183,18 +187,18 @@ public class BottledManaItem extends Item {
 	}
 
 	private static void effectNauseaBlindness(Level level, LivingEntity living) {
-		if (!level.isClientSide) {
-			living.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 160, 3));
+		if (!level.isClientSide()) {
+			living.addEffect(new MobEffectInstance(MobEffects.NAUSEA, 160, 3));
 			living.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 160, 0));
 		}
 	}
 
 	private static void effectDropOwnHead(Level level, LivingEntity living) {
-		if (!level.isClientSide && living instanceof Player player) {
+		if (!level.isClientSide() && living instanceof Player player) {
 			living.hurt(living.damageSources().magic(), living.getHealth() - 1);
 			ItemStack skull = new ItemStack(Items.PLAYER_HEAD);
-			skull.set(DataComponents.PROFILE, new ResolvableProfile(player.getGameProfile()));
-			living.spawnAtLocation(skull, 0);
+			skull.set(DataComponents.PROFILE, ResolvableProfile.createResolved(player.getGameProfile()));
+			living.spawnAtLocation((ServerLevel) level, skull, 0);
 		}
 	}
 
@@ -213,8 +217,8 @@ public class BottledManaItem extends Item {
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext world, List<Component> stacks, TooltipFlag flags) {
-		stacks.add(Component.translatable("botaniamisc.bottleTooltip"));
+	public void appendHoverText(ItemStack stack, TooltipContext world, TooltipDisplay tooltipDisplay, Consumer<Component> stacks, TooltipFlag flags) {
+		stacks.accept(Component.translatable("botaniamisc.bottleTooltip"));
 	}
 
 	@NotNull
@@ -240,8 +244,8 @@ public class BottledManaItem extends Item {
 
 	@NotNull
 	@Override
-	public UseAnim getUseAnimation(ItemStack stack) {
-		return UseAnim.DRINK;
+	public ItemUseAnimation getUseAnimation(ItemStack stack) {
+		return ItemUseAnimation.DRINK;
 	}
 
 	public static int getSwigsLeft(ItemStack stack) {

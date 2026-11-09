@@ -22,7 +22,6 @@ import org.jetbrains.annotations.Nullable;
 import velrondevs.botania.api.BotaniaAPI;
 import velrondevs.botania.common.block.block_entity.SimpleInventoryBlockEntity;
 import velrondevs.botania.mixin.HopperBlockEntityAccessor;
-import velrondevs.botania.mixin.InventoryAccessor;
 
 import java.util.List;
 import java.util.function.Function;
@@ -157,11 +156,9 @@ public class InventoryHelper {
 	}
 
 	public static boolean containsType(Inventory inventory, Item item) {
-		for (List<ItemStack> compartment : ((InventoryAccessor) inventory).getCompartments()) {
-			for (ItemStack stack : compartment) {
-				if (stack.is(item)) {
-					return true;
-				}
+		for (int i = 0; i < inventory.getContainerSize(); i++) {
+			if (inventory.getItem(i).is(item)) {
+				return true;
 			}
 		}
 

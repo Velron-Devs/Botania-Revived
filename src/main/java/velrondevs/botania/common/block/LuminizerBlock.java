@@ -1,11 +1,13 @@
 package velrondevs.botania.common.block;
 
+import net.minecraft.world.level.redstone.Orientation;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -56,19 +58,19 @@ public class LuminizerBlock extends BotaniaWaterloggedBlock implements EntityBlo
 	}
 
 	@Override
-	public ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+	public InteractionResult useItemOn(ItemStack stack, BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
 		if (world.getBlockEntity(pos) instanceof LuminizerBlockEntity relay
 				&& !stack.is(Items.ENDER_PEARL) && !(stack.getItem() instanceof PhantomInkItem)) {
 			relay.mountEntity(player);
-			return ItemInteractionResult.sidedSuccess(world.isClientSide());
+			return InteractionResult.SUCCESS;
 		}
 
-		return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+		return InteractionResult.TRY_WITH_EMPTY_HAND;
 	}
 
 	@Override
-	public void neighborChanged(BlockState state, Level worldIn, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving) {
-		if (!worldIn.isClientSide && variant == LuminizerVariant.TOGGLE) {
+	public void neighborChanged(BlockState state, Level worldIn, BlockPos pos, Block blockIn, Orientation fromPos, boolean isMoving) {
+		if (!worldIn.isClientSide() && variant == LuminizerVariant.TOGGLE) {
 			if (state.getValue(BlockStateProperties.POWERED) && !worldIn.hasNeighborSignal(pos)) {
 				worldIn.setBlockAndUpdate(pos, state.setValue(BlockStateProperties.POWERED, false));
 			} else if (!state.getValue(BlockStateProperties.POWERED) && worldIn.hasNeighborSignal(pos)) {
@@ -96,7 +98,7 @@ public class LuminizerBlock extends BotaniaWaterloggedBlock implements EntityBlo
 	@NotNull
 	@Override
 	public RenderShape getRenderShape(BlockState state) {
-		return RenderShape.ENTITYBLOCK_ANIMATED;
+		return RenderShape.INVISIBLE;
 	}
 
 	@NotNull
@@ -108,7 +110,7 @@ public class LuminizerBlock extends BotaniaWaterloggedBlock implements EntityBlo
 	@Nullable
 	@Override
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-		return createTickerHelper(type, BotaniaBlockEntities.LIGHT_RELAY, level.isClientSide ? LuminizerBlockEntity::clientTick : LuminizerBlockEntity::serverTick);
+		return createTickerHelper(type, BotaniaBlockEntities.LIGHT_RELAY, level.isClientSide() ? LuminizerBlockEntity::clientTick : LuminizerBlockEntity::serverTick);
 	}
 
 }

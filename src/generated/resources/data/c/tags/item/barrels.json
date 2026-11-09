@@ -15,10 +15,6 @@
     {
       "id": "botania:gaia_barrel",
       "required": false
-    },
-    {
-      "id": "botania:alfsteel_barrel",
-      "required": false
     }
   ]
 }

@@ -1,5 +1,6 @@
 package velrondevs.botania.common.item;
 
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
@@ -20,8 +21,8 @@ public final class ItemStackSerialization {
 
 	private static final HolderLookup.Provider RESOLVING_REGISTRIES = new HolderLookup.Provider() {
 		@Override
-		public Stream<ResourceKey<? extends Registry<?>>> listRegistries() {
-			return STATIC_REGISTRIES.listRegistries();
+		public Stream<ResourceKey<? extends Registry<?>>> listRegistryKeys() {
+			return STATIC_REGISTRIES.listRegistryKeys();
 		}
 
 		@Override
@@ -31,7 +32,7 @@ public final class ItemStackSerialization {
 			if (resolved != null) {
 				return Optional.of(resolved);
 			}
-			return STATIC_REGISTRIES.lookup(key);
+			return STATIC_REGISTRIES.<T>lookup(key).map(registry -> (HolderLookup.RegistryLookup<T>) registry);
 		}
 	};
 
@@ -48,7 +49,7 @@ public final class ItemStackSerialization {
 	}
 
 	public static ItemStack read(HolderLookup.Provider registries, CompoundTag tag) {
-		return ItemStack.parseOptional(registries, tag);
+		return ItemStack.OPTIONAL_CODEC.parse(registries.createSerializationContext(NbtOps.INSTANCE), tag).result().orElse(ItemStack.EMPTY);
 	}
 
 	public static CompoundTag write(ItemStack stack) {
@@ -59,7 +60,7 @@ public final class ItemStackSerialization {
 		if (stack.isEmpty()) {
 			return new CompoundTag();
 		}
-		Tag tag = stack.save(registries);
+		Tag tag = ItemStack.CODEC.encodeStart(registries.createSerializationContext(NbtOps.INSTANCE), stack).result().orElse(null);
 		return tag instanceof CompoundTag cmp ? cmp : new CompoundTag();
 	}
 

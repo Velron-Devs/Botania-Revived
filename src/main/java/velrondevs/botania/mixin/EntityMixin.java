@@ -26,7 +26,7 @@ public abstract class EntityMixin {
 	@Shadow
 	abstract EntityType<?> getType();
 
-	@Inject(at = @At("HEAD"), method = "isInvulnerableTo", cancellable = true)
+	@Inject(at = @At("HEAD"), method = "isInvulnerableToBase", cancellable = true)
 	private void checkInvulnerabilities(DamageSource source, CallbackInfoReturnable<Boolean> cir) {
 		if (((Object) this) instanceof LivingEntity self) {
 			if (EquestrianVirusItem.onLivingHurt(self, source)) {
@@ -35,7 +35,7 @@ public abstract class EntityMixin {
 				cir.setReturnValue(true);
 			}
 		}
-		if (source.is(BotaniaDamageTypes.KEY_EXPLOSION) && this.getType().is(BotaniaTags.Entities.KEY_IMMUNE)) {
+		if (source.is(BotaniaDamageTypes.KEY_EXPLOSION) && this.getType().builtInRegistryHolder().is(BotaniaTags.Entities.KEY_IMMUNE)) {
 			cir.setReturnValue(true);
 		}
 	}

@@ -1,9 +1,5 @@
 package velrondevs.botania.client.integration.jei;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
@@ -14,22 +10,18 @@ import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.resources.Identifier;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemStack;
 
 import org.jetbrains.annotations.NotNull;
-import org.joml.Matrix4f;
 
 import velrondevs.botania.api.recipe.ElvenTradeRecipe;
 import velrondevs.botania.common.lib.LibMisc;
-import velrondevs.botania.common.lib.ResourceLocationHelper;
+import velrondevs.botania.client.core.helper.RenderHelper;
 import velrondevs.botania.registry.BotaniaBlocks;
 
 import static velrondevs.botania.common.lib.ResourceLocationHelper.prefix;
@@ -76,28 +68,10 @@ public class ElvenTradeRecipeCategory implements IRecipeCategory<ElvenTradeRecip
 	}
 
 	@Override
-	public void draw(@NotNull ElvenTradeRecipe recipe, @NotNull IRecipeSlotsView slotsView, @NotNull GuiGraphics gui, double mouseX, double mouseY) {
-		PoseStack matrices = gui.pose();
-		RenderSystem.enableBlend();
+	public void draw(@NotNull ElvenTradeRecipe recipe, @NotNull IRecipeSlotsView slotsView, @NotNull GuiGraphicsExtractor gui, double mouseX, double mouseY) {
 		overlay.draw(gui, 0, 4);
-		RenderSystem.disableBlend();
-
-		RenderSystem.setShaderTexture(0, InventoryMenu.BLOCK_ATLAS);
-		TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(ResourceLocationHelper.prefix("block/alfheim_portal_swirl"));
-		MultiBufferSource.BufferSource immediate = Minecraft.getInstance().renderBuffers().bufferSource();
-		VertexConsumer v = immediate.getBuffer(RenderType.solid());
-		int startX = 22;
-		int startY = 25;
-		int stopX = 70;
-		int stopY = 73;
-		Matrix4f mat = matrices.last().pose();
-		PoseStack.Pose n = matrices.last();
-		v.addVertex(mat, startX, startY, 0).setColor(1f, 1f, 1f, 1f).setUv(sprite.getU0(), sprite.getV0()).setLight(0xF000F0).setNormal(n, 1, 0, 0);
-		v.addVertex(mat, startX, stopY, 0).setColor(1f, 1f, 1f, 1f).setUv(sprite.getU0(), sprite.getV1()).setLight(0xF000F0).setNormal(n, 1, 0, 0);
-		v.addVertex(mat, stopX, stopY, 0).setColor(1f, 1f, 1f, 1f).setUv(sprite.getU1(), sprite.getV1()).setLight(0xF000F0).setNormal(n, 1, 0, 0);
-		v.addVertex(mat, stopX, startY, 0).setColor(1f, 1f, 1f, 1f).setUv(sprite.getU1(), sprite.getV0()).setLight(0xF000F0).setNormal(n, 1, 0, 0);
-		immediate.endBatch();
-
+		TextureAtlasSprite sprite = RenderHelper.blockSprite(prefix("block/alfheim_portal_swirl"));
+		gui.blitSprite(RenderPipelines.GUI_TEXTURED, sprite, 22, 25, 48, 48);
 	}
 
 	@Override
@@ -118,7 +92,7 @@ public class ElvenTradeRecipeCategory implements IRecipeCategory<ElvenTradeRecip
 	}
 
 	@Override
-	public ResourceLocation getRegistryName(@NotNull ElvenTradeRecipe recipe) {
+	public Identifier getIdentifier(@NotNull ElvenTradeRecipe recipe) {
 		return JEIRecipeIds.idOf(recipe);
 	}
 }

@@ -19,12 +19,8 @@
   "type": "sophisticatedstorage:storage_tier_upgrade",
   "category": "misc",
   "key": {
-    "I": {
-      "tag": "botania:elementium_ingots"
-    },
-    "S": {
-      "item": "botania:manasteel_barrel"
-    }
+    "I": "#botania:elementium_ingots",
+    "S": "botania:manasteel_barrel"
   },
   "pattern": [
     "III",

@@ -29,7 +29,7 @@ public class OpenCrateBlockEntity extends ExposedSimpleInventoryBlockEntity {
 
 	@Override
 	protected SimpleContainer createItemHandler() {
-		return new SimpleContainer(1);
+		return new Inventory(1);
 	}
 
 	public static void serverTick(Level level, BlockPos worldPosition, BlockState state, OpenCrateBlockEntity self) {

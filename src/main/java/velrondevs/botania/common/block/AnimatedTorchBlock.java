@@ -4,7 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -36,13 +36,13 @@ public class AnimatedTorchBlock extends BotaniaWaterloggedBlock implements Entit
 	}
 
 	@Override
-	public ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level worldIn, BlockPos pos, Player playerIn, InteractionHand hand, BlockHitResult hit) {
+	public InteractionResult useItemOn(ItemStack stack, BlockState state, Level worldIn, BlockPos pos, Player playerIn, InteractionHand hand, BlockHitResult hit) {
 		if (playerIn.isSecondaryUseActive() && worldIn.getBlockEntity(pos) instanceof AnimatedTorchBlockEntity torch) {
 			torch.handRotate();
-			return ItemInteractionResult.sidedSuccess(worldIn.isClientSide());
+			return InteractionResult.SUCCESS;
 		}
 
-		return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+		return InteractionResult.TRY_WITH_EMPTY_HAND;
 	}
 
 	@Override
@@ -82,7 +82,7 @@ public class AnimatedTorchBlock extends BotaniaWaterloggedBlock implements Entit
 	@NotNull
 	@Override
 	public RenderShape getRenderShape(BlockState state) {
-		return RenderShape.ENTITYBLOCK_ANIMATED;
+		return RenderShape.INVISIBLE;
 	}
 
 	@NotNull
@@ -105,10 +105,10 @@ public class AnimatedTorchBlock extends BotaniaWaterloggedBlock implements Entit
 	@Override
 	public void destroy(LevelAccessor world, BlockPos pos, BlockState state) {
 
-		world.blockUpdated(pos, this);
+		world.updateNeighborsAt(pos, this);
 		if (world instanceof ServerLevel level) {
 			for (Direction e : AnimatedTorchBlockEntity.SIDES) {
-				level.updateNeighborsAtExceptFromFacing(pos.relative(e), state.getBlock(), e.getOpposite());
+				level.updateNeighborsAtExceptFromFacing(pos.relative(e), state.getBlock(), e.getOpposite(), null);
 			}
 		}
 		super.destroy(world, pos, state);

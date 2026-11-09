@@ -1,12 +1,13 @@
 package velrondevs.botania.common.block.block_entity.mana;
 
+import velrondevs.botania.common.block.RecipeLookup;
+
 import com.google.common.base.Predicates;
-import com.mojang.blaze3d.systems.RenderSystem;
 
 import it.unimi.dsi.fastutil.ints.*;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -30,7 +31,6 @@ import net.minecraft.world.phys.Vec3;
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.lwjgl.opengl.GL11;
 
 import velrondevs.botania.api.BotaniaAPI;
 import velrondevs.botania.api.BotaniaAPIClient;
@@ -163,7 +163,7 @@ public class ManaPoolBlockEntity extends BotaniaBlockEntity implements ManaPool,
 		List<RecipeHolder<ManaInfusionRecipe>> matchingNonCatRecipes = new ArrayList<>();
 		List<RecipeHolder<ManaInfusionRecipe>> matchingCatRecipes = new ArrayList<>();
 
-		for (var holder : level.getRecipeManager().getAllRecipesFor(BotaniaRecipeTypes.MANA_INFUSION_TYPE)) {
+		for (var holder : RecipeLookup.getAllRecipesFor(level, BotaniaRecipeTypes.MANA_INFUSION_TYPE)) {
 			ManaInfusionRecipe recipe = holder.value();
 			if (recipe.matches(stack)) {
 				if (recipe.getRecipeCatalyst() == null) {
@@ -178,7 +178,7 @@ public class ManaPoolBlockEntity extends BotaniaBlockEntity implements ManaPool,
 	}
 
 	public boolean collideEntityItem(ItemEntity item) {
-		if (level.isClientSide || !item.isAlive() || item.getItem().isEmpty()) {
+		if (level.isClientSide() || !item.isAlive() || item.getItem().isEmpty()) {
 			return false;
 		}
 
@@ -208,7 +208,7 @@ public class ManaPoolBlockEntity extends BotaniaBlockEntity implements ManaPool,
 				XplatAbstractions.INSTANCE.itemFlagsComponent(outputItem).manaInfusionSpawned = true;
 				if (item.getOwner() instanceof Player player) {
 					player.triggerRecipeCrafted(holder, List.of(output));
-					output.onCraftedBy(level, player, output.getCount());
+					output.onCraftedBy(player, output.getCount());
 				}
 				level.addFreshEntity(outputItem);
 
@@ -234,7 +234,7 @@ public class ManaPoolBlockEntity extends BotaniaBlockEntity implements ManaPool,
 	public boolean triggerEvent(int event, int param) {
 		switch (event) {
 			case CRAFT_EFFECT_EVENT: {
-				if (level.isClientSide) {
+				if (level.isClientSide()) {
 					for (int i = 0; i < 25; i++) {
 						float red = (float) Math.random();
 						float green = (float) Math.random();
@@ -247,13 +247,13 @@ public class ManaPoolBlockEntity extends BotaniaBlockEntity implements ManaPool,
 				return true;
 			}
 			case CHARGE_EFFECT_EVENT: {
-				if (level.isClientSide && BotaniaConfig.common().chargingAnimationEnabled()) {
+				if (level.isClientSide() && BotaniaConfig.common().chargingAnimationEnabled()) {
 					chargingParticles.computeIfAbsent(param, i -> new MutableInt(15)).setValue(15);
 				}
 				return true;
 			}
 			case DRAIN_EFFECT_EVENT: {
-				if (level.isClientSide && BotaniaConfig.common().chargingAnimationEnabled()) {
+				if (level.isClientSide() && BotaniaConfig.common().chargingAnimationEnabled()) {
 					drainingParticles.computeIfAbsent(param, i -> new MutableInt(15)).setValue(15);
 				}
 				return true;
@@ -480,11 +480,11 @@ public class ManaPoolBlockEntity extends BotaniaBlockEntity implements ManaPool,
 
 	@Override
 	public void readPacketNBT(CompoundTag cmp, HolderLookup.Provider registries) {
-		mana = cmp.getInt(TAG_MANA);
-		outputting = cmp.getBoolean(TAG_OUTPUTTING);
+		mana = cmp.getIntOr(TAG_MANA, 0);
+		outputting = cmp.getBooleanOr(TAG_OUTPUTTING, false);
 
 		if (cmp.contains("color")) {
-			DyeColor color = DyeColor.byId(cmp.getInt("color"));
+			DyeColor color = DyeColor.byId(cmp.getIntOr("color", 0));
 
 			if (color != DyeColor.WHITE) {
 				legacyColor = Optional.of(color);
@@ -493,20 +493,20 @@ public class ManaPoolBlockEntity extends BotaniaBlockEntity implements ManaPool,
 			}
 		}
 		if (cmp.contains(TAG_MANA_CAP)) {
-			manaCap = cmp.getInt(TAG_MANA_CAP);
+			manaCap = cmp.getIntOr(TAG_MANA_CAP, 0);
 		}
 		if (cmp.contains(TAG_CAN_ACCEPT)) {
-			canAccept = cmp.getBoolean(TAG_CAN_ACCEPT);
+			canAccept = cmp.getBooleanOr(TAG_CAN_ACCEPT, false);
 		}
 		if (cmp.contains(TAG_CAN_SPARE)) {
-			canSpare = cmp.getBoolean(TAG_CAN_SPARE);
+			canSpare = cmp.getBooleanOr(TAG_CAN_SPARE, false);
 		}
 
 		if (cmp.contains(TAG_INPUT_KEY)) {
-			inputKey = cmp.getString(TAG_INPUT_KEY);
+			inputKey = cmp.getStringOr(TAG_INPUT_KEY, "");
 		}
 		if (cmp.contains(TAG_OUTPUT_KEY)) {
-			inputKey = cmp.getString(TAG_OUTPUT_KEY);
+			inputKey = cmp.getStringOr(TAG_OUTPUT_KEY, "");
 		}
 
 	}
@@ -528,7 +528,7 @@ public class ManaPoolBlockEntity extends BotaniaBlockEntity implements ManaPool,
 		}
 
 		@Override
-		public void renderHUD(GuiGraphics gui, Minecraft mc) {
+		public void renderHUD(GuiGraphicsExtractor gui, Minecraft mc) {
 			ItemStack poolStack = new ItemStack(pool.getBlockState().getBlock());
 			String name = poolStack.getHoverName().getString();
 
@@ -541,21 +541,17 @@ public class ManaPoolBlockEntity extends BotaniaBlockEntity implements ManaPool,
 
 			BotaniaAPIClient.instance().drawSimpleManaHUD(gui, 0x0095FF, pool.getCurrentMana(), pool.getMaxMana(), name);
 
-			RenderSystem.enableBlend();
-			RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
 			int arrowU = pool.outputting ? 22 : 0;
 			int arrowV = 38;
 			RenderHelper.drawTexturedModalRect(gui, HUDHandler.manaBar, centerX - 11, centerY + 30, arrowU, arrowV, 22, 15);
-			RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
 
 			ItemStack tablet = new ItemStack(BotaniaItems.manaTablet);
 			ManaTabletItem.setStackCreative(tablet);
 
-			gui.renderItem(tablet, centerX - 31, centerY + 30);
-			gui.renderItem(poolStack, centerX + 15, centerY + 30);
+			gui.item(tablet, centerX - 31, centerY + 30);
+			gui.item(poolStack, centerX + 15, centerY + 30);
 
-			RenderSystem.disableBlend();
 		}
 	}
 

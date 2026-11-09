@@ -1,5 +1,7 @@
 package velrondevs.botania.common.block;
 
+import net.minecraft.core.Direction;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -35,7 +37,7 @@ public class CraftyCrateBlock extends OpenCrateBlock {
 	}
 
 	@Override
-	public int getAnalogOutputSignal(BlockState state, Level world, BlockPos pos) {
+	public int getAnalogOutputSignal(BlockState state, Level world, BlockPos pos, Direction direction) {
 		return world.getBlockEntity(pos) instanceof CraftyCrateBlockEntity crate ? crate.getSignal() : 0;
 	}
 
@@ -48,7 +50,7 @@ public class CraftyCrateBlock extends OpenCrateBlock {
 	@Override
 	@Nullable
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-		if (!level.isClientSide) {
+		if (!level.isClientSide()) {
 			return createTickerHelper(type, BotaniaBlockEntities.CRAFT_CRATE, CraftyCrateBlockEntity::serverTick);
 		}
 		return null;

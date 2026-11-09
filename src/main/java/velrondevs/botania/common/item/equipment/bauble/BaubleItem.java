@@ -1,5 +1,8 @@
 package velrondevs.botania.common.item.equipment.bauble;
 
+import net.minecraft.core.UUIDUtil;
+import java.util.function.Consumer;
+import net.minecraft.world.item.component.TooltipDisplay;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 
@@ -7,7 +10,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
@@ -41,14 +44,14 @@ public abstract class BaubleItem extends Item implements CosmeticAttachable, Pha
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext world, List<Component> tooltip, TooltipFlag flags) {
+	public void appendHoverText(ItemStack stack, TooltipContext world, TooltipDisplay tooltipDisplay, Consumer<Component> tooltip, TooltipFlag flags) {
 		ItemStack cosmetic = getCosmeticItem(stack);
 		if (!cosmetic.isEmpty()) {
-			tooltip.add(Component.translatable("botaniamisc.hasCosmetic", cosmetic.getHoverName()).withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC));
+			tooltip.accept(Component.translatable("botaniamisc.hasCosmetic", cosmetic.getHoverName()).withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC));
 		}
 
 		if (hasPhantomInk(stack)) {
-			tooltip.add(Component.translatable("botaniamisc.hasPhantomInk").withStyle(ChatFormatting.AQUA));
+			tooltip.accept(Component.translatable("botaniamisc.hasPhantomInk").withStyle(ChatFormatting.AQUA));
 		}
 	}
 
@@ -73,21 +76,22 @@ public abstract class BaubleItem extends Item implements CosmeticAttachable, Pha
 		String tagBaubleUuidMostLegacy = "baubleUUIDMost";
 		String tagBaubleUuidLeastLegacy = "baubleUUIDLeast";
 		if (tag.contains(tagBaubleUuidMostLegacy) && tag.contains(tagBaubleUuidLeastLegacy)) {
-			UUID uuid = new UUID(tag.getLong(tagBaubleUuidMostLegacy), tag.getLong(tagBaubleUuidLeastLegacy));
-			ItemNBTHelper.updateTag(stack, t -> t.putUUID(TAG_BAUBLE_UUID, uuid));
+			UUID uuid = new UUID(tag.getLongOr(tagBaubleUuidMostLegacy, 0L), tag.getLongOr(tagBaubleUuidLeastLegacy, 0L));
+			ItemNBTHelper.updateTag(stack, t -> t.store(TAG_BAUBLE_UUID, UUIDUtil.CODEC, uuid));
 			tag = ItemNBTHelper.peekTag(stack);
 		}
 
-		if (!tag.hasUUID(TAG_BAUBLE_UUID)) {
+		var stored = tag.read(TAG_BAUBLE_UUID, UUIDUtil.CODEC);
+		if (stored.isEmpty()) {
 			UUID uuid = UUID.randomUUID();
-			ItemNBTHelper.updateTag(stack, t -> t.putUUID(TAG_BAUBLE_UUID, uuid));
+			ItemNBTHelper.updateTag(stack, t -> t.store(TAG_BAUBLE_UUID, UUIDUtil.CODEC, uuid));
 			return uuid;
 		}
 
-		return tag.getUUID(TAG_BAUBLE_UUID);
+		return stored.get();
 	}
 
-	public static ResourceLocation getBaubleModifierId(ItemStack stack) {
+	public static Identifier getBaubleModifierId(ItemStack stack) {
 		return prefix("bauble/" + getBaubleUUID(stack));
 	}
 
@@ -104,7 +108,7 @@ public abstract class BaubleItem extends Item implements CosmeticAttachable, Pha
 	public void onWornTick(ItemStack stack, LivingEntity entity) {}
 
 	public void onEquipped(ItemStack stack, LivingEntity entity) {
-		if (!entity.level().isClientSide && entity instanceof ServerPlayer player) {
+		if (!entity.level().isClientSide() && entity instanceof ServerPlayer player) {
 			PlayerHelper.grantCriterion(player, prefix("main/bauble_wear"), "code_triggered");
 		}
 	}

@@ -8,9 +8,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "building",
   "key": {
-    "Q": {
-      "item": "botania:infernal_planks"
-    }
+    "Q": "botania:infernal_planks"
   },
   "pattern": [
     "QQQ"

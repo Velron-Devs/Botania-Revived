@@ -1,6 +1,6 @@
 package velrondevs.botania.config;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.common.ModConfigSpec;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.config.ModConfig;
@@ -311,11 +311,11 @@ public final class BotaniaConfigSpec {
 					.defineInRange("gardenOfGlass.islandScaleMultiplier", 8, 1, 512);
 			rannuncarpusItemBlacklist = builder
 					.comment("List of item registry names that will be ignored by rannuncarpuses when placing blocks.")
-					.defineList("rannuncarpus.itemBlacklist", Collections.emptyList(), o -> o instanceof String s && ResourceLocation.tryParse(s) != null);
+					.defineList("rannuncarpus.itemBlacklist", Collections.emptyList(), o -> o instanceof String s && Identifier.tryParse(s) != null);
 			rannuncarpusModBlacklist = builder
 					.comment("List of mod names for rannuncarpuses to ignore.\n" +
 							"Ignores Storage Drawers by default due to crashes with placing drawer blocks without player involvement.")
-					.defineList("rannuncarpus.modBlacklist", Collections.singletonList("storagedrawers"), o -> o instanceof String s && ResourceLocation.tryParse(s + ":test") != null);
+					.defineList("rannuncarpus.modBlacklist", Collections.singletonList("storagedrawers"), o -> o instanceof String s && Identifier.tryParse(s + ":test") != null);
 
 			builder.push("witherManaRose");
 			witherManaRoseEnabled = builder.define("enabled", true);

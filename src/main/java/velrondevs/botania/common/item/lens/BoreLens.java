@@ -8,7 +8,7 @@ import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.GameRules;
+import net.minecraft.world.level.gamerules.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -35,7 +35,7 @@ public class BoreLens extends Lens {
 		Projectile entity = burst.entity();
 		Level level = entity.level();
 
-		if (level.isClientSide || rtr.getType() != HitResult.Type.BLOCK) {
+		if (level.isClientSide() || rtr.getType() != HitResult.Type.BLOCK) {
 			return false;
 		}
 
@@ -51,7 +51,7 @@ public class BoreLens extends Lens {
 				|| state.is(Blocks.MOVING_PISTON) || state.is(Blocks.PISTON_HEAD))) {
 			return false;
 		}
-		if (!entity.mayInteract(level, collidePos) || entity.getOwner() instanceof ServerPlayer player
+		if (!Lens.mayInteract(entity, collidePos) || entity.getOwner() instanceof ServerPlayer player
 				&& player.blockActionRestricted(level, collidePos, player.gameMode.getGameModeForPlayer())) {
 			return true;
 		}
@@ -86,7 +86,7 @@ public class BoreLens extends Lens {
 					dropPosition = Vec3.atCenterOf(collidePos);
 				}
 
-				if (level.getGameRules().getBoolean(GameRules.RULE_DOBLOCKDROPS)) {
+				if (((ServerLevel) level).getGameRules().get(GameRules.BLOCK_DROPS)) {
 					for (ItemStack stack_ : items) {
 						ItemEntity itemEntity = new ItemEntity(level, dropPosition.x, dropPosition.y, dropPosition.z, stack_);
 						itemEntity.setDefaultPickUpDelay();
@@ -108,12 +108,12 @@ public class BoreLens extends Lens {
 		return Stream.of(items).map(ItemStack::new).toList();
 	}
 
-	private static final List<List<ItemStack>> HARVEST_TOOLS_BY_LEVEL = List.of(
+	private static final com.google.common.base.Supplier<List<List<ItemStack>>> HARVEST_TOOLS_BY_LEVEL_SUPPLIER = com.google.common.base.Suppliers.memoize(() -> List.of(
 			stacks(Items.WOODEN_PICKAXE, Items.WOODEN_AXE, Items.WOODEN_HOE, Items.WOODEN_SHOVEL),
 			stacks(Items.STONE_PICKAXE, Items.STONE_AXE, Items.STONE_HOE, Items.STONE_SHOVEL),
 			stacks(Items.IRON_PICKAXE, Items.IRON_AXE, Items.IRON_HOE, Items.IRON_SHOVEL),
 			stacks(Items.DIAMOND_PICKAXE, Items.DIAMOND_AXE, Items.DIAMOND_HOE, Items.DIAMOND_SHOVEL),
-			stacks(Items.NETHERITE_PICKAXE, Items.NETHERITE_AXE, Items.NETHERITE_HOE, Items.NETHERITE_SHOVEL)
+			stacks(Items.NETHERITE_PICKAXE, Items.NETHERITE_AXE, Items.NETHERITE_HOE, Items.NETHERITE_SHOVEL))
 	);
 
 	public static boolean canHarvest(int harvestLevel, BlockState state) {
@@ -126,11 +126,11 @@ public class BoreLens extends Lens {
 
 	private static ItemStack getTool(int harvestLevel, BlockState state) {
 		if (!state.requiresCorrectToolForDrops()) {
-			return HARVEST_TOOLS_BY_LEVEL.get(0).get(0);
+			return HARVEST_TOOLS_BY_LEVEL_SUPPLIER.get().get(0).get(0);
 		}
 
-		int idx = Math.min(harvestLevel, HARVEST_TOOLS_BY_LEVEL.size() - 1);
-		for (var tool : HARVEST_TOOLS_BY_LEVEL.get(idx)) {
+		int idx = Math.min(harvestLevel, HARVEST_TOOLS_BY_LEVEL_SUPPLIER.get().size() - 1);
+		for (var tool : HARVEST_TOOLS_BY_LEVEL_SUPPLIER.get().get(idx)) {
 			if (tool.isCorrectToolForDrops(state)) {
 				return tool;
 			}

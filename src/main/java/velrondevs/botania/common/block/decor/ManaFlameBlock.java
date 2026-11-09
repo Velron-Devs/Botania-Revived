@@ -4,7 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
@@ -47,19 +47,19 @@ public class ManaFlameBlock extends BotaniaWaterloggedBlock implements EntityBlo
 	}
 
 	@Override
-	public ItemInteractionResult useItemOn(ItemStack usedStack, BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+	public InteractionResult useItemOn(ItemStack usedStack, BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
 		if (XplatAbstractions.INSTANCE.gogLoaded()) {
 			ItemStack stack = player.getItemInHand(hand);
 			if (!stack.isEmpty() && stack.is(ItemTags.SAPLINGS) && !InventoryHelper.containsType(player.getInventory(), BotaniaItems.lexicon)) {
-				if (!world.isClientSide) {
+				if (!world.isClientSide()) {
 					stack.shrink(1);
 					player.getInventory().placeItemBackInInventory(new ItemStack(BotaniaItems.lexicon));
 				}
-				return ItemInteractionResult.sidedSuccess(world.isClientSide());
+				return InteractionResult.SUCCESS;
 			}
 
 		}
-		return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+		return InteractionResult.TRY_WITH_EMPTY_HAND;
 	}
 
 	@Override

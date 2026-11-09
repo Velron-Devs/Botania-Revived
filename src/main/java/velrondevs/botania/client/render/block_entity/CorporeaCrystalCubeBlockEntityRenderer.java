@@ -1,5 +1,7 @@
 package velrondevs.botania.client.render.block_entity;
 
+import velrondevs.botania.client.core.helper.RenderHelper;
+
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
@@ -7,12 +9,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
-import net.minecraft.client.renderer.block.BlockRenderDispatcher;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 
@@ -21,52 +22,43 @@ import org.jetbrains.annotations.Nullable;
 import velrondevs.botania.client.core.handler.ClientTickHandler;
 import velrondevs.botania.common.block.block_entity.corporea.CorporeaCrystalCubeBlockEntity;
 import velrondevs.botania.common.helper.VecHelper;
-import velrondevs.botania.mixin.ItemEntityAccessor;
 
-public class CorporeaCrystalCubeBlockEntityRenderer implements BlockEntityRenderer<CorporeaCrystalCubeBlockEntity> {
+public class CorporeaCrystalCubeBlockEntityRenderer extends BotaniaBlockEntityRenderer<CorporeaCrystalCubeBlockEntity> {
 
-	public static BakedModel cubeModel = null;
-	private ItemEntity entity = null;
-	private final BlockRenderDispatcher blockRenderDispatcher;
+	public static BlockStateModelPart cubeModel = null;
 
-	public CorporeaCrystalCubeBlockEntityRenderer(BlockEntityRendererProvider.Context ctx) {
-		this.blockRenderDispatcher = ctx.getBlockRenderDispatcher();
-	}
+	public CorporeaCrystalCubeBlockEntityRenderer(BlockEntityRendererProvider.Context ctx) {}
 
 	@Override
-	public void render(@Nullable CorporeaCrystalCubeBlockEntity cube, float f, PoseStack ms, MultiBufferSource buffers, int light, int overlay) {
+	protected void render(@Nullable CorporeaCrystalCubeBlockEntity cube, float f, PoseStack ms, MultiBufferSource buffers, SubmitNodeCollector collector, int light, int overlay) {
 		ItemStack stack = ItemStack.EMPTY;
 		if (cube != null) {
-			if (entity == null) {
-				entity = new ItemEntity(cube.getLevel(), cube.getBlockPos().getX(), cube.getBlockPos().getY(), cube.getBlockPos().getZ(), new ItemStack(Blocks.STONE));
-			}
-
-			((ItemEntityAccessor) entity).setAge(ClientTickHandler.ticksInGame);
 			stack = cube.getRequestTarget();
-			entity.setItem(stack);
 		}
+		float age = ClientTickHandler.ticksInGame + f;
 
 		Minecraft mc = Minecraft.getInstance();
 		ms.pushPose();
 		ms.translate(0.5F, 1.5F, 0.5F);
 		ms.scale(1F, -1F, -1F);
 
-		ms.translate(0F, (Mth.sin(((float) entity.getAge() + f) / 10.0F + entity.bobOffs) * 0.1F + 0.1F) / -7F, 0F);
+		ms.translate(0F, (Mth.sin(age / 10.0F) * 0.1F + 0.1F) / -7F, 0F);
 
 		if (!stack.isEmpty()) {
 			ms.pushPose();
 			ms.translate(0F, 0.96F, 0F);
 			ms.scale(0.64F, 0.64F, 0.64F);
 			ms.mulPose(VecHelper.rotateZ(180F));
-			Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(entity).render(entity, 0, f, ms, buffers, light);
+			ms.translate(0F, 0.25F, 0F);
+			ms.mulPose(VecHelper.rotateY(age * 9F));
+			RenderHelper.renderItem(stack, ItemDisplayContext.GROUND, ms, collector, light, overlay, cube != null ? cube.getLevel() : null, 0);
 			ms.popPose();
 		}
 
 		if (cubeModel != null) {
 			ms.pushPose();
 			ms.translate(-0.5F, 0.25F, -0.5F);
-			VertexConsumer buffer = buffers.getBuffer(Sheets.translucentCullBlockSheet());
-			blockRenderDispatcher.getModelRenderer().renderModel(ms.last(), buffer, null, cubeModel, 1, 1, 1, light, overlay);
+			RenderHelper.renderQuads(ms.last(), buffers.getBuffer(Sheets.translucentBlockSheet()), RenderHelper.allQuads(cubeModel), 0xFFFFFFFF, light, overlay);
 			ms.popPose();
 		}
 

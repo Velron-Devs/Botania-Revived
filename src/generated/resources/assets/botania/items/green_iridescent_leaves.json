@@ -1,0 +1,12 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "botania:item/green_iridescent_leaves",
+    "tints": [
+      {
+        "type": "minecraft:constant",
+        "value": -10585066
+      }
+    ]
+  }
+}

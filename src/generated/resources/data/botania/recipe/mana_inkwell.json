@@ -1,0 +1,19 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "thaumaturge"
+    }
+  ],
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    "thaumaturge:scribing_tools",
+    "botania:mana_pearl",
+    "#botania:manasteel_ingots",
+    "botania:mana_powder"
+  ],
+  "result": {
+    "id": "botania:mana_inkwell"
+  }
+}

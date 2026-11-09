@@ -1,7 +1,7 @@
 package velrondevs.botania.module.botaniaextras.block;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -45,7 +45,7 @@ public class LivingwoodFunnelBlockEntity extends ExposedSimpleInventoryBlockEnti
 
 	@Override
 	protected SimpleContainer createItemHandler() {
-		return new SimpleContainer(1) {
+		return new Inventory(1) {
 			@Override
 			public int getMaxStackSize() {
 				return 1;
@@ -62,13 +62,13 @@ public class LivingwoodFunnelBlockEntity extends ExposedSimpleInventoryBlockEnti
 	@Override
 	public void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
 		super.loadAdditional(tag, registries);
-		cooldown = tag.getInt(TAG_COOLDOWN);
+		cooldown = tag.getIntOr(TAG_COOLDOWN, 0);
 	}
 
 	@Override
 	public void setChanged() {
 		super.setChanged();
-		if (level != null && !level.isClientSide) {
+		if (level != null && !level.isClientSide()) {
 			VanillaPacketDispatcher.dispatchTEToNearbyPlayers(this);
 			level.updateNeighbourForOutputSignal(worldPosition, getBlockState().getBlock());
 		}
@@ -110,7 +110,8 @@ public class LivingwoodFunnelBlockEntity extends ExposedSimpleInventoryBlockEnti
 			}
 			return false;
 		}
-		IItemHandler handler = level.getCapability(Capabilities.ItemHandler.BLOCK, targetPos, facing.getOpposite());
+		var handlerResource = level.getCapability(Capabilities.Item.BLOCK, targetPos, facing.getOpposite());
+		IItemHandler handler = handlerResource == null ? null : IItemHandler.of(handlerResource);
 		if (handler != null && ItemHandlerHelper.insertItem(handler, one, false).isEmpty()) {
 			removeItem(0, 1);
 			return true;
@@ -146,7 +147,8 @@ public class LivingwoodFunnelBlockEntity extends ExposedSimpleInventoryBlockEnti
 			}
 			return false;
 		}
-		IItemHandler handler = level.getCapability(Capabilities.ItemHandler.BLOCK, abovePos, Direction.DOWN);
+		var handlerResource = level.getCapability(Capabilities.Item.BLOCK, abovePos, Direction.DOWN);
+		IItemHandler handler = handlerResource == null ? null : IItemHandler.of(handlerResource);
 		if (handler != null) {
 			for (int slot = 0; slot < handler.getSlots(); slot++) {
 				ItemStack simulated = handler.extractItem(slot, 1, true);
@@ -204,13 +206,13 @@ public class LivingwoodFunnelBlockEntity extends ExposedSimpleInventoryBlockEnti
 		}
 
 		@Override
-		public void renderHUD(GuiGraphics gui, Minecraft mc) {
+		public void renderHUD(GuiGraphicsExtractor gui, Minecraft mc) {
 			ItemStack stack = funnel.getDisplayed();
 			if (!stack.isEmpty()) {
 				int x = mc.getWindow().getGuiScaledWidth() / 2 + 8;
 				int y = mc.getWindow().getGuiScaledHeight() / 2 - 12;
 				RenderHelper.renderHUDBox(gui, x, y, x + 24, y + 24);
-				gui.renderItem(stack, x + 4, y + 4);
+				gui.item(stack, x + 4, y + 4);
 			}
 		}
 	}

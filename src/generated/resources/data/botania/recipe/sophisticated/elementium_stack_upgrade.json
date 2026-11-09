@@ -30,12 +30,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "C": {
-      "item": "botania:manasteel_stack_upgrade"
-    },
-    "I": {
-      "tag": "botania:elementium_ingots"
-    }
+    "C": "botania:manasteel_stack_upgrade",
+    "I": "#botania:elementium_ingots"
   },
   "pattern": [
     "III",

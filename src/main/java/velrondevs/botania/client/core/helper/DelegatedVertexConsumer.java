@@ -22,6 +22,18 @@ class DelegatedVertexConsumer implements VertexConsumer {
 	}
 
 	@Override
+	public VertexConsumer setColor(int color) {
+		delegate.setColor(color);
+		return this;
+	}
+
+	@Override
+	public VertexConsumer setLineWidth(float width) {
+		delegate.setLineWidth(width);
+		return this;
+	}
+
+	@Override
 	public VertexConsumer setUv(float u, float v) {
 		delegate.setUv(u, v);
 		return this;

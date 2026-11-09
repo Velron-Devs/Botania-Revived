@@ -19,12 +19,8 @@
   "type": "sophisticatedstorage:storage_tier_upgrade",
   "category": "misc",
   "key": {
-    "I": {
-      "tag": "botania:terrasteel_ingots"
-    },
-    "S": {
-      "item": "botania:elementium_chest"
-    }
+    "I": "#botania:terrasteel_ingots",
+    "S": "botania:elementium_chest"
   },
   "pattern": [
     "III",

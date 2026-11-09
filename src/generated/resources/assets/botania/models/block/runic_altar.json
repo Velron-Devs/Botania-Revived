@@ -4,22 +4,58 @@
     {
       "faces": {
         "down": {
-          "texture": "#bottom"
+          "texture": "#bottom",
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ]
         },
         "east": {
-          "texture": "#side"
+          "texture": "#side",
+          "uv": [
+            0,
+            4,
+            16,
+            10
+          ]
         },
         "north": {
-          "texture": "#side"
+          "texture": "#side",
+          "uv": [
+            0,
+            4,
+            16,
+            10
+          ]
         },
         "south": {
-          "texture": "#side"
+          "texture": "#side",
+          "uv": [
+            0,
+            4,
+            16,
+            10
+          ]
         },
         "up": {
-          "texture": "#up"
+          "texture": "#up",
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ]
         },
         "west": {
-          "texture": "#side"
+          "texture": "#side",
+          "uv": [
+            0,
+            4,
+            16,
+            10
+          ]
         }
       },
       "from": [
@@ -36,16 +72,40 @@
     {
       "faces": {
         "east": {
-          "texture": "#side"
+          "texture": "#side",
+          "uv": [
+            4,
+            10,
+            12,
+            12
+          ]
         },
         "north": {
-          "texture": "#side"
+          "texture": "#side",
+          "uv": [
+            4,
+            10,
+            12,
+            12
+          ]
         },
         "south": {
-          "texture": "#side"
+          "texture": "#side",
+          "uv": [
+            4,
+            10,
+            12,
+            12
+          ]
         },
         "west": {
-          "texture": "#side"
+          "texture": "#side",
+          "uv": [
+            4,
+            10,
+            12,
+            12
+          ]
         }
       },
       "from": [
@@ -62,22 +122,58 @@
     {
       "faces": {
         "down": {
-          "texture": "#bottom"
+          "texture": "#bottom",
+          "uv": [
+            2,
+            2,
+            14,
+            14
+          ]
         },
         "east": {
-          "texture": "#side"
+          "texture": "#side",
+          "uv": [
+            2,
+            12,
+            14,
+            16
+          ]
         },
         "north": {
-          "texture": "#side"
+          "texture": "#side",
+          "uv": [
+            2,
+            12,
+            14,
+            16
+          ]
         },
         "south": {
-          "texture": "#side"
+          "texture": "#side",
+          "uv": [
+            2,
+            12,
+            14,
+            16
+          ]
         },
         "up": {
-          "texture": "#bottom"
+          "texture": "#bottom",
+          "uv": [
+            2,
+            2,
+            14,
+            14
+          ]
         },
         "west": {
-          "texture": "#side"
+          "texture": "#side",
+          "uv": [
+            2,
+            12,
+            14,
+            16
+          ]
         }
       },
       "from": [

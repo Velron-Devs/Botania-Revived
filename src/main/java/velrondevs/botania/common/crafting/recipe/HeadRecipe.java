@@ -1,5 +1,7 @@
 package velrondevs.botania.common.crafting.recipe;
 
+import com.google.common.collect.ImmutableMultimap;
+import velrondevs.botania.api.recipe.BotaniaRecipe;
 import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
 import com.google.common.cache.CacheBuilder;
@@ -14,13 +16,14 @@ import com.mojang.authlib.properties.PropertyMap;
 import com.mojang.authlib.yggdrasil.response.MinecraftTexturesPayload;
 import com.mojang.util.UUIDTypeAdapter;
 
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.network.Filterable;
 import net.minecraft.util.StringUtil;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.ResolvableProfile;
 import net.minecraft.world.item.component.WrittenBookContent;
@@ -63,6 +66,10 @@ public class HeadRecipe extends RunicAltarRecipe {
 						}
 					});
 
+	public HeadRecipe(ItemStackTemplate output, int mana, Ingredient... inputs) {
+		super(output, mana, inputs);
+	}
+
 	public HeadRecipe(ItemStack output, int mana, Ingredient... inputs) {
 		super(output, mana, inputs);
 	}
@@ -104,13 +111,13 @@ public class HeadRecipe extends RunicAltarRecipe {
 		for (int i = 0; i < inv.size(); i++) {
 			ItemStack ingr = inv.getItem(i);
 			if (ingr.is(Items.NAME_TAG)) {
-				stack.set(DataComponents.PROFILE, new ResolvableProfile(Optional.of(ingr.getHoverName().getString()), Optional.empty(), new PropertyMap()));
+				stack.set(DataComponents.PROFILE, ResolvableProfile.createUnresolved(ingr.getHoverName().getString()));
 				break;
 			}
 			if (ingr.is(Items.WRITTEN_BOOK)) {
 				GameProfile profile = parseProfileFromBook(ingr, false);
 				if (profile != null) {
-					stack.set(DataComponents.PROFILE, new ResolvableProfile(profile));
+					stack.set(DataComponents.PROFILE, ResolvableProfile.createResolved(profile));
 				}
 				break;
 			}
@@ -175,8 +182,8 @@ public class HeadRecipe extends RunicAltarRecipe {
 
 				String profileTextureJson = "{textures:{SKIN:{url:\"%s\"}}}".formatted(textureUrl);
 				String propertyBase64 = Base64.getEncoder().encodeToString(profileTextureJson.getBytes(StandardCharsets.UTF_8));
-				var profile = new GameProfile(GENERATED_UUID_CACHE.getUnchecked(propertyBase64), name);
-				profile.getProperties().put("textures", new Property("textures", propertyBase64));
+				var profile = new GameProfile(GENERATED_UUID_CACHE.getUnchecked(propertyBase64), name,
+						new PropertyMap(ImmutableMultimap.of("textures", new Property("textures", propertyBase64))));
 				return profile;
 			}
 		}
@@ -185,7 +192,7 @@ public class HeadRecipe extends RunicAltarRecipe {
 
 	@NotNull
 	@Override
-	public RecipeSerializer<?> getSerializer() {
+	public RecipeSerializer<? extends BotaniaRecipe> getSerializer() {
 		return BotaniaRecipeTypes.RUNE_HEAD_SERIALIZER;
 	}
 

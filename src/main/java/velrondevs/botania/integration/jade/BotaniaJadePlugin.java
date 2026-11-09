@@ -35,18 +35,18 @@ import velrondevs.botania.common.entity.ManaSparkEntity;
 public class BotaniaJadePlugin implements IWailaPlugin {
 	@Override
 	public void register(IWailaCommonRegistration registration) {
-		registration.registerBlockDataProvider(ManaPoolProvider.INSTANCE, ManaPoolBlockEntity.class);
-		registration.registerBlockDataProvider(ManaSpreaderProvider.INSTANCE, ManaSpreaderBlockEntity.class);
-		registration.registerBlockDataProvider(GeneratingFlowerProvider.INSTANCE, GeneratingFlowerBlockEntity.class);
-		registration.registerBlockDataProvider(FunctionalFlowerProvider.INSTANCE, FunctionalFlowerBlockEntity.class);
-		registration.registerBlockDataProvider(RunicAltarProvider.INSTANCE, RunicAltarBlockEntity.class);
-		registration.registerBlockDataProvider(TerraPlateProvider.INSTANCE, TerrestrialAgglomerationPlateBlockEntity.class);
-		registration.registerBlockDataProvider(PetalApothecaryProvider.INSTANCE, PetalApothecaryBlockEntity.class);
-		registration.registerBlockDataProvider(BreweryProvider.INSTANCE, BreweryBlockEntity.class);
-		registration.registerBlockDataProvider(ManaEnchanterProvider.INSTANCE, ManaEnchanterBlockEntity.class);
-		registration.registerBlockDataProvider(AlfheimPortalProvider.INSTANCE, AlfheimPortalBlockEntity.class);
-		registration.registerBlockDataProvider(ManaStorageProvider.INSTANCE, AvatarBlockEntity.class);
-		registration.registerBlockDataProvider(ManaStorageProvider.INSTANCE, LifeImbuerBlockEntity.class);
+		registration.registerBlockDataProvider(ManaPoolProviderData.INSTANCE, ManaPoolBlockEntity.class);
+		registration.registerBlockDataProvider(ManaSpreaderProviderData.INSTANCE, ManaSpreaderBlockEntity.class);
+		registration.registerBlockDataProvider(GeneratingFlowerProviderData.INSTANCE, GeneratingFlowerBlockEntity.class);
+		registration.registerBlockDataProvider(FunctionalFlowerProviderData.INSTANCE, FunctionalFlowerBlockEntity.class);
+		registration.registerBlockDataProvider(RunicAltarProviderData.INSTANCE, RunicAltarBlockEntity.class);
+		registration.registerBlockDataProvider(TerraPlateProviderData.INSTANCE, TerrestrialAgglomerationPlateBlockEntity.class);
+		registration.registerBlockDataProvider(PetalApothecaryProviderData.INSTANCE, PetalApothecaryBlockEntity.class);
+		registration.registerBlockDataProvider(BreweryProviderData.INSTANCE, BreweryBlockEntity.class);
+		registration.registerBlockDataProvider(ManaEnchanterProviderData.INSTANCE, ManaEnchanterBlockEntity.class);
+		registration.registerBlockDataProvider(AlfheimPortalProviderData.INSTANCE, AlfheimPortalBlockEntity.class);
+		registration.registerBlockDataProvider(ManaStorageProviderData.INSTANCE, AvatarBlockEntity.class);
+		registration.registerBlockDataProvider(ManaStorageProviderData.INSTANCE, LifeImbuerBlockEntity.class);
 	}
 
 	@Override

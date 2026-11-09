@@ -1,9 +1,11 @@
 package velrondevs.botania.common.block.flower.functional;
 
+import velrondevs.botania.common.block.RecipeLookup;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.util.random.WeightedEntry;
+import net.minecraft.util.random.Weighted;
 import net.minecraft.util.random.WeightedRandom;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.Block;
@@ -49,7 +51,7 @@ public class OrechidBlockEntity extends FunctionalFlowerBlockEntity {
 	public void tickFlower() {
 		super.tickFlower();
 
-		if (getLevel().isClientSide || redstoneSignal > 0 || !canOperate()) {
+		if (getLevel().isClientSide() || redstoneSignal > 0 || !canOperate()) {
 			return;
 		}
 
@@ -68,12 +70,12 @@ public class OrechidBlockEntity extends FunctionalFlowerBlockEntity {
 	@Nullable
 	private OrechidRecipe findMatchingRecipe(BlockPos coords) {
 		BlockState input = level.getBlockState(coords);
-		List<WeightedEntry.Wrapper<OrechidRecipe>> values = new ArrayList<>();
-		for (OrechidRecipe recipe : OrechidManager.getMatchingRecipes(getLevel().getRecipeManager(), getRecipeType(), input)) {
-			values.add(WeightedEntry.wrap(recipe, recipe.getWeight(getLevel(), coords)));
+		List<Weighted<OrechidRecipe>> values = new ArrayList<>();
+		for (OrechidRecipe recipe : OrechidManager.getMatchingRecipes(RecipeLookup.manager(getLevel()), getRecipeType(), input)) {
+			values.add(new Weighted<>(recipe, recipe.getWeight(getLevel(), coords)));
 		}
-		return WeightedRandom.getRandomItem(getLevel().random, values)
-				.map(WeightedEntry.Wrapper::data)
+		return WeightedRandom.getRandomItem(getLevel().getRandom(), values, Weighted::weight)
+				.map(Weighted::value)
 				.orElse(null);
 	}
 
@@ -82,7 +84,7 @@ public class OrechidBlockEntity extends FunctionalFlowerBlockEntity {
 			return;
 		}
 
-		BlockState state = recipe.getOutput(level, coords).pick(level.random);
+		BlockState state = recipe.getOutput(level, coords).pick(level.getRandom());
 		if (getLevel().setBlockAndUpdate(coords, state)) {
 			if (BotaniaConfig.common().blockBreakParticles()) {
 				getLevel().levelEvent(LevelEvent.PARTICLES_DESTROY_BLOCK, coords, Block.getId(state));
@@ -118,7 +120,7 @@ public class OrechidBlockEntity extends FunctionalFlowerBlockEntity {
 		if (possibleCoords.isEmpty()) {
 			return null;
 		}
-		return possibleCoords.get(getLevel().random.nextInt(possibleCoords.size()));
+		return possibleCoords.get(getLevel().getRandom().nextInt(possibleCoords.size()));
 	}
 
 	public boolean canOperate() {
@@ -131,7 +133,7 @@ public class OrechidBlockEntity extends FunctionalFlowerBlockEntity {
 
 	public Predicate<BlockState> getReplaceMatcher() {
 		return state -> !OrechidManager.getMatchingRecipes(
-				this.getLevel().getRecipeManager(),
+				RecipeLookup.manager(this.getLevel()),
 				this.getRecipeType(),
 				state
 		).isEmpty();

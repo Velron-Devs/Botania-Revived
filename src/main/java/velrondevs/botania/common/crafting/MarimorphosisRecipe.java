@@ -1,5 +1,6 @@
 package velrondevs.botania.common.crafting;
 
+import velrondevs.botania.api.recipe.BotaniaRecipe;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.MapCodec;
@@ -11,7 +12,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -52,12 +53,12 @@ public class MarimorphosisRecipe extends OrechidRecipe {
 	}
 
 	@Override
-	public RecipeSerializer<?> getSerializer() {
+	public RecipeSerializer<? extends BotaniaRecipe> getSerializer() {
 		return BotaniaRecipeTypes.MARIMORPHOSIS_SERIALIZER;
 	}
 
-	public static class Serializer implements RecipeSerializer<MarimorphosisRecipe> {
-		private static final StreamCodec<RegistryFriendlyByteBuf, TagKey<Biome>> BIOME_TAG_STREAM_CODEC = ResourceLocation.STREAM_CODEC
+	public static class Serializer implements BotaniaRecipeSerializer<MarimorphosisRecipe> {
+		private static final StreamCodec<RegistryFriendlyByteBuf, TagKey<Biome>> BIOME_TAG_STREAM_CODEC = Identifier.STREAM_CODEC
 				.<TagKey<Biome>>map(id -> TagKey.create(Registries.BIOME, id), TagKey::location).cast();
 		public static final MapCodec<MarimorphosisRecipe> CODEC = RecordCodecBuilder.<MarimorphosisRecipe>mapCodec(instance -> instance.group(
 				StateIngredientHelper.NON_AIR_CODEC.fieldOf("input").forGetter(MarimorphosisRecipe::getInput),

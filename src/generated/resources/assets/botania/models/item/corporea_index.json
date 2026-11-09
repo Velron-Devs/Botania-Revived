@@ -1,5 +1,5 @@
 {
-  "parent": "minecraft:builtin/entity",
+  "parent": "botania:block/corporea_index",
   "display": {
     "firstperson_righthand": {
       "rotation": [

@@ -1,36 +1,17 @@
 {
   "type": "botania:petal_apothecary",
   "ingredients": [
-    {
-      "tag": "botania:petals/purple"
-    },
-    {
-      "tag": "botania:petals/purple"
-    },
-    {
-      "tag": "botania:petals/green"
-    },
-    {
-      "tag": "botania:petals/green"
-    },
-    {
-      "tag": "botania:petals/black"
-    },
-    {
-      "item": "botania:rune_earth"
-    },
-    {
-      "item": "botania:rune_pride"
-    },
-    {
-      "item": "botania:pixie_dust"
-    }
+    "#botania:petals/purple",
+    "#botania:petals/purple",
+    "#botania:petals/green",
+    "#botania:petals/green",
+    "#botania:petals/black",
+    "botania:rune_earth",
+    "botania:rune_pride",
+    "botania:pixie_dust"
   ],
   "output": {
-    "count": 1,
     "id": "botania:rafflowsia"
   },
-  "reagent": {
-    "tag": "botania:seed_apothecary_reagent"
-  }
+  "reagent": "#botania:seed_apothecary_reagent"
 }

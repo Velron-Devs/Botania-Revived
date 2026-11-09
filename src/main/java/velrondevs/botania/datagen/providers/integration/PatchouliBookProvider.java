@@ -3,7 +3,7 @@ package velrondevs.botania.datagen.providers.integration;
 import com.google.gson.JsonObject;
 
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.Map;
 
@@ -15,7 +15,7 @@ public class PatchouliBookProvider extends JsonFileProvider {
 	}
 
 	@Override
-	protected void addFiles(Map<ResourceLocation, JsonObject> files) {
+	protected void addFiles(Map<Identifier, JsonObject> files) {
 		JsonObject book = new JsonObject();
 		book.addProperty("name", "item.botania.lexicon");
 		book.addProperty("landing_text", "botania.landing");

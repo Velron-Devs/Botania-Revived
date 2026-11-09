@@ -5,12 +5,9 @@
     "block": "botania:alchemy_catalyst"
   },
   "group": "botania:sapling_cycle",
-  "input": {
-    "item": "minecraft:spruce_sapling"
-  },
+  "input": "minecraft:spruce_sapling",
   "mana": 120,
   "output": {
-    "count": 1,
     "id": "minecraft:birch_sapling"
   }
 }

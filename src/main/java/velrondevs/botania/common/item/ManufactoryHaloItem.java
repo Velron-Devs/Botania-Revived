@@ -1,10 +1,15 @@
 package velrondevs.botania.common.item;
 
+import java.util.function.Consumer;
+import net.minecraft.world.item.component.TooltipDisplay;
+import org.jetbrains.annotations.Nullable;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.SlotAccess;
@@ -27,17 +32,18 @@ import java.util.List;
 public class ManufactoryHaloItem extends AssemblyHaloItem {
 	public static final String TAG_ACTIVE = "active";
 
-	private static final ResourceLocation glowTexture = ResourceLocation.parse(ResourcesLib.MISC_GLOW_CYAN);
+	private static final Identifier glowTexture = Identifier.parse(ResourcesLib.MISC_GLOW_CYAN);
 
 	public ManufactoryHaloItem(Item.Properties props) {
 		super(props);
 	}
 
 	@Override
-	public void inventoryTick(ItemStack stack, Level world, Entity entity, int pos, boolean equipped) {
-		super.inventoryTick(stack, world, entity, pos, equipped);
+	public void inventoryTick(ItemStack stack, ServerLevel world, Entity entity, @Nullable EquipmentSlot eqSlot) {
+		super.inventoryTick(stack, world, entity, eqSlot);
+		boolean equipped = eqSlot == EquipmentSlot.MAINHAND;
 
-		if (!world.isClientSide && entity instanceof Player player && !equipped && isActive(stack)) {
+		if (!world.isClientSide() && entity instanceof Player player && !equipped && isActive(stack)) {
 
 			for (int i = 1; i < SEGMENTS; i++) {
 				tryCraft(player, stack, i, false);
@@ -46,26 +52,26 @@ public class ManufactoryHaloItem extends AssemblyHaloItem {
 	}
 
 	@Override
-	public ResourceLocation getGlowResource(ItemStack stack) {
+	public Identifier getGlowResource(ItemStack stack) {
 		return isActive(stack) ? glowTexture : super.getGlowResource(stack);
 	}
 
 	@Override
-	public void appendHoverText(@NotNull ItemStack stack, TooltipContext world, @NotNull List<Component> stacks, @NotNull TooltipFlag flags) {
+	public void appendHoverText(@NotNull ItemStack stack, TooltipContext world, TooltipDisplay tooltipDisplay, Consumer<Component> stacks, @NotNull TooltipFlag flags) {
 		if (isActive(stack)) {
-			stacks.add(Component.translatable("botaniamisc.active"));
+			stacks.accept(Component.translatable("botaniamisc.active"));
 		} else {
-			stacks.add(Component.translatable("botaniamisc.inactive"));
+			stacks.accept(Component.translatable("botaniamisc.inactive"));
 		}
 	}
 
 	@NotNull
 	@Override
-	public InteractionResultHolder<ItemStack> use(Level world, Player player, @NotNull InteractionHand hand) {
+	public InteractionResult use(Level world, Player player, @NotNull InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
 		if (getSegmentLookedAt(stack, player) == 0 && player.isSecondaryUseActive()) {
 			togglePassive(stack, player, world);
-			return InteractionResultHolder.sidedSuccess(stack, world.isClientSide());
+			return InteractionResult.SUCCESS;
 		}
 
 		return super.use(world, player, hand);

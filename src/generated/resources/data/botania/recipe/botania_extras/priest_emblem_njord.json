@@ -8,21 +8,11 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "A": {
-      "item": "botania:holy_symbol"
-    },
-    "G": {
-      "item": "botania:life_essence"
-    },
-    "N": {
-      "tag": "botania:manasteel_nuggets"
-    },
-    "P": {
-      "item": "botania:rune_pride"
-    },
-    "R": {
-      "item": "botania:rune_air"
-    }
+    "A": "botania:holy_symbol",
+    "G": "botania:life_essence",
+    "N": "#botania:manasteel_nuggets",
+    "P": "botania:rune_pride",
+    "R": "botania:rune_air"
   },
   "pattern": [
     "RGR",
@@ -30,7 +20,6 @@
     " P "
   ],
   "result": {
-    "count": 1,
     "id": "botania:priest_emblem_njord"
   }
 }

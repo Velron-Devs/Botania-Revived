@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "R": {
-      "item": "minecraft:redstone"
-    },
-    "S": {
-      "item": "botania:life_essence"
-    },
-    "W": {
-      "item": "minecraft:black_wool"
-    }
+    "R": "minecraft:redstone",
+    "S": "botania:life_essence",
+    "W": "minecraft:black_wool"
   },
   "pattern": [
     "WWW",
@@ -18,7 +12,6 @@
     "RSR"
   ],
   "result": {
-    "count": 1,
     "id": "botania:unholy_cloak"
   }
 }

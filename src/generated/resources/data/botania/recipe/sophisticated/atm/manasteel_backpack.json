@@ -23,12 +23,8 @@
   "type": "sophisticatedbackpacks:backpack_upgrade",
   "category": "misc",
   "key": {
-    "B": {
-      "item": "sophisticatedatm:unobtainium_backpack"
-    },
-    "I": {
-      "tag": "botania:manasteel_ingots"
-    }
+    "B": "sophisticatedatm:unobtainium_backpack",
+    "I": "#botania:manasteel_ingots"
   },
   "pattern": [
     " I ",

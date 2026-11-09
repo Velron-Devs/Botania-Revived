@@ -1,10 +1,11 @@
 package velrondevs.botania.compat.sophisticated.client;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.p3pp3rf1y.sophisticatedcore.common.gui.StorageBackgroundProperties;
@@ -27,17 +28,17 @@ public final class WideStorageLayout {
 	private static final int BOTTOM = 97;
 	private static final int PANEL_WIDTH = COLUMNS * SLOT + 14;
 
-	private static final ResourceLocation BACKGROUND = texture("storage_wide");
-	private static final ResourceLocation BACKGROUND_SCROLL = texture("storage_wide_scroll");
-	private static final ResourceLocation SLOTS = texture("storage_wide_slots");
+	private static final Identifier BACKGROUND = texture("storage_wide");
+	private static final Identifier BACKGROUND_SCROLL = texture("storage_wide_scroll");
+	private static final Identifier SLOTS = texture("storage_wide_slots");
 
 	public static final StorageBackgroundProperties REGULAR = new StorageBackgroundProperties(COLUMNS, (PANEL_WIDTH - 177) / 2, BACKGROUND);
 	public static final StorageBackgroundProperties WIDER = new StorageBackgroundProperties(COLUMNS, (PANEL_WIDTH + 6 - 177) / 2, BACKGROUND_SCROLL);
 
 	private WideStorageLayout() {}
 
-	private static ResourceLocation texture(String name) {
-		return ResourceLocation.fromNamespaceAndPath(LibMisc.MOD_ID, "textures/gui/" + name + ".png");
+	private static Identifier texture(String name) {
+		return Identifier.fromNamespaceAndPath(LibMisc.MOD_ID, "textures/gui/" + name + ".png");
 	}
 
 	public static boolean applies(StorageContainerMenuBase<?> menu) {
@@ -57,7 +58,7 @@ public final class WideStorageLayout {
 		Optional<BlockPos> pos = menu.getBlockPosition();
 		Level level = Minecraft.getInstance().level;
 		if (pos.isPresent() && level != null) {
-			ResourceLocation block = BuiltInRegistries.BLOCK.getKey(level.getBlockState(pos.get()).getBlock());
+			Identifier block = BuiltInRegistries.BLOCK.getKey(level.getBlockState(pos.get()).getBlock());
 			if (block.getNamespace().equals(LibMisc.MOD_ID)) {
 				return true;
 			}
@@ -66,22 +67,22 @@ public final class WideStorageLayout {
 		return !stack.isEmpty() && BuiltInRegistries.ITEM.getKey(stack.getItem()).getNamespace().equals(LibMisc.MOD_ID);
 	}
 
-	public static boolean drawBackground(GuiGraphics graphics, int x, int y, int width, int storageHeight, ResourceLocation texture) {
+	public static boolean drawBackground(GuiGraphicsExtractor graphics, int x, int y, int width, int storageHeight, Identifier texture) {
 		if (!texture.equals(BACKGROUND) && !texture.equals(BACKGROUND_SCROLL)) {
 			return false;
 		}
 		int top = Math.min(storageHeight / 2, TOP_MAX);
 		int stretch = 0;
-		graphics.blit(texture, x, y, 0, 0, width, SLOTS_Y + top, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+		graphics.blit(RenderPipelines.GUI_TEXTURED, texture, x, y, 0, 0, width, SLOTS_Y + top, TEXTURE_WIDTH, TEXTURE_HEIGHT);
 		if (storageHeight / 2 > TOP_MAX) {
 			stretch = (storageHeight / 2 - TOP_MAX) * 2;
-			graphics.blit(texture, x, y + SLOTS_Y + top, 0, SLOTS_Y, width, stretch, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+			graphics.blit(RenderPipelines.GUI_TEXTURED, texture, x, y + SLOTS_Y + top, 0, SLOTS_Y, width, stretch, TEXTURE_WIDTH, TEXTURE_HEIGHT);
 		}
-		graphics.blit(texture, x, y + stretch + SLOTS_Y + top, 0, TEXTURE_HEIGHT - (BOTTOM + top), width, BOTTOM + top, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+		graphics.blit(RenderPipelines.GUI_TEXTURED, texture, x, y + stretch + SLOTS_Y + top, 0, TEXTURE_HEIGHT - (BOTTOM + top), width, BOTTOM + top, TEXTURE_WIDTH, TEXTURE_HEIGHT);
 		return true;
 	}
 
-	public static void drawSlots(GuiGraphics graphics, int x, int y, int slotsOnLine, int count) {
+	public static void drawSlots(GuiGraphicsExtractor graphics, int x, int y, int slotsOnLine, int count) {
 		if (slotsOnLine <= 0 || count <= 0) {
 			return;
 		}
@@ -92,11 +93,11 @@ public final class WideStorageLayout {
 		int row = 0;
 		while (row < fullRows) {
 			int chunk = Math.min(SLOT_CHUNK_ROWS, fullRows - row);
-			graphics.blit(SLOTS, left, top + row * SLOT, 0, 0, slotsOnLine * SLOT, chunk * SLOT, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+			graphics.blit(RenderPipelines.GUI_TEXTURED, SLOTS, left, top + row * SLOT, 0, 0, slotsOnLine * SLOT, chunk * SLOT, TEXTURE_WIDTH, TEXTURE_HEIGHT);
 			row += chunk;
 		}
 		if (rest > 0) {
-			graphics.blit(SLOTS, left, top + fullRows * SLOT, 0, 0, rest * SLOT, SLOT, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+			graphics.blit(RenderPipelines.GUI_TEXTURED, SLOTS, left, top + fullRows * SLOT, 0, 0, rest * SLOT, SLOT, TEXTURE_WIDTH, TEXTURE_HEIGHT);
 		}
 	}
 }

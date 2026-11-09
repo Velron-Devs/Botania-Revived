@@ -7,54 +7,22 @@
   ],
   "type": "botania:terra_plate",
   "ingredients": [
-    {
-      "item": "botania:mana_tablet"
-    },
-    {
-      "item": "botania:rune_lust"
-    },
-    {
-      "item": "botania:rune_gluttony"
-    },
-    {
-      "item": "botania:rune_greed"
-    },
-    {
-      "item": "botania:rune_sloth"
-    },
-    {
-      "item": "botania:rune_wrath"
-    },
-    {
-      "item": "botania:rune_envy"
-    },
-    {
-      "item": "botania:rune_pride"
-    },
-    {
-      "item": "botania:terrasteel_block"
-    },
-    {
-      "item": "botania:terrasteel_block"
-    },
-    {
-      "item": "botania:terrasteel_block"
-    },
-    {
-      "item": "botania:terrasteel_block"
-    },
-    {
-      "item": "botania:life_essence"
-    },
-    {
-      "item": "botania:life_essence"
-    },
-    {
-      "item": "botania:life_essence"
-    },
-    {
-      "item": "botania:life_essence"
-    }
+    "botania:mana_tablet",
+    "botania:rune_lust",
+    "botania:rune_gluttony",
+    "botania:rune_greed",
+    "botania:rune_sloth",
+    "botania:rune_wrath",
+    "botania:rune_envy",
+    "botania:rune_pride",
+    "botania:terrasteel_block",
+    "botania:terrasteel_block",
+    "botania:terrasteel_block",
+    "botania:terrasteel_block",
+    "botania:life_essence",
+    "botania:life_essence",
+    "botania:life_essence",
+    "botania:life_essence"
   ],
   "mana": 1000000,
   "result": {
@@ -65,7 +33,6 @@
       },
       "minecraft:rarity": "epic"
     },
-    "count": 1,
     "id": "botania:mana_tablet"
   }
 }

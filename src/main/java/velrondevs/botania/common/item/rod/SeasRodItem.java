@@ -1,5 +1,6 @@
 package velrondevs.botania.common.item.rod;
 
+import net.minecraft.world.InteractionResult;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -7,7 +8,6 @@ import net.minecraft.core.cauldron.CauldronInteraction;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickAction;
@@ -41,13 +41,13 @@ public class SeasRodItem extends Item {
 
 	@NotNull
 	@Override
-	public InteractionResultHolder<ItemStack> use(Level level, Player player, @NotNull InteractionHand interactionHand) {
+	public InteractionResult use(Level level, Player player, @NotNull InteractionHand interactionHand) {
 		ItemStack itemStack = player.getItemInHand(interactionHand);
 		BlockHitResult blockHitResult = getPlayerPOVHitResult(level, player, ClipContext.Fluid.NONE);
 		if (blockHitResult.getType() == HitResult.Type.MISS) {
-			return InteractionResultHolder.pass(itemStack);
+			return InteractionResult.PASS;
 		} else if (blockHitResult.getType() != HitResult.Type.BLOCK) {
-			return InteractionResultHolder.pass(itemStack);
+			return InteractionResult.PASS;
 		} else {
 			BlockPos blockPos = blockHitResult.getBlockPos();
 			Direction direction = blockHitResult.getDirection();
@@ -60,8 +60,8 @@ public class SeasRodItem extends Item {
 				if (manaSuccess && !player.isShiftKeyDown() && blockState.getBlock() instanceof AbstractCauldronBlock cauldronBlock) {
 
 					CauldronInteraction interaction = ((AbstractCauldronBlockAccessor) cauldronBlock)
-							.botania_getInteractions().map().get(Items.WATER_BUCKET);
-					if (interaction != null) {
+							.botania_getInteractions().get(new ItemStack(Items.WATER_BUCKET));
+					if (interaction != CauldronInteraction.DEFAULT) {
 						var result = interaction.interact(blockState, level, blockPos, player, interactionHand, itemStack.copy());
 						if (!ItemStack.matches(player.getItemInHand(interactionHand), itemStack)) {
 
@@ -70,7 +70,7 @@ public class SeasRodItem extends Item {
 						if (result.consumesAction()) {
 							spawnParticles(player, blockPos);
 						}
-						return new InteractionResultHolder<>(result.result(), itemStack);
+						return result instanceof InteractionResult.Success success ? success.heldItemTransformedTo(itemStack) : result;
 					}
 				}
 
@@ -86,10 +86,10 @@ public class SeasRodItem extends Item {
 					player.awardStat(Stats.ITEM_USED.get(this));
 
 					spawnParticles(player, blockPos3);
-					return InteractionResultHolder.sidedSuccess(itemStack, level.isClientSide());
+					return InteractionResult.SUCCESS;
 				}
 			}
-			return InteractionResultHolder.fail(itemStack);
+			return InteractionResult.FAIL;
 		}
 	}
 

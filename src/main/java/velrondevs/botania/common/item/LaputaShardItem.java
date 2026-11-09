@@ -1,5 +1,9 @@
 package velrondevs.botania.common.item;
 
+import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.attribute.EnvironmentAttributes;
+import java.util.function.Consumer;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
@@ -78,11 +82,11 @@ public class LaputaShardItem extends Item implements LensEffectItem, TinyPlanetE
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext world, List<Component> list, TooltipFlag flags) {
+	public void appendHoverText(ItemStack stack, TooltipContext world, TooltipDisplay tooltipDisplay, Consumer<Component> list, TooltipFlag flags) {
 		int level = getShardLevel(stack);
 		Component levelLoc = Component.translatable("botania.roman" + (level + 1));
-		list.add(Component.translatable("botaniamisc.shardLevel", levelLoc).withStyle(ChatFormatting.GRAY));
-		list.add(Component.translatable("botaniamisc.shardRange", getRange(stack)).withStyle(ChatFormatting.GRAY));
+		list.accept(Component.translatable("botaniamisc.shardLevel", levelLoc).withStyle(ChatFormatting.GRAY));
+		list.accept(Component.translatable("botaniamisc.shardRange", getRange(stack)).withStyle(ChatFormatting.GRAY));
 	}
 
 	@NotNull
@@ -90,10 +94,10 @@ public class LaputaShardItem extends Item implements LensEffectItem, TinyPlanetE
 	public InteractionResult useOn(UseOnContext ctx) {
 		Level world = ctx.getLevel();
 		BlockPos pos = ctx.getClickedPos();
-		if (pos.getY() < world.getMaxBuildHeight() - BASE_OFFSET && !world.dimensionType().hasCeiling()) {
-			if (!world.isClientSide) {
+		if (pos.getY() < world.getMaxY() + 1 - BASE_OFFSET && !world.dimensionType().hasCeiling()) {
+			if (!world.isClientSide()) {
 				world.gameEvent(ctx.getPlayer(), GameEvent.ENTITY_PLACE, pos);
-				world.playSound(null, pos, BotaniaSounds.laputaStart, SoundSource.BLOCKS, 1.0F + world.random.nextFloat(), world.random.nextFloat() * 0.7F + 1.3F);
+				world.playSound(null, pos, BotaniaSounds.laputaStart, SoundSource.BLOCKS, 1.0F + world.getRandom().nextFloat(), world.getRandom().nextFloat() * 0.7F + 1.3F);
 				ItemStack stack = ctx.getItemInHand();
 				spawnFirstBurst(world, pos, stack);
 				if (ctx.getPlayer() != null) {
@@ -101,7 +105,7 @@ public class LaputaShardItem extends Item implements LensEffectItem, TinyPlanetE
 				}
 				stack.shrink(1);
 			}
-			return InteractionResult.sidedSuccess(world.isClientSide());
+			return InteractionResult.SUCCESS;
 		}
 
 		return InteractionResult.PASS;
@@ -113,8 +117,8 @@ public class LaputaShardItem extends Item implements LensEffectItem, TinyPlanetE
 
 	protected void spawnFirstBurst(Level world, BlockPos pos, ItemStack shard) {
 		int range = getRange(shard);
-		boolean pointy = world.random.nextDouble() < 0.25;
-		double heightscale = (world.random.nextDouble() + 0.5) * ((double) BASE_RANGE / (double) range);
+		boolean pointy = world.getRandom().nextDouble() < 0.25;
+		double heightscale = (world.getRandom().nextDouble() + 0.5) * ((double) BASE_RANGE / (double) range);
 		spawnNextBurst(world, pos, shard, pointy, heightscale);
 	}
 
@@ -233,7 +237,7 @@ public class LaputaShardItem extends Item implements LensEffectItem, TinyPlanetE
 	}
 
 	public ManaBurstEntity getBurst(Level world, BlockPos pos, ItemStack stack) {
-		ManaBurstEntity burst = BotaniaEntities.MANA_BURST.create(world);
+		ManaBurstEntity burst = BotaniaEntities.MANA_BURST.create(world, EntitySpawnReason.TRIGGERED);
 		burst.setPos(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
 
 		burst.setColor(0x00EAFF);
@@ -261,7 +265,7 @@ public class LaputaShardItem extends Item implements LensEffectItem, TinyPlanetE
 		double speed = 0.35;
 		int targetDistance = BASE_OFFSET;
 		Entity entity = burst.entity();
-		if (!entity.level().isClientSide) {
+		if (!entity.level().isClientSide()) {
 			entity.setDeltaMovement(0, speed, 0);
 
 			final int spawnTicks = 2;
@@ -288,7 +292,7 @@ public class LaputaShardItem extends Item implements LensEffectItem, TinyPlanetE
 					placeState = NbtUtils.readBlockState(entity.level().holderLookup(Registries.BLOCK), ItemNBTHelper.getCompound(lens, TAG_STATE, false));
 				}
 
-				if (entity.level().dimensionType().ultraWarm() && placeState.hasProperty(BlockStateProperties.WATERLOGGED)) {
+				if (entity.level().environmentAttributes().getDimensionValue(EnvironmentAttributes.WATER_EVAPORATES) && placeState.hasProperty(BlockStateProperties.WATERLOGGED)) {
 					placeState = placeState.setValue(BlockStateProperties.WATERLOGGED, false);
 				}
 

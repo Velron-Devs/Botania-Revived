@@ -1,5 +1,7 @@
 package velrondevs.botania.common.item;
 
+import java.util.function.Consumer;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -11,7 +13,6 @@ import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -63,7 +64,7 @@ public class AstrolabeItem extends Item {
 		if (player != null && player.isSecondaryUseActive()) {
 			if (setBlock(stack, state)) {
 				displayRemainderCounter(player, stack);
-				return InteractionResult.sidedSuccess(player.level().isClientSide());
+				return InteractionResult.SUCCESS;
 			}
 		} else if (player != null) {
 			boolean did = placeAllBlocks(stack, player, ctx.getHand());
@@ -79,21 +80,21 @@ public class AstrolabeItem extends Item {
 
 	@NotNull
 	@Override
-	public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, @NotNull InteractionHand hand) {
+	public InteractionResult use(Level worldIn, Player playerIn, @NotNull InteractionHand hand) {
 		ItemStack stack = playerIn.getItemInHand(hand);
 		if (playerIn.isSecondaryUseActive()) {
 			playerIn.playSound(BotaniaSounds.astrolabeConfigure, 1F, 1F);
-			if (!worldIn.isClientSide) {
+			if (!worldIn.isClientSide()) {
 				int size = getSize(stack);
 				int newSize = size == 11 ? 3 : size + 2;
 				setSize(stack, newSize);
 				ItemsRemainingRenderHandler.send(playerIn, stack, 0, Component.literal(newSize + "x" + newSize));
 			}
 
-			return InteractionResultHolder.sidedSuccess(stack, worldIn.isClientSide());
+			return InteractionResult.SUCCESS;
 		}
 
-		return InteractionResultHolder.pass(stack);
+		return InteractionResult.PASS;
 	}
 
 	public boolean placeAllBlocks(ItemStack requester, Player player, InteractionHand hand) {
@@ -253,7 +254,7 @@ public class AstrolabeItem extends Item {
 	public void displayRemainderCounter(Player player, ItemStack stack) {
 		Block block = getBlock(stack, player.level().holderLookup(Registries.BLOCK));
 		int count = ShiftingCrustRodItem.getInventoryItemCount(player, stack, block.asItem());
-		if (!player.level().isClientSide) {
+		if (!player.level().isClientSide()) {
 			ItemsRemainingRenderHandler.send(player, new ItemStack(block), count);
 		}
 	}
@@ -284,7 +285,7 @@ public class AstrolabeItem extends Item {
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext level, List<Component> tip, TooltipFlag flags) {
+	public void appendHoverText(ItemStack stack, TooltipContext level, TooltipDisplay tooltipDisplay, Consumer<Component> tip, TooltipFlag flags) {
 		HolderLookup.Provider registries = level.registries();
 		if (registries == null) {
 			return;
@@ -293,9 +294,9 @@ public class AstrolabeItem extends Item {
 		Block block = getBlock(stack, registries.lookupOrThrow(Registries.BLOCK));
 		int size = getSize(stack);
 
-		tip.add(Component.literal(size + " x " + size));
+		tip.accept(Component.literal(size + " x " + size));
 		if (block != Blocks.AIR) {
-			tip.add(new ItemStack(block).getHoverName().plainCopy().withStyle(ChatFormatting.GRAY));
+			tip.accept(new ItemStack(block).getHoverName().plainCopy().withStyle(ChatFormatting.GRAY));
 		}
 	}
 

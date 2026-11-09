@@ -1,5 +1,6 @@
 package velrondevs.botania.common.crafting.recipe;
 
+import velrondevs.botania.common.crafting.BotaniaRecipeSerializer;
 import com.mojang.serialization.MapCodec;
 
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -9,7 +10,7 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 
 import java.util.function.Supplier;
 
-public class NoOpRecipeSerializer<T extends Recipe<?>> implements RecipeSerializer<T> {
+public class NoOpRecipeSerializer<T extends Recipe<?>> implements BotaniaRecipeSerializer<T> {
 	private final MapCodec<T> codec;
 	private final StreamCodec<RegistryFriendlyByteBuf, T> streamCodec;
 

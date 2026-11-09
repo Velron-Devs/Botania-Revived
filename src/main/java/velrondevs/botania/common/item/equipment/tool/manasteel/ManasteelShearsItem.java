@@ -1,5 +1,9 @@
 package velrondevs.botania.common.item.equipment.tool.manasteel;
 
+import velrondevs.botania.common.lib.LibItemNames;
+import org.jetbrains.annotations.Nullable;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -25,7 +29,11 @@ public class ManasteelShearsItem extends ShearsItem implements CustomDamageItem,
 	public static final int MANA_PER_DAMAGE = 30;
 
 	public ManasteelShearsItem(Properties props) {
-		super(props.component(DataComponents.TOOL, createToolProperties()));
+		this(props, LibItemNames.MANASTEEL_INGOT);
+	}
+
+	protected ManasteelShearsItem(Properties props, String... repairItems) {
+		super(ToolCommons.repairableBy(props.component(DataComponents.TOOL, createToolProperties()), repairItems));
 	}
 
 	@Override
@@ -34,15 +42,10 @@ public class ManasteelShearsItem extends ShearsItem implements CustomDamageItem,
 	}
 
 	@Override
-	public void inventoryTick(ItemStack stack, Level world, Entity entity, int slot, boolean selected) {
-		if (!world.isClientSide && entity instanceof Player player && stack.getDamageValue() > 0 && ManaItemHandler.instance().requestManaExactForTool(stack, player, MANA_PER_DAMAGE * 2, true)) {
+	public void inventoryTick(ItemStack stack, ServerLevel world, Entity entity, @Nullable EquipmentSlot eqSlot) {
+		if (!world.isClientSide() && entity instanceof Player player && stack.getDamageValue() > 0 && ManaItemHandler.instance().requestManaExactForTool(stack, player, MANA_PER_DAMAGE * 2, true)) {
 			stack.setDamageValue(stack.getDamageValue() - 1);
 		}
-	}
-
-	@Override
-	public boolean isValidRepairItem(ItemStack shears, ItemStack material) {
-		return material.is(BotaniaItems.manaSteel) || super.isValidRepairItem(shears, material);
 	}
 
 	@Override

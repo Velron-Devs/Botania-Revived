@@ -4,9 +4,9 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.advancements.Criterion;
-import net.minecraft.advancements.critereon.*;
+import net.minecraft.advancements.criterion.*;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 
@@ -17,7 +17,7 @@ import java.util.Optional;
 import static velrondevs.botania.common.lib.ResourceLocationHelper.prefix;
 
 public class AlfheimPortalBreadTrigger extends SimpleCriterionTrigger<AlfheimPortalBreadTrigger.Instance> {
-	public static final ResourceLocation ID = prefix("alf_portal_bread");
+	public static final Identifier ID = prefix("alf_portal_bread");
 	public static final AlfheimPortalBreadTrigger INSTANCE = new AlfheimPortalBreadTrigger();
 
 	private AlfheimPortalBreadTrigger() {}
@@ -29,7 +29,7 @@ public class AlfheimPortalBreadTrigger extends SimpleCriterionTrigger<AlfheimPor
 	}
 
 	public void trigger(ServerPlayer player, BlockPos portal) {
-		this.trigger(player, instance -> instance.test(player.serverLevel(), portal));
+		this.trigger(player, instance -> instance.test(player.level(), portal));
 	}
 
 	public record Instance(Optional<ContextAwarePredicate> player, Optional<LocationPredicate> portal)

@@ -1,5 +1,13 @@
 package velrondevs.botania.module.botaniaextras.item;
 
+import velrondevs.botania.client.core.helper.RenderHelper;
+
+import net.minecraft.client.renderer.SubmitNodeCollector;
+
+import java.util.function.Consumer;
+
+import net.minecraft.world.item.component.TooltipDisplay;
+
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.ChatFormatting;
@@ -67,20 +75,19 @@ public class CoatOfArmsItem extends BaubleItem implements CosmeticBauble, Cleric
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flags) {
-		tooltip.add(Component.translatable("botaniamisc.cosmeticBauble").withStyle(ChatFormatting.ITALIC, ChatFormatting.GRAY));
-		super.appendHoverText(stack, context, tooltip, flags);
+	public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltip, TooltipFlag flags) {
+		tooltip.accept(Component.translatable("botaniamisc.cosmeticBauble").withStyle(ChatFormatting.ITALIC, ChatFormatting.GRAY));
+		super.appendHoverText(stack, context, tooltipDisplay, tooltip, flags);
 	}
 
 	public static class Renderer implements AccessoryRenderer {
 		@Override
-		public void doRender(HumanoidModel<?> bipedModel, ItemStack stack, LivingEntity living, PoseStack ms, MultiBufferSource buffers, int light, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+		public void doRender(HumanoidModel<?> bipedModel, ItemStack stack, LivingEntity living, PoseStack ms, SubmitNodeCollector collector, int light, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
 			bipedModel.body.translateAndRotate(ms);
 			ms.translate(0.12, 0.25, -0.14);
 			ms.mulPose(VecHelper.rotateZ(10F));
 			ms.scale(0.35F, -0.35F, -0.35F);
-			Minecraft.getInstance().getItemRenderer().renderStatic(stack, ItemDisplayContext.NONE,
-					light, OverlayTexture.NO_OVERLAY, ms, buffers, Minecraft.getInstance().level, 0);
+			RenderHelper.renderItem(stack, ItemDisplayContext.NONE, ms, collector, light, OverlayTexture.NO_OVERLAY, Minecraft.getInstance().level, 0);
 		}
 	}
 }

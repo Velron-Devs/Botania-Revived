@@ -1,6 +1,6 @@
 package velrondevs.botania.common.crafting;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
@@ -16,7 +16,7 @@ import java.util.List;
 public class TagExcludingStateIngredient extends TagStateIngredient {
 	private final List<StateIngredient> excludes;
 
-	public TagExcludingStateIngredient(ResourceLocation id, Collection<StateIngredient> excludes) {
+	public TagExcludingStateIngredient(Identifier id, Collection<StateIngredient> excludes) {
 		super(id);
 		this.excludes = List.copyOf(excludes);
 	}

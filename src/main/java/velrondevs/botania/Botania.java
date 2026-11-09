@@ -10,14 +10,14 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
+
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -45,11 +45,15 @@ import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.ItemAbilities;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.util.FakePlayer;
-import net.neoforged.neoforge.common.util.TriState;
-import net.neoforged.neoforge.energy.IEnergyStorage;
+import net.minecraft.util.TriState;
+import net.neoforged.neoforge.transfer.energy.EnergyHandler;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import net.neoforged.neoforge.event.AnvilUpdateEvent;
 import net.neoforged.neoforge.event.LootTableLoadEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
+import net.neoforged.neoforge.event.OnDatapackSyncEvent;
+import net.neoforged.neoforge.client.event.RecipesReceivedEvent;
+import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.event.entity.EntityAttributeModificationEvent;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
@@ -64,7 +68,8 @@ import net.neoforged.neoforge.event.server.ServerAboutToStartEvent;
 import net.neoforged.neoforge.event.server.ServerStoppingEvent;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
-import net.neoforged.neoforge.items.wrapper.SidedInvWrapper;
+import net.neoforged.neoforge.transfer.item.VanillaContainerWrapper;
+import net.neoforged.neoforge.event.level.block.BreakBlockEvent;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import net.neoforged.neoforge.registries.RegisterEvent;
 
@@ -123,27 +128,22 @@ import velrondevs.botania.common.loot.LootHandler;
 import velrondevs.botania.common.world.SkyblockChunkGenerator;
 import velrondevs.botania.common.world.SkyblockWorldEvents;
 import velrondevs.botania.config.BotaniaConfigSpec;
-import velrondevs.botania.integration.InventorySorterIntegration;
-import velrondevs.botania.integration.arsnouveau.ArsNouveauIntegration;
-import velrondevs.botania.integration.botanypots.BotaniaBotanyPotsIntegration;
 import velrondevs.botania.integration.corporea.ItemHandlerCorporeaNodeDetector;
 import velrondevs.botania.integration.curios.CurioIntegration;
-import velrondevs.botania.integration.kubejs.BotaniaKubeJSIntegration;
 import velrondevs.botania.integration.thaumaturge.ThaumaturgeIntegration;
 import velrondevs.botania.module.BotaniaModules;
 import velrondevs.botania.network.BotaniaPayloads;
-import velrondevs.botania.registry.BotaniaArmorMaterials;
 import velrondevs.botania.registry.BotaniaAttachments;
 import velrondevs.botania.registry.BotaniaBlockEntities;
 import velrondevs.botania.registry.BotaniaBlocks;
 import velrondevs.botania.registry.BotaniaBrews;
-import velrondevs.botania.compat.fractal.FractalSubTabs;
 import velrondevs.botania.registry.BotaniaCreativeTabs;
 import velrondevs.botania.registry.BotaniaCriteriaTriggers;
 import velrondevs.botania.registry.BotaniaEntities;
 import velrondevs.botania.registry.BotaniaFeatures;
 import velrondevs.botania.registry.BotaniaFlowerBlocks;
 import velrondevs.botania.registry.BotaniaItems;
+import velrondevs.botania.registry.BotaniaLazyIds;
 import velrondevs.botania.registry.BotaniaLootModifiers;
 import velrondevs.botania.registry.BotaniaMobEffects;
 import velrondevs.botania.registry.BotaniaParticles;
@@ -183,14 +183,11 @@ public class Botania {
 		modBus.addListener(BotaniaRegistryCreation::registerRegistry);
 		modBus.addListener(this::registerCapabilities);
 		registerEvents();
+		if (ModList.get().isLoaded("catnip")) {
+			velrondevs.botania.integration.catnip.CatnipCompat.init(modBus);
+		}
 		if (ModList.get().isLoaded("kubejs")) {
-			BotaniaKubeJSIntegration.init(modBus);
-		}
-		if (ModList.get().isLoaded("botanypots")) {
-			BotaniaBotanyPotsIntegration.init(modBus);
-		}
-		if (ModList.get().isLoaded("ars_nouveau")) {
-			ArsNouveauIntegration.init(modBus, container);
+			velrondevs.botania.integration.kubejs.BotaniaKubeJSIntegration.init(modBus);
 		}
 		if (ModList.get().isLoaded(ThaumaturgeIntegration.MOD_ID)) {
 			ThaumaturgeIntegration.init(modBus);
@@ -199,9 +196,11 @@ public class Botania {
 
 	public void commonSetup(FMLCommonSetupEvent evt) {
 		evt.enqueueWork(BotaniaBlocks::addDispenserBehaviours);
-		evt.enqueueWork(FractalSubTabs::register);
+		if (net.neoforged.fml.ModList.get().isLoaded("fractal")) {
+			evt.enqueueWork(() -> velrondevs.botania.compat.fractal.FractalSubTabs.register());
+		}
 		evt.enqueueWork(() -> {
-			BiConsumer<ResourceLocation, Supplier<? extends Block>> consumer = (resourceLocation, blockSupplier) -> ((FlowerPotBlock) Blocks.FLOWER_POT).addPlant(resourceLocation, blockSupplier);
+			BiConsumer<Identifier, Supplier<? extends Block>> consumer = (resourceLocation, blockSupplier) -> ((FlowerPotBlock) Blocks.FLOWER_POT).addPlant(resourceLocation, blockSupplier);
 			BotaniaBlocks.registerFlowerPotPlants(consumer);
 			BotaniaFlowerBlocks.registerFlowerPotPlants(consumer);
 		});
@@ -220,9 +219,6 @@ public class Botania {
 		ConfigDataManagerImpl.registerListener();
 		CraftyCrateBlockEntity.registerListener();
 		CorporeaNodeDetectors.register(new ItemHandlerCorporeaNodeDetector());
-		if (ModList.get().isLoaded("inventorysorter")) {
-			InventorySorterIntegration.init();
-		}
 	}
 
 	private void coreInit(ModContainer container) {
@@ -248,7 +244,6 @@ public class Botania {
 		BotaniaCreativeTabs.bindForItems(modBus, BotaniaFlowerBlocks::registerItemBlocks);
 		BotaniaCreativeTabs.bindForItems(modBus, BotaniaItems::registerRunes);
 		bind(Registries.BLOCK_ENTITY_TYPE, BotaniaFlowerBlocks::registerTEs);
-		bind(Registries.ARMOR_MATERIAL, BotaniaArmorMaterials::registerArmorMaterials);
 		bind(NeoForgeRegistries.Keys.ATTACHMENT_TYPES, BotaniaAttachments::registerAttachments);
 
 		bind(Registries.MENU, BotaniaItems::registerMenuTypes);
@@ -280,9 +275,16 @@ public class Botania {
 			}
 		});
 		bind(Registries.CREATIVE_MODE_TAB, BotaniaCreativeTabs::registerTabs);
+		modBus.addListener(EventPriority.LOWEST, (RegisterEvent evt) -> {
+			if (evt.getRegistryKey().equals(Registries.BLOCK)) {
+				BotaniaLazyIds.resolveBlocks();
+			} else if (evt.getRegistryKey().equals(Registries.ITEM)) {
+				BotaniaLazyIds.resolveItems();
+			}
+		});
 	}
 
-	private static <T> void bind(ResourceKey<? extends Registry<T>> registry, Consumer<BiConsumer<T, ResourceLocation>> source) {
+	private static <T> void bind(ResourceKey<? extends Registry<T>> registry, Consumer<BiConsumer<T, Identifier>> source) {
 		modBus.addListener((RegisterEvent event) -> {
 			if (registry.equals(event.getRegistryKey())) {
 				source.accept((t, rl) -> event.register(registry, rl, () -> t));
@@ -292,6 +294,11 @@ public class Botania {
 
 	private void registerEvents() {
 		IEventBus bus = NeoForge.EVENT_BUS;
+
+		bus.addListener((OnDatapackSyncEvent e) -> e.sendRecipes(BotaniaRecipeTypes.syncedTypes()));
+		if (FMLEnvironment.getDist().isClient()) {
+			bus.addListener((RecipesReceivedEvent e) -> BotaniaRecipeTypes.setClientRecipes(e.getRecipeMap()));
+		}
 
 		int blazeTime = 2400 * (XplatAbstractions.INSTANCE.gogLoaded() ? 5 : 10);
 		bus.addListener((FurnaceFuelBurnTimeEvent e) -> {
@@ -326,7 +333,7 @@ public class Botania {
 		bus.addListener((LootTableLoadEvent e) -> LootHandler.lootLoad(e.getName(), b -> e.getTable().addPool(b.build())));
 		bus.addListener((ManaNetworkEvent e) -> ManaNetworkHandler.instance.onNetworkEvent(e.getReceiver(), e.getType(), e.getAction()));
 		bus.addListener((EntityJoinLevelEvent e) -> {
-			if (!e.getLevel().isClientSide) {
+			if (!e.getLevel().isClientSide()) {
 				TigerseyeBlockEntity.pacifyAfterLoad(e.getEntity(), (ServerLevel) e.getLevel());
 			}
 		});
@@ -347,10 +354,10 @@ public class Botania {
 			RingOfLokiItem.onPlayerInteract(e.getEntity(), e.getLevel(), e.getHand(), e.getHitVec());
 		});
 		bus.addListener((PlayerInteractEvent.RightClickItem e) -> {
-			InteractionResultHolder<ItemStack> result = EnderAirItem.onPlayerInteract(e.getEntity(), e.getLevel(), e.getHand());
-			if (result.getResult().consumesAction()) {
+			InteractionResult result = EnderAirItem.onPlayerInteract(e.getEntity(), e.getLevel(), e.getHand());
+			if (result.consumesAction()) {
 				e.setCanceled(true);
-				e.setCancellationResult(result.getResult());
+				e.setCancellationResult(result);
 			}
 		});
 
@@ -359,7 +366,7 @@ public class Botania {
 				e.setCanceled(true);
 			}
 		});
-		bus.addListener((BlockEvent.BreakEvent e) -> {
+		bus.addListener((BreakBlockEvent e) -> {
 			if (ToolCommons.onBlockStartBreak(e.getPlayer().getMainHandItem(), e.getPos(), e.getPlayer())) {
 				e.setCanceled(true);
 			}
@@ -385,7 +392,7 @@ public class Botania {
 		});
 		bus.addListener((ExplosionEvent.Detonate e) -> {
 			if (BenevolentGoddessCharmItem.shouldProtectExplosion(e.getLevel(), e.getExplosion().center())) {
-				e.getExplosion().clearToBlow();
+				e.getAffectedBlocks().clear();
 			}
 		});
 		bus.addListener((ItemEntityPickupEvent.Pre e) -> {
@@ -443,11 +450,11 @@ public class Botania {
 		});
 		bus.addListener((LivingFallEvent e) -> {
 			if (e.getEntity() instanceof Player player) {
-				e.setDistance(SojournersSashItem.onPlayerFall(player, e.getDistance()));
+				e.setDistance(SojournersSashItem.onPlayerFall(player, (float) e.getDistance()));
 			}
 		});
 		bus.addListener(EventPriority.LOW, (CriticalHitEvent e) -> {
-			if (e.getEntity().level().isClientSide
+			if (e.getEntity().level().isClientSide()
 					|| !e.isCriticalHit()
 					|| !TerrasteelHelmItem.hasTerraArmorSet(e.getEntity())
 					|| !(e.getTarget() instanceof LivingEntity target)) {
@@ -513,10 +520,10 @@ public class Botania {
 		registerItemCaps(e, BotaniaCapabilities.MANA_ITEM, MANA_ITEM.get());
 		registerItemCaps(e, BotaniaCapabilities.RELIC, RELIC.get());
 
-		e.registerItem(Capabilities.FluidHandler.ITEM, (stack, ctx) -> new CapabilityUtil.WaterBowlFluidHandler(stack), BotaniaItems.waterBowl);
-		e.registerItem(Capabilities.FluidHandler.ITEM, (stack, ctx) -> new CapabilityUtil.ExtrapolatedBucketFluidHandler(stack), BotaniaItems.openBucket);
+		e.registerItem(Capabilities.Fluid.ITEM, (stack, access) -> new CapabilityUtil.WaterBowlFluidHandler(access), BotaniaItems.waterBowl);
+		e.registerItem(Capabilities.Fluid.ITEM, (stack, access) -> new CapabilityUtil.ExtrapolatedBucketFluidHandler(access), BotaniaItems.openBucket);
 
-		if (EquipmentHandler.instance instanceof CurioIntegration) {
+		if (XplatAbstractions.INSTANCE.isModLoaded("curios") && EquipmentHandler.instance instanceof CurioIntegration) {
 			Item[] baubles = BuiltInRegistries.ITEM.stream().filter(i -> i instanceof BaubleItem).toArray(Item[]::new);
 			CurioIntegration.registerCapabilities(e, baubles);
 		}
@@ -529,13 +536,13 @@ public class Botania {
 		}
 
 		for (BlockEntityType<?> type : botaniaBlockEntityTypes()) {
-			e.registerBlockEntity(Capabilities.ItemHandler.BLOCK, type,
-					(be, side) -> be instanceof ExposedSimpleInventoryBlockEntity inv ? new SidedInvWrapper(inv, null) : null);
-			e.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, type,
+			e.registerBlockEntity(Capabilities.Item.BLOCK, type,
+					(be, side) -> be instanceof ExposedSimpleInventoryBlockEntity inv ? VanillaContainerWrapper.of(inv) : null);
+			e.registerBlockEntity(Capabilities.Energy.BLOCK, type,
 					(be, side) -> be instanceof PowerGeneratorBlockEntity gen ? new GeneratorEnergyView(gen) : null);
 		}
 
-		e.registerBlockEntity(Capabilities.ItemHandler.BLOCK, BotaniaBlockEntities.RED_STRING_CONTAINER, RedStringContainerCapProvider::getItemHandler);
+		e.registerBlockEntity(Capabilities.Item.BLOCK, BotaniaBlockEntities.RED_STRING_CONTAINER, RedStringContainerCapProvider::getItemHandler);
 
 		e.registerBlockEntity(BotaniaCapabilities.HOURGLASS_TRIGGER, BotaniaBlockEntities.ANIMATED_TORCH,
 				(be, ctx) -> hourglass -> be.toggle());
@@ -564,42 +571,32 @@ public class Botania {
 	private static List<BlockEntityType<?>> botaniaBlockEntityTypes() {
 		List<BlockEntityType<?>> ret = new ArrayList<>();
 		for (var entry : BuiltInRegistries.BLOCK_ENTITY_TYPE.entrySet()) {
-			if (entry.getKey().location().getNamespace().equals(LibMisc.MOD_ID)) {
+			if (entry.getKey().identifier().getNamespace().equals(LibMisc.MOD_ID)) {
 				ret.add(entry.getValue());
 			}
 		}
 		return ret;
 	}
 
-	private record GeneratorEnergyView(PowerGeneratorBlockEntity gen) implements IEnergyStorage {
+	private record GeneratorEnergyView(PowerGeneratorBlockEntity gen) implements EnergyHandler {
 		@Override
-		public int getEnergyStored() {
+		public long getAmountAsLong() {
 			return gen.getEnergy();
 		}
 
 		@Override
-		public int getMaxEnergyStored() {
+		public long getCapacityAsLong() {
 			return PowerGeneratorBlockEntity.MAX_ENERGY;
 		}
 
 		@Override
-		public boolean canExtract() {
-			return false;
-		}
-
-		@Override
-		public int extractEnergy(int maxExtract, boolean simulate) {
+		public int insert(int amount, TransactionContext transaction) {
 			return 0;
 		}
 
 		@Override
-		public int receiveEnergy(int maxReceive, boolean simulate) {
+		public int extract(int amount, TransactionContext transaction) {
 			return 0;
-		}
-
-		@Override
-		public boolean canReceive() {
-			return false;
 		}
 	}
 

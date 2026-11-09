@@ -9,6 +9,7 @@ import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraft.world.item.crafting.RecipeManager;
+import net.minecraft.world.item.crafting.RecipeMap;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -17,6 +18,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import velrondevs.botania.api.recipe.OrechidRecipe;
+import velrondevs.botania.registry.BotaniaRecipeTypes;
 import velrondevs.botania.xplat.XplatAbstractions;
 
 import java.util.*;
@@ -39,13 +41,20 @@ public class OrechidManager implements ResourceManagerReloadListener {
 	}
 
 	public static <T extends OrechidRecipe> Collection<T> getMatchingRecipes(
-			RecipeManager manager,
+			@Nullable RecipeManager manager,
+			RecipeType<T> type,
+			BlockState state) {
+		return getMatchingRecipes(manager == null ? RecipeMap.EMPTY : manager.recipeMap(), type, state);
+	}
+
+	public static <T extends OrechidRecipe> Collection<T> getMatchingRecipes(
+			RecipeMap recipes,
 			RecipeType<T> type,
 			BlockState state) {
 		final var byState = BY_TYPE.computeIfAbsent(type, t -> new IdentityHashMap<>());
 		final var list = byState.computeIfAbsent(state, s -> {
 			var builder = ImmutableList.<T>builder();
-			for (var holder : manager.getAllRecipesFor(type)) {
+			for (var holder : recipes.byType(type)) {
 				T recipe = holder.value();
 				if (recipe.getInput().test(state)) {
 					builder.add(recipe);
@@ -71,7 +80,7 @@ public class OrechidManager implements ResourceManagerReloadListener {
 	}
 
 	private static int calculateTotalDisplayWeightAtPosition(Level level, RecipeType<? extends OrechidRecipe> type, BlockState state, @Nullable BlockPos pos) {
-		final var recipeList = getMatchingRecipes(level.getRecipeManager(), type, state);
+		final var recipeList = getMatchingRecipes(BotaniaRecipeTypes.recipeMap(level), type, state);
 		if (recipeList.isEmpty()) {
 			return 0;
 		}

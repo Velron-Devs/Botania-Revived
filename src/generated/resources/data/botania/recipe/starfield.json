@@ -2,22 +2,15 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "E": {
-      "tag": "botania:elementium_ingots"
-    },
-    "O": {
-      "item": "minecraft:obsidian"
-    },
-    "P": {
-      "item": "botania:pixie_dust"
-    }
+    "E": "#botania:elementium_ingots",
+    "O": "minecraft:obsidian",
+    "P": "botania:pixie_dust"
   },
   "pattern": [
     "EPE",
     "EOE"
   ],
   "result": {
-    "count": 1,
     "id": "botania:starfield"
   }
 }

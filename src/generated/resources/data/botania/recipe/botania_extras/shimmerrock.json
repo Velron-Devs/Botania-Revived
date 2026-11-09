@@ -8,15 +8,10 @@
   "type": "minecraft:crafting_shapeless",
   "category": "building",
   "ingredients": [
-    {
-      "item": "botania:livingrock"
-    },
-    {
-      "item": "botania:floral_bifrost_powder"
-    }
+    "botania:livingrock",
+    "botania:floral_bifrost_powder"
   ],
   "result": {
-    "count": 1,
     "id": "botania:shimmerrock"
   }
 }

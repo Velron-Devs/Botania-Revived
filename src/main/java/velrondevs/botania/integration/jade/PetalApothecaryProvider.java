@@ -2,7 +2,7 @@ package velrondevs.botania.integration.jade;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
@@ -21,7 +21,7 @@ import velrondevs.botania.registry.BotaniaRecipeTypes;
 import java.util.List;
 import java.util.Locale;
 
-public enum PetalApothecaryProvider implements IBlockComponentProvider, IServerDataProvider<BlockAccessor> {
+public enum PetalApothecaryProvider implements IBlockComponentProvider {
 	INSTANCE;
 
 	private static final String REAGENT = "reagent";
@@ -46,24 +46,7 @@ public enum PetalApothecaryProvider implements IBlockComponentProvider, IServerD
 	}
 
 	@Override
-	public void appendServerData(CompoundTag data, BlockAccessor accessor) {
-		if (!(accessor.getBlockEntity() instanceof PetalApothecaryBlockEntity apothecary) || apothecary.isEmpty()) {
-			return;
-		}
-		ContainerRecipeInput input = new ContainerRecipeInput(apothecary.getItemHandler());
-		accessor.getLevel().getRecipeManager().getRecipeFor(BotaniaRecipeTypes.PETAL_TYPE, input, accessor.getLevel())
-				.map(RecipeHolder::value)
-				.ifPresent(recipe -> {
-					JadeManaHelper.putStack(data, JadeManaHelper.OUTPUT, accessor, recipe.assemble(input, accessor.getLevel().registryAccess()));
-					ItemStack[] reagents = recipe.getReagent().getItems();
-					if (reagents.length > 0) {
-						JadeManaHelper.putStack(data, REAGENT, accessor, reagents[0].copyWithCount(1));
-					}
-				});
-	}
-
-	@Override
-	public ResourceLocation getUid() {
+	public Identifier getUid() {
 		return BotaniaJadeIds.PETAL_APOTHECARY;
 	}
 }

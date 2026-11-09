@@ -1,14 +1,16 @@
 package velrondevs.botania.client.core.handler;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
+import org.joml.Matrix3x2fStack;
+
+import velrondevs.botania.client.core.helper.RenderHelper;
+
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import org.lwjgl.glfw.GLFW;
 
@@ -52,22 +54,20 @@ public class KonamiHandler {
 		}
 	}
 
-	public static void renderBook(ResourceLocation book, Screen gui, int mouseX, int mouseY, float partialTicks, GuiGraphics guiGraphics) {
-		PoseStack ms = guiGraphics.pose();
+	public static void renderBook(Identifier book, Screen gui, int mouseX, int mouseY, float partialTicks, GuiGraphicsExtractor guiGraphics) {
+		Matrix3x2fStack ms = guiGraphics.pose();
 		if (konamiTime > 0) {
 			String meme = I18n.get("botania.subtitle.way");
-			RenderSystem.disableDepthTest();
-			ms.pushPose();
+			ms.pushMatrix();
 			int fullWidth = Minecraft.getInstance().font.width(meme);
 			int left = gui.width;
 			double widthPerTick = (fullWidth + gui.width) / 240;
 			double currWidth = left - widthPerTick * (240 - (konamiTime - partialTicks)) * 3.2;
 
-			ms.translate(currWidth, gui.height / 2 - 10, 0);
-			ms.scale(4, 4, 4);
-			guiGraphics.drawString(Minecraft.getInstance().font, meme, 0, 0, 0xFFFFFF);
-			ms.popPose();
-			RenderSystem.enableDepthTest();
+			ms.translate((float) (currWidth), (float) (gui.height / 2 - 10));
+			ms.scale((float) (4), (float) (4));
+			RenderHelper.drawString(guiGraphics, Minecraft.getInstance().font, meme, 0, 0, 0xFFFFFF);
+			ms.popMatrix();
 		}
 	}
 }

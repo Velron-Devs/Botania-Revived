@@ -3,7 +3,7 @@ package velrondevs.botania.client.render.block_entity;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 
 import org.jetbrains.annotations.Nullable;
@@ -13,7 +13,7 @@ import velrondevs.botania.client.model.BotaniaModelLayers;
 import velrondevs.botania.client.model.BotanicalBreweryModel;
 import velrondevs.botania.common.block.block_entity.BreweryBlockEntity;
 
-public class BotanicalBreweryBlockEntityRenderer implements BlockEntityRenderer<BreweryBlockEntity> {
+public class BotanicalBreweryBlockEntityRenderer extends BotaniaBlockEntityRenderer<BreweryBlockEntity> {
 	final BotanicalBreweryModel model;
 
 	public BotanicalBreweryBlockEntityRenderer(BlockEntityRendererProvider.Context ctx) {
@@ -21,7 +21,7 @@ public class BotanicalBreweryBlockEntityRenderer implements BlockEntityRenderer<
 	}
 
 	@Override
-	public void render(@Nullable BreweryBlockEntity brewery, float f, PoseStack ms, MultiBufferSource buffers, int light, int overlay) {
+	protected void render(@Nullable BreweryBlockEntity brewery, float f, PoseStack ms, MultiBufferSource buffers, SubmitNodeCollector collector, int light, int overlay) {
 		ms.pushPose();
 
 		ms.scale(1F, -1F, -1F);
@@ -29,7 +29,7 @@ public class BotanicalBreweryBlockEntityRenderer implements BlockEntityRenderer<
 
 		double time = ClientTickHandler.ticksInGame + f;
 
-		model.render(brewery, time, ms, buffers, light, overlay);
+		model.render(brewery, time, ms, buffers, collector, light, overlay);
 		ms.popPose();
 	}
 

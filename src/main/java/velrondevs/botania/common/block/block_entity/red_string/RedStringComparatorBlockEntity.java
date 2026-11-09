@@ -20,7 +20,7 @@ public class RedStringComparatorBlockEntity extends RedStringBlockEntity {
 		int origVal = self.comparatorValue;
 
 		if (bindState.hasAnalogOutputSignal()) {
-			self.comparatorValue = bindState.getAnalogOutputSignal(level, binding);
+			self.comparatorValue = bindState.getAnalogOutputSignal(level, binding, net.minecraft.core.Direction.UP);
 		} else {
 			self.comparatorValue = 0;
 		}

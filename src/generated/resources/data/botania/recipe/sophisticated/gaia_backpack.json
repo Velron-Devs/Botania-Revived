@@ -19,12 +19,8 @@
   "type": "sophisticatedbackpacks:backpack_upgrade",
   "category": "misc",
   "key": {
-    "B": {
-      "item": "botania:terrasteel_backpack"
-    },
-    "I": {
-      "item": "botania:gaia_ingot"
-    }
+    "B": "botania:terrasteel_backpack",
+    "I": "botania:gaia_ingot"
   },
   "pattern": [
     " I ",

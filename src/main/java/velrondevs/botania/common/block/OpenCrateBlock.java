@@ -1,6 +1,7 @@
 package velrondevs.botania.common.block;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.util.RandomSource;
@@ -26,13 +27,8 @@ public class OpenCrateBlock extends BotaniaBlock implements EntityBlock {
 	}
 
 	@Override
-	public void onRemove(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull BlockState newState, boolean isMoving) {
-		if (!newState.is(state.getBlock())) {
-			if (world.getBlockEntity(pos) instanceof SimpleInventoryBlockEntity inventory) {
-				Containers.dropContents(world, pos, inventory.getItemHandler());
-			}
-			super.onRemove(state, world, pos, newState, isMoving);
-		}
+	protected void affectNeighborsAfterRemoval(BlockState state, ServerLevel level, BlockPos pos, boolean movedByPiston) {
+		Containers.updateNeighboursAfterDestroy(state, level, pos);
 	}
 
 	@Override
@@ -45,7 +41,7 @@ public class OpenCrateBlock extends BotaniaBlock implements EntityBlock {
 	public static void redstoneParticlesOnFullBlock(Level world, BlockPos pos, RandomSource random) {
 		for (Direction direction : Direction.values()) {
 			BlockPos blockpos = pos.relative(direction);
-			if (!world.getBlockState(blockpos).isSolidRender(world, blockpos)) {
+			if (!world.getBlockState(blockpos).isSolidRender()) {
 				Direction.Axis axis = direction.getAxis();
 				double dx = axis == Direction.Axis.X ? 0.5D + 0.5625D * direction.getStepX() : random.nextFloat();
 				double dy = axis == Direction.Axis.Y ? 0.5D + 0.5625D * direction.getStepY() : random.nextFloat();
@@ -64,7 +60,7 @@ public class OpenCrateBlock extends BotaniaBlock implements EntityBlock {
 	@Nullable
 	@Override
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-		if (!level.isClientSide) {
+		if (!level.isClientSide()) {
 			return createTickerHelper(type, BotaniaBlockEntities.OPEN_CRATE, OpenCrateBlockEntity::serverTick);
 		}
 		return null;

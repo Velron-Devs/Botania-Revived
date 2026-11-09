@@ -1,5 +1,6 @@
 package velrondevs.botania.common.item;
 
+import net.minecraft.world.InteractionResult;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.*;
@@ -44,8 +45,8 @@ public class BaubleBoxItem extends Item {
 
 	@NotNull
 	@Override
-	public InteractionResultHolder<ItemStack> use(Level world, Player player, @NotNull InteractionHand hand) {
-		if (!world.isClientSide) {
+	public InteractionResult use(Level world, Player player, @NotNull InteractionHand hand) {
+		if (!world.isClientSide()) {
 			ItemStack stack = player.getItemInHand(hand);
 			ItemNBTHelper.setBoolean(stack, TAG_OPEN, true);
 			XplatAbstractions.INSTANCE.openMenu((ServerPlayer) player, new MenuProvider() {
@@ -60,7 +61,7 @@ public class BaubleBoxItem extends Item {
 				}
 			}, buf -> buf.writeBoolean(hand == InteractionHand.MAIN_HAND));
 		}
-		return InteractionResultHolder.sidedSuccess(player.getItemInHand(hand), world.isClientSide());
+		return InteractionResult.SUCCESS;
 	}
 
 	@Override
@@ -69,7 +70,7 @@ public class BaubleBoxItem extends Item {
 		var stream = IntStream.range(0, container.getContainerSize())
 				.mapToObj(container::getItem)
 				.filter(s -> !s.isEmpty());
-		ItemUtils.onContainerDestroyed(entity, stream.toList());
+		ItemUtils.onContainerDestroyed(entity, stream);
 		container.clearContent();
 	}
 

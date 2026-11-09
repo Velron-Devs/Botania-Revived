@@ -33,6 +33,8 @@ import java.util.Locale;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import static velrondevs.botania.common.lib.ResourceLocationHelper.prefix;
+
 public class ClientProxy implements Proxy {
 
 	public static boolean jingleTheBells = false;
@@ -40,8 +42,11 @@ public class ClientProxy implements Proxy {
 
 	public static KeyMapping CORPOREA_REQUEST;
 
-	public static void initKeybindings(Consumer<KeyMapping> consumer) {
-		CORPOREA_REQUEST = new KeyMapping("key.botania_corporea_request", GLFW.GLFW_KEY_C, LibMisc.MOD_NAME);
+	public static final KeyMapping.Category KEY_CATEGORY = new KeyMapping.Category(prefix("botania"));
+
+	public static void initKeybindings(Consumer<KeyMapping.Category> categories, Consumer<KeyMapping> consumer) {
+		categories.accept(KEY_CATEGORY);
+		CORPOREA_REQUEST = new KeyMapping("key.botania_corporea_request", GLFW.GLFW_KEY_C, KEY_CATEGORY);
 		consumer.accept(CORPOREA_REQUEST);
 	}
 
@@ -91,8 +96,8 @@ public class ClientProxy implements Proxy {
 	@Override
 	public void addParticleForceNear(Level world, ParticleOptions particleData, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
 		Camera info = Minecraft.getInstance().gameRenderer.getMainCamera();
-		if (info.isInitialized() && info.getPosition().distanceToSqr(x, y, z) <= 1024.0D) {
-			world.addParticle(particleData, true, x, y, z, xSpeed, ySpeed, zSpeed);
+		if (info.isInitialized() && info.position().distanceToSqr(x, y, z) <= 1024.0D) {
+			world.addParticle(particleData, true, false, x, y, z, xSpeed, ySpeed, zSpeed);
 		}
 	}
 

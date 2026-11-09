@@ -8,21 +8,11 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "A": {
-      "item": "botania:holy_symbol"
-    },
-    "E": {
-      "item": "botania:ender_air_bottle"
-    },
-    "G": {
-      "item": "botania:life_essence"
-    },
-    "T": {
-      "tag": "botania:terrasteel_nuggets"
-    },
-    "W": {
-      "item": "botania:rune_wrath"
-    }
+    "A": "botania:holy_symbol",
+    "E": "botania:ender_air_bottle",
+    "G": "botania:life_essence",
+    "T": "#botania:terrasteel_nuggets",
+    "W": "botania:rune_wrath"
   },
   "pattern": [
     "EGE",
@@ -30,7 +20,6 @@
     " W "
   ],
   "result": {
-    "count": 1,
     "id": "botania:priest_emblem_thor"
   }
 }

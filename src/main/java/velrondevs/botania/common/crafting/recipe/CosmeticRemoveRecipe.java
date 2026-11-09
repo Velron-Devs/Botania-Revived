@@ -7,7 +7,6 @@ import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.SimpleCraftingRecipeSerializer;
 import net.minecraft.world.level.Level;
 
 import org.jetbrains.annotations.NotNull;
@@ -17,11 +16,9 @@ import velrondevs.botania.api.item.CosmeticBauble;
 import velrondevs.botania.common.item.equipment.bauble.BaubleItem;
 
 public class CosmeticRemoveRecipe extends CustomRecipe {
-	public static final RecipeSerializer<CosmeticRemoveRecipe> SERIALIZER = new SimpleCraftingRecipeSerializer<>(CosmeticRemoveRecipe::new);
+	public static final RecipeSerializer<CosmeticRemoveRecipe> SERIALIZER = RecipeUtils.simpleSerializer(CosmeticRemoveRecipe::new);
 
-	public CosmeticRemoveRecipe(CraftingBookCategory category) {
-		super(category);
-	}
+	public CosmeticRemoveRecipe() {}
 
 	@Override
 	public boolean matches(@NotNull CraftingInput inv, @NotNull Level world) {
@@ -43,7 +40,7 @@ public class CosmeticRemoveRecipe extends CustomRecipe {
 
 	@NotNull
 	@Override
-	public ItemStack assemble(@NotNull CraftingInput inv, @NotNull HolderLookup.Provider registries) {
+	public ItemStack assemble(@NotNull CraftingInput inv) {
 		ItemStack attachableItem = ItemStack.EMPTY;
 
 		for (int i = 0; i < inv.size(); i++) {
@@ -63,14 +60,9 @@ public class CosmeticRemoveRecipe extends CustomRecipe {
 		return copy;
 	}
 
-	@Override
-	public boolean canCraftInDimensions(int width, int height) {
-		return width * height > 0;
-	}
-
 	@NotNull
 	@Override
-	public RecipeSerializer<?> getSerializer() {
+	public RecipeSerializer<? extends CustomRecipe> getSerializer() {
 		return SERIALIZER;
 	}
 

@@ -6,7 +6,7 @@ import net.minecraft.DefaultUncaughtExceptionHandler;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -84,7 +84,7 @@ public class ContributorList {
 				String flowerName = LEGACY_FLOWER_NAMES.getOrDefault(rawName, rawName);
 
 				var item = StreamSupport.stream(BuiltInRegistries.ITEM.getTagOrEmpty(BotaniaTags.Items.CONTRIBUTOR_HEADFLOWERS).spliterator(), false)
-						.filter(h -> h.is(resKey -> resKey.location().getPath().equals(flowerName)))
+						.filter(h -> h.is(resKey -> resKey.identifier().getPath().equals(flowerName)))
 						.findFirst()
 						.map(Holder::value)
 						.orElse(Items.POPPY);

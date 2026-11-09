@@ -1,5 +1,6 @@
 package velrondevs.botania.common.crafting;
 
+import velrondevs.botania.api.recipe.BotaniaRecipe;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -58,11 +59,11 @@ public class OrechidRecipe implements velrondevs.botania.api.recipe.OrechidRecip
 	}
 
 	@Override
-	public RecipeSerializer<?> getSerializer() {
+	public RecipeSerializer<? extends BotaniaRecipe> getSerializer() {
 		return BotaniaRecipeTypes.ORECHID_SERIALIZER;
 	}
 
-	public static class Serializer implements RecipeSerializer<OrechidRecipe> {
+	public static class Serializer implements BotaniaRecipeSerializer<OrechidRecipe> {
 		public static final MapCodec<OrechidRecipe> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
 				StateIngredientHelper.NON_AIR_CODEC.fieldOf("input").forGetter(OrechidRecipe::getInput),
 				StateIngredientHelper.NON_AIR_CODEC.fieldOf("output").forGetter(OrechidRecipe::getOutput),

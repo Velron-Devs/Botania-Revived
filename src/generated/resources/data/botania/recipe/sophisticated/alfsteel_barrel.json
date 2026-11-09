@@ -23,12 +23,8 @@
   "type": "sophisticatedstorage:storage_tier_upgrade",
   "category": "misc",
   "key": {
-    "I": {
-      "item": "masterfulbotany:alfsteel_ingot"
-    },
-    "S": {
-      "item": "botania:gaia_barrel"
-    }
+    "I": "masterfulbotany:alfsteel_ingot",
+    "S": "botania:gaia_barrel"
   },
   "pattern": [
     "III",

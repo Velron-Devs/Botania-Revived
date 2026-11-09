@@ -15,10 +15,6 @@
     {
       "id": "botania:gaia_chest",
       "required": false
-    },
-    {
-      "id": "botania:alfsteel_chest",
-      "required": false
     }
   ]
 }

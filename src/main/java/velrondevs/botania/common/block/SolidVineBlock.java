@@ -28,7 +28,7 @@ public class SolidVineBlock extends VineBlock {
 
 	@NotNull
 	@Override
-	public ItemStack getCloneItemStack(@NotNull LevelReader world, @NotNull BlockPos pos, @NotNull BlockState state) {
+	public ItemStack getCloneItemStack(@NotNull LevelReader world, @NotNull BlockPos pos, @NotNull BlockState state, boolean includeData) {
 		return new ItemStack(Blocks.VINE);
 	}
 }

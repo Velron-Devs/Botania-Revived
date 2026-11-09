@@ -4,7 +4,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.loot.LootTableSubProvider;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.levelgen.structure.BuiltinStructures;
@@ -43,11 +43,11 @@ public class LooniumStructureLootProvider implements LootTableSubProvider {
 		this.registries = registries;
 	}
 
-	public static ResourceLocation getStructureId(ResourceKey<Structure> structureKey) {
-		return getStructureId(structureKey.location());
+	public static Identifier getStructureId(ResourceKey<Structure> structureKey) {
+		return getStructureId(structureKey.identifier());
 	}
 
-	public static ResourceLocation getStructureId(ResourceLocation structureId) {
+	public static Identifier getStructureId(Identifier structureId) {
 		return prefix("%s/%s".formatted(structureId.getNamespace(), structureId.getPath()));
 	}
 
@@ -107,7 +107,7 @@ public class LooniumStructureLootProvider implements LootTableSubProvider {
 		tables.put(getStructureLootTable(BuiltinStructures.MINESHAFT_MESA), buildDelegateLootTable(BuiltInLootTables.ABANDONED_MINESHAFT));
 		tables.put(getStructureLootTable(BuiltinStructures.OCEAN_MONUMENT),
 				LootTable.lootTable().withPool(LootPool.lootPool()
-						.add(NestedLootTable.lootTableReference(EntityType.ELDER_GUARDIAN.getDefaultLootTable()).setWeight(5))
+						.add(NestedLootTable.lootTableReference(EntityType.ELDER_GUARDIAN.getDefaultLootTable().orElseThrow()).setWeight(5))
 
 						.add(LootItem.lootTableItem(Items.WET_SPONGE))
 

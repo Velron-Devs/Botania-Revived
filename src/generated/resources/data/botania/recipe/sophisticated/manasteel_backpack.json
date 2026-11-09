@@ -26,12 +26,8 @@
   "type": "sophisticatedbackpacks:backpack_upgrade",
   "category": "misc",
   "key": {
-    "B": {
-      "item": "sophisticatedbackpacks:netherite_backpack"
-    },
-    "I": {
-      "tag": "botania:manasteel_ingots"
-    }
+    "B": "sophisticatedbackpacks:netherite_backpack",
+    "I": "#botania:manasteel_ingots"
   },
   "pattern": [
     " I ",

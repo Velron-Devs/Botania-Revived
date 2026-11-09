@@ -3,23 +3,21 @@ package velrondevs.botania.client.model;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
-import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.resources.Identifier;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeDeformation;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 
-public class CloakModel extends Model {
-
+public class CloakModel {
 	private final ModelPart collar;
 	private final ModelPart sideL;
 	private final ModelPart sideR;
 
 	public CloakModel(ModelPart root) {
-		super(RenderType::entityCutout);
-
 		collar = root.getChild("collar");
 		sideL = root.getChild("sideL");
 		sideR = root.getChild("sideR");
@@ -41,10 +39,13 @@ public class CloakModel extends Model {
 		return mesh;
 	}
 
-	@Override
 	public void renderToBuffer(PoseStack ms, VertexConsumer buffer, int light, int overlay, int color) {
 		collar.render(ms, buffer, light, overlay, color);
 		sideL.render(ms, buffer, light, overlay, color);
 		sideR.render(ms, buffer, light, overlay, color);
+	}
+
+	public RenderType renderType(Identifier texture) {
+		return RenderTypes.entityCutout(texture);
 	}
 }

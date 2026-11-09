@@ -1,6 +1,5 @@
 package velrondevs.botania.client.integration.rei;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 
 import me.shedaniel.math.Point;
 import me.shedaniel.math.Rectangle;
@@ -14,8 +13,9 @@ import me.shedaniel.rei.api.common.entry.EntryIngredient;
 import me.shedaniel.rei.api.common.entry.EntryStack;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
+import velrondevs.botania.client.core.helper.RenderHelper;
 import velrondevs.botania.client.gui.HUDHandler;
 
 import java.util.ArrayList;
@@ -80,13 +80,11 @@ public abstract class BotaniaReiCategory implements DisplayCategory<BotaniaReiDi
 		return Widgets.createSlot(new Point(origin.x + x, origin.y + y)).entry(entry).disableBackground();
 	}
 
-	protected static Widget texture(Point origin, ResourceLocation texture, int x, int y, int width, int height, int u, int v) {
+	protected static Widget texture(Point origin, Identifier texture, int x, int y, int width, int height, int u, int v) {
 		int drawX = origin.x + x;
 		int drawY = origin.y + y;
 		return Widgets.createDrawableWidget((graphics, mouseX, mouseY, delta) -> {
-			RenderSystem.enableBlend();
-			graphics.blit(texture, drawX, drawY, u, v, width, height, 256, 256);
-			RenderSystem.disableBlend();
+			RenderHelper.drawTexturedModalRect(graphics, texture, drawX, drawY, u, v, width, height);
 		});
 	}
 
@@ -94,9 +92,7 @@ public abstract class BotaniaReiCategory implements DisplayCategory<BotaniaReiDi
 		int drawX = origin.x + x;
 		int drawY = origin.y + y;
 		return Widgets.createDrawableWidget((graphics, mouseX, mouseY, delta) -> {
-			RenderSystem.enableBlend();
 			HUDHandler.renderManaBar(graphics, drawX, drawY, 0x0000FF, 0.75F, mana, maxMana);
-			RenderSystem.disableBlend();
 		});
 	}
 

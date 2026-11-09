@@ -37,17 +37,17 @@ public class BlazeKindlingBlock extends Block {
 		BlockPos above = pos.above();
 		BlockState aboveState = level.getBlockState(above);
 		if (aboveState.isAir()) {
-			if (!level.isClientSide) {
+			if (!level.isClientSide()) {
 				level.setBlockAndUpdate(above, BaseFireBlock.getState(level, above));
 				level.playSound(null, pos, SoundEvents.FLINTANDSTEEL_USE, SoundSource.BLOCKS, 1.0F, level.getRandom().nextFloat() * 0.4F + 0.8F);
 			}
-			return InteractionResult.sidedSuccess(level.isClientSide);
+			return InteractionResult.SUCCESS;
 		} else if (aboveState.is(Blocks.FIRE) || aboveState.is(Blocks.SOUL_FIRE)) {
-			if (!level.isClientSide) {
+			if (!level.isClientSide()) {
 				level.removeBlock(above, false);
 				level.playSound(null, pos, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 1.0F, level.getRandom().nextFloat() * 0.4F + 0.8F);
 			}
-			return InteractionResult.sidedSuccess(level.isClientSide);
+			return InteractionResult.SUCCESS;
 		}
 		return InteractionResult.PASS;
 	}

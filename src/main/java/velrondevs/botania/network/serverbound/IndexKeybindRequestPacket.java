@@ -2,7 +2,7 @@ package velrondevs.botania.network.serverbound;
 
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
@@ -14,7 +14,7 @@ import velrondevs.botania.network.BotaniaPacket;
 import static velrondevs.botania.common.lib.ResourceLocationHelper.prefix;
 
 public record IndexKeybindRequestPacket(ItemStack stack) implements BotaniaPacket {
-	public static final ResourceLocation ID = prefix("idx");
+	public static final Identifier ID = prefix("idx");
 	public static final Type<IndexKeybindRequestPacket> TYPE = new Type<>(ID);
 	public static final StreamCodec<RegistryFriendlyByteBuf, IndexKeybindRequestPacket> STREAM_CODEC = StreamCodec.ofMember(IndexKeybindRequestPacket::encode, IndexKeybindRequestPacket::decode);
 

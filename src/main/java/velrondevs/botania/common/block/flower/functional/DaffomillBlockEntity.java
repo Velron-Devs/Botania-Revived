@@ -45,7 +45,7 @@ public class DaffomillBlockEntity extends FunctionalFlowerBlockEntity implements
 	public void tickFlower() {
 		super.tickFlower();
 
-		if (getLevel().random.nextInt(4) == 0) {
+		if (getLevel().getRandom().nextInt(4) == 0) {
 			WispParticleData data = WispParticleData.wisp(0.25F + (float) Math.random() * 0.15F, 0.05F, 0.05F, 0.05F);
 			emitParticle(data, Math.random(), Math.random(), Math.random(), orientation.getStepX() * 0.1F, orientation.getStepY() * 0.1F, orientation.getStepZ() * 0.1F);
 		}
@@ -106,7 +106,7 @@ public class DaffomillBlockEntity extends FunctionalFlowerBlockEntity implements
 			return false;
 		}
 
-		if (!player.level().isClientSide) {
+		if (!player.level().isClientSide()) {
 			orientation = orientation.getClockWise();
 			sync();
 		}
@@ -152,13 +152,13 @@ public class DaffomillBlockEntity extends FunctionalFlowerBlockEntity implements
 	public void readFromPacketNBT(CompoundTag cmp, HolderLookup.Provider registries) {
 		super.readFromPacketNBT(cmp, registries);
 
-		orientation = Direction.from3DDataValue(cmp.getInt(TAG_ORIENTATION));
-		windTicks = cmp.getInt(TAG_WIND_TICKS);
-		redstonePowered = cmp.getBoolean(TAG_POWERED);
+		orientation = Direction.from3DDataValue(cmp.getIntOr(TAG_ORIENTATION, 0));
+		windTicks = cmp.getIntOr(TAG_WIND_TICKS, 0);
+		redstonePowered = cmp.getBooleanOr(TAG_POWERED, false);
 	}
 
 	private boolean isRedstonePowered() {
-		if (!level.isClientSide) {
+		if (!level.isClientSide()) {
 			boolean powered = redstoneSignal != 0;
 			if (powered != redstonePowered) {
 				redstonePowered = powered;

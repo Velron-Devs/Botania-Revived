@@ -1,8 +1,8 @@
 package velrondevs.botania.module;
 
-import net.minecraft.data.tags.TagsProvider;
+import net.minecraft.data.tags.TagAppender;
 import net.minecraft.tags.TagKey;
 
 public interface ModuleTagSink<T> {
-	TagsProvider.TagAppender<T> tag(TagKey<T> key);
+	TagAppender<T, T> tag(TagKey<T> key);
 }

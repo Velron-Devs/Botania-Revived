@@ -3,15 +3,10 @@
   "category": "misc",
   "group": "botania:seeds",
   "ingredients": [
-    {
-      "item": "botania:grass_seeds"
-    },
-    {
-      "item": "minecraft:wheat"
-    }
+    "botania:grass_seeds",
+    "minecraft:wheat"
   ],
   "result": {
-    "count": 1,
     "id": "botania:golden_seeds"
   }
 }

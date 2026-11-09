@@ -3,12 +3,8 @@
   "category": "misc",
   "group": "botania:cosmetic_bauble",
   "key": {
-    "P": {
-      "item": "botania:blue_petal"
-    },
-    "S": {
-      "item": "botania:mana_string"
-    }
+    "P": "botania:blue_petal",
+    "S": "botania:mana_string"
   },
   "pattern": [
     "PPP",
@@ -16,7 +12,6 @@
     "PPP"
   ],
   "result": {
-    "count": 1,
     "id": "botania:cosmetic_cat_ears"
   }
 }

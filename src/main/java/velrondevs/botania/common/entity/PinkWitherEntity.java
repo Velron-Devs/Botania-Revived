@@ -51,7 +51,7 @@ public class PinkWitherEntity extends WitherBoss {
 	protected void dropCustomDeathLoot(ServerLevel level, DamageSource source, boolean allowDrops) {}
 
 	@Override
-	public void customServerAiStep() {
+	protected void customServerAiStep(ServerLevel level) {
 		if (tickCount % 20 == 0) {
 			heal(1.0F);
 		}

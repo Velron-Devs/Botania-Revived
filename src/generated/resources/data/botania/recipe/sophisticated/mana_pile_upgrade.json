@@ -30,18 +30,10 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "B": {
-      "tag": "botania:sophisticated_upgrade_bases"
-    },
-    "D": {
-      "tag": "botania:mana_diamond_gems"
-    },
-    "M": {
-      "tag": "botania:manasteel_ingots"
-    },
-    "P": {
-      "item": "botania:mana_pearl"
-    }
+    "B": "#botania:sophisticated_upgrade_bases",
+    "D": "#botania:mana_diamond_gems",
+    "M": "#botania:manasteel_ingots",
+    "P": "botania:mana_pearl"
   },
   "pattern": [
     "PDP",

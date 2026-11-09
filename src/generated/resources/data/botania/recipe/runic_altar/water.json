@@ -1,21 +1,11 @@
 {
   "type": "botania:runic_altar",
   "ingredients": [
-    {
-      "tag": "botania:mana_dusts"
-    },
-    {
-      "tag": "botania:manasteel_ingots"
-    },
-    {
-      "item": "minecraft:bone_meal"
-    },
-    {
-      "item": "minecraft:sugar_cane"
-    },
-    {
-      "item": "minecraft:fishing_rod"
-    }
+    "#botania:mana_dusts",
+    "#botania:manasteel_ingots",
+    "minecraft:bone_meal",
+    "minecraft:sugar_cane",
+    "minecraft:fishing_rod"
   ],
   "mana": 5200,
   "output": {

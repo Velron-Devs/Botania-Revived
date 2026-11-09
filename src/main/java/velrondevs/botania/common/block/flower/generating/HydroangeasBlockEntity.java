@@ -30,7 +30,7 @@ public class HydroangeasBlockEntity extends FluidGeneratorBlockEntity {
 	public void tickFlower() {
 		super.tickFlower();
 
-		if (!getLevel().isClientSide) {
+		if (!getLevel().isClientSide()) {
 			if (++passiveDecayTicks > DECAY_TIME) {
 				getLevel().destroyBlock(getBlockPos(), false);
 				if (Blocks.DEAD_BUSH.defaultBlockState().canSurvive(getLevel(), getBlockPos())) {
@@ -54,7 +54,7 @@ public class HydroangeasBlockEntity extends FluidGeneratorBlockEntity {
 	@Override
 	public void playSound() {
 
-		getLevel().playSound(null, getEffectivePos(), SoundEvents.GENERIC_DRINK, SoundSource.BLOCKS, 0.01F, 0.5F + (float) Math.random() * 0.5F);
+		getLevel().playSound(null, getEffectivePos(), SoundEvents.GENERIC_DRINK.value(), SoundSource.BLOCKS, 0.01F, 0.5F + (float) Math.random() * 0.5F);
 	}
 
 	public int getPassiveDecayTicks() {
@@ -74,7 +74,7 @@ public class HydroangeasBlockEntity extends FluidGeneratorBlockEntity {
 	@Override
 	public void readFromPacketNBT(CompoundTag cmp, HolderLookup.Provider registries) {
 		super.readFromPacketNBT(cmp, registries);
-		passiveDecayTicks = cmp.getInt(TAG_PASSIVE_DECAY_TICKS);
+		passiveDecayTicks = cmp.getIntOr(TAG_PASSIVE_DECAY_TICKS, 0);
 	}
 
 	@Override
@@ -86,7 +86,7 @@ public class HydroangeasBlockEntity extends FluidGeneratorBlockEntity {
 	@Override
 	public int getGenerationDelay() {
 		boolean rain = getLevel().getBiome(getEffectivePos()).value()
-				.getPrecipitationAt(getEffectivePos()) == Biome.Precipitation.RAIN
+				.getPrecipitationAt(getEffectivePos(), getLevel().getSeaLevel()) == Biome.Precipitation.RAIN
 				&& (getLevel().isRaining() || getLevel().isThundering());
 		return rain ? 2 : 3;
 	}

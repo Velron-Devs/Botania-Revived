@@ -3,9 +3,7 @@
   "category": "misc",
   "group": "botania:metamorphic_cobble_wall",
   "key": {
-    "B": {
-      "item": "botania:metamorphic_swamp_cobblestone"
-    }
+    "B": "botania:metamorphic_swamp_cobblestone"
   },
   "pattern": [
     "BBB",

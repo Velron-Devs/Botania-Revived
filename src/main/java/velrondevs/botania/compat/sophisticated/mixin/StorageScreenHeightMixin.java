@@ -1,15 +1,17 @@
 package velrondevs.botania.compat.sophisticated.mixin;
 
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
 @Mixin(targets = "net.p3pp3rf1y.sophisticatedcore.client.gui.StorageScreenBase", remap = false)
 public class StorageScreenHeightMixin {
-	private static final int MAX_SCREEN_HEIGHT = 114 + 25 * 18;
+	private static final int MAX_VISIBLE_ROWS = 25;
 
-	@ModifyVariable(method = "updateDimensionsAndSlotPositions", at = @At("HEAD"), argsOnly = true, remap = false)
-	private int botania$capScreenHeight(int guiScaledHeight) {
-		return Math.min(guiScaledHeight, MAX_SCREEN_HEIGHT);
+	@ModifyExpressionValue(method = "updateDimensionsAndSlotPositions", remap = false,
+			at = @At(value = "INVOKE", target = "Ljava/lang/Math;min(II)I", ordinal = 0, remap = false))
+	private int botania$capVisibleRows(int rows) {
+		return Math.min(rows, MAX_VISIBLE_ROWS);
 	}
 }

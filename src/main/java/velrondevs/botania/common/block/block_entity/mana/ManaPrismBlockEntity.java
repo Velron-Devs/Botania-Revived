@@ -1,7 +1,7 @@
 package velrondevs.botania.common.block.block_entity.mana;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.SimpleContainer;
@@ -57,7 +57,7 @@ public class ManaPrismBlockEntity extends ExposedSimpleInventoryBlockEntity impl
 
 	@Override
 	protected SimpleContainer createItemHandler() {
-		return new SimpleContainer(1) {
+		return new Inventory(1) {
 			@Override
 			public boolean canPlaceItem(int index, ItemStack stack) {
 				return !stack.isEmpty() && stack.getItem() instanceof BasicLensItem;
@@ -73,7 +73,7 @@ public class ManaPrismBlockEntity extends ExposedSimpleInventoryBlockEntity impl
 	@Override
 	public void setChanged() {
 		super.setChanged();
-		if (level != null && !level.isClientSide) {
+		if (level != null && !level.isClientSide()) {
 			VanillaPacketDispatcher.dispatchTEToNearbyPlayers(this);
 			BlockState state = getBlockState();
 			boolean hasLens = !getItemHandler().getItem(0).isEmpty();
@@ -92,7 +92,7 @@ public class ManaPrismBlockEntity extends ExposedSimpleInventoryBlockEntity impl
 		}
 
 		@Override
-		public void renderHUD(GuiGraphics gui, Minecraft mc) {
+		public void renderHUD(GuiGraphicsExtractor gui, Minecraft mc) {
 			ItemStack lens = prism.getItem(0);
 			if (!lens.isEmpty()) {
 				Component lensName = lens.getHoverName();
@@ -102,8 +102,8 @@ public class ManaPrismBlockEntity extends ExposedSimpleInventoryBlockEntity impl
 
 				RenderHelper.renderHUDBox(gui, centerX - halfWidth, centerY + 8, centerX + halfWidth, centerY + 28);
 
-				gui.drawString(mc.font, lensName, centerX - halfWidth + 22, centerY + 14, 0xFFFFFF);
-				gui.renderFakeItem(lens, centerX - halfWidth + 2, centerY + 10);
+				gui.text(mc.font, lensName, centerX - halfWidth + 22, centerY + 14, 0xFFFFFFFF);
+				gui.fakeItem(lens, centerX - halfWidth + 2, centerY + 10);
 			}
 		}
 	}

@@ -58,7 +58,7 @@ public class IncensePlateBlockEntity extends ExposedSimpleInventoryBlockEntity i
 			MobEffectInstance effect = brew.getPotionEffects(stack).get(0);
 			if (self.timeLeft > 0) {
 				self.timeLeft--;
-				if (!level.isClientSide) {
+				if (!level.isClientSide()) {
 					List<Player> players = level.getEntitiesOfClass(Player.class, new AABB(worldPosition.getX() + 0.5 - RANGE, worldPosition.getY() + 0.5 - RANGE, worldPosition.getZ() + 0.5 - RANGE, worldPosition.getX() + 0.5 + RANGE, worldPosition.getY() + 0.5 + RANGE, worldPosition.getZ() + 0.5 + RANGE));
 					for (Player player : players) {
 						MobEffectInstance currentEffect = player.getEffect(effect.getEffect());
@@ -69,7 +69,7 @@ public class IncensePlateBlockEntity extends ExposedSimpleInventoryBlockEntity i
 						}
 					}
 
-					if (level.random.nextInt(20) == 0) {
+					if (level.getRandom().nextInt(20) == 0) {
 						level.playSound(null, worldPosition, SoundEvents.FIRE_AMBIENT, SoundSource.BLOCKS, 0.1F, 1);
 					}
 				} else {
@@ -154,8 +154,15 @@ public class IncensePlateBlockEntity extends ExposedSimpleInventoryBlockEntity i
 	@Override
 	public void readPacketNBT(CompoundTag tag, HolderLookup.Provider registries) {
 		super.readPacketNBT(tag, registries);
-		timeLeft = tag.getInt(TAG_TIME_LEFT);
-		burning = tag.getBoolean(TAG_BURNING);
+		timeLeft = tag.getIntOr(TAG_TIME_LEFT, 0);
+		burning = tag.getBooleanOr(TAG_BURNING, false);
+	}
+
+	@Override
+	public void preRemoveSideEffects(BlockPos pos, BlockState state) {
+		if (!burning) {
+			super.preRemoveSideEffects(pos, state);
+		}
 	}
 
 	public boolean acceptsItem(ItemStack stack) {
@@ -164,7 +171,7 @@ public class IncensePlateBlockEntity extends ExposedSimpleInventoryBlockEntity i
 
 	@Override
 	protected SimpleContainer createItemHandler() {
-		return new SimpleContainer(1) {
+		return new Inventory(1) {
 			@Override
 			public boolean canPlaceItem(int index, ItemStack stack) {
 				return acceptsItem(stack);
@@ -175,7 +182,7 @@ public class IncensePlateBlockEntity extends ExposedSimpleInventoryBlockEntity i
 	@Override
 	public void setChanged() {
 		super.setChanged();
-		if (level != null && !level.isClientSide) {
+		if (level != null && !level.isClientSide()) {
 			VanillaPacketDispatcher.dispatchTEToNearbyPlayers(this);
 		}
 	}

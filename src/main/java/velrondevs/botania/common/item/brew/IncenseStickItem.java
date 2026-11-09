@@ -1,8 +1,10 @@
 package velrondevs.botania.common.item.brew;
 
+import java.util.function.Consumer;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -40,28 +42,28 @@ public class IncenseStickItem extends Item implements BrewItem, BrewContainer, C
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext world, List<Component> list, TooltipFlag flags) {
+	public void appendHoverText(ItemStack stack, TooltipContext world, TooltipDisplay tooltipDisplay, Consumer<Component> list, TooltipFlag flags) {
 		Brew brew = getBrew(stack);
 		if (brew == BotaniaBrews.fallbackBrew) {
-			list.add(Component.translatable("botaniamisc.notInfused").withStyle(ChatFormatting.LIGHT_PURPLE));
+			list.accept(Component.translatable("botaniamisc.notInfused").withStyle(ChatFormatting.LIGHT_PURPLE));
 			return;
 		}
 
-		list.add(Component.translatable("botaniamisc.brewOf", Component.translatable(brew.getTranslationKey(stack))).withStyle(ChatFormatting.LIGHT_PURPLE));
+		list.accept(Component.translatable("botaniamisc.brewOf", Component.translatable(brew.getTranslationKey(stack))).withStyle(ChatFormatting.LIGHT_PURPLE));
 		BaseBrewItem.addPotionTooltip(brew.getPotionEffects(stack), list, TIME_MULTIPLIER, world.tickRate());
 	}
 
 	@Override
 	public Brew getBrew(ItemStack stack) {
 		String key = ItemNBTHelper.getString(stack, TAG_BREW_KEY, "");
-		return BotaniaAPI.instance().getBrewRegistry().get(ResourceLocation.tryParse(key));
+		return BotaniaAPI.instance().getBrewRegistry().getValue(Identifier.tryParse(key));
 	}
 
 	public static void setBrew(ItemStack stack, Brew brew) {
 		setBrew(stack, BotaniaAPI.instance().getBrewRegistry().getKey(brew));
 	}
 
-	public static void setBrew(ItemStack stack, ResourceLocation brew) {
+	public static void setBrew(ItemStack stack, Identifier brew) {
 		ItemNBTHelper.setString(stack, TAG_BREW_KEY, brew.toString());
 	}
 

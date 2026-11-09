@@ -32,7 +32,7 @@ public class FrozenStarBlockEntity extends BotaniaBlockEntity {
 		this.color = color;
 		this.size = size;
 		setChanged();
-		if (level != null && !level.isClientSide) {
+		if (level != null && !level.isClientSide()) {
 			level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
 		}
 	}
@@ -45,7 +45,7 @@ public class FrozenStarBlockEntity extends BotaniaBlockEntity {
 
 	@Override
 	public void readPacketNBT(CompoundTag cmp, HolderLookup.Provider registries) {
-		color = cmp.getInt(TAG_COLOR);
-		size = cmp.contains(TAG_SIZE) ? cmp.getFloat(TAG_SIZE) : FrozenStarItem.DEFAULT_SIZE;
+		color = cmp.getIntOr(TAG_COLOR, 0);
+		size = cmp.contains(TAG_SIZE) ? cmp.getFloatOr(TAG_SIZE, 0F) : FrozenStarItem.DEFAULT_SIZE;
 	}
 }

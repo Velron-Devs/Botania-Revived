@@ -8,7 +8,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -29,7 +29,6 @@ import java.util.concurrent.CompletableFuture;
 import static velrondevs.botania.common.lib.ResourceLocationHelper.prefix;
 
 public class PetalApothecaryProvider extends BotaniaRecipeProvider {
-	private static final Ingredient DEFAULT_REAGENT = Ingredient.of(BotaniaTags.Items.SEED_APOTHECARY_REAGENT);
 	private static final int WITHER_MANA_ROSE_BLACK_PETALS = 4;
 	private static final int WITHER_MANA_ROSE_NETHER_STARS = 4;
 	private static final int WITHER_MANA_ROSE_WITHER_ROSES = 4;
@@ -136,14 +135,18 @@ public class PetalApothecaryProvider extends BotaniaRecipeProvider {
 		make(consumer, BotaniaBlocks.motifNightshade, black, black, purple, gray);
 
 		ItemStack stack = new ItemStack(Items.PLAYER_HEAD);
-		stack.set(DataComponents.PROFILE, new ResolvableProfile(Optional.of("Vazkii"), Optional.empty(), new PropertyMap()));
+		stack.set(DataComponents.PROFILE, ResolvableProfile.createUnresolved("Vazkii"));
 		Ingredient[] inputs = new Ingredient[16];
 		Arrays.fill(inputs, pink);
-		consumer.accept(idFor(prefix("vazkii_head")), new PetalsRecipe(stack, DEFAULT_REAGENT, inputs), null);
+		consumer.accept(key(idFor(prefix("vazkii_head"))), new PetalsRecipe(stack, defaultReagent(), inputs), null);
+	}
+
+	private static Ingredient defaultReagent() {
+		return tag(BotaniaTags.Items.SEED_APOTHECARY_REAGENT);
 	}
 
 	protected static Ingredient tagIngr(String tag) {
-		return Ingredient.of(TagKey.create(Registries.ITEM, prefix(tag)));
+		return tag(TagKey.create(Registries.ITEM, prefix(tag)));
 	}
 
 	private static Ingredient[] witherManaRoseInputs(Ingredient black) {
@@ -167,11 +170,11 @@ public class PetalApothecaryProvider extends BotaniaRecipeProvider {
 	}
 
 	protected static GogAlternationResult.Captured create(ItemLike item, Ingredient... ingredients) {
-		return new GogAlternationResult.Captured(idFor(BuiltInRegistries.ITEM.getKey(item.asItem())),
-				new PetalsRecipe(new ItemStack(item), DEFAULT_REAGENT, ingredients), null);
+		return new GogAlternationResult.Captured(key(idFor(BuiltInRegistries.ITEM.getKey(item.asItem()))),
+				new PetalsRecipe(new ItemStack(item), defaultReagent(), ingredients), null);
 	}
 
-	protected static ResourceLocation idFor(ResourceLocation name) {
-		return ResourceLocation.fromNamespaceAndPath(name.getNamespace(), "petal_apothecary/" + name.getPath());
+	protected static Identifier idFor(Identifier name) {
+		return Identifier.fromNamespaceAndPath(name.getNamespace(), "petal_apothecary/" + name.getPath());
 	}
 }

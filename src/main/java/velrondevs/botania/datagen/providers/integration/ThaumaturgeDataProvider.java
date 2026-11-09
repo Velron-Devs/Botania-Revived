@@ -3,10 +3,11 @@ package velrondevs.botania.datagen.providers.integration;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
+import net.minecraft.SharedConstants;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import velrondevs.botania.common.lib.LibMisc;
 import velrondevs.botania.integration.thaumaturge.ThaumaturgeIntegration;
@@ -19,6 +20,8 @@ import java.util.concurrent.CompletableFuture;
 
 public class ThaumaturgeDataProvider extends JsonFileProvider {
 	private static final String GOGGLES = "thaumaturge:goggles_revealing";
+	private static final String SCRIBING_TOOLS = "thaumaturge:scribing_tools";
+	private static final String INKWELL_TEXTURE = "thaumaturge:item/scribing_tools";
 	private static final List<String> HELMETS = List.of("manasteel", "elementium", "terrasteel");
 
 	private final boolean assets;
@@ -31,7 +34,7 @@ public class ThaumaturgeDataProvider extends JsonFileProvider {
 	}
 
 	@Override
-	protected void addFiles(Map<ResourceLocation, JsonObject> files) {
+	protected void addFiles(Map<Identifier, JsonObject> files) {
 		if (assets) {
 			addModels(files);
 		} else {
@@ -54,32 +57,44 @@ public class ThaumaturgeDataProvider extends JsonFileProvider {
 	private static JsonObject packMeta() {
 		JsonObject pack = new JsonObject();
 		pack.addProperty("description", "Botania aspects for Thaumaturge");
-		pack.addProperty("pack_format", 48);
+		pack.addProperty("min_format", SharedConstants.DATA_PACK_FORMAT_MAJOR);
+		pack.addProperty("max_format", SharedConstants.DATA_PACK_FORMAT_MAJOR);
 		JsonObject json = new JsonObject();
 		json.add("pack", pack);
 		return json;
 	}
 
-	private static void addModels(Map<ResourceLocation, JsonObject> files) {
+	private static void addModels(Map<Identifier, JsonObject> files) {
 		for (String tier : HELMETS) {
-			JsonObject model = new JsonObject();
-			model.addProperty("parent", "minecraft:item/generated");
-			JsonObject textures = new JsonObject();
-			textures.addProperty("layer0", botania("item/" + tier + "_helmet_revealing"));
-			model.add("textures", textures);
-			files.put(id("models/item/" + tier + "_helmet_revealing"), model);
+			itemModel(files, tier + "_helmet_revealing", botania("item/" + tier + "_helmet_revealing"));
 		}
+		itemModel(files, ThaumaturgeIntegration.MANA_INKWELL, INKWELL_TEXTURE);
 	}
 
-	private static void addRecipes(Map<ResourceLocation, JsonObject> files) {
+	private static void itemModel(Map<Identifier, JsonObject> files, String name, String texture) {
+		JsonObject model = new JsonObject();
+		model.addProperty("parent", "minecraft:item/generated");
+		JsonObject textures = new JsonObject();
+		textures.addProperty("layer0", texture);
+		model.add("textures", textures);
+		files.put(id("models/item/" + name), model);
+		JsonObject itemModel = new JsonObject();
+		itemModel.addProperty("type", "minecraft:model");
+		itemModel.addProperty("model", botania("item/" + name));
+		JsonObject itemDefinition = new JsonObject();
+		itemDefinition.add("model", itemModel);
+		files.put(id("items/" + name), itemDefinition);
+	}
+
+	private static void addRecipes(Map<Identifier, JsonObject> files) {
 		for (String tier : HELMETS) {
 			String result = tier + "_helmet_revealing";
 			JsonObject recipe = conditioned();
 			recipe.addProperty("type", botania("helm_revealing"));
 			recipe.addProperty("category", "equipment");
 			JsonArray ingredients = new JsonArray();
-			ingredients.add(item(botania(tier + "_helmet")));
-			ingredients.add(item(GOGGLES));
+			ingredients.add(botania(tier + "_helmet"));
+			ingredients.add(GOGGLES);
 			recipe.add("ingredients", ingredients);
 			recipe.add("result", result(botania(result)));
 			files.put(id("recipe/" + result), recipe);
@@ -90,12 +105,10 @@ public class ThaumaturgeDataProvider extends JsonFileProvider {
 		upgrade.addProperty("type", botania("armor_upgrade"));
 		upgrade.addProperty("category", "equipment");
 		JsonObject key = new JsonObject();
-		key.add("T", item(botania("livingwood_twig")));
-		JsonObject ingots = new JsonObject();
-		ingots.addProperty("tag", botania("terrasteel_ingots"));
-		key.add("S", ingots);
-		key.add("R", item(botania("rune_spring")));
-		key.add("A", item(botania("manasteel_helmet_revealing")));
+		key.addProperty("T", botania("livingwood_twig"));
+		key.addProperty("S", "#" + botania("terrasteel_ingots"));
+		key.addProperty("R", botania("rune_spring"));
+		key.addProperty("A", botania("manasteel_helmet_revealing"));
 		upgrade.add("key", key);
 		JsonArray pattern = new JsonArray();
 		pattern.add("TRT");
@@ -106,6 +119,29 @@ public class ThaumaturgeDataProvider extends JsonFileProvider {
 		files.put(id("recipe/terrasteel_helmet_revealing_upgrade"), upgrade);
 		files.put(id("advancement/recipes/combat/terrasteel_helmet_revealing_upgrade"),
 				advancement("terrasteel_helmet_revealing_upgrade", botania("manasteel_helmet_revealing"), null));
+
+		String inkwell = ThaumaturgeIntegration.MANA_INKWELL;
+		JsonObject inkwellRecipe = conditioned();
+		inkwellRecipe.addProperty("type", "minecraft:crafting_shapeless");
+		inkwellRecipe.addProperty("category", "equipment");
+		JsonArray inkwellIngredients = new JsonArray();
+		inkwellIngredients.add(SCRIBING_TOOLS);
+		inkwellIngredients.add(botania("mana_pearl"));
+		inkwellIngredients.add("#" + botania("manasteel_ingots"));
+		inkwellIngredients.add(botania("mana_powder"));
+		inkwellRecipe.add("ingredients", inkwellIngredients);
+		inkwellRecipe.add("result", result(botania(inkwell)));
+		files.put(id("recipe/" + inkwell), inkwellRecipe);
+		files.put(id("advancement/recipes/tools/" + inkwell), advancement(inkwell, botania("mana_pearl"), SCRIBING_TOOLS));
+
+		JsonObject scribingTag = new JsonObject();
+		JsonArray scribingValues = new JsonArray();
+		JsonObject inkwellEntry = new JsonObject();
+		inkwellEntry.addProperty("id", botania(inkwell));
+		inkwellEntry.addProperty("required", false);
+		scribingValues.add(inkwellEntry);
+		scribingTag.add("values", scribingValues);
+		files.put(Identifier.fromNamespaceAndPath(ThaumaturgeIntegration.MOD_ID, "tags/item/scribing_tools"), scribingTag);
 	}
 
 	private static JsonObject advancement(String recipe, String itemA, String itemB) {
@@ -222,15 +258,8 @@ public class ThaumaturgeDataProvider extends JsonFileProvider {
 		return json;
 	}
 
-	private static JsonObject item(String id) {
-		JsonObject json = new JsonObject();
-		json.addProperty("item", id);
-		return json;
-	}
-
 	private static JsonObject result(String id) {
 		JsonObject json = new JsonObject();
-		json.addProperty("count", 1);
 		json.addProperty("id", id);
 		return json;
 	}
@@ -239,7 +268,7 @@ public class ThaumaturgeDataProvider extends JsonFileProvider {
 		return LibMisc.MOD_ID + ":" + path;
 	}
 
-	private static ResourceLocation id(String path) {
-		return ResourceLocation.fromNamespaceAndPath(LibMisc.MOD_ID, path);
+	private static Identifier id(String path) {
+		return Identifier.fromNamespaceAndPath(LibMisc.MOD_ID, path);
 	}
 }

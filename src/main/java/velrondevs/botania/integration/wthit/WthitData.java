@@ -5,8 +5,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
@@ -27,6 +26,7 @@ import velrondevs.botania.api.state.BotaniaStateProperties;
 import velrondevs.botania.api.state.enums.AlfheimPortalState;
 import velrondevs.botania.common.block.block_entity.AlfheimPortalBlockEntity;
 import velrondevs.botania.common.block.block_entity.AvatarBlockEntity;
+import velrondevs.botania.common.block.block_entity.BlockEntityNbt;
 import velrondevs.botania.common.block.block_entity.BotaniaBlockEntity;
 import velrondevs.botania.common.block.block_entity.BreweryBlockEntity;
 import velrondevs.botania.common.block.block_entity.CocoonBlockEntity;
@@ -81,7 +81,7 @@ public final class WthitData {
 	private WthitData() {}
 
 	public static boolean isBotania(BlockEntity be) {
-		ResourceLocation id = BuiltInRegistries.BLOCK_ENTITY_TYPE.getKey(be.getType());
+		Identifier id = BuiltInRegistries.BLOCK_ENTITY_TYPE.getKey(be.getType());
 		return id != null && BotaniaAPI.MODID.equals(id.getNamespace());
 	}
 
@@ -168,7 +168,7 @@ public final class WthitData {
 			int total = hourglass.getTotalTime();
 			if (total > 0) {
 				CompoundTag nbt = packet(hourglass, registries);
-				tag.putInt(TIME_DONE, nbt.getInt("time"));
+				tag.putInt(TIME_DONE, nbt.getIntOr("time", 0));
 				tag.putInt(TIME_TOTAL, total);
 			}
 		} else if (be instanceof CocoonBlockEntity cocoon) {
@@ -177,7 +177,7 @@ public final class WthitData {
 		} else if (be instanceof IncensePlateBlockEntity plate) {
 			if (plate.burning) {
 				CompoundTag nbt = packet(plate, registries);
-				tag.putInt(TIME_LEFT, nbt.getInt("timeLeft"));
+				tag.putInt(TIME_LEFT, nbt.getIntOr("timeLeft", 0));
 			}
 		} else if (be instanceof ManaReceiver receiver && receiver.getCurrentMana() > 0) {
 			tag.putInt(MANA, receiver.getCurrentMana());
@@ -199,23 +199,23 @@ public final class WthitData {
 			}
 		}
 
-		if (nbt.getInt("burnTime") > 0) {
-			tag.putInt(BURN, nbt.getInt("burnTime"));
+		if (nbt.getIntOr("burnTime", 0) > 0) {
+			tag.putInt(BURN, nbt.getIntOr("burnTime", 0));
 		}
-		if (nbt.getInt("cooldown") > 0) {
-			tag.putInt(COOLDOWN, nbt.getInt("cooldown"));
+		if (nbt.getIntOr("cooldown", 0) > 0) {
+			tag.putInt(COOLDOWN, nbt.getIntOr("cooldown", 0));
 		}
-		if (nbt.getInt("digestingMana") > 0) {
-			tag.putInt(DIGESTING, nbt.getInt("digestingMana"));
+		if (nbt.getIntOr("digestingMana", 0) > 0) {
+			tag.putInt(DIGESTING, nbt.getIntOr("digestingMana", 0));
 		}
 		if (flower instanceof HydroangeasBlockEntity && nbt.contains(HydroangeasBlockEntity.TAG_PASSIVE_DECAY_TICKS)) {
-			tag.putInt(DECAY, Math.max(0, HydroangeasBlockEntity.DECAY_TIME - nbt.getInt(HydroangeasBlockEntity.TAG_PASSIVE_DECAY_TICKS)));
+			tag.putInt(DECAY, Math.max(0, HydroangeasBlockEntity.DECAY_TIME - nbt.getIntOr(HydroangeasBlockEntity.TAG_PASSIVE_DECAY_TICKS, 0)));
 			tag.putInt(DECAY_MAX, HydroangeasBlockEntity.DECAY_TIME);
 		}
 		if (flower instanceof PureDaisyBlockEntity) {
 			int converting = 0;
 			for (int i = 0; nbt.contains("ticksRemaining" + i); i++) {
-				if (nbt.getInt("ticksRemaining" + i) > 0) {
+				if (nbt.getIntOr("ticksRemaining" + i, 0) > 0) {
 					converting++;
 				}
 			}
@@ -236,7 +236,7 @@ public final class WthitData {
 		if (!inputs.isEmpty()) {
 			putStacks(tag, INPUTS, inputs, registries);
 			ContainerRecipeInput input = new ContainerRecipeInput(altar.getItemHandler());
-			level.getRecipeManager().getRecipeFor(BotaniaRecipeTypes.RUNE_TYPE, input, level)
+			BotaniaRecipeTypes.getRecipeFor(level, BotaniaRecipeTypes.RUNE_TYPE, input)
 					.map(RecipeHolder::value)
 					.ifPresent(recipe -> putStack(tag, OUTPUT, recipe.assemble(input, registries), registries));
 		}
@@ -248,7 +248,7 @@ public final class WthitData {
 		if (!inputs.isEmpty()) {
 			putStacks(tag, INPUTS, inputs, registries);
 			ContainerRecipeInput input = new ContainerRecipeInput(apothecary.getItemHandler());
-			level.getRecipeManager().getRecipeFor(BotaniaRecipeTypes.PETAL_TYPE, input, level)
+			BotaniaRecipeTypes.getRecipeFor(level, BotaniaRecipeTypes.PETAL_TYPE, input)
 					.map(RecipeHolder::value)
 					.ifPresent(recipe -> {
 						putStack(tag, OUTPUT, recipe.assemble(input, registries), registries);
@@ -282,7 +282,7 @@ public final class WthitData {
 
 	private static void putStack(CompoundTag tag, String key, ItemStack stack, HolderLookup.Provider registries) {
 		if (!stack.isEmpty()) {
-			tag.put(key, stack.save(registries));
+			tag.put(key, BlockEntityNbt.saveOptional(stack, registries));
 		}
 	}
 
@@ -310,7 +310,7 @@ public final class WthitData {
 		ListTag list = new ListTag();
 		for (ItemStack stack : merged) {
 			CompoundTag entry = new CompoundTag();
-			entry.put("stack", stack.copyWithCount(1).save(registries));
+			entry.put("stack", BlockEntityNbt.saveOptional(stack.copyWithCount(1), registries));
 			entry.putInt("count", stack.getCount());
 			list.add(entry);
 		}
@@ -318,17 +318,17 @@ public final class WthitData {
 	}
 
 	public static ItemStack getStack(CompoundTag tag, String key, HolderLookup.Provider registries) {
-		return tag.contains(key, Tag.TAG_COMPOUND) ? ItemStack.parseOptional(registries, tag.getCompound(key)) : ItemStack.EMPTY;
+		return tag.getCompound(key).map(c -> BlockEntityNbt.parseOptional(registries, c)).orElse(ItemStack.EMPTY);
 	}
 
 	public static List<ItemStack> getStacks(CompoundTag tag, String key, HolderLookup.Provider registries) {
 		List<ItemStack> result = new ArrayList<>();
-		ListTag list = tag.getList(key, Tag.TAG_COMPOUND);
+		ListTag list = tag.getListOrEmpty(key);
 		for (int i = 0; i < list.size(); i++) {
-			CompoundTag entry = list.getCompound(i);
-			ItemStack stack = ItemStack.parseOptional(registries, entry.getCompound("stack"));
+			CompoundTag entry = list.getCompoundOrEmpty(i);
+			ItemStack stack = BlockEntityNbt.parseOptional(registries, entry.getCompoundOrEmpty("stack"));
 			if (!stack.isEmpty()) {
-				stack.setCount(Math.max(1, entry.getInt("count")));
+				stack.setCount(Math.max(1, entry.getIntOr("count", 0)));
 				result.add(stack);
 			}
 		}
@@ -337,6 +337,6 @@ public final class WthitData {
 
 	@Nullable
 	public static BlockPos getPos(CompoundTag tag, String key) {
-		return tag.contains(key, Tag.TAG_LONG) ? BlockPos.of(tag.getLong(key)) : null;
+		return tag.getLong(key).map(BlockPos::of).orElse(null);
 	}
 }

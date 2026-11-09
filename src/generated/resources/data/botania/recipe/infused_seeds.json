@@ -3,15 +3,10 @@
   "category": "misc",
   "group": "botania:seeds",
   "ingredients": [
-    {
-      "item": "botania:grass_seeds"
-    },
-    {
-      "item": "minecraft:prismarine_shard"
-    }
+    "botania:grass_seeds",
+    "minecraft:prismarine_shard"
   ],
   "result": {
-    "count": 1,
     "id": "botania:infused_seeds"
   }
 }

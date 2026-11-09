@@ -54,7 +54,7 @@ public final class BotaniaBannerPatterns {
 	}
 
 	public static BannerPattern create(ResourceKey<BannerPattern> key) {
-		return new BannerPattern(key.location(), "block.minecraft.banner." + key.location().toShortLanguageKey());
+		return new BannerPattern(key.identifier(), "block.minecraft.banner." + key.identifier().toShortLanguageKey());
 	}
 
 	public static void bootstrap(BootstrapContext<BannerPattern> context) {

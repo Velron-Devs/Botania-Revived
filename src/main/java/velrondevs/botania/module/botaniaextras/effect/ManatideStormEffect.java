@@ -28,8 +28,8 @@ public class ManatideStormEffect extends MobEffect {
 	}
 
 	@Override
-	public boolean applyEffectTick(LivingEntity entity, int amplifier) {
-		if (entity instanceof Player player && !player.level().isClientSide) {
+	public boolean applyEffectTick(net.minecraft.server.level.ServerLevel serverLevel, LivingEntity entity, int amplifier) {
+		if (entity instanceof Player player && !player.level().isClientSide()) {
 			drain(player);
 			wilt(player);
 		}

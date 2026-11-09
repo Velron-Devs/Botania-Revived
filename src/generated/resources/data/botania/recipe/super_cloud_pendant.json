@@ -2,21 +2,11 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "B": {
-      "item": "minecraft:ghast_tear"
-    },
-    "E": {
-      "tag": "botania:elementium_ingots"
-    },
-    "G": {
-      "item": "botania:life_essence"
-    },
-    "N": {
-      "item": "minecraft:white_wool"
-    },
-    "P": {
-      "item": "botania:cloud_pendant"
-    }
+    "B": "minecraft:ghast_tear",
+    "E": "#botania:elementium_ingots",
+    "G": "botania:life_essence",
+    "N": "minecraft:white_wool",
+    "P": "botania:cloud_pendant"
   },
   "pattern": [
     "BEB",
@@ -24,7 +14,6 @@
     "NGN"
   ],
   "result": {
-    "count": 1,
     "id": "botania:super_cloud_pendant"
   }
 }

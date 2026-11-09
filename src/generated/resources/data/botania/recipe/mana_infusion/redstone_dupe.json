@@ -4,9 +4,7 @@
     "type": "block",
     "block": "botania:conjuration_catalyst"
   },
-  "input": {
-    "item": "minecraft:redstone"
-  },
+  "input": "minecraft:redstone",
   "mana": 5000,
   "output": {
     "count": 2,

@@ -8,7 +8,7 @@ import me.shedaniel.rei.api.common.util.EntryStacks;
 
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeHolder;
@@ -46,7 +46,7 @@ public final class BotaniaReiDisplays {
 		return new BotaniaReiDisplay(BotaniaReiCategories.MANA_INFUSION,
 				EntryIngredients.ofIngredients(recipe.getIngredients()), extras,
 				List.of(EntryIngredients.of(recipe.getResultItem(RegistryAccess.EMPTY))),
-				holder.id(), recipe.getManaToConsume(), null);
+				holder.id().identifier(), recipe.getManaToConsume(), null);
 	}
 
 	public static BotaniaReiDisplay petalApothecary(RecipeHolder<? extends PetalApothecaryRecipe> holder) {
@@ -55,7 +55,7 @@ public final class BotaniaReiDisplays {
 				EntryIngredients.ofIngredients(recipe.getIngredients()),
 				List.of(EntryIngredients.of(Items.WATER_BUCKET), EntryIngredients.ofIngredient(recipe.getReagent())),
 				List.of(EntryIngredients.of(recipe.getResultItem(RegistryAccess.EMPTY))),
-				holder.id(), 0, null);
+				holder.id().identifier(), 0, null);
 	}
 
 	public static BotaniaReiDisplay runicAltar(RecipeHolder<? extends RunicAltarRecipe> holder) {
@@ -64,7 +64,7 @@ public final class BotaniaReiDisplays {
 				EntryIngredients.ofIngredients(recipe.getIngredients()),
 				List.of(EntryIngredients.of(BotaniaBlocks.livingrock)),
 				List.of(EntryIngredients.of(recipe.getResultItem(RegistryAccess.EMPTY))),
-				holder.id(), recipe.getManaUsage(), null);
+				holder.id().identifier(), recipe.getManaUsage(), null);
 	}
 
 	public static BotaniaReiDisplay terrestrialAgglomeration(RecipeHolder<? extends TerrestrialAgglomerationRecipe> holder) {
@@ -72,7 +72,7 @@ public final class BotaniaReiDisplays {
 		return new BotaniaReiDisplay(BotaniaReiCategories.TERRESTRIAL_AGGLOMERATION,
 				EntryIngredients.ofIngredients(recipe.getIngredients()), List.of(),
 				List.of(EntryIngredients.of(recipe.getResultItem(RegistryAccess.EMPTY))),
-				holder.id(), recipe.getMana(), null);
+				holder.id().identifier(), recipe.getMana(), null);
 	}
 
 	public static BotaniaReiDisplay elvenTrade(RecipeHolder<? extends ElvenTradeRecipe> holder) {
@@ -83,13 +83,13 @@ public final class BotaniaReiDisplays {
 		}
 		return new BotaniaReiDisplay(BotaniaReiCategories.ELVEN_TRADE,
 				EntryIngredients.ofIngredients(recipe.getIngredients()), List.of(), outputs,
-				holder.id(), 0, null);
+				holder.id().identifier(), 0, null);
 	}
 
 	public static BotaniaReiDisplay botanicalBrewery(RecipeHolder<? extends BotanicalBreweryRecipe> holder, ItemStack container) {
 		BotanicalBreweryRecipe recipe = holder.value();
-		ResourceLocation containerId = BuiltInRegistries.ITEM.getKey(container.getItem());
-		ResourceLocation id = holder.id().withSuffix("/" + containerId.getNamespace() + "/" + containerId.getPath());
+		Identifier containerId = BuiltInRegistries.ITEM.getKey(container.getItem());
+		Identifier id = holder.id().identifier().withSuffix("/" + containerId.getNamespace() + "/" + containerId.getPath());
 		return new BotaniaReiDisplay(BotaniaReiCategories.BOTANICAL_BREWERY,
 				EntryIngredients.ofIngredients(recipe.getIngredients()),
 				List.of(EntryIngredients.of(container)),
@@ -113,7 +113,7 @@ public final class BotaniaReiDisplays {
 		return new BotaniaReiDisplay(BotaniaReiCategories.PURE_DAISY,
 				List.of(EntryIngredient.of(inputs)), List.of(),
 				List.of(EntryIngredients.of(new ItemStack(recipe.getOutputState().getBlock()))),
-				holder.id(), 0, null);
+				holder.id().identifier(), 0, null);
 	}
 
 	public static BotaniaReiDisplay orechid(CategoryIdentifier<BotaniaReiDisplay> category,
@@ -134,6 +134,6 @@ public final class BotaniaReiDisplays {
 			}
 		}
 		return new BotaniaReiDisplay(category, List.of(EntryIngredient.of(inputs)), List.of(),
-				List.of(EntryIngredient.of(outputs)), holder.id(), 0, recipe);
+				List.of(EntryIngredient.of(outputs)), holder.id().identifier(), 0, recipe);
 	}
 }

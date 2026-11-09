@@ -1,5 +1,6 @@
 package velrondevs.botania.mixin.client;
 
+import net.minecraft.world.level.LevelHeightAccessor;
 import net.minecraft.client.multiplayer.ClientLevel;
 
 import org.spongepowered.asm.mixin.Mixin;
@@ -24,13 +25,13 @@ public abstract class ClientLevelDataMixin implements SkyblockWorldInfo {
 	}
 
 	@Inject(at = @At("HEAD"), method = "getHorizonHeight", cancellable = true)
-	private void gogHorizon(CallbackInfoReturnable<Double> cir) {
+	private void gogHorizon(LevelHeightAccessor level, CallbackInfoReturnable<Double> cir) {
 		if (gardenOfGlass) {
 			cir.setReturnValue(0.0);
 		}
 	}
 
-	@Inject(at = @At("HEAD"), method = "getClearColorScale", cancellable = true)
+	@Inject(at = @At("HEAD"), method = "voidDarknessOnsetRange", cancellable = true)
 	private void gogFog(CallbackInfoReturnable<Float> cir) {
 		if (gardenOfGlass) {
 			cir.setReturnValue(1.0F);

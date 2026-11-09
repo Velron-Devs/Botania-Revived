@@ -8,12 +8,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "B": {
-      "item": "minecraft:blaze_powder"
-    },
-    "S": {
-      "item": "botania:mana_string"
-    }
+    "B": "minecraft:blaze_powder",
+    "S": "botania:mana_string"
   },
   "pattern": [
     " S ",
@@ -21,7 +17,6 @@
     " S "
   ],
   "result": {
-    "count": 1,
     "id": "botania:blaze_kindling"
   }
 }

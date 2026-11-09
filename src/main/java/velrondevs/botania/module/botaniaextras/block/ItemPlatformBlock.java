@@ -1,12 +1,14 @@
 package velrondevs.botania.module.botaniaextras.block;
 
+import net.minecraft.core.Direction;
+
 import com.mojang.serialization.MapCodec;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
@@ -49,25 +51,25 @@ public class ItemPlatformBlock extends BaseEntityBlock {
 	}
 
 	@Override
-	protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+	protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
 		if (!(level.getBlockEntity(pos) instanceof ItemPlatformBlockEntity platform)) {
-			return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+			return InteractionResult.TRY_WITH_EMPTY_HAND;
 		}
 		ItemStack held = platform.getItemHandler().getItem(0);
 		if (!held.isEmpty()) {
-			return take(level, pos, player, platform, held) ? ItemInteractionResult.sidedSuccess(level.isClientSide) : ItemInteractionResult.FAIL;
+			return take(level, pos, player, platform, held) ? InteractionResult.SUCCESS : InteractionResult.FAIL;
 		}
 		if (stack.isEmpty()) {
-			return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+			return InteractionResult.TRY_WITH_EMPTY_HAND;
 		}
-		if (!level.isClientSide) {
+		if (!level.isClientSide()) {
 			platform.getItemHandler().setItem(0, stack.copyWithCount(1));
 			if (!player.getAbilities().instabuild) {
 				stack.shrink(1);
 			}
 			level.gameEvent(player, GameEvent.BLOCK_CHANGE, pos);
 		}
-		return ItemInteractionResult.sidedSuccess(level.isClientSide);
+		return InteractionResult.SUCCESS;
 	}
 
 	@Override
@@ -75,14 +77,14 @@ public class ItemPlatformBlock extends BaseEntityBlock {
 		if (level.getBlockEntity(pos) instanceof ItemPlatformBlockEntity platform) {
 			ItemStack held = platform.getItemHandler().getItem(0);
 			if (!held.isEmpty() && take(level, pos, player, platform, held)) {
-				return InteractionResult.sidedSuccess(level.isClientSide);
+				return InteractionResult.SUCCESS;
 			}
 		}
 		return InteractionResult.PASS;
 	}
 
 	private static boolean take(Level level, BlockPos pos, Player player, ItemPlatformBlockEntity platform, ItemStack held) {
-		if (!level.isClientSide) {
+		if (!level.isClientSide()) {
 			player.getInventory().placeItemBackInInventory(held.copy());
 			platform.getItemHandler().setItem(0, ItemStack.EMPTY);
 			level.gameEvent(player, GameEvent.BLOCK_CHANGE, pos);
@@ -96,7 +98,7 @@ public class ItemPlatformBlock extends BaseEntityBlock {
 	}
 
 	@Override
-	protected int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos) {
+	protected int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos, Direction direction) {
 		if (level.getBlockEntity(pos) instanceof ItemPlatformBlockEntity platform) {
 			return AbstractContainerMenu.getRedstoneSignalFromContainer(platform.getItemHandler());
 		}
@@ -104,12 +106,8 @@ public class ItemPlatformBlock extends BaseEntityBlock {
 	}
 
 	@Override
-	protected void onRemove(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull BlockState newState, boolean isMoving) {
-		if (!state.is(newState.getBlock()) && level.getBlockEntity(pos) instanceof ItemPlatformBlockEntity platform) {
-			Containers.dropContents(level, pos, platform.getItemHandler());
-			level.updateNeighbourForOutputSignal(pos, this);
-		}
-		super.onRemove(state, level, pos, newState, isMoving);
+	protected void affectNeighborsAfterRemoval(BlockState state, ServerLevel level, BlockPos pos, boolean movedByPiston) {
+		Containers.updateNeighboursAfterDestroy(state, level, pos);
 	}
 
 	@Nullable

@@ -45,7 +45,7 @@ public class ManaFlashBlockEntity extends BotaniaBlockEntity {
 
 	@Override
 	public void readPacketNBT(CompoundTag cmp, HolderLookup.Provider registries) {
-		color = cmp.getInt(TAG_COLOR);
-		invisible = cmp.getBoolean(TAG_INVISIBLE);
+		color = cmp.getIntOr(TAG_COLOR, 0);
+		invisible = cmp.getBooleanOr(TAG_INVISIBLE, false);
 	}
 }

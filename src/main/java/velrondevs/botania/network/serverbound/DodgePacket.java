@@ -3,7 +3,7 @@ package velrondevs.botania.network.serverbound;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
@@ -20,7 +20,7 @@ import static velrondevs.botania.common.lib.ResourceLocationHelper.prefix;
 
 public class DodgePacket implements BotaniaPacket {
 	public static final DodgePacket INSTANCE = new DodgePacket();
-	public static final ResourceLocation ID = prefix("do");
+	public static final Identifier ID = prefix("do");
 	public static final Type<DodgePacket> TYPE = new Type<>(ID);
 	public static final StreamCodec<RegistryFriendlyByteBuf, DodgePacket> STREAM_CODEC = StreamCodec.ofMember(DodgePacket::encode, DodgePacket::decode);
 

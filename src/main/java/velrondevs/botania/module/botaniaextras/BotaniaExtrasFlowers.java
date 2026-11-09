@@ -1,7 +1,7 @@
 package velrondevs.botania.module.botaniaextras;
 
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -24,9 +24,9 @@ import java.util.function.BiConsumer;
 import static velrondevs.botania.common.lib.ResourceLocationHelper.prefix;
 
 public final class BotaniaExtrasFlowers {
-	public static final ResourceLocation CRYSANTHERMUM_ID = prefix("crysanthermum");
-	public static final ResourceLocation CRYSANTHERMUM_FLOATING_ID = prefix("floating_crysanthermum");
-	public static final ResourceLocation CRYSANTHERMUM_POTTED_ID = prefix("potted_crysanthermum");
+	public static final Identifier CRYSANTHERMUM_ID = prefix("crysanthermum");
+	public static final Identifier CRYSANTHERMUM_FLOATING_ID = prefix("floating_crysanthermum");
+	public static final Identifier CRYSANTHERMUM_POTTED_ID = prefix("potted_crysanthermum");
 
 	public static final Block crysanthermum = XplatAbstractions.INSTANCE.createSpecialFlowerBlock(MobEffects.FIRE_RESISTANCE, 100,
 			BlockBehaviour.Properties.ofFullCopy(Blocks.POPPY), () -> BotaniaExtrasFlowers.CRYSANTHERMUM, true);
@@ -43,19 +43,19 @@ public final class BotaniaExtrasFlowers {
 		return List.of(crysanthermum, crysanthermumFloating, crysanthermumPotted);
 	}
 
-	public static void registerBlocks(BiConsumer<Block, ResourceLocation> r) {
+	public static void registerBlocks(BiConsumer<Block, Identifier> r) {
 		r.accept(crysanthermum, CRYSANTHERMUM_ID);
 		r.accept(crysanthermumFloating, CRYSANTHERMUM_FLOATING_ID);
 		r.accept(crysanthermumPotted, CRYSANTHERMUM_POTTED_ID);
 	}
 
-	public static void registerItemBlocks(BiConsumer<Item, ResourceLocation> r) {
+	public static void registerItemBlocks(BiConsumer<Item, Identifier> r) {
 		Item.Properties props = BotaniaItems.defaultBuilder();
 		r.accept(new SpecialFlowerBlockItem(crysanthermum, props), BuiltInRegistries.BLOCK.getKey(crysanthermum));
 		r.accept(new SpecialFlowerBlockItem(crysanthermumFloating, props), BuiltInRegistries.BLOCK.getKey(crysanthermumFloating));
 	}
 
-	public static void registerBlockEntities(BiConsumer<BlockEntityType<?>, ResourceLocation> r) {
+	public static void registerBlockEntities(BiConsumer<BlockEntityType<?>, Identifier> r) {
 		r.accept(CRYSANTHERMUM, CRYSANTHERMUM_ID);
 	}
 

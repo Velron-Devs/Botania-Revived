@@ -15,10 +15,6 @@
     {
       "id": "botania:gaia_backpack",
       "required": false
-    },
-    {
-      "id": "botania:alfsteel_backpack",
-      "required": false
     }
   ]
 }

@@ -4,7 +4,10 @@ import com.google.gson.JsonObject;
 import com.mojang.serialization.JsonOps;
 
 import net.minecraft.core.component.DataComponents;
+import com.mojang.serialization.DynamicOps;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
@@ -25,7 +28,7 @@ public final class ItemNBTHelper {
 
 	@SuppressWarnings("deprecation")
 	public static CompoundTag peekTag(ItemStack stack) {
-		return stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).getUnsafe();
+		return stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
 	}
 
 	public static CompoundTag getTagCopy(ItemStack stack) {
@@ -121,57 +124,57 @@ public final class ItemNBTHelper {
 	}
 
 	public static boolean getBoolean(ItemStack stack, String tag, boolean defaultExpected) {
-		return verifyExistance(stack, tag) ? peekTag(stack).getBoolean(tag) : defaultExpected;
+		return verifyExistance(stack, tag) ? peekTag(stack).getBooleanOr(tag, defaultExpected) : defaultExpected;
 	}
 
 	public static byte getByte(ItemStack stack, String tag, byte defaultExpected) {
-		return verifyExistance(stack, tag) ? peekTag(stack).getByte(tag) : defaultExpected;
+		return verifyExistance(stack, tag) ? peekTag(stack).getByteOr(tag, defaultExpected) : defaultExpected;
 	}
 
 	public static short getShort(ItemStack stack, String tag, short defaultExpected) {
-		return verifyExistance(stack, tag) ? peekTag(stack).getShort(tag) : defaultExpected;
+		return verifyExistance(stack, tag) ? peekTag(stack).getShortOr(tag, defaultExpected) : defaultExpected;
 	}
 
 	public static int getInt(ItemStack stack, String tag, int defaultExpected) {
-		return verifyExistance(stack, tag) ? peekTag(stack).getInt(tag) : defaultExpected;
+		return verifyExistance(stack, tag) ? peekTag(stack).getIntOr(tag, defaultExpected) : defaultExpected;
 	}
 
 	public static int[] getIntArray(ItemStack stack, String tag) {
-		return verifyExistance(stack, tag) ? peekTag(stack).getIntArray(tag).clone() : EMPTY_INT_ARRAY;
+		return verifyExistance(stack, tag) ? peekTag(stack).getIntArray(tag).map(int[]::clone).orElse(EMPTY_INT_ARRAY) : EMPTY_INT_ARRAY;
 	}
 
 	public static long getLong(ItemStack stack, String tag, long defaultExpected) {
-		return verifyExistance(stack, tag) ? peekTag(stack).getLong(tag) : defaultExpected;
+		return verifyExistance(stack, tag) ? peekTag(stack).getLongOr(tag, defaultExpected) : defaultExpected;
 	}
 
 	public static long[] getLongArray(ItemStack stack, String tag) {
-		return verifyExistance(stack, tag) ? peekTag(stack).getLongArray(tag).clone() : EMPTY_LONG_ARRAY;
+		return verifyExistance(stack, tag) ? peekTag(stack).getLongArray(tag).map(long[]::clone).orElse(EMPTY_LONG_ARRAY) : EMPTY_LONG_ARRAY;
 	}
 
 	public static float getFloat(ItemStack stack, String tag, float defaultExpected) {
-		return verifyExistance(stack, tag) ? peekTag(stack).getFloat(tag) : defaultExpected;
+		return verifyExistance(stack, tag) ? peekTag(stack).getFloatOr(tag, defaultExpected) : defaultExpected;
 	}
 
 	public static double getDouble(ItemStack stack, String tag, double defaultExpected) {
-		return verifyExistance(stack, tag) ? peekTag(stack).getDouble(tag) : defaultExpected;
+		return verifyExistance(stack, tag) ? peekTag(stack).getDoubleOr(tag, defaultExpected) : defaultExpected;
 	}
 
 	@Nullable
 	@Contract("_, _, false -> !null")
 	public static CompoundTag getCompound(ItemStack stack, String tag, boolean nullifyOnFail) {
-		return verifyExistance(stack, tag) ? peekTag(stack).getCompound(tag).copy() : nullifyOnFail ? null : new CompoundTag();
+		return verifyExistance(stack, tag) ? peekTag(stack).getCompoundOrEmpty(tag).copy() : nullifyOnFail ? null : new CompoundTag();
 	}
 
 	@Nullable
 	@Contract("_, _, !null -> !null")
 	public static String getString(ItemStack stack, String tag, String defaultExpected) {
-		return verifyExistance(stack, tag) ? peekTag(stack).getString(tag) : defaultExpected;
+		return verifyExistance(stack, tag) ? peekTag(stack).getString(tag).orElse(defaultExpected) : defaultExpected;
 	}
 
 	@Nullable
 	@Contract("_, _, _, false -> !null")
 	public static ListTag getList(ItemStack stack, String tag, int objtype, boolean nullifyOnFail) {
-		return verifyExistance(stack, tag) ? peekTag(stack).getList(tag, objtype).copy() : nullifyOnFail ? null : new ListTag();
+		return verifyExistance(stack, tag) ? peekTag(stack).getListOrEmpty(tag).copy() : nullifyOnFail ? null : new ListTag();
 	}
 
 	public static int getFullness(ManaItem item) {
@@ -212,6 +215,19 @@ public final class ItemNBTHelper {
 
 	public static JsonObject serializeStack(ItemStack stack) {
 		return ItemStack.CODEC.encodeStart(JsonOps.INSTANCE, stack).getOrThrow().getAsJsonObject();
+	}
+
+	public static ItemStack parseStack(@Nullable HolderLookup.Provider registries, @Nullable Tag tag) {
+		if (tag == null) {
+			return ItemStack.EMPTY;
+		}
+		DynamicOps<Tag> ops = registries == null ? NbtOps.INSTANCE : registries.createSerializationContext(NbtOps.INSTANCE);
+		return ItemStack.OPTIONAL_CODEC.parse(ops, tag).result().orElse(ItemStack.EMPTY);
+	}
+
+	public static Tag saveStack(@Nullable HolderLookup.Provider registries, ItemStack stack) {
+		DynamicOps<Tag> ops = registries == null ? NbtOps.INSTANCE : registries.createSerializationContext(NbtOps.INSTANCE);
+		return ItemStack.OPTIONAL_CODEC.encodeStart(ops, stack).result().orElseGet(CompoundTag::new);
 	}
 
 	public static void renameTag(CompoundTag nbt, String oldName, String newName) {

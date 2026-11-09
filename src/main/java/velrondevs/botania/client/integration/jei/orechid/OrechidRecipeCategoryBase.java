@@ -1,6 +1,5 @@
 package velrondevs.botania.client.integration.jei.orechid;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
@@ -13,10 +12,10 @@ import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -24,6 +23,7 @@ import net.minecraft.world.item.crafting.RecipeType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import velrondevs.botania.client.core.helper.RenderHelper;
 import velrondevs.botania.client.integration.jei.JEIRecipeIds;
 import velrondevs.botania.api.recipe.OrechidRecipe;
 import velrondevs.botania.client.integration.shared.OrechidUIHelper;
@@ -76,7 +76,7 @@ public abstract class OrechidRecipeCategoryBase<T extends OrechidRecipe> impleme
 
 		builder.addSlot(RecipeIngredientRole.INPUT, 9, 12)
 				.addItemStacks(recipe.getInput().getDisplayedStacks());
-		builder.addSlot(RecipeIngredientRole.CATALYST, 39, 12).addItemStack(iconStack);
+		builder.addSlot(RecipeIngredientRole.CRAFTING_STATION, 39, 12).addItemStack(iconStack);
 
 		builder.addSlot(RecipeIngredientRole.OUTPUT, 68, 12)
 				.addItemStacks(recipe.getOutput().getDisplayedStacks())
@@ -84,17 +84,15 @@ public abstract class OrechidRecipeCategoryBase<T extends OrechidRecipe> impleme
 	}
 
 	@Override
-	public void draw(@NotNull OrechidRecipe recipe, @NotNull IRecipeSlotsView view, @NotNull GuiGraphics gui, double mouseX, double mouseY) {
+	public void draw(@NotNull OrechidRecipe recipe, @NotNull IRecipeSlotsView view, @NotNull GuiGraphicsExtractor gui, double mouseX, double mouseY) {
 		final Double chance = getChance(recipe);
 		if (chance != null) {
 			final Component chanceComponent = OrechidUIHelper.getPercentageComponent(chance);
 			Font font = Minecraft.getInstance().font;
 			int xOffset = 90 - font.width(chanceComponent);
-			gui.drawString(font, chanceComponent, xOffset, 1, 0x888888, false);
+			RenderHelper.drawString(gui, font, chanceComponent, xOffset, 1, 0x888888, false);
 		}
-		RenderSystem.enableBlend();
 		overlay.draw(gui, 17, 0);
-		RenderSystem.disableBlend();
 	}
 
 	@Override
@@ -119,7 +117,7 @@ public abstract class OrechidRecipeCategoryBase<T extends OrechidRecipe> impleme
 	}
 
 	@Override
-	public ResourceLocation getRegistryName(@NotNull T recipe) {
+	public Identifier getIdentifier(@NotNull T recipe) {
 		return JEIRecipeIds.idOf(recipe);
 	}
 }

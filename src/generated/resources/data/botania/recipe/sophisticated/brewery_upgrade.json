@@ -30,26 +30,16 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "B": {
-      "tag": "botania:sophisticated_upgrade_bases"
-    },
-    "F": {
-      "item": "botania:flask"
-    },
-    "N": {
-      "item": "minecraft:nether_wart"
-    },
-    "P": {
-      "item": "botania:mana_pearl"
-    },
-    "V": {
-      "item": "botania:vial"
-    }
+    "A": "botania:alfheim_portal",
+    "B": "#botania:sophisticated_upgrade_bases",
+    "F": "botania:flask",
+    "G": "botania:glimmering_livingwood_log",
+    "V": "botania:vial"
   },
   "pattern": [
-    "VNV",
+    "VGV",
     "FBF",
-    "VPV"
+    "VAV"
   ],
   "result": {
     "count": 1,

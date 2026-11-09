@@ -3,7 +3,7 @@ package velrondevs.botania.common.block.flower.generating;
 import com.google.common.collect.Iterables;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.particles.ItemParticleOption;
@@ -12,7 +12,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.animal.Sheep;
+import net.minecraft.world.entity.animal.sheep.Sheep;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
@@ -49,7 +49,7 @@ public class SpectrolusBlockEntity extends GeneratingFlowerBlockEntity {
 	public void tickFlower() {
 		super.tickFlower();
 
-		if (getLevel().isClientSide) {
+		if (getLevel().isClientSide()) {
 			return;
 		}
 
@@ -63,16 +63,16 @@ public class SpectrolusBlockEntity extends GeneratingFlowerBlockEntity {
 			if (target instanceof Sheep sheep) {
 				if (!sheep.isSheared() && sheep.getColor() == nextColor) {
 					addManaAndCycle(sheep.isBaby() ? BABY_SHEEP_GEN : SHEEP_GEN);
-					float pitch = sheep.isBaby() ? (level.random.nextFloat() - level.random.nextFloat()) * 0.2F + 1.5F : (level.random.nextFloat() - level.random.nextFloat()) * 0.2F + 1.0F;
+					float pitch = sheep.isBaby() ? (level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.2F + 1.5F : (level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.2F + 1.0F;
 
 					sheep.playSound(SoundEvents.SHEEP_DEATH, 0.9F, pitch);
-					sheep.playSound(SoundEvents.GENERIC_EAT, 1, 1);
+					sheep.playSound(SoundEvents.GENERIC_EAT.value(), 1, 1);
 
 					ItemStack morbid = new ItemStack(sheep.isOnFire() ? Items.COOKED_MUTTON : Items.MUTTON);
-					((ServerLevel) getLevel()).sendParticles(new ItemParticleOption(ParticleTypes.ITEM, morbid), target.getX(), target.getY() + target.getEyeHeight(), target.getZ(), 20, 0.1D, 0.1D, 0.1D, 0.05D);
+					((ServerLevel) getLevel()).sendParticles(new ItemParticleOption(ParticleTypes.ITEM, morbid.getItem()), target.getX(), target.getY() + target.getEyeHeight(), target.getZ(), 20, 0.1D, 0.1D, 0.1D, 0.05D);
 
 					ItemStack wool = new ItemStack(ColorHelper.WOOL_MAP.apply(sheep.getColor()));
-					((ServerLevel) getLevel()).sendParticles(new ItemParticleOption(ParticleTypes.ITEM, wool), target.getX(), target.getY() + target.getEyeHeight(), target.getZ(), 20, 0.1D, 0.1D, 0.1D, 0.05D);
+					((ServerLevel) getLevel()).sendParticles(new ItemParticleOption(ParticleTypes.ITEM, wool.getItem()), target.getX(), target.getY() + target.getEyeHeight(), target.getZ(), 20, 0.1D, 0.1D, 0.1D, 0.05D);
 				}
 				sheep.setHealth(0);
 			} else if (target instanceof ItemEntity item) {
@@ -83,7 +83,7 @@ public class SpectrolusBlockEntity extends GeneratingFlowerBlockEntity {
 
 					if (expected.asItem() == stack.getItem()) {
 						addManaAndCycle(WOOL_GEN);
-						((ServerLevel) getLevel()).sendParticles(new ItemParticleOption(ParticleTypes.ITEM, stack), target.getX(), target.getY(), target.getZ(), 20, 0.1D, 0.1D, 0.1D, 0.05D);
+						((ServerLevel) getLevel()).sendParticles(new ItemParticleOption(ParticleTypes.ITEM, stack.getItem()), target.getX(), target.getY(), target.getZ(), 20, 0.1D, 0.1D, 0.1D, 0.05D);
 					}
 
 					target.discard();
@@ -123,7 +123,7 @@ public class SpectrolusBlockEntity extends GeneratingFlowerBlockEntity {
 		}
 
 		@Override
-		public void renderHUD(GuiGraphics gui, Minecraft mc) {
+		public void renderHUD(GuiGraphicsExtractor gui, Minecraft mc) {
 			ItemStack stack = new ItemStack(ColorHelper.WOOL_MAP.apply(flower.nextColor));
 
 			if (stack.isEmpty()) {
@@ -147,7 +147,7 @@ public class SpectrolusBlockEntity extends GeneratingFlowerBlockEntity {
 	@Override
 	public void readFromPacketNBT(CompoundTag cmp, HolderLookup.Provider registries) {
 		super.readFromPacketNBT(cmp, registries);
-		nextColor = DyeColor.byId(cmp.getInt(TAG_NEXT_COLOR));
+		nextColor = DyeColor.byId(cmp.getIntOr(TAG_NEXT_COLOR, 0));
 	}
 
 	@Override

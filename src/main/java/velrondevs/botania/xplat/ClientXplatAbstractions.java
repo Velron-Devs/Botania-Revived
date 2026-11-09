@@ -3,12 +3,10 @@ package velrondevs.botania.xplat;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -23,8 +21,8 @@ import velrondevs.botania.network.BotaniaPacket;
 import static velrondevs.botania.common.lib.ResourceLocationHelper.prefix;
 
 public interface ClientXplatAbstractions {
-	ResourceLocation FLOATING_FLOWER_MODEL_LOADER_ID = prefix("floating_flower");
-	ResourceLocation MANA_GUN_MODEL_LOADER_ID = prefix("mana_gun");
+	Identifier FLOATING_FLOWER_MODEL_LOADER_ID = prefix("floating_flower");
+	Identifier MANA_GUN_MODEL_LOADER_ID = prefix("mana_gun");
 
 	void fireRenderTinyPotato(BlockEntity potato, Component name, float tickDelta, PoseStack ms, MultiBufferSource buffers, int light, int overlay);
 
@@ -36,10 +34,6 @@ public interface ClientXplatAbstractions {
 	@Nullable
 	WandHUD findWandHud(Entity entity);
 
-	BakedModel wrapPlatformModel(BakedModel original);
-	void setFilterSave(AbstractTexture texture, boolean filter, boolean mipmap);
-	void restoreLastFilter(AbstractTexture texture);
-	void tessellateBlock(Level level, BlockState state, BlockPos pos, PoseStack ps, MultiBufferSource buffers, int overlay);
 
 	void markSpriteActive(TextureAtlasSprite sprite);
 

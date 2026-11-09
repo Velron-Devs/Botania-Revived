@@ -1,7 +1,7 @@
 package velrondevs.botania.integration.jade;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 
 import snownee.jade.api.BlockAccessor;
@@ -14,7 +14,7 @@ import velrondevs.botania.common.block.block_entity.BreweryBlockEntity;
 
 import java.util.List;
 
-public enum BreweryProvider implements IBlockComponentProvider, IServerDataProvider<BlockAccessor> {
+public enum BreweryProvider implements IBlockComponentProvider {
 	INSTANCE;
 
 	@Override
@@ -36,19 +36,7 @@ public enum BreweryProvider implements IBlockComponentProvider, IServerDataProvi
 	}
 
 	@Override
-	public void appendServerData(CompoundTag data, BlockAccessor accessor) {
-		if (accessor.getBlockEntity() instanceof BreweryBlockEntity brewery) {
-			data.putInt(JadeManaHelper.MANA, brewery.getCurrentMana());
-			data.putInt(JadeManaHelper.MAX, brewery.getManaCost());
-			ItemStack container = brewery.getItemHandler().getItem(0);
-			if (brewery.recipe != null && !container.isEmpty()) {
-				JadeManaHelper.putStack(data, JadeManaHelper.OUTPUT, accessor, brewery.recipe.getOutput(container));
-			}
-		}
-	}
-
-	@Override
-	public ResourceLocation getUid() {
+	public Identifier getUid() {
 		return BotaniaJadeIds.BREWERY;
 	}
 }

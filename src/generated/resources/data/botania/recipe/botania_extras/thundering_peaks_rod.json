@@ -8,18 +8,10 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "D": {
-      "tag": "botania:dragonstone_gems"
-    },
-    "E": {
-      "item": "botania:thunderous_splinters"
-    },
-    "S": {
-      "item": "botania:thunderous_twig"
-    },
-    "W": {
-      "item": "botania:rune_wrath"
-    }
+    "D": "#botania:dragonstone_gems",
+    "E": "botania:thunderous_splinters",
+    "S": "botania:thunderous_twig",
+    "W": "botania:rune_wrath"
   },
   "pattern": [
     " EW",
@@ -27,7 +19,6 @@
     "S  "
   ],
   "result": {
-    "count": 1,
     "id": "botania:thundering_peaks_rod"
   }
 }

@@ -1,5 +1,9 @@
 package velrondevs.botania.common.entity;
 
+import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
@@ -73,7 +77,7 @@ public class ManaStormEntity extends Entity implements TraceableEntity {
 
 		int diffTime = Math.max(1, 30 - (int) (liveTime / 45f));
 		if (burstsFired < TOTAL_BURSTS && liveTime % diffTime == 0) {
-			if (!level().isClientSide) {
+			if (!level().isClientSide()) {
 				spawnBurst();
 			}
 			burstsFired++;
@@ -89,14 +93,14 @@ public class ManaStormEntity extends Entity implements TraceableEntity {
 	}
 
 	private void spawnBurst() {
-		ManaBurstEntity burst = BotaniaEntities.MANA_BURST.create(level());
+		ManaBurstEntity burst = BotaniaEntities.MANA_BURST.create(level(), EntitySpawnReason.TRIGGERED);
 		if (burst == null) {
 			return;
 		}
 		Entity owner = getOwner();
 		burst.setOwner(owner);
 		if (owner == null && ownerUUID != null) {
-			((ProjectileAccessor) burst).botania_setOwnerUUID(ownerUUID);
+			((ProjectileAccessor) burst).botania_setOwnerReference(net.minecraft.world.entity.EntityReference.of(ownerUUID));
 		}
 		burst.setPos(getX(), getY(), getZ());
 
@@ -116,15 +120,20 @@ public class ManaStormEntity extends Entity implements TraceableEntity {
 	}
 
 	@Override
-	protected void readAdditionalSaveData(@NotNull CompoundTag cmp) {
-		liveTime = cmp.getInt(TAG_TIME);
-		burstColor = cmp.getInt(TAG_BURST_COLOR);
-		burstsFired = cmp.getInt(TAG_BURSTS_FIRED);
-		deathTime = cmp.getInt(TAG_DEATH_TIME);
+	public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
+		return false;
 	}
 
 	@Override
-	protected void addAdditionalSaveData(@NotNull CompoundTag cmp) {
+	protected void readAdditionalSaveData(ValueInput cmp) {
+		liveTime = cmp.getIntOr(TAG_TIME, 0);
+		burstColor = cmp.getIntOr(TAG_BURST_COLOR, 0);
+		burstsFired = cmp.getIntOr(TAG_BURSTS_FIRED, 0);
+		deathTime = cmp.getIntOr(TAG_DEATH_TIME, 0);
+	}
+
+	@Override
+	protected void addAdditionalSaveData(ValueOutput cmp) {
 		cmp.putInt(TAG_TIME, liveTime);
 		cmp.putInt(TAG_BURST_COLOR, burstColor);
 		cmp.putInt(TAG_BURSTS_FIRED, burstsFired);

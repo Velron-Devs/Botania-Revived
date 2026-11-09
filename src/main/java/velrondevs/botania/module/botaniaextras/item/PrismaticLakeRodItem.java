@@ -1,5 +1,9 @@
 package velrondevs.botania.module.botaniaextras.item;
 
+import java.util.function.Consumer;
+
+import net.minecraft.world.item.component.TooltipDisplay;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -46,11 +50,11 @@ public class PrismaticLakeRodItem extends Item implements PhantomInkable {
 		BlockState state = level.getBlockState(pos);
 
 		if (state.is(BotaniaExtrasBlocks.rainbowManaFlash)) {
-			if (!level.isClientSide) {
+			if (!level.isClientSide()) {
 				level.removeBlock(pos, false);
-				level.playSound(null, pos, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 0.3F, level.random.nextFloat() * 0.4F + 0.8F);
+				level.playSound(null, pos, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 0.3F, level.getRandom().nextFloat() * 0.4F + 0.8F);
 			}
-			return InteractionResult.sidedSuccess(level.isClientSide);
+			return InteractionResult.SUCCESS;
 		}
 		if (player == null || !ManaItemHandler.instance().requestManaExactForTool(stack, player, COST, false)) {
 			return InteractionResult.PASS;
@@ -60,23 +64,23 @@ public class PrismaticLakeRodItem extends Item implements PhantomInkable {
 		if (!(targetState.isAir() || targetState.canBeReplaced()) || !player.mayUseItemAt(target, side, stack)) {
 			return InteractionResult.PASS;
 		}
-		if (!level.isClientSide) {
+		if (!level.isClientSide()) {
 			var fluid = level.getFluidState(target);
 			boolean water = fluid.isSource() && fluid.is(FluidTags.WATER);
 			level.setBlockAndUpdate(target, BotaniaExtrasBlocks.rainbowManaFlash.defaultBlockState().setValue(BlockStateProperties.WATERLOGGED, water));
 			if (level.getBlockEntity(target) instanceof ManaFlashBlockEntity flash) {
 				flash.setInvisible(hasPhantomInk(stack));
 			}
-			level.playSound(null, target, SoundEvents.FIRECHARGE_USE, SoundSource.BLOCKS, 0.3F, level.random.nextFloat() * 0.4F + 0.8F);
+			level.playSound(null, target, SoundEvents.FIRECHARGE_USE, SoundSource.BLOCKS, 0.3F, level.getRandom().nextFloat() * 0.4F + 0.8F);
 			ManaItemHandler.instance().requestManaExactForTool(stack, player, COST, true);
 		}
-		return InteractionResult.sidedSuccess(level.isClientSide);
+		return InteractionResult.SUCCESS;
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flags) {
+	public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltip, TooltipFlag flags) {
 		if (hasPhantomInk(stack)) {
-			tooltip.add(Component.translatable("botaniamisc.hasPhantomInk").withStyle(ChatFormatting.AQUA));
+			tooltip.accept(Component.translatable("botaniamisc.hasPhantomInk").withStyle(ChatFormatting.AQUA));
 		}
 	}
 

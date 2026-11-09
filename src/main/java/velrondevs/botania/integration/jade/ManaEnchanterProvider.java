@@ -2,7 +2,7 @@ package velrondevs.botania.integration.jade;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 
 import snownee.jade.api.BlockAccessor;
@@ -15,7 +15,7 @@ import velrondevs.botania.common.block.block_entity.ManaEnchanterBlockEntity;
 
 import java.util.Locale;
 
-public enum ManaEnchanterProvider implements IBlockComponentProvider, IServerDataProvider<BlockAccessor> {
+public enum ManaEnchanterProvider implements IBlockComponentProvider {
 	INSTANCE;
 
 	private static final String STAGE = "stage";
@@ -44,16 +44,7 @@ public enum ManaEnchanterProvider implements IBlockComponentProvider, IServerDat
 	}
 
 	@Override
-	public void appendServerData(CompoundTag data, BlockAccessor accessor) {
-		if (accessor.getBlockEntity() instanceof ManaEnchanterBlockEntity enchanter) {
-			data.putInt(STAGE, enchanter.stage.ordinal());
-			data.putInt(JadeManaHelper.MANA, enchanter.getCurrentMana());
-			data.putInt(JadeManaHelper.MAX, enchanter.getManaRequired());
-		}
-	}
-
-	@Override
-	public ResourceLocation getUid() {
+	public Identifier getUid() {
 		return BotaniaJadeIds.MANA_ENCHANTER;
 	}
 }

@@ -3,9 +3,7 @@
   "category": "misc",
   "group": "botania:metamorphic_stone_wall",
   "key": {
-    "B": {
-      "item": "botania:metamorphic_swamp_stone"
-    }
+    "B": "botania:metamorphic_swamp_stone"
   },
   "pattern": [
     "BBB",

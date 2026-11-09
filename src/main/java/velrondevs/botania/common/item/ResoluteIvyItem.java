@@ -1,5 +1,6 @@
 package velrondevs.botania.common.item;
 
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -50,7 +51,9 @@ public class ResoluteIvyItem extends Item {
 				ItemStack copy = stack.copy();
 				ItemNBTHelper.removeEntry(copy, TAG_KEEP);
 				if (!newPlayer.getInventory().add(copy)) {
-					newPlayer.spawnAtLocation(copy);
+					if (newPlayer.level() instanceof ServerLevel serverLevel) {
+						newPlayer.spawnAtLocation(serverLevel, copy);
+					}
 				}
 			}
 		}

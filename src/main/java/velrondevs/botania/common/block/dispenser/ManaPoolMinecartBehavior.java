@@ -6,7 +6,7 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.dispenser.BlockSource;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.world.entity.vehicle.AbstractMinecart;
+import net.minecraft.world.entity.vehicle.minecart.AbstractMinecart;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseRailBlock;
@@ -37,7 +37,7 @@ public class ManaPoolMinecartBehavior extends DefaultDispenseItemBehavior {
 				: RailShape.NORTH_SOUTH;
 		double yOffset;
 		if (blockState.is(BlockTags.RAILS)) {
-			if (railShape.isAscending()) {
+			if (railShape.isSlope()) {
 				yOffset = 0.6;
 			} else {
 				yOffset = 0.1;
@@ -51,7 +51,7 @@ public class ManaPoolMinecartBehavior extends DefaultDispenseItemBehavior {
 			RailShape railShapeBelow = blockStateBelow.getBlock() instanceof BaseRailBlock
 					? blockStateBelow.getValue(((BaseRailBlock) blockStateBelow.getBlock()).getShapeProperty())
 					: RailShape.NORTH_SOUTH;
-			if (direction != Direction.DOWN && railShapeBelow.isAscending()) {
+			if (direction != Direction.DOWN && railShapeBelow.isSlope()) {
 				yOffset = -0.4;
 			} else {
 				yOffset = -0.9;

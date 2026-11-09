@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "building",
   "key": {
-    "I": {
-      "tag": "botania:terrasteel_ingots"
-    }
+    "I": "#botania:terrasteel_ingots"
   },
   "pattern": [
     "III",
@@ -12,7 +10,6 @@
     "III"
   ],
   "result": {
-    "count": 1,
     "id": "botania:terrasteel_block"
   }
 }

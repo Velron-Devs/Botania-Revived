@@ -1,0 +1,12 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "botania:item/iridescent_lantern",
+    "tints": [
+      {
+        "type": "minecraft:constant",
+        "value": -15133162
+      }
+    ]
+  }
+}

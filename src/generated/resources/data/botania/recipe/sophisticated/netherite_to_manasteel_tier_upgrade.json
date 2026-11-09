@@ -19,12 +19,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "I": {
-      "tag": "botania:manasteel_ingots"
-    },
-    "L": {
-      "item": "minecraft:lever"
-    }
+    "I": "#botania:manasteel_ingots",
+    "L": "minecraft:lever"
   },
   "pattern": [
     "III",

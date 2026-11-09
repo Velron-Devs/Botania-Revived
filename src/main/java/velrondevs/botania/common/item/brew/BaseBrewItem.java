@@ -1,12 +1,15 @@
 package velrondevs.botania.common.item.brew;
 
+import net.minecraft.server.level.ServerLevel;
+import java.util.function.Consumer;
+import net.minecraft.world.item.component.TooltipDisplay;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -52,30 +55,30 @@ public class BaseBrewItem extends Item implements BrewItem, CustomCreativeTabCon
 
 	@NotNull
 	@Override
-	public UseAnim getUseAnimation(ItemStack stack) {
-		return UseAnim.DRINK;
+	public ItemUseAnimation getUseAnimation(ItemStack stack) {
+		return ItemUseAnimation.DRINK;
 	}
 
 	@NotNull
 	@Override
-	public InteractionResultHolder<ItemStack> use(Level world, Player player, @NotNull InteractionHand hand) {
+	public InteractionResult use(Level world, Player player, @NotNull InteractionHand hand) {
 		return ItemUtils.startUsingInstantly(world, player, hand);
 	}
 
 	@NotNull
 	@Override
 	public ItemStack finishUsingItem(@NotNull ItemStack stack, Level world, LivingEntity living) {
-		if (!world.isClientSide) {
+		if (!world.isClientSide()) {
 			for (MobEffectInstance effect : getBrew(stack).getPotionEffects(stack)) {
 				MobEffectInstance newEffect = new MobEffectInstance(effect.getEffect(), effect.getDuration(), effect.getAmplifier(), true, true);
 				if (effect.getEffect().value().isInstantenous()) {
-					effect.getEffect().value().applyInstantenousEffect(living, living, living, newEffect.getAmplifier(), 1F);
+					effect.getEffect().value().applyInstantenousEffect((ServerLevel) world, living, living, living, newEffect.getAmplifier(), 1F);
 				} else {
 					living.addEffect(newEffect);
 				}
 			}
 
-			if (world.random.nextBoolean()) {
+			if (world.getRandom().nextBoolean()) {
 				world.playSound(null, living.getX(), living.getY(), living.getZ(), SoundEvents.PLAYER_BURP, SoundSource.PLAYERS, 1F, 1F);
 			}
 
@@ -117,23 +120,23 @@ public class BaseBrewItem extends Item implements BrewItem, CustomCreativeTabCon
 				Component.literal(Integer.toString(getSwigsLeft(stack))).withStyle(ChatFormatting.BOLD));
 	}
 
-	public static void addPotionTooltip(List<MobEffectInstance> list, List<Component> lores, float durationFactor, float tickRate) {
-		PotionContents.addPotionTooltip(list, lores::add, durationFactor, tickRate);
+	public static void addPotionTooltip(List<MobEffectInstance> list, Consumer<Component> lores, float durationFactor, float tickRate) {
+		PotionContents.addPotionTooltip(list, lores, durationFactor, tickRate);
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext world, List<Component> list, TooltipFlag flags) {
+	public void appendHoverText(ItemStack stack, TooltipContext world, TooltipDisplay tooltipDisplay, Consumer<Component> list, TooltipFlag flags) {
 		addPotionTooltip(getBrew(stack).getPotionEffects(stack), list, 1, world.tickRate());
 	}
 
 	@Override
 	public Brew getBrew(ItemStack stack) {
 		String key = ItemNBTHelper.getString(stack, TAG_BREW_KEY, "");
-		return BotaniaAPI.instance().getBrewRegistry().get(ResourceLocation.tryParse(key));
+		return BotaniaAPI.instance().getBrewRegistry().getValue(Identifier.tryParse(key));
 	}
 
 	public static void setBrew(ItemStack stack, @Nullable Brew brew) {
-		ResourceLocation id;
+		Identifier id;
 		if (brew != null) {
 			id = BotaniaAPI.instance().getBrewRegistry().getKey(brew);
 		} else {
@@ -142,7 +145,7 @@ public class BaseBrewItem extends Item implements BrewItem, CustomCreativeTabCon
 		setBrew(stack, id);
 	}
 
-	public static void setBrew(ItemStack stack, ResourceLocation brew) {
+	public static void setBrew(ItemStack stack, Identifier brew) {
 		ItemNBTHelper.setString(stack, TAG_BREW_KEY, brew.toString());
 	}
 

@@ -10,7 +10,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.BonemealableBlock;
-import net.minecraft.world.level.block.BushBlock;
+import net.minecraft.world.level.block.VegetationBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -20,7 +20,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 import velrondevs.botania.module.botaniaextras.BotaniaExtrasWoods;
 
-public class IridescentSaplingBlock extends BushBlock implements BonemealableBlock {
+public class IridescentSaplingBlock extends VegetationBlock implements BonemealableBlock {
 	public static final MapCodec<IridescentSaplingBlock> CODEC = simpleCodec(IridescentSaplingBlock::new);
 	public static final IntegerProperty STAGE = BlockStateProperties.STAGE;
 	private static final VoxelShape SHAPE = Block.box(2.0, 0.0, 2.0, 14.0, 12.0, 14.0);
@@ -31,7 +31,7 @@ public class IridescentSaplingBlock extends BushBlock implements BonemealableBlo
 	}
 
 	@Override
-	protected MapCodec<? extends BushBlock> codec() {
+	protected MapCodec<? extends VegetationBlock> codec() {
 		return CODEC;
 	}
 
@@ -74,7 +74,7 @@ public class IridescentSaplingBlock extends BushBlock implements BonemealableBlo
 
 	@Override
 	public boolean isBonemealSuccess(Level level, RandomSource random, BlockPos pos, BlockState state) {
-		return level.random.nextFloat() < 0.45F;
+		return level.getRandom().nextFloat() < 0.45F;
 	}
 
 	@Override

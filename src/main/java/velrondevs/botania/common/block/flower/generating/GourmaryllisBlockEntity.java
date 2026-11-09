@@ -1,5 +1,7 @@
 package velrondevs.botania.common.block.flower.generating;
 
+import velrondevs.botania.common.block.block_entity.BlockEntityNbt;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.particles.ItemParticleOption;
@@ -87,7 +89,7 @@ public class GourmaryllisBlockEntity extends GeneratingFlowerBlockEntity {
 	public void tickFlower() {
 		super.tickFlower();
 
-		if (getLevel().isClientSide) {
+		if (getLevel().isClientSide()) {
 			return;
 		}
 
@@ -108,11 +110,11 @@ public class GourmaryllisBlockEntity extends GeneratingFlowerBlockEntity {
 				sync();
 			} else if (cooldown % munchInterval == 0) {
 
-				getLevel().playSound(null, getEffectivePos(), SoundEvents.GENERIC_EAT, SoundSource.BLOCKS, 0.5F, 1F);
+				getLevel().playSound(null, getEffectivePos(), SoundEvents.GENERIC_EAT.value(), SoundSource.BLOCKS, 0.5F, 1F);
 
-				Vec3 offset = getLevel().getBlockState(getEffectivePos()).getOffset(getLevel(), getEffectivePos()).add(0.4, 0.6, 0.4);
+				Vec3 offset = getLevel().getBlockState(getEffectivePos()).getOffset(getEffectivePos()).add(0.4, 0.6, 0.4);
 
-				((ServerLevel) getLevel()).sendParticles(new ItemParticleOption(ParticleTypes.ITEM, lastFoods.get(0)), getEffectivePos().getX() + offset.x, getEffectivePos().getY() + offset.y, getEffectivePos().getZ() + offset.z, 10, 0.1D, 0.1D, 0.1D, 0.03D);
+				((ServerLevel) getLevel()).sendParticles(new ItemParticleOption(ParticleTypes.ITEM, lastFoods.get(0).getItem()), getEffectivePos().getX() + offset.x, getEffectivePos().getY() + offset.y, getEffectivePos().getZ() + offset.z, 10, 0.1D, 0.1D, 0.1D, 0.03D);
 			}
 		}
 
@@ -129,11 +131,11 @@ public class GourmaryllisBlockEntity extends GeneratingFlowerBlockEntity {
 					digestingMana = getDigestingMana(val, getMultiplierForStreak(streakLength));
 					cooldown = getCooldown(val);
 
-					item.playSound(SoundEvents.GENERIC_EAT, 0.2F, 0.6F);
+					item.playSound(SoundEvents.GENERIC_EAT.value(), 0.2F, 0.6F);
 					getLevel().gameEvent(null, GameEvent.EAT, item.position());
 					getLevel().gameEvent(null, GameEvent.BLOCK_ACTIVATE, getEffectivePos());
 					sync();
-					((ServerLevel) getLevel()).sendParticles(new ItemParticleOption(ParticleTypes.ITEM, stack), item.getX(), item.getY(), item.getZ(), 20, 0.1D, 0.1D, 0.1D, 0.05D);
+					((ServerLevel) getLevel()).sendParticles(new ItemParticleOption(ParticleTypes.ITEM, stack.getItem()), item.getX(), item.getY(), item.getZ(), 20, 0.1D, 0.1D, 0.1D, 0.05D);
 				}
 
 				item.discard();
@@ -163,7 +165,7 @@ public class GourmaryllisBlockEntity extends GeneratingFlowerBlockEntity {
 		cmp.putInt(TAG_DIGESTING_MANA, digestingMana);
 		ListTag foodList = new ListTag();
 		for (ItemStack food : lastFoods) {
-			foodList.add(food.saveOptional(registries));
+			foodList.add(BlockEntityNbt.saveOptional(food, registries));
 		}
 		cmp.put(TAG_LAST_FOODS, foodList);
 		cmp.putInt(TAG_LAST_FOOD_COUNT, lastFoodCount);
@@ -173,15 +175,15 @@ public class GourmaryllisBlockEntity extends GeneratingFlowerBlockEntity {
 	@Override
 	public void readFromPacketNBT(CompoundTag cmp, HolderLookup.Provider registries) {
 		super.readFromPacketNBT(cmp, registries);
-		cooldown = cmp.getInt(TAG_COOLDOWN);
-		digestingMana = cmp.getInt(TAG_DIGESTING_MANA);
+		cooldown = cmp.getIntOr(TAG_COOLDOWN, 0);
+		digestingMana = cmp.getIntOr(TAG_DIGESTING_MANA, 0);
 		lastFoods.clear();
-		ListTag foodList = cmp.getList(TAG_LAST_FOODS, Tag.TAG_COMPOUND);
+		ListTag foodList = cmp.getListOrEmpty(TAG_LAST_FOODS);
 		for (int i = 0; i < foodList.size(); i++) {
-			lastFoods.add(ItemStack.parseOptional(registries, foodList.getCompound(i)));
+			lastFoods.add(BlockEntityNbt.parseOptional(registries, foodList.getCompoundOrEmpty(i)));
 		}
-		lastFoodCount = cmp.getInt(TAG_LAST_FOOD_COUNT);
-		streakLength = cmp.getInt(TAG_STREAK_LENGTH);
+		lastFoodCount = cmp.getIntOr(TAG_LAST_FOOD_COUNT, 0);
+		streakLength = cmp.getIntOr(TAG_STREAK_LENGTH, 0);
 	}
 
 	@Override

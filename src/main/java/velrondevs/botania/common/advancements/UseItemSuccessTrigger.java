@@ -4,8 +4,8 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.advancements.Criterion;
-import net.minecraft.advancements.critereon.*;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.advancements.criterion.*;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
@@ -17,7 +17,7 @@ import java.util.Optional;
 import static velrondevs.botania.common.lib.ResourceLocationHelper.prefix;
 
 public class UseItemSuccessTrigger extends SimpleCriterionTrigger<UseItemSuccessTrigger.Instance> {
-	public static final ResourceLocation ID = prefix("use_item_success");
+	public static final Identifier ID = prefix("use_item_success");
 	public static final UseItemSuccessTrigger INSTANCE = new UseItemSuccessTrigger();
 
 	private UseItemSuccessTrigger() {}

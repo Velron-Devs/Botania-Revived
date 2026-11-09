@@ -2,18 +2,10 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "A": {
-      "item": "botania:rune_water"
-    },
-    "D": {
-      "tag": "botania:mana_diamond_gems"
-    },
-    "P": {
-      "tag": "botania:petals/pink"
-    },
-    "S": {
-      "item": "botania:rune_spring"
-    }
+    "A": "botania:rune_water",
+    "D": "#botania:mana_diamond_gems",
+    "P": "#botania:petals/pink",
+    "S": "botania:rune_spring"
   },
   "pattern": [
     " P ",
@@ -21,7 +13,6 @@
     "ADS"
   ],
   "result": {
-    "count": 1,
     "id": "botania:goddess_charm"
   }
 }

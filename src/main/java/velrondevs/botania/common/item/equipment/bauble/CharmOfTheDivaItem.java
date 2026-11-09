@@ -1,5 +1,8 @@
 package velrondevs.botania.common.item.equipment.bauble;
 
+import velrondevs.botania.client.core.helper.RenderHelper;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.server.level.ServerLevel;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.Minecraft;
@@ -46,7 +49,7 @@ public class CharmOfTheDivaItem extends BaubleItem {
 	private static Predicate<Mob> getCharmTargetPredicate(Player player, Mob mobToCharm) {
 		return mob -> mob != mobToCharm && mob.isAlive() && mob.canBeSeenAsEnemy() && !mob.isPassengerOfSameVehicle(mobToCharm)
 				&& (!(mob instanceof TamableAnimal tamable) || !tamable.isOwnedBy(player))
-				&& (mob instanceof Enemy || mob instanceof NeutralMob neutralMob && (neutralMob.isAngryAt(player)
+				&& (mob instanceof Enemy || mob instanceof NeutralMob neutralMob && (player.level() instanceof ServerLevel serverLevel && neutralMob.isAngryAt(player, serverLevel)
 						|| mob.getTarget() instanceof TamableAnimal targetTamable && targetTamable.isOwnedBy(player)));
 	}
 
@@ -79,28 +82,28 @@ public class CharmOfTheDivaItem extends BaubleItem {
 
 	public static void onEntityDamaged(Player player, LivingEntity entity) {
 		if (entity instanceof Mob target
-				&& !target.level().isClientSide
+				&& !target.level().isClientSide()
 
-				&& target.canUsePortal(false) && target.canChangeDimensions(target.level(), target.level())
+				&& target.canUsePortal(false) && target.canTeleport(target.level(), target.level())
 				&& Math.random() < 0.6) {
 			MinecraftServer server = player.level().getServer();
 			ItemStack amulet = EquipmentHandler.findOrEmpty(BotaniaItems.divaCharm, player);
 
 			if (server != null && !amulet.isEmpty()) {
 
-				server.tell(new TickTask(0, () -> charmMobs(amulet, player, target)));
+				server.schedule(new TickTask(0, () -> charmMobs(amulet, player, target)));
 			}
 		}
 	}
 
 	public static class Renderer implements AccessoryRenderer {
 		@Override
-		public void doRender(HumanoidModel<?> bipedModel, ItemStack stack, LivingEntity living, PoseStack ms, MultiBufferSource buffers, int light, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+		public void doRender(HumanoidModel<?> bipedModel, ItemStack stack, LivingEntity living, PoseStack ms, SubmitNodeCollector collector, int light, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+			MultiBufferSource buffers = RenderHelper.buffers(collector);
 			bipedModel.head.translateAndRotate(ms);
 			ms.translate(0.15, -0.42, -0.35);
 			ms.scale(0.4F, -0.4F, -0.4F);
-			Minecraft.getInstance().getItemRenderer().renderStatic(stack, ItemDisplayContext.NONE,
-					light, OverlayTexture.NO_OVERLAY, ms, buffers, living.level(), living.getId());
+			RenderHelper.renderItem(stack, ItemDisplayContext.NONE, ms, collector, light, OverlayTexture.NO_OVERLAY, living.level(), living.getId());
 		}
 	}
 }

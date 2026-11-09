@@ -1,5 +1,12 @@
 package velrondevs.botania.common.item;
 
+import net.minecraft.client.Minecraft;
+import java.util.function.Consumer;
+import net.minecraft.world.item.component.TooltipDisplay;
+import org.jetbrains.annotations.Nullable;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.nbt.CompoundTag;
@@ -9,7 +16,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
@@ -54,27 +60,27 @@ public class ManaBlasterItem extends Item {
 
 	@NotNull
 	@Override
-	public InteractionResultHolder<ItemStack> use(Level world, Player player, @NotNull InteractionHand hand) {
+	public InteractionResult use(Level world, Player player, @NotNull InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
 		int effCd = COOLDOWN;
-		MobEffectInstance effect = player.getEffect(MobEffects.DIG_SPEED);
+		MobEffectInstance effect = player.getEffect(MobEffects.HASTE);
 		if (effect != null) {
 			effCd = Math.max(2, COOLDOWN - (effect.getAmplifier() + 1) * 8);
 		}
 
 		if (player.isSecondaryUseActive() && hasClip(stack)) {
 			rotatePos(stack);
-			world.playSound(null, player.getX(), player.getY(), player.getZ(), BotaniaSounds.manaBlasterCycle, SoundSource.PLAYERS, 0.6F, (1.0F + (world.random.nextFloat() - world.random.nextFloat()) * 0.2F) * 0.7F);
-			if (!world.isClientSide) {
+			world.playSound(null, player.getX(), player.getY(), player.getZ(), BotaniaSounds.manaBlasterCycle, SoundSource.PLAYERS, 0.6F, (1.0F + (world.getRandom().nextFloat() - world.getRandom().nextFloat()) * 0.2F) * 0.7F);
+			if (!world.isClientSide()) {
 				ItemStack lens = getLens(stack);
 				ItemsRemainingRenderHandler.send(player, lens, -2);
 				setCooldown(stack, effCd);
 			}
-			return InteractionResultHolder.sidedSuccess(stack, world.isClientSide);
+			return InteractionResult.SUCCESS;
 		} else if (getCooldown(stack) <= 0) {
 			ManaBurstEntity burst = getBurst(player, stack, true, hand);
 			if (burst != null && ManaItemHandler.instance().requestManaExact(stack, player, burst.getMana(), true)) {
-				if (!world.isClientSide) {
+				if (!world.isClientSide()) {
 					world.playSound(null, player.getX(), player.getY(), player.getZ(), BotaniaSounds.manaBlaster, SoundSource.PLAYERS, 1F, 1);
 					world.addFreshEntity(burst);
 					ManaBlasterTrigger.INSTANCE.trigger((ServerPlayer) player, stack);
@@ -83,12 +89,12 @@ public class ManaBlasterItem extends Item {
 					player.setDeltaMovement(player.getDeltaMovement().subtract(burst.getDeltaMovement().multiply(0.1, 0.3, 0.1)));
 				}
 			} else {
-				player.playSound(BotaniaSounds.manaBlasterMisfire, 0.6F, (1.0F + (world.random.nextFloat() - world.random.nextFloat()) * 0.2F) * 0.7F);
+				player.playSound(BotaniaSounds.manaBlasterMisfire, 0.6F, (1.0F + (world.getRandom().nextFloat() - world.getRandom().nextFloat()) * 0.2F) * 0.7F);
 			}
-			return InteractionResultHolder.sidedSuccess(stack, world.isClientSide);
+			return InteractionResult.SUCCESS;
 		}
 
-		return InteractionResultHolder.pass(stack);
+		return InteractionResult.PASS;
 	}
 
 	@NotNull
@@ -128,19 +134,21 @@ public class ManaBlasterItem extends Item {
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext world, List<Component> tooltip, TooltipFlag flags) {
+	public void appendHoverText(ItemStack stack, TooltipContext world, TooltipDisplay tooltipDisplay, Consumer<Component> tooltip, TooltipFlag flags) {
 		boolean clip = hasClip(stack);
 		if (clip) {
-			TooltipHandler.addOnShift(tooltip, () -> appendHoverTextImpl(stack, world, tooltip));
+			List<Component> shiftLines = new ArrayList<>();
+			TooltipHandler.addOnShift(shiftLines, () -> appendHoverTextImpl(stack, world, tooltip));
+			shiftLines.forEach(tooltip);
 		} else {
 			appendHoverTextImpl(stack, world, tooltip);
 		}
 	}
 
-	private void appendHoverTextImpl(ItemStack stack, TooltipContext context, List<Component> tooltip) {
+	private void appendHoverTextImpl(ItemStack stack, TooltipContext context, Consumer<Component> tooltip) {
 		boolean clip = hasClip(stack);
-		if (clip && !Screen.hasShiftDown()) {
-			tooltip.add(TooltipHandler.getShiftInfoTooltip());
+		if (clip && !Minecraft.getInstance().hasShiftDown()) {
+			tooltip.accept(TooltipHandler.getShiftInfoTooltip());
 			return;
 		}
 
@@ -148,13 +156,13 @@ public class ManaBlasterItem extends Item {
 		if (!lens.isEmpty()) {
 			List<Component> lensTip = lens.getTooltipLines(context, Proxy.INSTANCE.getClientPlayer(), TooltipFlag.Default.NORMAL);
 			if (lensTip.size() > 1) {
-				tooltip.addAll(lensTip.subList(1, lensTip.size()));
+				lensTip.subList(1, lensTip.size()).forEach(tooltip);
 			}
 		}
 
 		if (clip) {
 			int pos = getClipPos(stack);
-			tooltip.add(Component.translatable("botaniamisc.hasClip"));
+			tooltip.accept(Component.translatable("botaniamisc.hasClip"));
 			for (int i = 0; i < CLIP_SLOTS; i++) {
 				ItemStack lensAt = getLensAtPos(stack, i);
 
@@ -167,7 +175,7 @@ public class ManaBlasterItem extends Item {
 
 				MutableComponent tip = Component.literal(" - ").append(name);
 				tip.withStyle(i == pos ? ChatFormatting.GREEN : ChatFormatting.GRAY);
-				tooltip.add(tip);
+				tooltip.accept(tip);
 			}
 		}
 	}
@@ -279,7 +287,7 @@ public class ManaBlasterItem extends Item {
 	}
 
 	@Override
-	public void inventoryTick(ItemStack stack, Level world, Entity entity, int slot, boolean selected) {
+	public void inventoryTick(ItemStack stack, ServerLevel world, Entity entity, @Nullable EquipmentSlot eqSlot) {
 		if (getCooldown(stack) > 0) {
 			setCooldown(stack, getCooldown(stack) - 1);
 		}

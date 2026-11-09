@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "T": {
-      "tag": "botania:terrasteel_ingots"
-    },
-    "V": {
-      "item": "minecraft:vine"
-    }
+    "T": "#botania:terrasteel_ingots",
+    "V": "minecraft:vine"
   },
   "pattern": [
     "VVV",

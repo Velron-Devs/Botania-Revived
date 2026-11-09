@@ -9,7 +9,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -55,7 +55,7 @@ import java.util.Map;
 import static velrondevs.botania.common.lib.ResourceLocationHelper.prefix;
 
 public class TinyPotatoBlockEntity extends ExposedSimpleInventoryBlockEntity implements Nameable {
-	private static final ResourceLocation BIRTHDAY_ADVANCEMENT = prefix("challenge/tiny_potato_birthday");
+	private static final Identifier BIRTHDAY_ADVANCEMENT = prefix("challenge/tiny_potato_birthday");
 	private static final String TAG_NAME = "name";
 	private static final int JUMP_EVENT = 0;
 	private static final Map<String, String> GENDER = new HashMap<>(Map.ofEntries(
@@ -101,7 +101,7 @@ public class TinyPotatoBlockEntity extends ExposedSimpleInventoryBlockEntity imp
 	}
 
 	public void interact(Player player, InteractionHand hand, ItemStack stack, Direction side) {
-		if (!level.isClientSide) {
+		if (!level.isClientSide()) {
 			int index = side.get3DDataValue();
 			ItemStack stackAt = getItemHandler().getItem(index);
 			if (!stackAt.isEmpty() && stack.isEmpty()) {
@@ -177,8 +177,8 @@ public class TinyPotatoBlockEntity extends ExposedSimpleInventoryBlockEntity imp
 			self.jumpTicks--;
 		}
 
-		if (!level.isClientSide) {
-			if (level.random.nextInt(100) == 0) {
+		if (!level.isClientSide()) {
+			if (level.getRandom().nextInt(100) == 0) {
 				self.jump();
 			}
 			if (self.nextDoIt > 0) {
@@ -246,7 +246,7 @@ public class TinyPotatoBlockEntity extends ExposedSimpleInventoryBlockEntity imp
 						level.removeBlock(facingPos, false);
 						level.levelEvent(LevelEvent.PARTICLES_DESTROY_BLOCK, facingPos, Block.getId(facingState));
 
-						level.playSound(null, getBlockPos(), SoundEvents.GENERIC_EAT, SoundSource.BLOCKS, 1F, 0.5F + (float) Math.random() * 0.5F);
+						level.playSound(null, getBlockPos(), SoundEvents.GENERIC_EAT.value(), SoundSource.BLOCKS, 1F, 0.5F + (float) Math.random() * 0.5F);
 
 						for (var player : players) {
 							PlayerHelper.grantCriterion((ServerPlayer) player, BIRTHDAY_ADVANCEMENT, "code_triggered");
@@ -261,7 +261,7 @@ public class TinyPotatoBlockEntity extends ExposedSimpleInventoryBlockEntity imp
 	@Override
 	public void setChanged() {
 		super.setChanged();
-		if (level != null && !level.isClientSide) {
+		if (level != null && !level.isClientSide()) {
 			VanillaPacketDispatcher.dispatchTEToNearbyPlayers(this);
 		}
 	}
@@ -269,18 +269,19 @@ public class TinyPotatoBlockEntity extends ExposedSimpleInventoryBlockEntity imp
 	@Override
 	public void writePacketNBT(CompoundTag cmp, HolderLookup.Provider registries) {
 		super.writePacketNBT(cmp, registries);
-		cmp.putString(TAG_NAME, Component.Serializer.toJson(name, registries));
+		BlockEntityNbt.putComponent(cmp, TAG_NAME, name, registries);
 	}
 
 	@Override
 	public void readPacketNBT(CompoundTag cmp, HolderLookup.Provider registries) {
 		super.readPacketNBT(cmp, registries);
-		name = Component.Serializer.fromJson(cmp.getString(TAG_NAME), registries);
+		Component read = BlockEntityNbt.getComponent(cmp, TAG_NAME, registries);
+		name = read != null ? read : Component.empty();
 	}
 
 	@Override
 	protected SimpleContainer createItemHandler() {
-		return new SimpleContainer(6) {
+		return new Inventory(6) {
 			@Override
 			public int getMaxStackSize() {
 				return 1;

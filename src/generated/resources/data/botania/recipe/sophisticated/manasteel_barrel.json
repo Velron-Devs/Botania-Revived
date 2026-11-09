@@ -26,12 +26,8 @@
   "type": "sophisticatedstorage:storage_tier_upgrade",
   "category": "misc",
   "key": {
-    "I": {
-      "tag": "botania:manasteel_ingots"
-    },
-    "S": {
-      "item": "sophisticatedstorage:netherite_barrel"
-    }
+    "I": "#botania:manasteel_ingots",
+    "S": "sophisticatedstorage:netherite_barrel"
   },
   "pattern": [
     "III",

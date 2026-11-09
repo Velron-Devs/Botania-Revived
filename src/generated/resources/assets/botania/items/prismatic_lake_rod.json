@@ -1,0 +1,11 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "botania:item/prismatic_lake_rod",
+    "tints": [
+      {
+        "type": "botania:extras_rainbow"
+      }
+    ]
+  }
+}

@@ -3,12 +3,9 @@
   "category": "misc",
   "group": "botania:dye",
   "ingredients": [
-    {
-      "tag": "botania:petals/light_blue"
-    }
+    "#botania:petals/light_blue"
   ],
   "result": {
-    "count": 1,
     "id": "minecraft:light_blue_dye"
   }
 }

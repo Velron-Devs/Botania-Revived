@@ -27,14 +27,14 @@ public class WeightLens extends Lens {
 	@Override
 	public boolean collideBurst(ManaBurst burst, HitResult pos, boolean isManaBlock, boolean shouldKill, ItemStack stack) {
 		Projectile entity = burst.entity();
-		if (!entity.level().isClientSide && !burst.isFake() && pos.getType() == HitResult.Type.BLOCK) {
+		if (!entity.level().isClientSide() && !burst.isFake() && pos.getType() == HitResult.Type.BLOCK) {
 			int harvestLevel = BotaniaConfig.common().harvestLevelWeight();
 
 			ServerLevel level = (ServerLevel) entity.level();
 			BlockPos bPos = ((BlockHitResult) pos).getBlockPos();
 			BlockState state = level.getBlockState(bPos);
 
-			if (entity.mayInteract(entity.level(), bPos)
+			if (Lens.mayInteract(entity, bPos)
 					&& FallingBlock.isFree(level.getBlockState(bPos.below()))
 					&& state.getDestroySpeed(level, bPos) != -1
 					&& level.getBlockEntity(bPos) == null

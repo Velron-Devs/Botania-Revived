@@ -39,7 +39,7 @@ public class ClayconiaBlockEntity extends FunctionalFlowerBlockEntity {
 	public void tickFlower() {
 		super.tickFlower();
 
-		if (!getLevel().isClientSide && ticksExisted % 5 == 0) {
+		if (!getLevel().isClientSide() && ticksExisted % 5 == 0) {
 			if (getMana() >= COST) {
 				BlockPos coords = getCoordsToPut();
 				if (coords != null) {
@@ -79,7 +79,7 @@ public class ClayconiaBlockEntity extends FunctionalFlowerBlockEntity {
 		if (possibleCoords.isEmpty()) {
 			return null;
 		}
-		return possibleCoords.get(getLevel().random.nextInt(possibleCoords.size()));
+		return possibleCoords.get(getLevel().getRandom().nextInt(possibleCoords.size()));
 	}
 
 	@Override

@@ -1,30 +1,29 @@
 package velrondevs.botania.integration.thaumaturge;
 
+import com.leclowndu93150.thaumaturge.api.items.IVisDiscountGear;
+
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.ItemAttributeModifiers;
-
-import org.jetbrains.annotations.NotNull;
+import net.minecraft.world.item.component.TooltipDisplay;
 
 import velrondevs.botania.common.item.equipment.armor.manasteel.ManasteelHelmItem;
 
-import java.util.List;
+import java.util.function.Consumer;
 
-public class ManasteelHelmRevealingItem extends ManasteelHelmItem {
+public class ManasteelHelmRevealingItem extends ManasteelHelmItem implements IVisDiscountGear {
 	public ManasteelHelmRevealingItem(Properties props) {
 		super(props);
 	}
 
-	@NotNull
 	@Override
-	public ItemAttributeModifiers getDefaultAttributeModifiers(@NotNull ItemStack stack) {
-		return ThaumaturgeIntegration.withVisDiscount(this, super.getDefaultAttributeModifiers(stack));
+	public int getVisDiscount(ItemStack stack) {
+		return ThaumaturgeIntegration.VIS_DISCOUNT;
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> list, TooltipFlag flags) {
-		RevealingHelmTooltip.add(list);
-		super.appendHoverText(stack, context, list, flags);
+	public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltip, TooltipFlag flags) {
+		RevealingHelmTooltip.add(tooltip);
+		super.appendHoverText(stack, context, tooltipDisplay, tooltip, flags);
 	}
 }

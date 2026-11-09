@@ -1,6 +1,5 @@
 package velrondevs.botania.client.integration.jei;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
@@ -12,8 +11,8 @@ import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.resources.Identifier;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -75,11 +74,9 @@ public class ManaPoolRecipeCategory implements IRecipeCategory<ManaInfusionRecip
 	}
 
 	@Override
-	public void draw(ManaInfusionRecipe recipe, @NotNull IRecipeSlotsView slotsView, @NotNull GuiGraphics gui, double mouseX, double mouseY) {
-		RenderSystem.enableBlend();
+	public void draw(ManaInfusionRecipe recipe, @NotNull IRecipeSlotsView slotsView, @NotNull GuiGraphicsExtractor gui, double mouseX, double mouseY) {
 		overlay.draw(gui, 40, 0);
 		HUDHandler.renderManaBar(gui, 20, 50, 0x0000FF, 0.75F, recipe.getManaToConsume(), ManaPoolBlockEntity.MAX_MANA / 10);
-		RenderSystem.disableBlend();
 	}
 
 	@Override
@@ -89,18 +86,18 @@ public class ManaPoolRecipeCategory implements IRecipeCategory<ManaInfusionRecip
 
 		var catalyst = recipe.getRecipeCatalyst();
 		if (catalyst != null) {
-			builder.addSlot(RecipeIngredientRole.CATALYST, 12, 12)
+			builder.addSlot(RecipeIngredientRole.CRAFTING_STATION, 12, 12)
 					.addItemStacks(catalyst.getDisplayedStacks())
 					.addRichTooltipCallback((view, tooltip) -> tooltip.addAll(catalyst.descriptionTooltip()));
 		}
 
-		builder.addSlot(RecipeIngredientRole.CATALYST, 62, 12).addItemStack(renderStack);
+		builder.addSlot(RecipeIngredientRole.CRAFTING_STATION, 62, 12).addItemStack(renderStack);
 
 		builder.addSlot(RecipeIngredientRole.OUTPUT, 93, 12).addItemStack(recipe.getResultItem(RegistryAccess.EMPTY));
 	}
 
 	@Override
-	public ResourceLocation getRegistryName(@NotNull ManaInfusionRecipe recipe) {
+	public Identifier getIdentifier(@NotNull ManaInfusionRecipe recipe) {
 		return JEIRecipeIds.idOf(recipe);
 	}
 }

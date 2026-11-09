@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "I": {
-      "tag": "botania:terrasteel_ingots"
-    },
-    "S": {
-      "item": "botania:life_essence"
-    }
+    "I": "#botania:terrasteel_ingots",
+    "S": "botania:life_essence"
   },
   "pattern": [
     " S ",
@@ -15,7 +11,6 @@
     " S "
   ],
   "result": {
-    "count": 1,
     "id": "botania:gaia_ingot"
   }
 }

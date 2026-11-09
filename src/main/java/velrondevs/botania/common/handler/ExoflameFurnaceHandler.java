@@ -1,6 +1,7 @@
 package velrondevs.botania.common.handler;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.Level;
@@ -24,7 +25,10 @@ public class ExoflameFurnaceHandler {
 		}
 		try {
 			var qc = ((AbstractFurnaceBlockEntityAccessor) furnace).getQuickCheck();
-			var currentRecipe = qc.getRecipeFor(new SingleRecipeInput(furnace.getItem(0)), furnace.getLevel());
+			if (!(furnace.getLevel() instanceof ServerLevel serverLevel)) {
+				return false;
+			}
+			var currentRecipe = qc.getRecipeFor(new SingleRecipeInput(furnace.getItem(0)), serverLevel);
 			return currentRecipe.isPresent() && ExoflameFurnaceHandler.canSmeltRecipe(furnace, currentRecipe.get());
 		} catch (Throwable t) {
 			BotaniaAPI.LOGGER.error("Failed to determine if furnace TE can smelt", t);

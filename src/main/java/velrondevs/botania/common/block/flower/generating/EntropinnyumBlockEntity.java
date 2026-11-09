@@ -31,13 +31,13 @@ public class EntropinnyumBlockEntity extends GeneratingFlowerBlockEntity {
 	public void tickFlower() {
 		super.tickFlower();
 
-		if (!getLevel().isClientSide && getMana() == 0) {
+		if (!getLevel().isClientSide() && getMana() == 0) {
 			List<PrimedTnt> tnts = getLevel().getEntitiesOfClass(PrimedTnt.class, new AABB(Vec3.atLowerCornerOf(getEffectivePos().offset(-RANGE, -RANGE, -RANGE)), Vec3.atLowerCornerOf(getEffectivePos().offset(RANGE + 1, RANGE + 1, RANGE + 1))));
 			for (PrimedTnt tnt : tnts) {
 				FluidState fluid = getLevel().getFluidState(tnt.blockPosition());
 				if (tnt.getFuse() == 1 && tnt.isAlive() && fluid.isEmpty()) {
 					boolean unethical = XplatAbstractions.INSTANCE.ethicalComponent(tnt).isUnethical();
-					tnt.playSound(unethical ? BotaniaSounds.entropinnyumAngry : BotaniaSounds.entropinnyumHappy, 1F, (1F + (getLevel().random.nextFloat() - getLevel().random.nextFloat()) * 0.2F) * 0.7F);
+					tnt.playSound(unethical ? BotaniaSounds.entropinnyumAngry : BotaniaSounds.entropinnyumHappy, 1F, (1F + (getLevel().getRandom().nextFloat() - getLevel().getRandom().nextFloat()) * 0.2F) * 0.7F);
 					tnt.discard();
 					addMana(unethical ? 3 : getMaxMana());
 					sync();
@@ -52,7 +52,7 @@ public class EntropinnyumBlockEntity extends GeneratingFlowerBlockEntity {
 	@Override
 	public boolean triggerEvent(int event, int param) {
 		if (event == EXPLODE_EFFECT_EVENT) {
-			if (getLevel().isClientSide && getLevel().getEntity(param) instanceof PrimedTnt) {
+			if (getLevel().isClientSide() && getLevel().getEntity(param) instanceof PrimedTnt) {
 				Entity e = getLevel().getEntity(param);
 
 				for (int i = 0; i < 50; i++) {
@@ -64,7 +64,7 @@ public class EntropinnyumBlockEntity extends GeneratingFlowerBlockEntity {
 			}
 			return true;
 		} else if (event == ANGRY_EFFECT_EVENT) {
-			if (getLevel().isClientSide && getLevel().getEntity(param) instanceof PrimedTnt) {
+			if (getLevel().isClientSide() && getLevel().getEntity(param) instanceof PrimedTnt) {
 				Entity e = getLevel().getEntity(param);
 
 				for (int i = 0; i < 50; i++) {

@@ -1,7 +1,7 @@
 package velrondevs.botania.registry;
 
 import net.minecraft.advancements.CriterionTrigger;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.function.BiConsumer;
 
@@ -15,7 +15,7 @@ import velrondevs.botania.common.advancements.RelicBindTrigger;
 import velrondevs.botania.common.advancements.UseItemSuccessTrigger;
 
 public class BotaniaCriteriaTriggers {
-	public static void init(BiConsumer<CriterionTrigger<?>, ResourceLocation> r) {
+	public static void init(BiConsumer<CriterionTrigger<?>, Identifier> r) {
 		r.accept(AlfheimPortalTrigger.INSTANCE, AlfheimPortalTrigger.ID);
 		r.accept(CorporeaRequestTrigger.INSTANCE, CorporeaRequestTrigger.ID);
 		r.accept(GaiaGuardianNoArmorTrigger.INSTANCE, GaiaGuardianNoArmorTrigger.ID);

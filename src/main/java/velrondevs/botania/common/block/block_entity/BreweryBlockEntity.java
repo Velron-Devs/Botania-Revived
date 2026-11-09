@@ -1,7 +1,9 @@
 package velrondevs.botania.common.block.block_entity;
 
+import velrondevs.botania.common.block.RecipeLookup;
+
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -85,7 +87,7 @@ public class BreweryBlockEntity extends SimpleInventoryBlockEntity implements Ma
 	}
 
 	private void findRecipe() {
-		Optional<BotanicalBreweryRecipe> maybeRecipe = level.getRecipeManager().getRecipeFor(BotaniaRecipeTypes.BREW_TYPE, new ContainerRecipeInput(getItemHandler()), level).map(RecipeHolder::value);
+		Optional<BotanicalBreweryRecipe> maybeRecipe = RecipeLookup.getRecipeFor(level, BotaniaRecipeTypes.BREW_TYPE, new ContainerRecipeInput(getItemHandler()), level).map(RecipeHolder::value);
 		maybeRecipe.ifPresent(recipeBrew -> {
 			this.recipe = recipeBrew;
 			level.setBlockAndUpdate(worldPosition, BotaniaBlocks.brewery.defaultBlockState().setValue(BlockStateProperties.POWERED, true));
@@ -103,7 +105,7 @@ public class BreweryBlockEntity extends SimpleInventoryBlockEntity implements Ma
 
 		self.receiveMana(0);
 
-		if (!level.isClientSide && self.recipe == null) {
+		if (!level.isClientSide() && self.recipe == null) {
 			List<ItemEntity> items = level.getEntitiesOfClass(ItemEntity.class, new AABB(worldPosition.getX(), worldPosition.getY(), worldPosition.getZ(), worldPosition.getX() + 1, worldPosition.getY() + 1, worldPosition.getZ() + 1));
 			for (ItemEntity item : items) {
 				if (item.isAlive() && !item.getItem().isEmpty()) {
@@ -137,7 +139,7 @@ public class BreweryBlockEntity extends SimpleInventoryBlockEntity implements Ma
 					}
 				}
 
-				if (self.mana >= self.getManaCost() && !level.isClientSide) {
+				if (self.mana >= self.getManaCost() && !level.isClientSide()) {
 					int mana = self.getManaCost();
 					self.receiveMana(-mana);
 
@@ -169,7 +171,7 @@ public class BreweryBlockEntity extends SimpleInventoryBlockEntity implements Ma
 	@Override
 	public boolean triggerEvent(int event, int param) {
 		if (event == CRAFT_EFFECT_EVENT) {
-			if (level.isClientSide) {
+			if (level.isClientSide()) {
 				for (int i = 0; i < 25; i++) {
 					float r = (param >> 16 & 0xFF) / 255F;
 					float g = (param >> 8 & 0xFF) / 255F;
@@ -208,12 +210,12 @@ public class BreweryBlockEntity extends SimpleInventoryBlockEntity implements Ma
 	public void readPacketNBT(CompoundTag tag, HolderLookup.Provider registries) {
 		super.readPacketNBT(tag, registries);
 
-		mana = tag.getInt(TAG_MANA);
+		mana = tag.getIntOr(TAG_MANA, 0);
 	}
 
 	@Override
 	protected SimpleContainer createItemHandler() {
-		return new SimpleContainer(7) {
+		return new Inventory(7) {
 			@Override
 			public int getMaxStackSize() {
 				return 1;
@@ -259,7 +261,7 @@ public class BreweryBlockEntity extends SimpleInventoryBlockEntity implements Ma
 		}
 
 		@Override
-		public void renderHUD(GuiGraphics gui, Minecraft mc) {
+		public void renderHUD(GuiGraphicsExtractor gui, Minecraft mc) {
 			int manaToGet = brewery.getManaCost();
 			if (manaToGet > 0) {
 				if (brewery.recipe == null) {

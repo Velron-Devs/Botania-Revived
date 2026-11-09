@@ -1,7 +1,9 @@
 package velrondevs.botania.event;
 
 import net.minecraft.core.NonNullList;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -33,14 +35,14 @@ public final class BotaniaEvents {
 	private BotaniaEvents() {}
 
 	public static class RegisterRunes extends Event implements IModBusEvent {
-		private final BiConsumer<Item, ResourceLocation> registry;
-		private final Set<ResourceLocation> ids = new HashSet<>();
+		private final BiConsumer<Item, Identifier> registry;
+		private final Set<Identifier> ids = new HashSet<>();
 
-		public RegisterRunes(BiConsumer<Item, ResourceLocation> registry) {
+		public RegisterRunes(BiConsumer<Item, Identifier> registry) {
 			this.registry = registry;
 		}
 
-		public Item register(ResourceLocation id, Item rune) {
+		public Item register(Identifier id, Item rune) {
 			if (!ids.add(id)) {
 				throw new IllegalArgumentException("Duplicate rune id " + id);
 			}
@@ -48,16 +50,16 @@ public final class BotaniaEvents {
 			return rune;
 		}
 
-		public Item register(ResourceLocation id) {
+		public Item register(Identifier id) {
 			return register(id, new RuneItem(new Item.Properties()));
 		}
 	}
 
 	public static class RegisterMachineRecipes extends Event {
-		private final Set<ResourceLocation> existing;
+		private final Set<Identifier> existing;
 		private final List<RecipeHolder<?>> added = new ArrayList<>();
 
-		public RegisterMachineRecipes(Set<ResourceLocation> existing) {
+		public RegisterMachineRecipes(Set<Identifier> existing) {
 			this.existing = new HashSet<>(existing);
 		}
 
@@ -65,48 +67,48 @@ public final class BotaniaEvents {
 			return added;
 		}
 
-		public boolean exists(ResourceLocation id) {
+		public boolean exists(Identifier id) {
 			return existing.contains(id);
 		}
 
-		public void add(ResourceLocation id, Recipe<?> recipe) {
+		public void add(Identifier id, Recipe<?> recipe) {
 			if (!existing.add(id)) {
 				throw new IllegalArgumentException("Duplicate recipe id " + id);
 			}
-			added.add(new RecipeHolder<>(id, recipe));
+			added.add(new RecipeHolder<>(ResourceKey.create(Registries.RECIPE, id), recipe));
 		}
 
-		public void runicAltar(ResourceLocation id, ItemStack output, int mana, Ingredient... inputs) {
+		public void runicAltar(Identifier id, ItemStack output, int mana, Ingredient... inputs) {
 			add(id, new RunicAltarRecipe(output, mana, inputs));
 		}
 
-		public void petalApothecary(ResourceLocation id, ItemStack output, Ingredient reagent, Ingredient... inputs) {
+		public void petalApothecary(Identifier id, ItemStack output, Ingredient reagent, Ingredient... inputs) {
 			add(id, new PetalsRecipe(output, reagent, inputs));
 		}
 
-		public void manaInfusion(ResourceLocation id, ItemStack output, Ingredient input, int mana) {
+		public void manaInfusion(Identifier id, ItemStack output, Ingredient input, int mana) {
 			add(id, new ManaInfusionRecipe(output, input, mana, null, null));
 		}
 
-		public void manaInfusion(ResourceLocation id, ItemStack output, Ingredient input, int mana, StateIngredient catalyst) {
+		public void manaInfusion(Identifier id, ItemStack output, Ingredient input, int mana, StateIngredient catalyst) {
 			add(id, new ManaInfusionRecipe(output, input, mana, null, catalyst));
 		}
 
-		public void elvenTrade(ResourceLocation id, ItemStack[] outputs, Ingredient... inputs) {
+		public void elvenTrade(Identifier id, ItemStack[] outputs, Ingredient... inputs) {
 			add(id, new ElvenTradeRecipe(outputs, inputs));
 		}
 
-		public void terraPlate(ResourceLocation id, int mana, ItemStack output, Ingredient... inputs) {
+		public void terraPlate(Identifier id, int mana, ItemStack output, Ingredient... inputs) {
 			NonNullList<Ingredient> list = NonNullList.create();
 			list.addAll(List.of(inputs));
 			add(id, new RecipeTerraPlate(mana, list, output));
 		}
 
-		public void brew(ResourceLocation id, Brew brew, Ingredient... inputs) {
+		public void brew(Identifier id, Brew brew, Ingredient... inputs) {
 			add(id, new BotanicalBreweryRecipe(brew, inputs));
 		}
 
-		public void pureDaisy(ResourceLocation id, StateIngredient input, BlockState output, int time) {
+		public void pureDaisy(Identifier id, StateIngredient input, BlockState output, int time) {
 			add(id, new PureDaisyRecipe(input, output, time, Optional.empty()));
 		}
 	}

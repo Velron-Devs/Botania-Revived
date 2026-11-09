@@ -2,11 +2,7 @@ package velrondevs.botania.api.recipe;
 
 import net.minecraft.commands.CacheableFunction;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeInput;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 
@@ -16,10 +12,10 @@ import velrondevs.botania.api.BotaniaAPI;
 
 import java.util.Optional;
 
-public interface OrechidRecipe extends Recipe<RecipeInput> {
-	ResourceLocation TYPE_ID = ResourceLocation.fromNamespaceAndPath(BotaniaAPI.MODID, "orechid");
-	ResourceLocation IGNEM_TYPE_ID = ResourceLocation.fromNamespaceAndPath(BotaniaAPI.MODID, "orechid_ignem");
-	ResourceLocation MARIMORPHOSIS_TYPE_ID = ResourceLocation.fromNamespaceAndPath(BotaniaAPI.MODID, "marimorphosis");
+public interface OrechidRecipe extends BotaniaRecipe {
+	Identifier TYPE_ID = Identifier.fromNamespaceAndPath(BotaniaAPI.MODID, "orechid");
+	Identifier IGNEM_TYPE_ID = Identifier.fromNamespaceAndPath(BotaniaAPI.MODID, "orechid_ignem");
+	Identifier MARIMORPHOSIS_TYPE_ID = Identifier.fromNamespaceAndPath(BotaniaAPI.MODID, "marimorphosis");
 
 	StateIngredient getInput();
 
@@ -40,29 +36,4 @@ public interface OrechidRecipe extends Recipe<RecipeInput> {
 	}
 
 	Optional<CacheableFunction> getSuccessFunction();
-
-	@Override
-	default boolean matches(RecipeInput c, Level l) {
-		return false;
-	}
-
-	@Override
-	default ItemStack assemble(RecipeInput c, @NotNull HolderLookup.Provider registries) {
-		return ItemStack.EMPTY;
-	}
-
-	@Override
-	default boolean canCraftInDimensions(int width, int height) {
-		return false;
-	}
-
-	@Override
-	default ItemStack getResultItem(@NotNull HolderLookup.Provider registries) {
-		return ItemStack.EMPTY;
-	}
-
-	@Override
-	default boolean isSpecial() {
-		return true;
-	}
 }

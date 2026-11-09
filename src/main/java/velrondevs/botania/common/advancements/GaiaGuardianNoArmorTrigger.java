@@ -4,8 +4,10 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.advancements.Criterion;
-import net.minecraft.advancements.critereon.*;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.advancements.criterion.*;
+import net.minecraft.world.level.storage.loot.Validatable;
+import net.minecraft.world.level.storage.loot.ValidationContextSource;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
 
@@ -18,7 +20,7 @@ import java.util.Optional;
 import static velrondevs.botania.common.lib.ResourceLocationHelper.prefix;
 
 public class GaiaGuardianNoArmorTrigger extends SimpleCriterionTrigger<GaiaGuardianNoArmorTrigger.Instance> {
-	public static final ResourceLocation ID = prefix("gaia_guardian_no_armor");
+	public static final Identifier ID = prefix("gaia_guardian_no_armor");
 	public static final GaiaGuardianNoArmorTrigger INSTANCE = new GaiaGuardianNoArmorTrigger();
 
 	private GaiaGuardianNoArmorTrigger() {}
@@ -55,9 +57,9 @@ public class GaiaGuardianNoArmorTrigger extends SimpleCriterionTrigger<GaiaGuard
 		}
 
 		@Override
-		public void validate(@NotNull CriterionValidator validator) {
+		public void validate(@NotNull ValidationContextSource validator) {
 			SimpleCriterionTrigger.SimpleInstance.super.validate(validator);
-			validator.validateEntity(this.guardian, ".guardian");
+			Validatable.validate(validator.entityContext(), "guardian", this.guardian);
 		}
 	}
 }

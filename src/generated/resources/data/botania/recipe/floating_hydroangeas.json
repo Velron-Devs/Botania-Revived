@@ -3,15 +3,10 @@
   "category": "misc",
   "group": "botania:floating_flower",
   "ingredients": [
-    {
-      "tag": "botania:floating_flowers"
-    },
-    {
-      "item": "botania:hydroangeas"
-    }
+    "#botania:floating_flowers",
+    "botania:hydroangeas"
   ],
   "result": {
-    "count": 1,
     "id": "botania:floating_hydroangeas"
   }
 }

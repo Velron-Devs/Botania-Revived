@@ -7,85 +7,78 @@ import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.ShaderInstance;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.HumanoidMobRenderer;
+import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.resources.DefaultPlayerSkin;
-import net.minecraft.client.resources.PlayerSkin;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.player.PlayerModelType;
+import net.minecraft.world.entity.player.PlayerSkin;
 
-import org.jetbrains.annotations.NotNull;
-
-import velrondevs.botania.client.core.helper.CoreShaders;
 import velrondevs.botania.client.core.helper.RenderHelper;
 import velrondevs.botania.client.model.armor.ArmorModels;
 import velrondevs.botania.common.entity.GaiaGuardianEntity;
 
-public class GaiaGuardianRenderer extends HumanoidMobRenderer<GaiaGuardianEntity, HumanoidModel<GaiaGuardianEntity>> {
+public class GaiaGuardianRenderer extends HumanoidMobRenderer<GaiaGuardianEntity, GaiaGuardianRenderer.State, HumanoidModel<GaiaGuardianRenderer.State>> {
 
 	public static final float DEFAULT_GRAIN_INTENSITY = 0.05F;
 	public static final float DEFAULT_DISFIGURATION = 0.025F;
 
-	private final Model normalModel;
-	private final Model slimModel;
+	public static class State extends HumanoidRenderState {
+		public Identifier texture = DefaultPlayerSkin.getDefaultTexture();
+		public boolean slim;
+	}
+
+	private final HumanoidModel<State> normalModel;
+	private final HumanoidModel<State> slimModel;
 
 	public GaiaGuardianRenderer(EntityRendererProvider.Context ctx) {
 		super(ctx, new Model(ctx.bakeLayer(ModelLayers.PLAYER)), 0F);
-		this.normalModel = (Model) this.getModel();
+		this.normalModel = this.getModel();
 		this.slimModel = new Model(ctx.bakeLayer(ModelLayers.PLAYER_SLIM));
 
 		ArmorModels.init(ctx);
 	}
 
 	@Override
-	public void render(@NotNull GaiaGuardianEntity dopple, float yaw, float partialTicks, PoseStack ms, MultiBufferSource buffers, int light) {
-		int invulTime = dopple.getInvulTime();
-		ShaderInstance shader = CoreShaders.doppleganger();
-		if (shader != null) {
-			float grainIntensity, disfiguration;
-			if (invulTime > 0) {
-				grainIntensity = invulTime > 20 ? 1F : invulTime * 0.05F;
-				disfiguration = grainIntensity * 0.3F;
-			} else {
-				disfiguration = (0.025F + dopple.hurtTime * ((1F - 0.15F) / 20F)) / 2F;
-				grainIntensity = 0.05F + dopple.hurtTime * ((1F - 0.15F) / 10F);
-			}
-			shader.safeGetUniform("BotaniaGrainIntensity").set(grainIntensity);
-			shader.safeGetUniform("BotaniaDisfiguration").set(disfiguration);
-		}
+	public State createRenderState() {
+		return new State();
+	}
 
-		var view = Minecraft.getInstance().getCameraEntity();
-		if (view instanceof AbstractClientPlayer && DefaultPlayerSkin.get(view.getUUID()).model() == PlayerSkin.Model.SLIM) {
-			this.model = slimModel;
+	@Override
+	public void extractRenderState(GaiaGuardianEntity entity, State state, float partialTicks) {
+		super.extractRenderState(entity, state, partialTicks);
+		PlayerSkin skin;
+		if (Minecraft.getInstance().getCameraEntity() instanceof AbstractClientPlayer clientPlayer) {
+			skin = clientPlayer.getSkin();
 		} else {
-			this.model = normalModel;
+			skin = DefaultPlayerSkin.get(entity.getUUID());
 		}
-
-		super.render(dopple, yaw, partialTicks, ms, buffers, light);
-	}
-
-	@NotNull
-	@Override
-	public ResourceLocation getTextureLocation(@NotNull GaiaGuardianEntity entity) {
-		Minecraft mc = Minecraft.getInstance();
-
-		if (!(mc.getCameraEntity() instanceof AbstractClientPlayer clientPlayer)) {
-			return DefaultPlayerSkin.get(entity.getUUID()).texture();
-		}
-
-		return clientPlayer.getSkin().texture();
+		state.texture = skin.body().texturePath();
+		state.slim = skin.model() == PlayerModelType.SLIM;
 	}
 
 	@Override
-	protected boolean isBodyVisible(GaiaGuardianEntity dopple) {
+	public void submit(State state, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState camera) {
+		this.model = state.slim ? slimModel : normalModel;
+		super.submit(state, poseStack, collector, camera);
+	}
+
+	@Override
+	public Identifier getTextureLocation(State state) {
+		return state.texture;
+	}
+
+	@Override
+	protected boolean isBodyVisible(State state) {
 		return true;
 	}
 
-	private static class Model extends HumanoidModel<GaiaGuardianEntity> {
+	private static class Model extends HumanoidModel<State> {
 		Model(ModelPart root) {
 			super(root, RenderHelper::getDopplegangerLayer);
 		}
 	}
-
 }

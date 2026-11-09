@@ -1,9 +1,12 @@
 package velrondevs.botania.compat.sophisticated.backpack;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Item;
 
@@ -28,23 +31,23 @@ public final class BotaniaBackpackData {
 		ATM
 	}
 
-	public static void addAssets(Map<ResourceLocation, JsonObject> files) {
+	public static void addAssets(Map<Identifier, JsonObject> files) {
 		for (BotaniaBackpackTier tier : BotaniaBackpackTier.values()) {
 			String id = tier.id();
 			JsonObject model = new JsonObject();
 			model.addProperty("parent", BASE_MODEL);
+			model.addProperty("loader", "sophisticatedbackpacks:backpack");
 			JsonObject textures = new JsonObject();
 			textures.addProperty("clips", botania("block/" + tier.clips()));
 			model.add("textures", textures);
 			files.put(id("models/block/" + id), model);
 
-			JsonObject item = new JsonObject();
-			item.addProperty("parent", botania("block/" + id));
-			files.put(id("models/item/" + id), item);
+			files.put(id("items/" + id), itemDefinition(id));
 
 			JsonObject variants = new JsonObject();
 			for (int i = 0; i < FACINGS.length; i++) {
 				JsonObject variant = new JsonObject();
+				variant.addProperty("type", "sophisticatedbackpacks:backpack_model_loader");
 				variant.addProperty("model", botania("block/" + id));
 				if (ROTATIONS[i] != 0) {
 					variant.addProperty("y", ROTATIONS[i]);
@@ -57,7 +60,27 @@ public final class BotaniaBackpackData {
 		}
 	}
 
-	public static void addData(Map<ResourceLocation, JsonObject> files) {
+	private static JsonObject itemDefinition(String id) {
+		JsonObject model = new JsonObject();
+		model.addProperty("type", "sophisticatedbackpacks:backpack");
+		model.addProperty("base", botania("block/" + id));
+		JsonArray tints = new JsonArray();
+		tints.add(tint("sophisticatedbackpacks:main", BackpackColors.DEFAULT_MAIN));
+		tints.add(tint("sophisticatedbackpacks:accent", BackpackColors.DEFAULT_ACCENT));
+		model.add("tints", tints);
+		JsonObject json = new JsonObject();
+		json.add("model", model);
+		return json;
+	}
+
+	private static JsonObject tint(String type, int color) {
+		JsonObject json = new JsonObject();
+		json.addProperty("type", type);
+		json.addProperty("default", color);
+		return json;
+	}
+
+	public static void addData(Map<Identifier, JsonObject> files) {
 		for (BotaniaBackpackTier tier : BotaniaBackpackTier.values()) {
 			String id = tier.id();
 			files.put(id("loot_table/blocks/" + id), loot(tier));
@@ -75,11 +98,11 @@ public final class BotaniaBackpackData {
 	}
 
 	public static void addBackTags(ModuleTagSink<Item> sink) {
-		var curios = sink.tag(ItemTags.create(ResourceLocation.fromNamespaceAndPath("curios", "back")));
-		var accessories = sink.tag(ItemTags.create(ResourceLocation.fromNamespaceAndPath("accessories", "back")));
+		var curios = sink.tag(ItemTags.create(Identifier.fromNamespaceAndPath("curios", "back")));
+		var accessories = sink.tag(ItemTags.create(Identifier.fromNamespaceAndPath("accessories", "back")));
 		for (BotaniaBackpackTier tier : BotaniaBackpackTier.values()) {
-			curios.addOptional(id(tier.id()));
-			accessories.addOptional(id(tier.id()));
+			BuiltInRegistries.ITEM.getOptional(id(tier.id())).ifPresent(curios::addOptional);
+			BuiltInRegistries.ITEM.getOptional(id(tier.id())).ifPresent(accessories::addOptional);
 		}
 	}
 
@@ -129,10 +152,8 @@ public final class BotaniaBackpackData {
 		return json;
 	}
 
-	private static JsonObject ingot(BotaniaBackpackTier tier) {
-		JsonObject json = new JsonObject();
-		json.addProperty(tier.ingotIsTag() ? "tag" : "item", tier.ingot());
-		return json;
+	private static JsonElement ingot(BotaniaBackpackTier tier) {
+		return new JsonPrimitive(tier.ingotIsTag() ? "#" + tier.ingot() : tier.ingot());
 	}
 
 	private static JsonObject advancement(BotaniaBackpackTier tier, String base, Source source, String name) {
@@ -171,10 +192,8 @@ public final class BotaniaBackpackData {
 		return json;
 	}
 
-	private static JsonObject item(String id) {
-		JsonObject json = new JsonObject();
-		json.addProperty("item", id);
-		return json;
+	private static JsonElement item(String id) {
+		return new JsonPrimitive(id);
 	}
 
 	private static JsonObject conditioned(BotaniaBackpackTier tier, Source source) {
@@ -207,7 +226,7 @@ public final class BotaniaBackpackData {
 		return LibMisc.MOD_ID + ":" + path;
 	}
 
-	private static ResourceLocation id(String path) {
-		return ResourceLocation.fromNamespaceAndPath(LibMisc.MOD_ID, path);
+	private static Identifier id(String path) {
+		return Identifier.fromNamespaceAndPath(LibMisc.MOD_ID, path);
 	}
 }

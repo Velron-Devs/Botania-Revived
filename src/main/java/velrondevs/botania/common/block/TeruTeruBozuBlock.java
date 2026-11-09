@@ -1,8 +1,12 @@
 package velrondevs.botania.common.block;
 
+import net.minecraft.world.entity.InsideBlockEffectApplier;
+
+import net.minecraft.core.Direction;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -42,8 +46,8 @@ public class TeruTeruBozuBlock extends BotaniaWaterloggedBlock implements Entity
 	}
 
 	@Override
-	public void entityInside(BlockState state, Level world, BlockPos pos, Entity e) {
-		if (!world.isClientSide && e instanceof ItemEntity item) {
+	public void entityInside(BlockState state, Level world, BlockPos pos, Entity e, InsideBlockEffectApplier effectApplier, boolean isPrecise) {
+		if (!world.isClientSide() && e instanceof ItemEntity item) {
 			ItemStack stack = item.getItem();
 			if (isSunflower(stack) && removeRain(world) || isBlueOrchid(stack) && startRain(world)) {
 				EntityHelper.shrinkItem(item);
@@ -52,14 +56,14 @@ public class TeruTeruBozuBlock extends BotaniaWaterloggedBlock implements Entity
 	}
 
 	@Override
-	public ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+	public InteractionResult useItemOn(ItemStack stack, BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
 		if (!stack.isEmpty() && (isSunflower(stack) && removeRain(world) || isBlueOrchid(stack) && startRain(world))) {
 			if (!player.getAbilities().instabuild) {
 				stack.shrink(1);
 			}
-			return ItemInteractionResult.sidedSuccess(world.isClientSide());
+			return InteractionResult.SUCCESS;
 		}
-		return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+		return InteractionResult.TRY_WITH_EMPTY_HAND;
 	}
 
 	private boolean isSunflower(ItemStack stack) {
@@ -72,7 +76,7 @@ public class TeruTeruBozuBlock extends BotaniaWaterloggedBlock implements Entity
 
 	private boolean removeRain(Level world) {
 		if (world.isRaining()) {
-			world.getLevelData().setRaining(false);
+			TeruTeruBozuBlockEntity.setRaining(world, false);
 			TeruTeruBozuBlockEntity.resetRainTime(world);
 			return true;
 		}
@@ -81,8 +85,8 @@ public class TeruTeruBozuBlock extends BotaniaWaterloggedBlock implements Entity
 
 	private boolean startRain(Level world) {
 		if (!world.isRaining()) {
-			if (world.random.nextInt(10) == 0) {
-				world.getLevelData().setRaining(true);
+			if (world.getRandom().nextInt(10) == 0) {
+				TeruTeruBozuBlockEntity.setRaining(world, true);
 				TeruTeruBozuBlockEntity.resetRainTime(world);
 			}
 			return true;
@@ -96,14 +100,14 @@ public class TeruTeruBozuBlock extends BotaniaWaterloggedBlock implements Entity
 	}
 
 	@Override
-	public int getAnalogOutputSignal(BlockState state, Level world, BlockPos pos) {
+	public int getAnalogOutputSignal(BlockState state, Level world, BlockPos pos, Direction direction) {
 		return world.isRaining() ? 15 : 0;
 	}
 
 	@NotNull
 	@Override
 	public RenderShape getRenderShape(BlockState state) {
-		return RenderShape.ENTITYBLOCK_ANIMATED;
+		return RenderShape.INVISIBLE;
 	}
 
 	@NotNull
@@ -115,7 +119,7 @@ public class TeruTeruBozuBlock extends BotaniaWaterloggedBlock implements Entity
 	@Nullable
 	@Override
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-		if (!level.isClientSide) {
+		if (!level.isClientSide()) {
 			return createTickerHelper(type, BotaniaBlockEntities.TERU_TERU_BOZU, TeruTeruBozuBlockEntity::serverTick);
 		}
 		return null;

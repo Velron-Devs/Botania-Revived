@@ -57,10 +57,6 @@
                     {
                       "duration": 200,
                       "id": "minecraft:darkness",
-                      "neoforge:cures": [
-                        "milk",
-                        "protected_by_totem"
-                      ],
                       "show_icon": true
                     }
                   ]

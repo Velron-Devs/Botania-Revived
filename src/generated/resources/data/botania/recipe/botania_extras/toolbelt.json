@@ -8,18 +8,10 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "C": {
-      "item": "minecraft:chest"
-    },
-    "L": {
-      "item": "minecraft:leather"
-    },
-    "P": {
-      "item": "botania:pixie_dust"
-    },
-    "S": {
-      "item": "botania:rune_sloth"
-    }
+    "C": "minecraft:chest",
+    "L": "minecraft:leather",
+    "P": "botania:pixie_dust",
+    "S": "botania:rune_sloth"
   },
   "pattern": [
     "CL ",
@@ -27,7 +19,6 @@
     "PLS"
   ],
   "result": {
-    "count": 1,
     "id": "botania:toolbelt"
   }
 }

@@ -1,7 +1,7 @@
 package velrondevs.botania.module.botaniaextras;
 
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
@@ -64,7 +64,7 @@ public final class BotaniaExtrasBlocks {
 			.strength(0.3F).sound(SoundType.GLASS)
 			.lightLevel(s -> s.getValue(IridescentLanternBlock.POWER) > 0 ? 15 : 0));
 	public static final Block frozenStar = new FrozenStarBlock(BlockBehaviour.Properties.of().mapColor(MapColor.NONE)
-			.noCollission().instabreak().sound(SoundType.WOOL).lightLevel(s -> 15).noLootTable()
+			.noCollision().instabreak().sound(SoundType.WOOL).lightLevel(s -> 15).noLootTable()
 			.pushReaction(PushReaction.DESTROY));
 	public static final Block blazeKindling = new BlazeKindlingBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_ORANGE)
 			.instabreak().sound(SoundType.WOOL));
@@ -95,7 +95,7 @@ public final class BotaniaExtrasBlocks {
 	}
 
 	private static BlockBehaviour.Properties flashProps() {
-		return BlockBehaviour.Properties.of().pushReaction(PushReaction.DESTROY).sound(SoundType.WOOL).lightLevel(s -> 15).noCollission().noLootTable();
+		return BlockBehaviour.Properties.of().pushReaction(PushReaction.DESTROY).sound(SoundType.WOOL).lightLevel(s -> 15).noCollision().noLootTable();
 	}
 
 	private static BlockBehaviour.Properties grassProps() {
@@ -118,20 +118,20 @@ public final class BotaniaExtrasBlocks {
 		return Collections.unmodifiableList(ALL);
 	}
 
-	public static ResourceLocation dirtId(@Nullable DyeColor color) {
+	public static Identifier dirtId(@Nullable DyeColor color) {
 		return color == null ? prefix("bifrost_dirt") : prefix(color.getSerializedName() + "_iridescent_dirt");
 	}
 
-	public static ResourceLocation grassId(@Nullable DyeColor color) {
+	public static Identifier grassId(@Nullable DyeColor color) {
 		return color == null ? prefix("bifrost_grass") : prefix(color.getSerializedName() + "_iridescent_grass");
 	}
 
-	public static ResourceLocation tallGrassId(@Nullable DyeColor color) {
+	public static Identifier tallGrassId(@Nullable DyeColor color) {
 		return color == null ? prefix("bifrost_tall_grass") : prefix(color.getSerializedName() + "_iridescent_tall_grass");
 	}
 
-	public static void registerBlocks(BiConsumer<Block, ResourceLocation> r) {
-		BiConsumer<Block, ResourceLocation> tracking = (b, id) -> {
+	public static void registerBlocks(BiConsumer<Block, Identifier> r) {
+		BiConsumer<Block, Identifier> tracking = (b, id) -> {
 			ALL.add(b);
 			r.accept(b, id);
 		};
@@ -166,7 +166,7 @@ public final class BotaniaExtrasBlocks {
 		tracking.accept(sonicAmplifier, prefix("sonic_amplifier"));
 	}
 
-	public static void registerItemBlocks(BiConsumer<Item, ResourceLocation> r) {
+	public static void registerItemBlocks(BiConsumer<Item, Identifier> r) {
 		Item.Properties props = BotaniaItems.defaultBuilder();
 		for (Block b : ALL) {
 			if (b == frozenStar || b == rainbowManaFlash || b == phantomManaFlash || b == dendricSuffuser) {

@@ -6,7 +6,6 @@ import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.SimpleCraftingRecipeSerializer;
 import net.minecraft.world.level.Level;
 
 import org.jetbrains.annotations.NotNull;
@@ -15,11 +14,9 @@ import velrondevs.botania.api.mana.BasicLensItem;
 import velrondevs.botania.common.item.ManaBlasterItem;
 
 public class ManaBlasterLensRecipe extends CustomRecipe {
-	public static final RecipeSerializer<ManaBlasterLensRecipe> SERIALIZER = new SimpleCraftingRecipeSerializer<>(ManaBlasterLensRecipe::new);
+	public static final RecipeSerializer<ManaBlasterLensRecipe> SERIALIZER = RecipeUtils.simpleSerializer(ManaBlasterLensRecipe::new);
 
-	public ManaBlasterLensRecipe(CraftingBookCategory category) {
-		super(category);
-	}
+	public ManaBlasterLensRecipe() {}
 
 	@Override
 	public boolean matches(@NotNull CraftingInput inv, @NotNull Level world) {
@@ -44,7 +41,7 @@ public class ManaBlasterLensRecipe extends CustomRecipe {
 
 	@NotNull
 	@Override
-	public ItemStack assemble(@NotNull CraftingInput inv, @NotNull HolderLookup.Provider registries) {
+	public ItemStack assemble(@NotNull CraftingInput inv) {
 		ItemStack lens = ItemStack.EMPTY;
 		ItemStack gun = ItemStack.EMPTY;
 
@@ -69,14 +66,9 @@ public class ManaBlasterLensRecipe extends CustomRecipe {
 		return gunCopy;
 	}
 
-	@Override
-	public boolean canCraftInDimensions(int width, int height) {
-		return width * height >= 2;
-	}
-
 	@NotNull
 	@Override
-	public RecipeSerializer<?> getSerializer() {
+	public RecipeSerializer<? extends CustomRecipe> getSerializer() {
 		return SERIALIZER;
 	}
 }

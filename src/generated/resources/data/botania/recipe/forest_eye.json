@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "redstone",
   "key": {
-    "E": {
-      "item": "minecraft:ender_eye"
-    },
-    "M": {
-      "tag": "botania:manasteel_ingots"
-    },
-    "S": {
-      "item": "botania:livingrock"
-    }
+    "E": "minecraft:ender_eye",
+    "M": "#botania:manasteel_ingots",
+    "S": "botania:livingrock"
   },
   "pattern": [
     "MSM",
@@ -18,7 +12,6 @@
     "MSM"
   ],
   "result": {
-    "count": 1,
     "id": "botania:forest_eye"
   }
 }

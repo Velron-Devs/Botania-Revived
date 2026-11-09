@@ -1,34 +1,28 @@
 package velrondevs.botania.xplat;
 
-import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
 import com.mojang.blaze3d.vertex.PoseStack;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.client.model.data.ModelData;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import net.neoforged.neoforge.common.NeoForge;
 
 import org.jetbrains.annotations.Nullable;
+
+import java.util.function.Supplier;
 
 import velrondevs.botania.api.BotaniaClientCapabilities;
 import velrondevs.botania.api.block.WandHUD;
 import velrondevs.botania.api.item.TinyPotatoRenderEvent;
 import velrondevs.botania.capability.CapabilityUtil;
 import velrondevs.botania.integration.sodium.SodiumHelper;
-import net.neoforged.neoforge.network.PacketDistributor;
-import velrondevs.botania.client.model.PlatformBakedModel;
 import velrondevs.botania.network.BotaniaPacket;
 
 public class ClientXplatImpl implements ClientXplatAbstractions {
@@ -39,7 +33,7 @@ public class ClientXplatImpl implements ClientXplatAbstractions {
 
 	@Override
 	public void sendToServer(BotaniaPacket packet) {
-		PacketDistributor.sendToServer(packet);
+		ClientPacketDistributor.sendToServer(packet);
 	}
 
 	@Nullable
@@ -52,34 +46,6 @@ public class ClientXplatImpl implements ClientXplatAbstractions {
 	@Override
 	public WandHUD findWandHud(Entity entity) {
 		return entity.getCapability(BotaniaClientCapabilities.ENTITY_WAND_HUD);
-	}
-
-	@Override
-	public BakedModel wrapPlatformModel(BakedModel original) {
-		return new PlatformBakedModel(original);
-	}
-
-	@Override
-	public void setFilterSave(AbstractTexture texture, boolean filter, boolean mipmap) {
-		texture.setBlurMipmap(filter, mipmap);
-	}
-
-	@Override
-	public void restoreLastFilter(AbstractTexture texture) {
-		texture.restoreLastBlurMipmap();
-	}
-
-	@Override
-	public void tessellateBlock(Level level, BlockState state, BlockPos pos, PoseStack ps, MultiBufferSource buffers, int overlay) {
-		var renderer = Minecraft.getInstance().getBlockRenderer();
-		var model = renderer.getBlockModel(state);
-		var modelData = model.getModelData(level, pos, state, ModelData.EMPTY);
-		var rand = RandomSource.create();
-		for (RenderType type : model.getRenderTypes(state, rand, modelData)) {
-			renderer.getModelRenderer().tesselateBlock(level, model,
-					state, pos, ps, buffers.getBuffer(type), false, rand,
-					state.getSeed(pos), overlay, modelData, type);
-		}
 	}
 
 	@Override

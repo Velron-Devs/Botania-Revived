@@ -4,9 +4,7 @@
     "type": "minecraft:crafting_shapeless",
     "category": "misc",
     "ingredients": [
-      {
-        "item": "botania:blaze_block"
-      }
+      "botania:blaze_block"
     ],
     "result": {
       "count": 9,
@@ -17,9 +15,7 @@
     "type": "minecraft:crafting_shapeless",
     "category": "misc",
     "ingredients": [
-      {
-        "item": "botania:blaze_block"
-      }
+      "botania:blaze_block"
     ],
     "result": {
       "count": 9,

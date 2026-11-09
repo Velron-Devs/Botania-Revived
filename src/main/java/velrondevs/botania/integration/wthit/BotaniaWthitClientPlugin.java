@@ -20,7 +20,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -48,13 +48,13 @@ public class BotaniaWthitClientPlugin implements IWailaClientPlugin {
 			Level level = accessor.getLevel();
 			HolderLookup.Provider registries = level.registryAccess();
 			CompoundTag raw = accessor.getData().raw();
-			CompoundTag tag = raw.contains(WthitData.ROOT) ? raw.getCompound(WthitData.ROOT) : WthitData.collect(be, false);
+			CompoundTag tag = raw.getCompound(WthitData.ROOT).orElseGet(() -> WthitData.collect(be, false));
 
 			appendMana(tooltip, tag, config);
 
 			if (be instanceof ManaPoolBlockEntity pool) {
 				if (tag.contains(WthitData.OUTPUTTING) && config.getBoolean(BotaniaWthitPlugin.POOL_MODE)) {
-					tooltip.addLine(pair("mode", Component.translatable(tag.getBoolean(WthitData.OUTPUTTING) ? "botania.wthit.pool.charging" : "botania.wthit.pool.draining")));
+					tooltip.addLine(pair("mode", Component.translatable(tag.getBooleanOr(WthitData.OUTPUTTING, false) ? "botania.wthit.pool.charging" : "botania.wthit.pool.draining")));
 				}
 				if (config.getBoolean(BotaniaWthitPlugin.POOL_RECIPE)) {
 					appendPoolRecipe(tooltip, accessor, pool, tag);
@@ -80,17 +80,17 @@ public class BotaniaWthitClientPlugin implements IWailaClientPlugin {
 				}
 				if (config.getBoolean(BotaniaWthitPlugin.FLOWER_TIMERS)) {
 					if (tag.contains(WthitData.BURN)) {
-						tooltip.addLine(pair("burn_time", Component.literal(time(tag.getInt(WthitData.BURN)))));
+						tooltip.addLine(pair("burn_time", Component.literal(time(tag.getIntOr(WthitData.BURN, 0)))));
 					}
 					if (tag.contains(WthitData.COOLDOWN)) {
-						tooltip.addLine(pair("cooldown", Component.literal(time(tag.getInt(WthitData.COOLDOWN)))));
+						tooltip.addLine(pair("cooldown", Component.literal(time(tag.getIntOr(WthitData.COOLDOWN, 0)))));
 					}
 					if (tag.contains(WthitData.DIGESTING)) {
-						tooltip.addLine(pair("digesting", Component.literal(number(tag.getInt(WthitData.DIGESTING), config))));
+						tooltip.addLine(pair("digesting", Component.literal(number(tag.getIntOr(WthitData.DIGESTING, 0), config))));
 					}
 					if (tag.contains(WthitData.DECAY)) {
-						int decay = tag.getInt(WthitData.DECAY);
-						int max = Math.max(1, tag.getInt(WthitData.DECAY_MAX));
+						int decay = tag.getIntOr(WthitData.DECAY, 0);
+						int max = Math.max(1, tag.getIntOr(WthitData.DECAY_MAX, 0));
 						if (config.getBoolean(BotaniaWthitPlugin.PROGRESS_ENABLED)) {
 							tooltip.addLine(pair("decay", new BarComponent((float) decay / max, color(config, BotaniaWthitPlugin.PROGRESS_COLOR), time(decay))));
 						} else {
@@ -98,9 +98,9 @@ public class BotaniaWthitClientPlugin implements IWailaClientPlugin {
 						}
 					}
 					if (tag.contains(WthitData.CONVERTING)) {
-						tooltip.addLine(pair("converting", Component.literal(String.valueOf(tag.getInt(WthitData.CONVERTING)))));
+						tooltip.addLine(pair("converting", Component.literal(String.valueOf(tag.getIntOr(WthitData.CONVERTING, 0)))));
 					}
-					if (tag.getBoolean(WthitData.OVERGROWTH)) {
+					if (tag.getBooleanOr(WthitData.OVERGROWTH, false)) {
 						tooltip.addLine(Component.translatable("botania.wthit.overgrowth").withStyle(ChatFormatting.GREEN));
 					}
 				}
@@ -110,45 +110,45 @@ public class BotaniaWthitClientPlugin implements IWailaClientPlugin {
 
 			if (config.getBoolean(BotaniaWthitPlugin.CRAFTING_STATUS)) {
 				if (tag.contains(WthitData.FLUID)) {
-					tooltip.addLine(pair("fluid", Component.translatable("botania.wthit.fluid." + tag.getString(WthitData.FLUID))));
+					tooltip.addLine(pair("fluid", Component.translatable("botania.wthit.fluid." + tag.getStringOr(WthitData.FLUID, ""))));
 				}
 				if (tag.contains(WthitData.STAGE)) {
-					tooltip.addLine(pair("stage", Component.translatable("botania.wthit.stage." + tag.getString(WthitData.STAGE))));
+					tooltip.addLine(pair("stage", Component.translatable("botania.wthit.stage." + tag.getStringOr(WthitData.STAGE, ""))));
 				}
 				if (tag.contains(WthitData.ACTIVE)) {
-					tooltip.addLine(pair("status", Component.translatable(tag.getBoolean(WthitData.ACTIVE) ? "botania.wthit.active" : "botania.wthit.inactive")));
+					tooltip.addLine(pair("status", Component.translatable(tag.getBooleanOr(WthitData.ACTIVE, false) ? "botania.wthit.active" : "botania.wthit.inactive")));
 				}
 			}
 
 			if (config.getBoolean(BotaniaWthitPlugin.CRAFTING_RECIPE) && (tag.contains(WthitData.INPUTS) || tag.contains(WthitData.OUTPUT))) {
 				appendRecipeRow(tooltip, WthitData.getStacks(tag, WthitData.INPUTS, registries),
-						WthitData.getStack(tag, WthitData.OUTPUT, registries), tag.getFloat(WthitData.PROGRESS));
+						WthitData.getStack(tag, WthitData.OUTPUT, registries), tag.getFloatOr(WthitData.PROGRESS, 0F));
 			}
 
 			if (tag.contains(WthitData.ENERGY) && config.getBoolean(BotaniaWthitPlugin.ENERGY_ENABLED)) {
-				int energy = tag.getInt(WthitData.ENERGY);
-				int max = Math.max(1, tag.getInt(WthitData.MAX_ENERGY));
+				int energy = tag.getIntOr(WthitData.ENERGY, 0);
+				int max = Math.max(1, tag.getIntOr(WthitData.MAX_ENERGY, 0));
 				String text = number(energy, config) + " / " + number(max, config) + " FE";
 				tooltip.addLine(new BarComponent(Math.min(1F, (float) energy / max), color(config, BotaniaWthitPlugin.ENERGY_COLOR), text));
 			}
 
 			if (tag.contains(WthitData.PORTAL) && config.getBoolean(BotaniaWthitPlugin.PORTAL_ENABLED)) {
-				boolean open = tag.getBoolean(WthitData.PORTAL);
+				boolean open = tag.getBooleanOr(WthitData.PORTAL, false);
 				tooltip.addLine(pair("portal", Component.translatable(open ? "botania.wthit.portal.open" : "botania.wthit.portal.closed")
 						.withStyle(open ? ChatFormatting.GREEN : ChatFormatting.GRAY)));
 				if (tag.contains(WthitData.PYLONS)) {
-					tooltip.addLine(pair("pylons", Component.literal(String.valueOf(tag.getInt(WthitData.PYLONS)))));
+					tooltip.addLine(pair("pylons", Component.literal(String.valueOf(tag.getIntOr(WthitData.PYLONS, 0)))));
 				}
 			}
 
 			if (config.getBoolean(BotaniaWthitPlugin.PROGRESS_ENABLED)) {
 				if (tag.contains(WthitData.TIME_TOTAL)) {
-					int done = tag.getInt(WthitData.TIME_DONE);
-					int total = Math.max(1, tag.getInt(WthitData.TIME_TOTAL));
+					int done = tag.getIntOr(WthitData.TIME_DONE, 0);
+					int total = Math.max(1, tag.getIntOr(WthitData.TIME_TOTAL, 0));
 					tooltip.addLine(new BarComponent(Math.min(1F, (float) done / total), color(config, BotaniaWthitPlugin.PROGRESS_COLOR), time(done) + " / " + time(total)));
 				}
 				if (tag.contains(WthitData.TIME_LEFT)) {
-					tooltip.addLine(pair("time_left", Component.literal(time(tag.getInt(WthitData.TIME_LEFT)))));
+					tooltip.addLine(pair("time_left", Component.literal(time(tag.getIntOr(WthitData.TIME_LEFT, 0)))));
 				}
 			}
 		}
@@ -161,17 +161,17 @@ public class BotaniaWthitClientPlugin implements IWailaClientPlugin {
 			if (!config.getBoolean(flower ? BotaniaWthitPlugin.FLOWER_MANA : BotaniaWthitPlugin.MANA_ENABLED)) {
 				return;
 			}
-			int mana = tag.getInt(WthitData.MANA);
+			int mana = tag.getIntOr(WthitData.MANA, 0);
 			if (!tag.contains(WthitData.MAX_MANA)) {
 				tooltip.addLine(pair("mana", Component.literal(number(mana, config))));
 				return;
 			}
-			int max = tag.getInt(WthitData.MAX_MANA);
+			int max = tag.getIntOr(WthitData.MAX_MANA, 0);
 			if (max <= 0) {
 				return;
 			}
 			int barColor = flower && config.getBoolean(BotaniaWthitPlugin.FLOWER_COLOR)
-					? 0xFF000000 | tag.getInt(WthitData.FLOWER_COLOR)
+					? 0xFF000000 | tag.getIntOr(WthitData.FLOWER_COLOR, 0)
 					: color(config, BotaniaWthitPlugin.MANA_COLOR);
 			String text = number(mana, config) + " / " + number(max, config);
 			tooltip.addLine(new BarComponent(Math.min(1F, (float) mana / max), barColor, text));
@@ -188,7 +188,7 @@ public class BotaniaWthitClientPlugin implements IWailaClientPlugin {
 				return;
 			}
 			int cost = recipe.getManaToConsume();
-			int mana = tag.contains(WthitData.MANA) ? tag.getInt(WthitData.MANA) : pool.getCurrentMana();
+			int mana = tag.contains(WthitData.MANA) ? tag.getIntOr(WthitData.MANA, 0) : pool.getCurrentMana();
 			float progress = cost <= 0 ? 1F : Math.min(1F, (float) mana / cost);
 			ItemStack output = recipe.getResultItem(level.registryAccess()).copy();
 			appendRecipeRow(tooltip, List.of(held.copyWithCount(1)), output, progress);
@@ -229,7 +229,7 @@ public class BotaniaWthitClientPlugin implements IWailaClientPlugin {
 			return new PairComponent(new WrappedComponent(Component.translatable("botania.wthit." + key)), value);
 		}
 
-		private static int color(IPluginConfig config, ResourceLocation key) {
+		private static int color(IPluginConfig config, Identifier key) {
 			return 0xFF000000 | (config.getInt(key) & 0xFFFFFF);
 		}
 

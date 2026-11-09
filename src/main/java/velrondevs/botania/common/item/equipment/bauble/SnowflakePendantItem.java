@@ -1,5 +1,7 @@
 package velrondevs.botania.common.item.equipment.bauble;
 
+import velrondevs.botania.client.core.helper.RenderHelper;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
@@ -8,7 +10,7 @@ import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.BlockParticleOption;
@@ -65,7 +67,7 @@ public class SnowflakePendantItem extends BaubleItem {
 
 	@Override
 	public void onWornTick(ItemStack stack, LivingEntity entity) {
-		if (!entity.level().isClientSide && !entity.isShiftKeyDown()) {
+		if (!entity.level().isClientSide() && !entity.isShiftKeyDown()) {
 			boolean lastOnGround = entity.onGround();
 			entity.setOnGround(true);
 			freezeWater(entity, entity.level(), entity.blockPosition(), 8);
@@ -83,14 +85,14 @@ public class SnowflakePendantItem extends BaubleItem {
 
 				if (entity.level().isEmptyBlock(blockpos) && blockstate.canSurvive(entity.level(), blockpos)) {
 					var biome = entity.level().getBiome(blockpos);
-					if (((BiomeAccessor) (Object) biome.value()).callGetTemperature(blockpos) < 0.9F) {
+					if (((BiomeAccessor) (Object) biome.value()).callGetTemperature(blockpos, entity.level().getSeaLevel()) < 0.9F) {
 						entity.level().setBlockAndUpdate(blockpos, blockstate);
 					}
 				}
 			}
-		} else if (entity.level().isClientSide && !entity.isShiftKeyDown()) {
-			if (entity.level().random.nextFloat() >= 0.25F) {
-				entity.level().addParticle(new BlockParticleOption(ParticleTypes.FALLING_DUST, Blocks.SNOW_BLOCK.defaultBlockState()), entity.getX() + entity.level().random.nextFloat() * 0.6 - 0.3, entity.getY() + 1.1, entity.getZ() + entity.level().random.nextFloat() * 0.6 - 0.3, 0, -0.15, 0);
+		} else if (entity.level().isClientSide() && !entity.isShiftKeyDown()) {
+			if (entity.level().getRandom().nextFloat() >= 0.25F) {
+				entity.level().addParticle(new BlockParticleOption(ParticleTypes.FALLING_DUST, Blocks.SNOW_BLOCK.defaultBlockState()), entity.getX() + entity.level().getRandom().nextFloat() * 0.6 - 0.3, entity.getY() + 1.1, entity.getZ() + entity.level().getRandom().nextFloat() * 0.6 - 0.3, 0, -0.15, 0);
 			}
 		}
 	}
@@ -102,16 +104,15 @@ public class SnowflakePendantItem extends BaubleItem {
 
 	public static class Renderer implements AccessoryRenderer {
 		@Override
-		public void doRender(HumanoidModel<?> bipedModel, ItemStack stack, LivingEntity living, PoseStack ms, MultiBufferSource buffers, int light, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+		public void doRender(HumanoidModel<?> bipedModel, ItemStack stack, LivingEntity living, PoseStack ms, SubmitNodeCollector collector, int light, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+			MultiBufferSource buffers = RenderHelper.buffers(collector);
 			boolean armor = !living.getItemBySlot(EquipmentSlot.CHEST).isEmpty();
 			bipedModel.body.translateAndRotate(ms);
 			ms.translate(-0.25, 0.5, armor ? 0.05 : 0.12);
 			ms.scale(0.5F, -0.5F, -0.5F);
 
-			BakedModel model = MiscellaneousModels.INSTANCE.snowflakePendantGem;
-			VertexConsumer buffer = buffers.getBuffer(Sheets.cutoutBlockSheet());
-			Minecraft.getInstance().getBlockRenderer().getModelRenderer()
-					.renderModel(ms.last(), buffer, null, model, 1, 1, 1, light, OverlayTexture.NO_OVERLAY);
+			BlockStateModelPart model = MiscellaneousModels.INSTANCE.snowflakePendantGem;
+			RenderHelper.renderModelPart(model, ms, buffers, light, OverlayTexture.NO_OVERLAY);
 		}
 	}
 

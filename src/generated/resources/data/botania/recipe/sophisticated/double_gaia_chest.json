@@ -19,15 +19,9 @@
   "type": "sophisticatedstorage:double_chest_tier_upgrade_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "botania:terrasteel_chest"
-    },
-    {
-      "item": "botania:gaia_ingot"
-    },
-    {
-      "item": "botania:gaia_ingot"
-    }
+    "botania:terrasteel_chest",
+    "botania:gaia_ingot",
+    "botania:gaia_ingot"
   ],
   "result": {
     "count": 1,

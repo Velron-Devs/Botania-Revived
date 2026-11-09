@@ -37,7 +37,7 @@ public class LivingwoodFunnelBlock extends HopperBlock {
 	@Nullable
 	@Override
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-		return level.isClientSide ? null : createTickerHelper(type, BotaniaExtrasUtilities.FUNNEL, LivingwoodFunnelBlockEntity::serverTick);
+		return level.isClientSide() ? null : createTickerHelper(type, BotaniaExtrasUtilities.FUNNEL, LivingwoodFunnelBlockEntity::serverTick);
 	}
 
 	@Override

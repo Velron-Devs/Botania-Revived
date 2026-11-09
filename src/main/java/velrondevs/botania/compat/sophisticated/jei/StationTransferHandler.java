@@ -10,19 +10,19 @@ import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Recipe;
-import net.neoforged.neoforge.items.IItemHandlerModifiable;
-import net.neoforged.neoforge.network.PacketDistributor;
+import velrondevs.botania.compat.sophisticated.UpgradeSlots;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import net.p3pp3rf1y.sophisticatedcore.common.gui.StorageContainerMenuBase;
 
 import velrondevs.botania.client.integration.jei.JEIRecipeIds;
-import velrondevs.botania.compat.sophisticated.StationUpgradeContainer;
+import net.p3pp3rf1y.sophisticatedcore.common.gui.UpgradeContainerBase;
 import velrondevs.botania.compat.sophisticated.transfer.StationKind;
 import velrondevs.botania.compat.sophisticated.transfer.StationTransfer;
 import velrondevs.botania.compat.sophisticated.transfer.StationTransferPayload;
@@ -61,11 +61,11 @@ public class StationTransferHandler<C extends StorageContainerMenuBase<?>, R ext
 
 	@Override
 	public IRecipeTransferError transferRecipe(C menu, R recipe, IRecipeSlotsView slotsView, Player player, boolean maxTransfer, boolean doTransfer) {
-		Optional<StationUpgradeContainer<?, ?>> container = StationTransfer.find(menu, kind);
+		Optional<UpgradeContainerBase<?, ?>> container = StationTransfer.find(menu, kind);
 		if (container.isEmpty()) {
 			return helper.createUserErrorWithTooltip(Component.translatable(kind.missingUpgradeKey()));
 		}
-		ResourceLocation recipeId = JEIRecipeIds.idOf(recipe);
+		Identifier recipeId = JEIRecipeIds.idOf(recipe);
 		if (recipeId == null) {
 			return helper.createInternalError();
 		}
@@ -75,9 +75,10 @@ public class StationTransferHandler<C extends StorageContainerMenuBase<?>, R ext
 		if (needs == null) {
 			return helper.createUserErrorWithTooltip(Component.translatable("gui.botania.sophisticated.transfer.invalid"));
 		}
-		IItemHandlerModifiable target = container.get().getUpgradeWrapper().getInventory();
+		UpgradeSlots target = StationTransfer.inventory(container.get());
+		boolean[] managed = StationTransfer.managed(kind, needs, target.getSlots());
 		List<Slot> sources = StationTransfer.sources(menu, player);
-		StationTransfer.Plan plan = StationTransfer.plan(needs, StationTransfer.snapshot(sources), target, kind == StationKind.ELVEN_PORTAL, maxTransfer, true);
+		StationTransfer.Plan plan = StationTransfer.plan(needs, StationTransfer.snapshot(sources), target, kind == StationKind.ELVEN_PORTAL, maxTransfer, true, managed);
 		if (!plan.ok()) {
 			List<IRecipeSlotView> missing = new ArrayList<>();
 			for (int view : plan.missingViews()) {
@@ -89,7 +90,7 @@ public class StationTransferHandler<C extends StorageContainerMenuBase<?>, R ext
 			return missing.isEmpty() ? helper.createUserErrorWithTooltip(message) : helper.createUserErrorForMissingSlots(message, missing);
 		}
 		if (doTransfer) {
-			PacketDistributor.sendToServer(new StationTransferPayload(menu.containerId, kind.ordinal(), recipeId, BuiltInRegistries.ITEM.getKey(preferred), maxTransfer));
+			ClientPacketDistributor.sendToServer(new StationTransferPayload(menu.containerId, kind.ordinal(), recipeId, BuiltInRegistries.ITEM.getKey(preferred), maxTransfer));
 		}
 		return null;
 	}

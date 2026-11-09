@@ -1,11 +1,9 @@
 package velrondevs.botania.datagen;
 
 import net.minecraft.core.HolderLookup;
-import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 
 import velrondevs.botania.common.lib.LibMisc;
@@ -13,10 +11,8 @@ import velrondevs.botania.datagen.providers.BotaniaAtlasProvider;
 import velrondevs.botania.datagen.providers.DatapackRegistryProvider;
 import velrondevs.botania.datagen.providers.LooniumStructureConfigurationProvider;
 import velrondevs.botania.datagen.providers.advancements.AdvancementProvider;
-import velrondevs.botania.datagen.providers.integration.BotanyPotsDataProvider;
 import velrondevs.botania.datagen.providers.integration.CuriosSlotProvider;
 import velrondevs.botania.datagen.providers.integration.PatchouliBookProvider;
-import velrondevs.botania.datagen.providers.integration.QuarkAttributeTooltipProvider;
 import velrondevs.botania.datagen.providers.integration.ThaumaturgeDataProvider;
 import velrondevs.botania.datagen.providers.lang.BotaniaLanguageProvider;
 import velrondevs.botania.datagen.providers.loot.BotaniaLootTableProvider;
@@ -50,68 +46,70 @@ import velrondevs.botania.datagen.providers.tags.EntityTagProvider;
 import velrondevs.botania.datagen.providers.tags.ItemTagProvider;
 import velrondevs.botania.module.BotaniaModules;
 
-import java.util.Collections;
 import java.util.concurrent.CompletableFuture;
 
 @EventBusSubscriber(modid = LibMisc.MOD_ID)
 public class BotaniaDatagen {
 	@SubscribeEvent
-	public static void gatherData(GatherDataEvent evt) {
-		DataGenerator generator = evt.getGenerator();
-		PackOutput output = generator.getPackOutput();
-		ExistingFileHelper fileHelper = evt.getExistingFileHelper();
-		ExistingFileHelper disabledHelper = new ExistingFileHelper(Collections.emptyList(), Collections.emptySet(), false, null, null);
-		boolean server = evt.includeServer();
-		boolean client = evt.includeClient();
+	public static void gatherServerData(GatherDataEvent.Server evt) {
+		PackOutput output = evt.getGenerator().getPackOutput();
 
-		DatapackRegistryProvider datapackRegistries = generator.addProvider(server, new DatapackRegistryProvider(output, evt.getLookupProvider()));
+		DatapackRegistryProvider datapackRegistries = evt.addProvider(new DatapackRegistryProvider(output, evt.getLookupProvider()));
 		CompletableFuture<HolderLookup.Provider> lookup = datapackRegistries.getRegistryProvider();
 
-		generator.addProvider(server, new BotaniaLootTableProvider(output, lookup));
-		generator.addProvider(server, new LooniumStructureConfigurationProvider(output, lookup));
+		evt.addProvider(new velrondevs.botania.datagen.providers.ComponentBindingProvider(lookup));
+		evt.addProvider(new BotaniaLootTableProvider(output, lookup));
+		evt.addProvider(new LooniumStructureConfigurationProvider(output, lookup));
 
-		BlockTagProvider blockTagProvider = generator.addProvider(server, new BlockTagProvider(output, lookup));
-		generator.addProvider(server, new ItemTagProvider(output, lookup, blockTagProvider.contentsGetter()));
-		generator.addProvider(server, new EntityTagProvider(output, lookup));
-		generator.addProvider(server, new BannerPatternTagsProvider(output, lookup));
-		generator.addProvider(server, new BiomeTagProvider(output, lookup));
-		generator.addProvider(server, new DamageTypeTagProvider(output, lookup));
+		BlockTagProvider blockTagProvider = evt.addProvider(new BlockTagProvider(output, lookup));
+		ItemTagProvider itemTagProvider = evt.addProvider(new ItemTagProvider(output, lookup, blockTagProvider.contentsGetter()));
+		evt.addProvider(new EntityTagProvider(output, lookup));
+		evt.addProvider(new BannerPatternTagsProvider(output, lookup));
+		evt.addProvider(new BiomeTagProvider(output, lookup));
+		evt.addProvider(new DamageTypeTagProvider(output, lookup));
 
-		ConventionBlockTagProvider conventionBlockTagProvider = generator.addProvider(server, new ConventionBlockTagProvider(output, lookup, disabledHelper));
-		generator.addProvider(server, new ConventionItemTagProvider(output, lookup, conventionBlockTagProvider.contentsGetter(), disabledHelper));
+		ConventionBlockTagProvider conventionBlockTagProvider = evt.addProvider(new ConventionBlockTagProvider(output, lookup, blockTagProvider.contentsGetter()));
+		evt.addProvider(new ConventionItemTagProvider(output, lookup, itemTagProvider.contentsGetter(), conventionBlockTagProvider.contentsGetter()));
 
-		generator.addProvider(server, new StonecuttingProvider(output, lookup));
-		generator.addProvider(server, new CraftingRecipeProvider(output, lookup));
-		generator.addProvider(server, new ConventionRecipeProvider(output, lookup));
-		generator.addProvider(server, new SmeltingProvider(output, lookup));
-		generator.addProvider(server, new ElvenTradeProvider(output, lookup));
-		generator.addProvider(server, new ManaInfusionProvider(output, lookup));
-		generator.addProvider(server, new PureDaisyProvider(output, lookup));
-		generator.addProvider(server, new BrewProvider(output, lookup));
-		generator.addProvider(server, new PetalApothecaryProvider(output, lookup));
-		generator.addProvider(server, new RunicAltarProvider(output, lookup));
-		generator.addProvider(server, new TerrestrialAgglomerationProvider(output, lookup));
-		generator.addProvider(server, new OrechidProvider(output, lookup));
-		generator.addProvider(server, AdvancementProvider.create(output, lookup, fileHelper));
+		evt.addProvider(new StonecuttingProvider(output, lookup));
+		evt.addProvider(new CraftingRecipeProvider(output, lookup));
+		evt.addProvider(new ConventionRecipeProvider(output, lookup));
+		evt.addProvider(new SmeltingProvider(output, lookup));
+		evt.addProvider(new ElvenTradeProvider(output, lookup));
+		evt.addProvider(new ManaInfusionProvider(output, lookup));
+		evt.addProvider(new PureDaisyProvider(output, lookup));
+		evt.addProvider(new BrewProvider(output, lookup));
+		evt.addProvider(new PetalApothecaryProvider(output, lookup));
+		evt.addProvider(new RunicAltarProvider(output, lookup));
+		evt.addProvider(new TerrestrialAgglomerationProvider(output, lookup));
+		evt.addProvider(new OrechidProvider(output, lookup));
+		evt.addProvider(AdvancementProvider.create(output, lookup));
 
-		generator.addProvider(server, new CuriosSlotProvider(output, fileHelper, lookup));
-		generator.addProvider(server, new PatchouliBookProvider(output));
-		generator.addProvider(server, new BotanyPotsDataProvider(output));
-		generator.addProvider(server, new ThaumaturgeDataProvider(output, false));
-		generator.addProvider(client, new ThaumaturgeDataProvider(output, true));
-
-		generator.addProvider(client, new BlockstateProvider(output));
-		generator.addProvider(client, new FloatingFlowerModelProvider(output));
-		generator.addProvider(client, new ItemModelProvider(output));
-		generator.addProvider(client, new PottedPlantModelProvider(output));
-		generator.addProvider(client, new BlockShapeModelProvider(output, fileHelper));
-		generator.addProvider(client, new CustomItemModelProvider(output, fileHelper));
-		generator.addProvider(client, new BotaniaSoundDefinitionsProvider(output, fileHelper));
-		generator.addProvider(client, new BotaniaParticleDescriptionProvider(output, fileHelper));
-		generator.addProvider(client, new QuarkAttributeTooltipProvider(output));
-		generator.addProvider(client, new BotaniaLanguageProvider(output));
-		generator.addProvider(client, new BotaniaAtlasProvider(output, evt.getLookupProvider(), "botania", disabledHelper));
+		evt.addProvider(new PatchouliBookProvider(output));
+		if (net.neoforged.fml.ModList.get().isLoaded("curios")) {
+			evt.addProvider(new CuriosSlotProvider(output, lookup));
+		}
+		evt.addProvider(new ThaumaturgeDataProvider(output, false));
 
 		BotaniaModules.gatherData(evt, lookup);
+	}
+
+	@SubscribeEvent
+	public static void gatherClientData(GatherDataEvent.Client evt) {
+		PackOutput output = evt.getGenerator().getPackOutput();
+
+		evt.addProvider(new BlockstateProvider(output));
+		evt.addProvider(new FloatingFlowerModelProvider(output));
+		evt.addProvider(new ItemModelProvider(output));
+		evt.addProvider(new PottedPlantModelProvider(output));
+		evt.addProvider(new BlockShapeModelProvider(output));
+		evt.addProvider(new CustomItemModelProvider(output));
+		evt.addProvider(new BotaniaSoundDefinitionsProvider(output));
+		evt.addProvider(new BotaniaParticleDescriptionProvider(output));
+		evt.addProvider(new BotaniaLanguageProvider(output));
+		evt.addProvider(new BotaniaAtlasProvider(output, evt.getLookupProvider(), LibMisc.MOD_ID));
+		evt.addProvider(new ThaumaturgeDataProvider(output, true));
+
+		BotaniaModules.gatherData(evt, evt.getLookupProvider());
 	}
 }

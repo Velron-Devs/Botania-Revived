@@ -1,33 +1,32 @@
 package velrondevs.botania.datagen.providers.botaniaextras;
 
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.BiConsumer;
-import java.util.function.Supplier;
+import net.minecraft.client.data.models.model.ModelInstance;
 
 import static velrondevs.botania.common.lib.ResourceLocationHelper.prefix;
 
 public final class TintedShapes {
-	public static final ResourceLocation COLUMN = shape("tinted_cube_column");
-	public static final ResourceLocation SLAB = shape("tinted_slab");
-	public static final ResourceLocation SLAB_TOP = shape("tinted_slab_top");
-	public static final ResourceLocation STAIRS = shape("tinted_stairs");
-	public static final ResourceLocation STAIRS_INNER = shape("tinted_stairs_inner");
-	public static final ResourceLocation STAIRS_OUTER = shape("tinted_stairs_outer");
+	public static final Identifier COLUMN = shape("tinted_cube_column");
+	public static final Identifier SLAB = shape("tinted_slab");
+	public static final Identifier SLAB_TOP = shape("tinted_slab_top");
+	public static final Identifier STAIRS = shape("tinted_stairs");
+	public static final Identifier STAIRS_INNER = shape("tinted_stairs_inner");
+	public static final Identifier STAIRS_OUTER = shape("tinted_stairs_outer");
 
 	private TintedShapes() {}
 
-	private static ResourceLocation shape(String name) {
+	private static Identifier shape(String name) {
 		return prefix("block/botania_extras/shapes/" + name);
 	}
 
-	public static void register(BiConsumer<ResourceLocation, Supplier<JsonElement>> out) {
+	public static void register(BiConsumer<Identifier, ModelInstance> out) {
 		out.accept(COLUMN, () -> model(
 				new El(0, 0, 0, 16, 16, 16)
 						.face("down", 0, 0, 16, 16, "end", "down")

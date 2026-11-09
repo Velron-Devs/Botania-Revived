@@ -36,7 +36,7 @@ public class BifrostBlockEntity extends BotaniaBlockEntity {
 	@Override
 	public void loadAdditional(@NotNull CompoundTag tag, HolderLookup.Provider registries) {
 		super.loadAdditional(tag, registries);
-		ticks = tag.getInt(TAG_TICKS);
+		ticks = tag.getIntOr(TAG_TICKS, 0);
 	}
 
 }

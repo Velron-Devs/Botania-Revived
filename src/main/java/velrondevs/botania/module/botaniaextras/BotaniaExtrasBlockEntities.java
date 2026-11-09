@@ -1,6 +1,6 @@
 package velrondevs.botania.module.botaniaextras;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
 import velrondevs.botania.module.botaniaextras.block.DendricSuffuserBlockEntity;
@@ -25,7 +25,7 @@ public final class BotaniaExtrasBlockEntities {
 
 	private BotaniaExtrasBlockEntities() {}
 
-	public static void registerBlockEntities(BiConsumer<BlockEntityType<?>, ResourceLocation> r) {
+	public static void registerBlockEntities(BiConsumer<BlockEntityType<?>, Identifier> r) {
 		r.accept(FROZEN_STAR, prefix("frozen_star"));
 		r.accept(RAINBOW_MANA_FLASH, prefix("rainbow_mana_flash"));
 		r.accept(PHANTOM_MANA_FLASH, prefix("phantom_mana_flash"));

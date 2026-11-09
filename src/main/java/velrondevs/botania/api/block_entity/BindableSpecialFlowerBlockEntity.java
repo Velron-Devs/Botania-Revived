@@ -1,7 +1,7 @@
 package velrondevs.botania.api.block_entity;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
@@ -53,7 +53,7 @@ public abstract class BindableSpecialFlowerBlockEntity<T> extends SpecialFlowerB
 
 		if (Bound.UNBOUND_POS.equals(bindingPos)) {
 			setBindingPos(null);
-		} else if (ticksExisted == 1 && !level.isClientSide) {
+		} else if (ticksExisted == 1 && !level.isClientSide()) {
 
 			if (bindingPos == null || !isValidBinding()) {
 				setBindingPos(findClosestTarget());
@@ -144,7 +144,7 @@ public abstract class BindableSpecialFlowerBlockEntity<T> extends SpecialFlowerB
 		super.writeToPacketNBT(cmp, registries);
 
 		if (bindingPos != null) {
-			cmp.put(TAG_BINDING, NbtUtils.writeBlockPos(bindingPos));
+			cmp.store(TAG_BINDING, BlockPos.CODEC, bindingPos);
 		}
 	}
 
@@ -153,18 +153,18 @@ public abstract class BindableSpecialFlowerBlockEntity<T> extends SpecialFlowerB
 		super.readFromPacketNBT(cmp, registries);
 
 		if (cmp.contains(TAG_BINDING)) {
-			if (cmp.contains(TAG_BINDING, Tag.TAG_COMPOUND)) {
-				CompoundTag binding = cmp.getCompound(TAG_BINDING);
-				bindingPos = new BlockPos(binding.getInt("X"), binding.getInt("Y"), binding.getInt("Z"));
+			if (cmp.get(TAG_BINDING) instanceof CompoundTag) {
+				CompoundTag binding = cmp.getCompoundOrEmpty(TAG_BINDING);
+				bindingPos = new BlockPos(binding.getIntOr("X", 0), binding.getIntOr("Y", 0), binding.getIntOr("Z", 0));
 			} else {
-				bindingPos = NbtUtils.readBlockPos(cmp, TAG_BINDING).orElse(null);
+				bindingPos = cmp.read(TAG_BINDING, BlockPos.CODEC).orElse(null);
 			}
 		} else {
 
 			if (cmp.contains("collectorX")) {
-				bindingPos = new BlockPos(cmp.getInt("collectorX"), cmp.getInt("collectorY"), cmp.getInt("collectorZ"));
+				bindingPos = new BlockPos(cmp.getIntOr("collectorX", 0), cmp.getIntOr("collectorY", 0), cmp.getIntOr("collectorZ", 0));
 			} else if (cmp.contains("poolX")) {
-				bindingPos = new BlockPos(cmp.getInt("poolX"), cmp.getInt("poolY"), cmp.getInt("poolZ"));
+				bindingPos = new BlockPos(cmp.getIntOr("poolX", 0), cmp.getIntOr("poolY", 0), cmp.getIntOr("poolZ", 0));
 			}
 
 			if (bindingPos != null && bindingPos.getY() == -1) {
@@ -198,7 +198,7 @@ public abstract class BindableSpecialFlowerBlockEntity<T> extends SpecialFlowerB
 			this.flower = flower;
 		}
 
-		public void renderHUD(GuiGraphics gui, Minecraft mc, int minLeft, int minRight, int minDown) {
+		public void renderHUD(GuiGraphicsExtractor gui, Minecraft mc, int minLeft, int minRight, int minDown) {
 			String name = I18n.get(flower.getBlockState().getBlock().getDescriptionId());
 			int color = flower.getColor();
 
@@ -218,7 +218,7 @@ public abstract class BindableSpecialFlowerBlockEntity<T> extends SpecialFlowerB
 		}
 
 		@Override
-		public void renderHUD(GuiGraphics gui, Minecraft mc) {
+		public void renderHUD(GuiGraphicsExtractor gui, Minecraft mc) {
 			renderHUD(gui, mc, 0, 0, 0);
 		}
 	}

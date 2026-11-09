@@ -5,7 +5,7 @@ import de.dafuqs.fractal.interfaces.ICreativeTabParent;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackLinkedSet;
@@ -22,20 +22,19 @@ public final class FractalSubTabs {
 	private FractalSubTabs() {}
 
 	public static void register() {
-		CreativeModeTab parent = BuiltInRegistries.CREATIVE_MODE_TAB.get(BotaniaRegistries.BOTANIA_TAB_KEY);
+		CreativeModeTab parent = BuiltInRegistries.CREATIVE_MODE_TAB.getValue(BotaniaRegistries.BOTANIA_TAB_KEY);
 		if (parent == null) {
 			return;
 		}
 		for (BotaniaCreativeSections.Section section : BotaniaCreativeSections.activeSections()) {
-			ResourceLocation id = ResourceLocation.fromNamespaceAndPath(LibMisc.MOD_ID, section.id());
-			CreativeSubTab tab = new BotaniaSubTab(parent, id, Component.translatable(section.titleKey()), section,
+			Identifier id = Identifier.fromNamespaceAndPath(LibMisc.MOD_ID, section.id());
+			BotaniaSubTab.create(parent, id, Component.translatable(section.titleKey()), section,
 					BotaniaCreativeSections.MISC.equals(section.id()));
-			CreativeSubTab.SUBTABS.add(tab);
 		}
 	}
 
 	public static void fillParent(CreativeModeTab.ItemDisplayParameters params, CreativeModeTab.Output output) {
-		CreativeModeTab parent = BuiltInRegistries.CREATIVE_MODE_TAB.get(BotaniaRegistries.BOTANIA_TAB_KEY);
+		CreativeModeTab parent = BuiltInRegistries.CREATIVE_MODE_TAB.getValue(BotaniaRegistries.BOTANIA_TAB_KEY);
 		List<CreativeSubTab> children = parent == null ? List.of() : ((ICreativeTabParent) (Object) parent).fractal$getChildren();
 		if (children.isEmpty()) {
 			for (BotaniaCreativeSections.Section section : BotaniaCreativeSections.activeSections()) {

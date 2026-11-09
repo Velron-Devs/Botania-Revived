@@ -8,12 +8,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "redstone",
   "key": {
-    "B": {
-      "tag": "botania:bifrost_dyes"
-    },
-    "L": {
-      "item": "minecraft:redstone_lamp"
-    }
+    "B": "#botania:bifrost_dyes",
+    "L": "minecraft:redstone_lamp"
   },
   "pattern": [
     " B ",
@@ -21,7 +17,6 @@
     " B "
   ],
   "result": {
-    "count": 1,
     "id": "botania:iridescent_lantern"
   }
 }

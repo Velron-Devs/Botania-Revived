@@ -38,7 +38,7 @@ public class BotaniaPayloads {
 			StreamCodec<RegistryFriendlyByteBuf, T> codec, TriConsumer<T, MinecraftServer, ServerPlayer> handler) {
 		registrar.playToServer(type, codec, (IPayloadHandler<T>) (packet, ctx) -> {
 			ServerPlayer player = (ServerPlayer) ctx.player();
-			handler.accept(packet, player.getServer(), player);
+			handler.accept(packet, player.level().getServer(), player);
 		});
 	}
 

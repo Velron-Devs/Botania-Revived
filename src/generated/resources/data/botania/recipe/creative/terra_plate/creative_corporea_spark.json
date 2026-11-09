@@ -7,52 +7,23 @@
   ],
   "type": "botania:terra_plate",
   "ingredients": [
-    {
-      "item": "botania:corporea_spark_master"
-    },
-    {
-      "item": "botania:rune_mana"
-    },
-    {
-      "item": "botania:elementium_block"
-    },
-    {
-      "item": "botania:elementium_block"
-    },
-    {
-      "item": "botania:elementium_block"
-    },
-    {
-      "item": "botania:elementium_block"
-    },
-    {
-      "item": "botania:pixie_dust"
-    },
-    {
-      "item": "botania:pixie_dust"
-    },
-    {
-      "item": "botania:pixie_dust"
-    },
-    {
-      "item": "botania:pixie_dust"
-    },
-    {
-      "item": "botania:life_essence"
-    },
-    {
-      "item": "botania:life_essence"
-    },
-    {
-      "item": "botania:life_essence"
-    },
-    {
-      "item": "botania:life_essence"
-    }
+    "botania:corporea_spark_master",
+    "botania:rune_mana",
+    "botania:elementium_block",
+    "botania:elementium_block",
+    "botania:elementium_block",
+    "botania:elementium_block",
+    "botania:pixie_dust",
+    "botania:pixie_dust",
+    "botania:pixie_dust",
+    "botania:pixie_dust",
+    "botania:life_essence",
+    "botania:life_essence",
+    "botania:life_essence",
+    "botania:life_essence"
   ],
   "mana": 500000,
   "result": {
-    "count": 1,
     "id": "botania:corporea_spark_creative"
   }
 }

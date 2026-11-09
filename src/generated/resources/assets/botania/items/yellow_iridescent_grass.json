@@ -1,0 +1,12 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "botania:item/yellow_iridescent_grass",
+    "tints": [
+      {
+        "type": "minecraft:constant",
+        "value": -75715
+      }
+    ]
+  }
+}

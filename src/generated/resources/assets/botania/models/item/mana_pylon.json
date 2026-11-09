@@ -1,5 +1,5 @@
 {
-  "parent": "minecraft:builtin/entity",
+  "parent": "botania:block/mana_pylon",
   "display": {
     "firstperson_righthand": {
       "rotation": [

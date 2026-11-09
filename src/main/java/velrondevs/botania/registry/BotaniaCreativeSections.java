@@ -1,14 +1,13 @@
 package velrondevs.botania.registry;
 
 import net.minecraft.core.Holder;
-import net.minecraft.world.item.ArmorItem;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ProjectileWeaponItem;
 import net.minecraft.world.item.ShearsItem;
-import net.minecraft.world.item.TieredItem;
 import net.minecraft.world.level.block.Block;
 
 import org.jetbrains.annotations.Nullable;
@@ -267,7 +266,7 @@ public final class BotaniaCreativeSections {
 		if (item instanceof BaseBrewItem || item instanceof VialItem || item instanceof IncenseStickItem) {
 			return BREWING;
 		}
-		if (item instanceof ArmorItem || item instanceof TieredItem || item instanceof ShearsItem
+		if (item.getDefaultInstance().has(DataComponents.EQUIPPABLE) || item.getDefaultInstance().has(DataComponents.TOOL) || item instanceof ShearsItem
 				|| item instanceof ProjectileWeaponItem || item instanceof RelicItem
 				|| item.getClass().getPackageName().equals(PKG_RODS)
 				|| item instanceof ThornChakramItem || item instanceof HornItem || item instanceof LivingwoodSlingshotItem

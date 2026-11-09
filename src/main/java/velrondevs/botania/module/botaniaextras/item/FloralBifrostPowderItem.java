@@ -34,23 +34,23 @@ public class FloralBifrostPowderItem extends Item {
 		BlockPos pos = ctx.getClickedPos();
 		BlockState state = level.getBlockState(pos);
 		if (state.is(BotaniaBlocks.manaPool)) {
-			if (!level.isClientSide) {
+			if (!level.isClientSide()) {
 				BlockEntity be = level.getBlockEntity(pos);
 				CompoundTag data = be == null ? null : be.saveWithoutMetadata(level.registryAccess());
 				level.setBlockAndUpdate(pos, BotaniaBlocks.fabulousPool.defaultBlockState());
 				BlockEntity newBe = level.getBlockEntity(pos);
 				if (data != null && newBe != null) {
-					newBe.loadWithComponents(data, level.registryAccess());
+					newBe.loadWithComponents(net.minecraft.world.level.storage.TagValueInput.create(net.minecraft.util.ProblemReporter.DISCARDING, level.registryAccess(), data));
 					newBe.setChanged();
 					level.sendBlockUpdated(pos, state, level.getBlockState(pos), 3);
 				}
 				ctx.getItemInHand().shrink(1);
 			}
-			return InteractionResult.sidedSuccess(level.isClientSide);
+			return InteractionResult.SUCCESS;
 		}
 		if (convertFlower(level, pos)) {
 			ctx.getItemInHand().shrink(1);
-			return InteractionResult.sidedSuccess(level.isClientSide);
+			return InteractionResult.SUCCESS;
 		}
 		return InteractionResult.PASS;
 	}
@@ -59,9 +59,9 @@ public class FloralBifrostPowderItem extends Item {
 		if (!level.getBlockState(pos).is(BotaniaTags.Blocks.MYSTICAL_FLOWERS)) {
 			return false;
 		}
-		if (level.isClientSide) {
+		if (level.isClientSide()) {
 			for (int i = 0; i < 40; i++) {
-				int rgb = Mth.hsvToRgb(level.random.nextFloat(), 1F, 1F);
+				int rgb = Mth.hsvToRgb(level.getRandom().nextFloat(), 1F, 1F);
 				WispParticleData data = WispParticleData.wisp(0.5F, ((rgb >> 16) & 0xFF) / 255F, ((rgb >> 8) & 0xFF) / 255F, (rgb & 0xFF) / 255F);
 				level.addParticle(data, pos.getX() + Math.random(), pos.getY() + Math.random(), pos.getZ() + Math.random(), 0, 0.125, 0);
 			}

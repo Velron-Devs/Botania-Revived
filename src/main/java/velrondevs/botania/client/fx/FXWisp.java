@@ -1,29 +1,17 @@
 package velrondevs.botania.client.fx;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.particle.ParticleRenderType;
-import net.minecraft.client.particle.TextureSheetParticle;
-import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.renderer.texture.AbstractTexture;
-import net.minecraft.client.renderer.texture.TextureAtlas;
-import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.client.particle.SingleQuadParticle;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 
-import org.jetbrains.annotations.NotNull;
-import org.lwjgl.opengl.GL11;
-
-import velrondevs.botania.xplat.ClientXplatAbstractions;
-
-public class FXWisp extends TextureSheetParticle {
+public class FXWisp extends SingleQuadParticle {
 	private final boolean depthTest;
 	private final float moteParticleScale;
 	private final int moteHalfLife;
 
 	public FXWisp(ClientLevel world, double d, double d1, double d2, double xSpeed, double ySpeed, double zSpeed,
-			float size, float red, float green, float blue, boolean depthTest, float maxAgeMul, boolean noClip, float g) {
-		super(world, d, d1, d2);
+			float size, float red, float green, float blue, boolean depthTest, float maxAgeMul, boolean noClip, float g, TextureAtlasSprite sprite) {
+		super(world, d, d1, d2, sprite);
 
 		xd = xSpeed;
 		yd = ySpeed;
@@ -59,14 +47,13 @@ public class FXWisp extends TextureSheetParticle {
 	}
 
 	@Override
-	protected int getLightColor(float partialTicks) {
+	protected int getLightCoords(float partialTicks) {
 		return 0xF000F0;
 	}
 
-	@NotNull
 	@Override
-	public ParticleRenderType getRenderType() {
-		return depthTest ? NORMAL_RENDER : DIW_RENDER;
+	protected Layer getLayer() {
+		return depthTest ? BotaniaParticleRenderType.ADDITIVE : BotaniaParticleRenderType.ADDITIVE_NO_DEPTH;
 	}
 
 	@Override
@@ -92,59 +79,4 @@ public class FXWisp extends TextureSheetParticle {
 		gravity = value;
 	}
 
-	private static void beginRenderCommon(TextureManager textureManager) {
-		Minecraft.getInstance().gameRenderer.lightTexture().turnOnLightLayer();
-		RenderSystem.depthMask(false);
-		RenderSystem.enableBlend();
-		RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
-
-		RenderSystem.setShader(GameRenderer::getParticleShader);
-		RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_PARTICLES);
-		AbstractTexture tex = textureManager.getTexture(TextureAtlas.LOCATION_PARTICLES);
-		ClientXplatAbstractions.INSTANCE.setFilterSave(tex, true, false);
-	}
-
-	private static void endRenderCommon() {
-		AbstractTexture tex = Minecraft.getInstance().getTextureManager().getTexture(TextureAtlas.LOCATION_PARTICLES);
-		ClientXplatAbstractions.INSTANCE.restoreLastFilter(tex);
-		RenderSystem.disableBlend();
-		RenderSystem.depthMask(true);
-	}
-
-	public static final ParticleRenderType NORMAL_RENDER = new BotaniaParticleRenderType() {
-		@Override
-		protected void setup(TextureManager textureManager) {
-			beginRenderCommon(textureManager);
-			RenderSystem.enableDepthTest();
-		}
-
-		@Override
-		protected void end() {
-			endRenderCommon();
-		}
-
-		@Override
-		public String toString() {
-			return "botania:wisp";
-		}
-	};
-
-	public static final ParticleRenderType DIW_RENDER = new BotaniaParticleRenderType() {
-		@Override
-		protected void setup(TextureManager textureManager) {
-			beginRenderCommon(textureManager);
-			RenderSystem.disableDepthTest();
-		}
-
-		@Override
-		protected void end() {
-			RenderSystem.enableDepthTest();
-			endRenderCommon();
-		}
-
-		@Override
-		public String toString() {
-			return "botania:depth_ignoring_wisp";
-		}
-	};
 }

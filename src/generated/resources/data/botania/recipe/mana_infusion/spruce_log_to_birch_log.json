@@ -5,12 +5,9 @@
     "block": "botania:alchemy_catalyst"
   },
   "group": "botania:log_cycle",
-  "input": {
-    "item": "minecraft:spruce_log"
-  },
+  "input": "minecraft:spruce_log",
   "mana": 40,
   "output": {
-    "count": 1,
     "id": "minecraft:birch_log"
   }
 }

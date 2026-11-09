@@ -1,6 +1,6 @@
 package velrondevs.botania.client.patchouli.processor;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 
@@ -18,7 +18,7 @@ public class TerraPlateProcessor implements IComponentProcessor {
 
 	@Override
 	public void setup(Level level, IVariableProvider variables) {
-		ResourceLocation id = ResourceLocation.parse(variables.get("recipe", level.registryAccess()).asString());
+		Identifier id = Identifier.parse(variables.get("recipe", level.registryAccess()).asString());
 		this.recipe = PatchouliUtils.getRecipe(level, BotaniaRecipeTypes.TERRA_PLATE_TYPE, id);
 	}
 
@@ -34,7 +34,7 @@ public class TerraPlateProcessor implements IComponentProcessor {
 			int index = Integer.parseInt(key.substring(5)) - 1;
 			List<Ingredient> list = recipe.getIngredients();
 			if (index >= 0 && index < list.size()) {
-				return IVariable.from(list.get(index).getItems(), level.registryAccess());
+				return IVariable.from(PatchouliUtils.getItems(list.get(index)), level.registryAccess());
 			}
 		}
 		return null;

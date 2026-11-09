@@ -1,14 +1,9 @@
 package velrondevs.botania.client.render.world;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderBuffers;
-import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.util.Mth;
@@ -31,10 +26,7 @@ import velrondevs.botania.common.item.AstrolabeItem;
 import java.util.List;
 
 public final class AstrolabePreviewHandler {
-	public static void onWorldRenderLast(PoseStack ms, RenderBuffers buffers, Level level) {
-		MultiBufferSource.BufferSource bufferSource = buffers.bufferSource();
-		VertexConsumer buffer = bufferSource.getBuffer(RenderHelper.ASTROLABE_PREVIEW);
-
+	public static void onWorldRenderLast(Vec3 camera, PoseStack ms, MultiBufferSource buffers, Level level) {
 		for (Player player : level.players()) {
 			ItemStack currentStack = player.getMainHandItem();
 			InteractionHand hand = InteractionHand.MAIN_HAND;
@@ -46,15 +38,13 @@ public final class AstrolabePreviewHandler {
 			if (!currentStack.isEmpty() && currentStack.getItem() instanceof AstrolabeItem) {
 				Block block = AstrolabeItem.getBlock(currentStack, level.holderLookup(Registries.BLOCK));
 				if (block != Blocks.AIR) {
-					renderPlayerLook(ms, buffer, player, currentStack, hand);
+					renderPlayerLook(camera, ms, buffers, player, currentStack, hand);
 				}
 			}
 		}
-
-		bufferSource.endBatch(RenderHelper.ASTROLABE_PREVIEW);
 	}
 
-	private static void renderPlayerLook(PoseStack ms, VertexConsumer buffer, Player player, ItemStack stack, InteractionHand hand) {
+	private static void renderPlayerLook(Vec3 camera, PoseStack ms, MultiBufferSource buffers, Player player, ItemStack stack, InteractionHand hand) {
 		Block blockToPlace = AstrolabeItem.getBlock(stack, player.level().holderLookup(Registries.BLOCK));
 		int size = AstrolabeItem.getSize(stack);
 		BlockPlaceContext ctx = AstrolabeItem.getBlockPlaceContext(player, hand, blockToPlace);
@@ -64,7 +54,7 @@ public final class AstrolabePreviewHandler {
 				BlockPlaceContext placeContext = getPlaceContext(player, ctx, pos);
 				BlockState state = blockToPlace.getStateForPlacement(placeContext);
 				if (state != null && placeContext.canPlace() && state.canSurvive(player.level(), pos)) {
-					renderBlockAt(ms, buffer, state, pos);
+					renderBlockAt(camera, ms, buffers, state, pos);
 				}
 			}
 		}
@@ -79,25 +69,12 @@ public final class AstrolabePreviewHandler {
 		return new BlockPlaceContext(player, ctx.getHand(), ctx.getItemInHand(), newHit);
 	}
 
-	private static void renderBlockAt(PoseStack ms, VertexConsumer buffer, BlockState state, BlockPos pos) {
-		double renderPosX = Minecraft.getInstance().getEntityRenderDispatcher().camera.getPosition().x();
-		double renderPosY = Minecraft.getInstance().getEntityRenderDispatcher().camera.getPosition().y();
-		double renderPosZ = Minecraft.getInstance().getEntityRenderDispatcher().camera.getPosition().z();
-
+	private static void renderBlockAt(Vec3 camera, PoseStack ms, MultiBufferSource buffers, BlockState state, BlockPos pos) {
 		ms.pushPose();
-		ms.translate(-renderPosX, -renderPosY, -renderPosZ);
-
-		BlockRenderDispatcher brd = Minecraft.getInstance().getBlockRenderer();
-		ms.translate(pos.getX(), pos.getY(), pos.getZ());
-		BakedModel model = brd.getBlockModel(state);
-		int color = Minecraft.getInstance().getBlockColors().getColor(state, null, null, 0);
-		float r = (float) (color >> 16 & 255) / 255.0F;
-		float g = (float) (color >> 8 & 255) / 255.0F;
-		float b = (float) (color & 255) / 255.0F;
-
-		brd.getModelRenderer().renderModel(ms.last(), buffer, state, model, r, g, b, 0xF000F0, OverlayTexture.NO_OVERLAY);
-
+		ms.translate(pos.getX() - camera.x(), pos.getY() - camera.y(), pos.getZ() - camera.z());
+		RenderHelper.renderBlockState(state, ms, buffers, RenderHelper.ASTROLABE_PREVIEW, 0x66FFFFFF, 0xF000F0, OverlayTexture.NO_OVERLAY);
 		ms.popPose();
 	}
 
+	private AstrolabePreviewHandler() {}
 }

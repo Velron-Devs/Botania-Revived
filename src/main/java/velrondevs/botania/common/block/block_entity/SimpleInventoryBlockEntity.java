@@ -9,6 +9,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.Clearable;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
+import net.minecraft.world.Containers;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -20,7 +21,18 @@ public abstract class SimpleInventoryBlockEntity extends BotaniaBlockEntity impl
 
 	protected SimpleInventoryBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
 		super(type, pos, state);
-		itemHandler.addListener(i -> setChanged());
+	}
+
+	protected class Inventory extends SimpleContainer {
+		public Inventory(int size) {
+			super(size);
+		}
+
+		@Override
+		public void setChanged() {
+			super.setChanged();
+			SimpleInventoryBlockEntity.this.setChanged();
+		}
 	}
 
 	private static void copyToInv(NonNullList<ItemStack> src, Container dest) {
@@ -41,13 +53,20 @@ public abstract class SimpleInventoryBlockEntity extends BotaniaBlockEntity impl
 	@Override
 	public void readPacketNBT(CompoundTag tag, HolderLookup.Provider registries) {
 		NonNullList<ItemStack> tmp = NonNullList.withSize(inventorySize(), ItemStack.EMPTY);
-		ContainerHelper.loadAllItems(tag, tmp, registries);
+		BlockEntityNbt.loadAllItems(tag, tmp, registries);
 		copyToInv(tmp, itemHandler);
 	}
 
 	@Override
 	public void writePacketNBT(CompoundTag tag, HolderLookup.Provider registries) {
-		ContainerHelper.saveAllItems(tag, copyFromInv(itemHandler), registries);
+		BlockEntityNbt.saveAllItems(tag, copyFromInv(itemHandler), registries);
+	}
+
+	@Override
+	public void preRemoveSideEffects(BlockPos pos, BlockState state) {
+		if (level != null) {
+			Containers.dropContents(level, pos, getItemHandler());
+		}
 	}
 
 	public final int inventorySize() {

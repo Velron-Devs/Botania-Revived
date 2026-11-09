@@ -4,22 +4,21 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.resources.Identifier;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 
-public class TeruTeruBozuModel extends Model {
-
+public class TeruTeruBozuModel {
 	private final ModelPart thread;
 	private final ModelPart cloth;
 	private final ModelPart happyFace;
 	private final ModelPart sadFace;
 
 	public TeruTeruBozuModel(ModelPart root) {
-		super(RenderType::entityCutoutNoCull);
 		sadFace = root.getChild("sad_face");
 		happyFace = root.getChild("happy_face");
 		thread = root.getChild("thread");
@@ -44,7 +43,6 @@ public class TeruTeruBozuModel extends Model {
 		return mesh;
 	}
 
-	@Override
 	public void renderToBuffer(PoseStack ms, VertexConsumer buffer, int light, int overlay, int color) {
 		if (Minecraft.getInstance().level.isRaining()) {
 			sadFace.render(ms, buffer, light, overlay, color);
@@ -53,5 +51,9 @@ public class TeruTeruBozuModel extends Model {
 		}
 		thread.render(ms, buffer, light, overlay, color);
 		cloth.render(ms, buffer, light, overlay, color);
+	}
+
+	public RenderType renderType(Identifier texture) {
+		return RenderTypes.entityCutout(texture);
 	}
 }

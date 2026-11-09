@@ -1,27 +1,14 @@
 {
   "type": "botania:petal_apothecary",
   "ingredients": [
-    {
-      "tag": "botania:petals/yellow"
-    },
-    {
-      "tag": "botania:petals/brown"
-    },
-    {
-      "tag": "botania:petals/orange"
-    },
-    {
-      "tag": "botania:petals/lime"
-    },
-    {
-      "item": "botania:rune_autumn"
-    }
+    "#botania:petals/yellow",
+    "#botania:petals/brown",
+    "#botania:petals/orange",
+    "#botania:petals/lime",
+    "botania:rune_autumn"
   ],
   "output": {
-    "count": 1,
     "id": "botania:tigerseye"
   },
-  "reagent": {
-    "tag": "botania:seed_apothecary_reagent"
-  }
+  "reagent": "#botania:seed_apothecary_reagent"
 }

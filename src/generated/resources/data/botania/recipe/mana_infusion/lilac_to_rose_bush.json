@@ -5,12 +5,9 @@
     "block": "botania:alchemy_catalyst"
   },
   "group": "botania:flower_cycle",
-  "input": {
-    "item": "minecraft:lilac"
-  },
+  "input": "minecraft:lilac",
   "mana": 400,
   "output": {
-    "count": 1,
     "id": "minecraft:rose_bush"
   }
 }

@@ -1,13 +1,10 @@
 {
   "type": "botania:elven_trade",
   "ingredients": [
-    {
-      "item": "minecraft:diamond_block"
-    }
+    "minecraft:diamond_block"
   ],
   "output": [
     {
-      "count": 1,
       "id": "minecraft:diamond_block"
     }
   ]

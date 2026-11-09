@@ -9,9 +9,7 @@
   "category": "building",
   "group": "botania:golden_planks",
   "ingredients": [
-    {
-      "item": "botania:golden_log"
-    }
+    "botania:golden_log"
   ],
   "result": {
     "count": 4,

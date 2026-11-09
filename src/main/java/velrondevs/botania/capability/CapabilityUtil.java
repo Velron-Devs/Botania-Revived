@@ -2,136 +2,102 @@ package velrondevs.botania.capability;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.capabilities.BlockCapability;
-import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.transfer.ItemAccessResourceHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public final class CapabilityUtil {
-	public static class WaterBowlFluidHandler implements IFluidHandlerItem {
-		private ItemStack container;
-
-		public WaterBowlFluidHandler(ItemStack stack) {
-			this.container = stack;
-		}
-
-		private boolean isFull() {
-			return !container.is(Items.BOWL);
-		}
-
-		@NotNull
-		@Override
-		public ItemStack getContainer() {
-			return container;
+	public static class WaterBowlFluidHandler extends ItemAccessResourceHandler<FluidResource> {
+		public WaterBowlFluidHandler(ItemAccess access) {
+			super(access, 1);
 		}
 
 		@Override
-		public int getTanks() {
-			return 1;
-		}
-
-		@NotNull
-		@Override
-		public FluidStack getFluidInTank(int tank) {
-			return isFull() ? new FluidStack(Fluids.WATER, FluidType.BUCKET_VOLUME) : FluidStack.EMPTY;
+		protected FluidResource getResourceFrom(ItemResource accessResource, int index) {
+			return accessResource.isEmpty() || accessResource.is(Items.BOWL) ? FluidResource.EMPTY : FluidResource.of(Fluids.WATER);
 		}
 
 		@Override
-		public int getTankCapacity(int tank) {
+		protected int getAmountFrom(ItemResource accessResource, int index) {
+			return getResourceFrom(accessResource, index).isEmpty() ? 0 : FluidType.BUCKET_VOLUME;
+		}
+
+		@Override
+		protected ItemResource update(ItemResource accessResource, int index, FluidResource newResource, int newAmount) {
+			if (newAmount == 0) {
+				return ItemResource.of(Items.BOWL);
+			}
+			return ItemResource.EMPTY;
+		}
+
+		@Override
+		public boolean isValid(int index, FluidResource resource) {
+			return resource.getFluid() == Fluids.WATER;
+		}
+
+		@Override
+		protected int getCapacity(int index, FluidResource resource) {
 			return FluidType.BUCKET_VOLUME;
-		}
-
-		@Override
-		public boolean isFluidValid(int tank, @NotNull FluidStack stack) {
-			return stack.getFluid() == Fluids.WATER;
-		}
-
-		@Override
-		public int fill(FluidStack resource, FluidAction action) {
-			return 0;
-		}
-
-		@NotNull
-		@Override
-		public FluidStack drain(FluidStack resource, FluidAction action) {
-			if (resource.isEmpty() || resource.getFluid() != Fluids.WATER) {
-				return FluidStack.EMPTY;
-			}
-			return drain(resource.getAmount(), action);
-		}
-
-		@NotNull
-		@Override
-		public FluidStack drain(int maxDrain, FluidAction action) {
-			if (container.getCount() != 1 || maxDrain < FluidType.BUCKET_VOLUME || !isFull()) {
-				return FluidStack.EMPTY;
-			}
-			if (action.execute()) {
-				container = new ItemStack(Items.BOWL);
-			}
-			return new FluidStack(Fluids.WATER, FluidType.BUCKET_VOLUME);
 		}
 	}
 
-	public static class ExtrapolatedBucketFluidHandler implements IFluidHandlerItem {
-		private final ItemStack container;
-
-		public ExtrapolatedBucketFluidHandler(ItemStack container) {
-			this.container = container;
-		}
-
-		@NotNull
-		@Override
-		public ItemStack getContainer() {
-			return container;
-		}
+	public static class ExtrapolatedBucketFluidHandler implements ResourceHandler<FluidResource> {
+		public ExtrapolatedBucketFluidHandler(ItemAccess access) {}
 
 		@Override
-		public int getTanks() {
+		public int size() {
 			return 1;
 		}
 
-		@NotNull
 		@Override
-		public FluidStack getFluidInTank(int tank) {
-			return FluidStack.EMPTY;
+		public FluidResource getResource(int index) {
+			return FluidResource.EMPTY;
 		}
 
 		@Override
-		public int getTankCapacity(int tank) {
+		public long getAmountAsLong(int index) {
+			return 0;
+		}
+
+		@Override
+		public long getCapacityAsLong(int index, FluidResource resource) {
 			return Integer.MAX_VALUE;
 		}
 
 		@Override
-		public boolean isFluidValid(int tank, @NotNull FluidStack stack) {
+		public boolean isValid(int index, FluidResource resource) {
 			return true;
 		}
 
 		@Override
-		public int fill(FluidStack resource, FluidAction action) {
-			return Math.min(FluidType.BUCKET_VOLUME, resource.getAmount());
+		public int insert(int index, FluidResource resource, int amount, TransactionContext transaction) {
+			return Math.min(FluidType.BUCKET_VOLUME, amount);
 		}
 
-		@NotNull
 		@Override
-		public FluidStack drain(FluidStack resource, FluidAction action) {
-			return FluidStack.EMPTY;
+		public int extract(int index, FluidResource resource, int amount, TransactionContext transaction) {
+			return 0;
 		}
+	}
 
-		@NotNull
-		@Override
-		public FluidStack drain(int maxDrain, FluidAction action) {
-			return FluidStack.EMPTY;
-		}
+	@Nullable
+	public static IItemHandler findItemHandler(Level level, BlockPos pos, @Nullable BlockState state, @Nullable BlockEntity be, @Nullable Direction side) {
+		ResourceHandler<ItemResource> handler = level.getCapability(Capabilities.Item.BLOCK, pos, state, be, side);
+		return handler == null ? null : IItemHandler.of(handler);
 	}
 
 	@Nullable

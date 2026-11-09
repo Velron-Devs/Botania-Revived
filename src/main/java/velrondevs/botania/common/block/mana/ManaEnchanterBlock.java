@@ -1,10 +1,11 @@
 package velrondevs.botania.common.block.mana;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.core.Direction;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -52,9 +53,9 @@ public class ManaEnchanterBlock extends BotaniaBlock implements EntityBlock {
 	}
 
 	@Override
-	public ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+	public InteractionResult useItemOn(ItemStack stack, BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
 		if (!(world.getBlockEntity(pos) instanceof ManaEnchanterBlockEntity enchanter) || !stack.isEmpty() && stack.getItem() instanceof WandOfTheForestItem) {
-			return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+			return InteractionResult.TRY_WITH_EMPTY_HAND;
 		}
 
 		boolean stackEnchantable = !stack.isEmpty()
@@ -68,7 +69,7 @@ public class ManaEnchanterBlock extends BotaniaBlock implements EntityBlock {
 				player.setItemInHand(hand, ItemStack.EMPTY);
 				enchanter.sync();
 			} else {
-				return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+				return InteractionResult.TRY_WITH_EMPTY_HAND;
 			}
 		} else if (enchanter.stage == ManaEnchanterBlockEntity.State.IDLE) {
 			player.getInventory().placeItemBackInInventory(enchanter.itemToEnchant.copy());
@@ -76,19 +77,11 @@ public class ManaEnchanterBlock extends BotaniaBlock implements EntityBlock {
 			enchanter.sync();
 		}
 
-		return ItemInteractionResult.sidedSuccess(world.isClientSide());
+		return InteractionResult.SUCCESS;
 	}
 
 	@Override
-	public void onRemove(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull BlockState newState, boolean isMoving) {
-		if (!state.is(newState.getBlock())) {
-
-			if (world.getBlockEntity(pos) instanceof ManaEnchanterBlockEntity enchanter
-					&& !enchanter.itemToEnchant.isEmpty()) {
-				Containers.dropItemStack(world, pos.getX(), pos.getY(), pos.getZ(), enchanter.itemToEnchant);
-			}
-
-			super.onRemove(state, world, pos, newState, isMoving);
-		}
+	protected void affectNeighborsAfterRemoval(BlockState state, ServerLevel level, BlockPos pos, boolean movedByPiston) {
+		Containers.updateNeighboursAfterDestroy(state, level, pos);
 	}
 }

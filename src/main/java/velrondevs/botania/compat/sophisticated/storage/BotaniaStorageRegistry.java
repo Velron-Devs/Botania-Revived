@@ -1,12 +1,14 @@
 package velrondevs.botania.compat.sophisticated.storage;
 
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.event.BlockEntityTypeAddBlocksEvent;
+import net.neoforged.neoforge.common.ModConfigSpec;
+import net.p3pp3rf1y.sophisticatedstorage.Config;
 import net.p3pp3rf1y.sophisticatedstorage.block.BarrelBlock;
 import net.p3pp3rf1y.sophisticatedstorage.block.ChestBlock;
 import net.p3pp3rf1y.sophisticatedstorage.init.ModBlocks;
@@ -69,10 +71,9 @@ public final class BotaniaStorageRegistry {
 			return;
 		}
 		for (BotaniaStorageTier tier : BotaniaStorageTier.active()) {
-			BarrelBlock barrel = new BarrelBlock(() -> SophisticatedConfig.storageSlots(tier),
-					() -> SophisticatedConfig.storageUpgradeSlots(tier), tier.explosionResistance());
-			ChestBlock chest = new ChestBlock(() -> SophisticatedConfig.storageSlots(tier),
-					() -> SophisticatedConfig.storageUpgradeSlots(tier), tier.explosionResistance());
+			TierStorageConfig config = new TierStorageConfig(tier);
+			BarrelBlock barrel = new BarrelBlock(config, tier.explosionResistance(), Block.Properties.of());
+			ChestBlock chest = new ChestBlock(config, tier.explosionResistance(), Block.Properties.of());
 			BARRELS.put(tier, barrel);
 			CHESTS.put(tier, chest);
 			BARREL_ITEMS.put(tier, new BotaniaBarrelBlockItem(barrel, properties(tier)));
@@ -116,7 +117,26 @@ public final class BotaniaStorageRegistry {
 		return CHEST_ITEMS.values();
 	}
 
-	private static ResourceLocation id(String path) {
-		return ResourceLocation.fromNamespaceAndPath(LibMisc.MOD_ID, path);
+	private static final class TierStorageConfig extends Config.Server.StorageConfig {
+		private final BotaniaStorageTier tier;
+
+		private TierStorageConfig(BotaniaStorageTier tier) {
+			super(new ModConfigSpec.Builder(), "Botania " + tier.english(), tier.defaultInventorySlots(), tier.defaultUpgradeSlots());
+			this.tier = tier;
+		}
+
+		@Override
+		public int numberOfInventorySlots() {
+			return SophisticatedConfig.storageSlots(tier);
+		}
+
+		@Override
+		public int numberOfUpgradeSlots() {
+			return SophisticatedConfig.storageUpgradeSlots(tier);
+		}
+	}
+
+	private static Identifier id(String path) {
+		return Identifier.fromNamespaceAndPath(LibMisc.MOD_ID, path);
 	}
 }

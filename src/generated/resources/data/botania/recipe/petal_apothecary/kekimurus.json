@@ -1,36 +1,17 @@
 {
   "type": "botania:petal_apothecary",
   "ingredients": [
-    {
-      "tag": "botania:petals/white"
-    },
-    {
-      "tag": "botania:petals/white"
-    },
-    {
-      "tag": "botania:petals/orange"
-    },
-    {
-      "tag": "botania:petals/orange"
-    },
-    {
-      "tag": "botania:petals/brown"
-    },
-    {
-      "tag": "botania:petals/brown"
-    },
-    {
-      "item": "botania:rune_gluttony"
-    },
-    {
-      "item": "botania:pixie_dust"
-    }
+    "#botania:petals/white",
+    "#botania:petals/white",
+    "#botania:petals/orange",
+    "#botania:petals/orange",
+    "#botania:petals/brown",
+    "#botania:petals/brown",
+    "botania:rune_gluttony",
+    "botania:pixie_dust"
   ],
   "output": {
-    "count": 1,
     "id": "botania:kekimurus"
   },
-  "reagent": {
-    "tag": "botania:seed_apothecary_reagent"
-  }
+  "reagent": "#botania:seed_apothecary_reagent"
 }

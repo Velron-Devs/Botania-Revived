@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "D": {
-      "tag": "botania:mana_diamond_gems"
-    },
-    "G": {
-      "item": "minecraft:ghast_tear"
-    },
-    "P": {
-      "item": "minecraft:prismarine_crystals"
-    }
+    "D": "#botania:mana_diamond_gems",
+    "G": "minecraft:ghast_tear",
+    "P": "minecraft:prismarine_crystals"
   },
   "pattern": [
     " P ",
@@ -18,7 +12,6 @@
     "DP "
   ],
   "result": {
-    "count": 1,
     "id": "botania:blood_pendant"
   }
 }

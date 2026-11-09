@@ -10,7 +10,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.BonemealableBlock;
-import net.minecraft.world.level.block.BushBlock;
+import net.minecraft.world.level.block.VegetationBlock;
 import net.minecraft.world.level.block.DoublePlantBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
@@ -19,7 +19,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 import velrondevs.botania.module.botaniaextras.BotaniaExtrasBlocks;
 
-public class BifrostFlowerBlock extends BushBlock implements BonemealableBlock {
+public class BifrostFlowerBlock extends VegetationBlock implements BonemealableBlock {
 	public static final MapCodec<BifrostFlowerBlock> CODEC = simpleCodec(BifrostFlowerBlock::new);
 	private static final VoxelShape SHAPE = Block.box(5.0, 0.0, 5.0, 11.0, 10.0, 11.0);
 
@@ -28,13 +28,13 @@ public class BifrostFlowerBlock extends BushBlock implements BonemealableBlock {
 	}
 
 	@Override
-	protected MapCodec<? extends BushBlock> codec() {
+	protected MapCodec<? extends VegetationBlock> codec() {
 		return CODEC;
 	}
 
 	@Override
 	protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-		Vec3 offset = state.getOffset(level, pos);
+		Vec3 offset = state.getOffset(pos);
 		return SHAPE.move(offset.x, offset.y, offset.z);
 	}
 

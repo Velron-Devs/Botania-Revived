@@ -3,5 +3,8 @@
   "flower": {
     "parent": "botania:block/light_gray_mystical_flower"
   },
-  "loader": "botania:floating_flower"
+  "loader": "botania:floating_flower",
+  "textures": {
+    "particle": "botania:block/light_gray_mystical_flower"
+  }
 }

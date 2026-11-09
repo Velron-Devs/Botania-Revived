@@ -19,7 +19,7 @@ import velrondevs.botania.xplat.XplatAbstractions;
 @Mixin(ServerPlayer.class)
 public class ServerPlayerMixin {
 
-	@Inject(at = @At("RETURN"), method = "initMenu")
+	@Inject(at = @At("RETURN"), method = "initInventoryMenu")
 	private void onLogin(CallbackInfo ci) {
 		if (XplatAbstractions.INSTANCE.gogLoaded()) {
 			SkyblockWorldEvents.onPlayerJoin((ServerPlayer) (Object) this);

@@ -6,8 +6,8 @@ import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.resources.ResourceLocation;
+import velrondevs.botania.registry.BotaniaRecipeTypes;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
@@ -25,7 +25,7 @@ import static velrondevs.botania.common.lib.ResourceLocationHelper.prefix;
 
 @JeiPlugin
 public class BotaniaExtrasJeiPlugin implements IModPlugin {
-	private static final ResourceLocation ID = prefix("botania_extras");
+	private static final Identifier ID = prefix("botania_extras");
 
 	private static boolean enabled() {
 		return BotaniaModules.isEnabled(BotaniaExtrasModule.ID);
@@ -33,7 +33,7 @@ public class BotaniaExtrasJeiPlugin implements IModPlugin {
 
 	@NotNull
 	@Override
-	public ResourceLocation getPluginUid() {
+	public Identifier getPluginUid() {
 		return ID;
 	}
 
@@ -47,9 +47,8 @@ public class BotaniaExtrasJeiPlugin implements IModPlugin {
 	@Override
 	public void registerRecipes(@NotNull IRecipeRegistration registry) {
 		if (enabled()) {
-			registry.addRecipes(TreeSuffusionRecipeCategory.TYPE, Minecraft.getInstance().level.getRecipeManager()
-					.getAllRecipesFor(BotaniaExtrasRecipeTypes.TREE_SUFFUSION_TYPE).stream()
-					.sorted(Comparator.comparing(RecipeHolder::id))
+			registry.addRecipes(TreeSuffusionRecipeCategory.TYPE, BotaniaRecipeTypes.getAllRecipesFor(null, BotaniaExtrasRecipeTypes.TREE_SUFFUSION_TYPE).stream()
+					.sorted(Comparator.comparing(holder -> holder.id().identifier()))
 					.map(RecipeHolder::value)
 					.toList());
 		}

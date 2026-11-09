@@ -1,15 +1,15 @@
 package velrondevs.botania.module.botaniaextras.crafting;
 
-import net.minecraft.core.HolderLookup;
+import com.mojang.serialization.MapCodec;
+
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.world.item.DyeItem;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.DyedItemColor;
-import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.SimpleCraftingRecipeSerializer;
 import net.minecraft.world.level.Level;
 
 import org.jetbrains.annotations.NotNull;
@@ -20,11 +20,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ColorizerDyeRecipe extends CustomRecipe {
-	public static final RecipeSerializer<ColorizerDyeRecipe> SERIALIZER = new SimpleCraftingRecipeSerializer<>(ColorizerDyeRecipe::new);
+	public static final ColorizerDyeRecipe INSTANCE = new ColorizerDyeRecipe();
+	public static final RecipeSerializer<ColorizerDyeRecipe> SERIALIZER = new RecipeSerializer<>(MapCodec.unit(INSTANCE), StreamCodec.unit(INSTANCE));
 
-	public ColorizerDyeRecipe(CraftingBookCategory category) {
-		super(category);
-	}
+	public ColorizerDyeRecipe() {}
 
 	@Override
 	public boolean matches(@NotNull CraftingInput input, @NotNull Level level) {
@@ -40,7 +39,7 @@ public class ColorizerDyeRecipe extends CustomRecipe {
 					return false;
 				}
 				colorizer = stack;
-			} else if (stack.getItem() instanceof DyeItem) {
+			} else if (stack.get(DataComponents.DYE) != null) {
 				dyes++;
 			} else {
 				return false;
@@ -51,14 +50,15 @@ public class ColorizerDyeRecipe extends CustomRecipe {
 
 	@NotNull
 	@Override
-	public ItemStack assemble(@NotNull CraftingInput input, @NotNull HolderLookup.Provider registries) {
+	public ItemStack assemble(@NotNull CraftingInput input) {
 		ItemStack colorizer = ItemStack.EMPTY;
-		List<DyeItem> dyes = new ArrayList<>();
+		List<DyeColor> dyes = new ArrayList<>();
 		for (int i = 0; i < input.size(); i++) {
 			ItemStack stack = input.getItem(i);
+			DyeColor dye = stack.get(DataComponents.DYE);
 			if (stack.getItem() instanceof ClericalColorizerItem) {
 				colorizer = stack;
-			} else if (stack.getItem() instanceof DyeItem dye) {
+			} else if (dye != null) {
 				dyes.add(dye);
 			}
 		}
@@ -73,14 +73,9 @@ public class ColorizerDyeRecipe extends CustomRecipe {
 		return DyedItemColor.applyDyes(colorizer, dyes);
 	}
 
-	@Override
-	public boolean canCraftInDimensions(int width, int height) {
-		return width * height >= 2;
-	}
-
 	@NotNull
 	@Override
-	public RecipeSerializer<?> getSerializer() {
+	public RecipeSerializer<ColorizerDyeRecipe> getSerializer() {
 		return SERIALIZER;
 	}
 }

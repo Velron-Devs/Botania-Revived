@@ -3,68 +3,38 @@
     {
       "type": "botania:module_enabled",
       "module": "asg"
+    },
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:mod_loaded",
+        "modid": "avaritia"
+      }
     }
   ],
   "type": "botania:terra_plate",
   "ingredients": [
-    {
-      "item": "botania:wither_mana_rose"
-    },
-    {
-      "item": "minecraft:dandelion"
-    },
-    {
-      "item": "botania:life_essence"
-    },
-    {
-      "item": "botania:life_essence"
-    },
-    {
-      "item": "botania:life_essence"
-    },
-    {
-      "item": "botania:life_essence"
-    },
-    {
-      "item": "botania:life_essence"
-    },
-    {
-      "item": "botania:life_essence"
-    },
-    {
-      "item": "botania:life_essence"
-    },
-    {
-      "item": "botania:life_essence"
-    },
-    {
-      "item": "botania:terrasteel_block"
-    },
-    {
-      "item": "botania:terrasteel_block"
-    },
-    {
-      "item": "botania:terrasteel_block"
-    },
-    {
-      "item": "botania:terrasteel_block"
-    },
-    {
-      "item": "botania:dragonstone_block"
-    },
-    {
-      "item": "botania:dragonstone_block"
-    },
-    {
-      "item": "botania:dragonstone_block"
-    },
-    {
-      "item": "botania:dragonstone_block"
-    }
+    "botania:wither_mana_rose",
+    "minecraft:dandelion",
+    "botania:life_essence",
+    "botania:life_essence",
+    "botania:life_essence",
+    "botania:life_essence",
+    "botania:life_essence",
+    "botania:life_essence",
+    "botania:life_essence",
+    "botania:life_essence",
+    "botania:terrasteel_block",
+    "botania:terrasteel_block",
+    "botania:terrasteel_block",
+    "botania:terrasteel_block",
+    "botania:dragonstone_block",
+    "botania:dragonstone_block",
+    "botania:dragonstone_block",
+    "botania:dragonstone_block"
   ],
   "mana": 1000000,
   "result": {
-    "count": 1,
     "id": "botania:asgardandelion"
   }
 }

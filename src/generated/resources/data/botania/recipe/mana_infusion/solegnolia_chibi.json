@@ -5,12 +5,9 @@
     "block": "botania:alchemy_catalyst"
   },
   "group": "botania:flower_shrinking",
-  "input": {
-    "item": "botania:solegnolia"
-  },
+  "input": "botania:solegnolia",
   "mana": 2500,
   "output": {
-    "count": 1,
     "id": "botania:solegnolia_chibi"
   }
 }

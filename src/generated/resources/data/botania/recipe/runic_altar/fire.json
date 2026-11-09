@@ -1,21 +1,11 @@
 {
   "type": "botania:runic_altar",
   "ingredients": [
-    {
-      "tag": "botania:mana_dusts"
-    },
-    {
-      "tag": "botania:manasteel_ingots"
-    },
-    {
-      "item": "minecraft:nether_brick"
-    },
-    {
-      "item": "minecraft:gunpowder"
-    },
-    {
-      "item": "minecraft:nether_wart"
-    }
+    "#botania:mana_dusts",
+    "#botania:manasteel_ingots",
+    "minecraft:nether_brick",
+    "minecraft:gunpowder",
+    "minecraft:nether_wart"
   ],
   "mana": 5200,
   "output": {

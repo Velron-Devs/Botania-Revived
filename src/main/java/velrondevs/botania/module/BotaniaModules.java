@@ -4,7 +4,7 @@ import com.electronwill.nightconfig.core.Config;
 import com.electronwill.nightconfig.toml.TomlParser;
 
 import net.minecraft.core.HolderLookup;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.bus.api.IEventBus;
@@ -39,7 +39,7 @@ import java.util.concurrent.CompletableFuture;
 
 public final class BotaniaModules {
 	public static final String CONFIG_SECTION = "modules";
-	public static final ResourceLocation MODULE_ENABLED_CONDITION = ResourceLocation.fromNamespaceAndPath(LibMisc.MOD_ID, "module_enabled");
+	public static final Identifier MODULE_ENABLED_CONDITION = Identifier.fromNamespaceAndPath(LibMisc.MOD_ID, "module_enabled");
 
 	private static final List<BotaniaModule> ALL = List.of(
 			BotaniaExtrasModule.INSTANCE,
@@ -115,7 +115,7 @@ public final class BotaniaModules {
 			}
 			ModuleContext ctx = new ModuleContext(module, modBus);
 			module.register(ctx);
-			if (FMLEnvironment.dist.isClient()) {
+			if (FMLEnvironment.getDist().isClient()) {
 				module.registerClient(ctx);
 			}
 		}

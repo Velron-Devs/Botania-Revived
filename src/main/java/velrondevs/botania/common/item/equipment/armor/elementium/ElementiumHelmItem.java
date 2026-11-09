@@ -1,5 +1,6 @@
 package velrondevs.botania.common.item.equipment.armor.elementium;
 
+import net.minecraft.world.item.equipment.ArmorType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.player.Player;
@@ -14,7 +15,7 @@ import velrondevs.botania.common.handler.PixieHandler;
 
 public class ElementiumHelmItem extends ElementiumArmorItem implements ManaDiscountArmor {
 	public ElementiumHelmItem(Properties props) {
-		super(Type.HELMET, props);
+		super(ArmorType.HELMET, props);
 	}
 
 	@NotNull

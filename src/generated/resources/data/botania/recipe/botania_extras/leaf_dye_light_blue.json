@@ -9,12 +9,9 @@
   "category": "misc",
   "group": "botania:leaf_dye",
   "ingredients": [
-    {
-      "item": "botania:light_blue_iridescent_leaves"
-    }
+    "botania:light_blue_iridescent_leaves"
   ],
   "result": {
-    "count": 1,
     "id": "minecraft:light_blue_dye"
   }
 }

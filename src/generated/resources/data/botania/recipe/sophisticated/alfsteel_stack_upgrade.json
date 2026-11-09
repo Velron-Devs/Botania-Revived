@@ -34,12 +34,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "C": {
-      "item": "botania:gaia_stack_upgrade"
-    },
-    "I": {
-      "item": "masterfulbotany:alfsteel_ingot"
-    }
+    "C": "botania:gaia_stack_upgrade",
+    "I": "masterfulbotany:alfsteel_ingot"
   },
   "pattern": [
     "III",

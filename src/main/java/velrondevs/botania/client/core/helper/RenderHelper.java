@@ -1,40 +1,57 @@
 package velrondevs.botania.client.core.helper;
 
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.platform.Lighting;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.BufferUploader;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.Tesselator;
+import com.mojang.blaze3d.vertex.QuadInstance;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.blaze3d.vertex.VertexFormat;
 
-import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.*;
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.blockentity.TheEndPortalRenderer;
-import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.navigation.ScreenRectangle;
+import net.minecraft.client.gui.render.TextureSetup;
+import net.minecraft.client.renderer.LevelRenderer;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.blockentity.AbstractEndPortalRenderer;
+import net.minecraft.client.color.block.BlockTintSource;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
+import net.minecraft.client.renderer.item.ItemStackRenderState;
+import net.minecraft.client.renderer.rendertype.LayeringTransform;
+import net.minecraft.client.renderer.rendertype.OutputTarget;
+import net.minecraft.client.renderer.rendertype.RenderSetup;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.state.gui.GuiElementRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
+import net.minecraft.client.resources.model.sprite.SpriteId;
+import com.mojang.math.Axis;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.util.ARGB;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
+import net.minecraft.util.Util;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 
 import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix3x2f;
+import org.joml.Matrix3x2fc;
 import org.joml.Matrix4f;
-import org.joml.Matrix4fStack;
-import org.lwjgl.opengl.GL11;
 
 import velrondevs.botania.client.core.handler.ClientTickHandler;
 import velrondevs.botania.client.lib.ResourcesLib;
@@ -42,13 +59,14 @@ import velrondevs.botania.client.render.block_entity.PylonBlockEntityRenderer;
 import velrondevs.botania.common.helper.VecHelper;
 import velrondevs.botania.common.item.equipment.bauble.FlugelTiaraItem;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.OptionalDouble;
 import java.util.Random;
+import java.util.function.BiConsumer;
 import java.util.function.Function;
 
-public final class RenderHelper extends RenderType {
+public final class RenderHelper {
 	private static final RenderType STAR;
 	public static final RenderType RECTANGLE;
 	public static final RenderType CIRCLE;
@@ -72,7 +90,7 @@ public final class RenderHelper extends RenderType {
 	public static final RenderType NATURA_PYLON_GLOW_DIRECT = getPylonGlowDirect("natura_pylon_glow_direct", PylonBlockEntityRenderer.NATURA_TEXTURE);
 	public static final RenderType GAIA_PYLON_GLOW_DIRECT = getPylonGlowDirect("gaia_pylon_glow_direct", PylonBlockEntityRenderer.GAIA_TEXTURE);
 
-	public static final RenderType ASTROLABE_PREVIEW = new AstrolabeLayer();
+	public static final RenderType ASTROLABE_PREVIEW;
 	public static final RenderType STARFIELD;
 	public static final RenderType LIGHTNING;
 	public static final RenderType TRANSLUCENT;
@@ -96,184 +114,187 @@ public final class RenderHelper extends RenderType {
 		offY = INITIAL_OFFSET;
 	}
 
-	private static RenderType makeLayer(String name, VertexFormat format, VertexFormat.Mode mode,
-			int bufSize, boolean hasCrumbling, boolean sortOnUpload, CompositeState glState) {
-		return RenderType.create(name, format, mode, bufSize, hasCrumbling, sortOnUpload, glState);
+	private static Identifier safeTexture(Identifier texture) {
+		if (texture == null) {
+			velrondevs.botania.api.BotaniaAPI.LOGGER.error("RenderType created with a null texture", new Throwable());
+			return net.minecraft.client.renderer.texture.MissingTextureAtlasSprite.getLocation();
+		}
+		return texture;
 	}
 
-	private static RenderType makeLayer(String name, VertexFormat format, VertexFormat.Mode mode,
-			int bufSize, CompositeState glState) {
-		return makeLayer(name, format, mode, bufSize, false, false, glState);
+	private static RenderType make(String name, RenderSetup setup) {
+		return RenderType.create(ResourcesLib.PREFIX_MOD + name, setup);
 	}
 
 	static {
-		RenderType.CompositeState glState = RenderType.CompositeState.builder()
-				.setShaderState(POSITION_COLOR_SHADER)
-				.setWriteMaskState(COLOR_WRITE)
-				.setTransparencyState(RenderStateShard.LIGHTNING_TRANSPARENCY)
-				.createCompositeState(false);
-		STAR = makeLayer(ResourcesLib.PREFIX_MOD + "star", DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.TRIANGLES, 256, false, false, glState);
+		STAR = make("star", RenderSetup.builder(CoreShaders.STAR).createRenderSetup());
 
-		glState = RenderType.CompositeState.builder()
-				.setShaderState(POSITION_COLOR_SHADER)
-				.setTransparencyState(TRANSLUCENT_TRANSPARENCY)
-				.setOutputState(ITEM_ENTITY_TARGET)
-				.setCullState(NO_CULL)
-				.createCompositeState(false);
-		RECTANGLE = makeLayer(ResourcesLib.PREFIX_MOD + "rectangle_highlight", DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS, 256, false, true, glState);
-		CIRCLE = makeLayer(ResourcesLib.PREFIX_MOD + "circle_highlight", DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.TRIANGLES, 256, false, false, glState);
+		RECTANGLE = make("rectangle_highlight", RenderSetup.builder(CoreShaders.HIGHLIGHT_QUADS)
+				.setOutputTarget(OutputTarget.ITEM_ENTITY_TARGET).sortOnUpload().createRenderSetup());
+		CIRCLE = make("circle_highlight", RenderSetup.builder(CoreShaders.HIGHLIGHT_TRIANGLES)
+				.setOutputTarget(OutputTarget.ITEM_ENTITY_TARGET).createRenderSetup());
 
-		RED_STRING = makeLayer(ResourcesLib.PREFIX_MOD + "red_string", DefaultVertexFormat.POSITION_COLOR_NORMAL, VertexFormat.Mode.LINES, 128, lineState(1, false, false));
-		LINE_1_NO_DEPTH = makeLayer(ResourcesLib.PREFIX_MOD + "line_1_no_depth", DefaultVertexFormat.POSITION_COLOR_NORMAL, VertexFormat.Mode.LINES, 128, lineState(1, true, true));
-		LINE_4_NO_DEPTH = makeLayer(ResourcesLib.PREFIX_MOD + "line_4_no_depth", DefaultVertexFormat.POSITION_COLOR_NORMAL, VertexFormat.Mode.LINES, 128, lineState(4, true, true));
-		LINE_5_NO_DEPTH = makeLayer(ResourcesLib.PREFIX_MOD + "line_5_no_depth", DefaultVertexFormat.POSITION_COLOR_NORMAL, VertexFormat.Mode.LINES, 64, lineState(5, true, true));
-		LINE_8_NO_DEPTH = makeLayer(ResourcesLib.PREFIX_MOD + "line_8_no_depth", DefaultVertexFormat.POSITION_COLOR_NORMAL, VertexFormat.Mode.LINES, 64, lineState(8, true, true));
+		RED_STRING = makeLine("red_string", RenderPipelines.LINES, 1, false);
+		LINE_1_NO_DEPTH = makeLine("line_1_no_depth", CoreShaders.LINES_NO_DEPTH, 1, true);
+		LINE_4_NO_DEPTH = makeLine("line_4_no_depth", CoreShaders.LINES_NO_DEPTH, 4, true);
+		LINE_5_NO_DEPTH = makeLine("line_5_no_depth", CoreShaders.LINES_NO_DEPTH, 5, true);
+		LINE_8_NO_DEPTH = makeLine("line_8_no_depth", CoreShaders.LINES_NO_DEPTH, 8, true);
 
-		glState = RenderType.CompositeState.builder()
-				.setShaderState(POSITION_COLOR_TEX_LIGHTMAP_SHADER)
-				.setTextureState(RenderStateShard.BLOCK_SHEET_MIPPED)
-				.setTransparencyState(TRANSLUCENT_TRANSPARENCY)
-				.setOutputState(ITEM_ENTITY_TARGET)
-				.setLightmapState(LIGHTMAP).createCompositeState(true);
-		SPARK = makeLayer(ResourcesLib.PREFIX_MOD + "spark", DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP, VertexFormat.Mode.QUADS, 256, glState);
-		glState = RenderType.CompositeState.builder()
-				.setShaderState(new ShaderStateShard(CoreShaders::halo))
-				.setTextureState(RenderStateShard.BLOCK_SHEET_MIPPED)
-				.setTransparencyState(TRANSLUCENT_TRANSPARENCY)
-				.setOutputState(ITEM_ENTITY_TARGET)
-				.createCompositeState(true);
-		LIGHT_RELAY = makeLayer(ResourcesLib.PREFIX_MOD + "light_relay", DefaultVertexFormat.POSITION_TEX_COLOR, VertexFormat.Mode.QUADS, 64, glState);
+		SPARK = make("spark", RenderSetup.builder(CoreShaders.TEXTURED_LIGHTMAP)
+				.withTexture("Sampler0", TextureAtlas.LOCATION_ITEMS)
+				.setOutputTarget(OutputTarget.ITEM_ENTITY_TARGET)
+				.useLightmap().affectsCrumbling().createRenderSetup());
+		LIGHT_RELAY = make("light_relay", RenderSetup.builder(CoreShaders.halo())
+				.withTexture("Sampler0", TextureAtlas.LOCATION_BLOCKS)
+				.setOutputTarget(OutputTarget.ITEM_ENTITY_TARGET)
+				.affectsCrumbling().createRenderSetup());
+		ICON_OVERLAY = make("icon_overlay", RenderSetup.builder(CoreShaders.TEXTURED_LIGHTMAP)
+				.withTexture("Sampler0", TextureAtlas.LOCATION_BLOCKS)
+				.setOutputTarget(OutputTarget.ITEM_ENTITY_TARGET)
+				.useLightmap().affectsCrumbling().createRenderSetup());
+		MANA_POOL_WATER = make("mana_pool_water", RenderSetup.builder(CoreShaders.manaPool())
+				.withTexture("Sampler0", TextureAtlas.LOCATION_BLOCKS)
+				.setOutputTarget(OutputTarget.ITEM_ENTITY_TARGET)
+				.useLightmap().createRenderSetup());
+		TERRA_PLATE = make("terra_plate_rune", RenderSetup.builder(CoreShaders.terraPlate())
+				.withTexture("Sampler0", TextureAtlas.LOCATION_BLOCKS)
+				.setOutputTarget(OutputTarget.ITEM_ENTITY_TARGET)
+				.useLightmap().createRenderSetup());
+		ENCHANTER = make("enchanter_rune", RenderSetup.builder(CoreShaders.enchanter())
+				.withTexture("Sampler0", TextureAtlas.LOCATION_BLOCKS)
+				.setOutputTarget(OutputTarget.ITEM_ENTITY_TARGET)
+				.useLightmap().createRenderSetup());
 
-		glState = RenderType.CompositeState.builder().setTextureState(BLOCK_SHEET_MIPPED)
-				.setShaderState(POSITION_COLOR_TEX_LIGHTMAP_SHADER)
-				.setTransparencyState(TRANSLUCENT_TRANSPARENCY)
-				.setOutputState(ITEM_ENTITY_TARGET)
-				.setLightmapState(LIGHTMAP).createCompositeState(true);
-		ICON_OVERLAY = makeLayer(ResourcesLib.PREFIX_MOD + "icon_overlay", DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP, VertexFormat.Mode.QUADS, 128, glState);
-		glState = RenderType.CompositeState.builder().setTextureState(BLOCK_SHEET_MIPPED)
-				.setShaderState(new ShaderStateShard(CoreShaders::manaPool))
-				.setTransparencyState(TRANSLUCENT_TRANSPARENCY)
-				.setOutputState(ITEM_ENTITY_TARGET)
-				.setLightmapState(LIGHTMAP).createCompositeState(false);
-		MANA_POOL_WATER = makeLayer(ResourcesLib.PREFIX_MOD + "mana_pool_water", DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP, VertexFormat.Mode.QUADS, 128, glState);
-		glState = RenderType.CompositeState.builder().setTextureState(BLOCK_SHEET_MIPPED)
-				.setShaderState(new ShaderStateShard(CoreShaders::terraPlate))
-				.setTransparencyState(TRANSLUCENT_TRANSPARENCY)
-				.setOutputState(ITEM_ENTITY_TARGET)
-				.setLightmapState(LIGHTMAP).createCompositeState(false);
-		TERRA_PLATE = makeLayer(ResourcesLib.PREFIX_MOD + "terra_plate_rune", DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP, VertexFormat.Mode.QUADS, 128, glState);
-		glState = RenderType.CompositeState.builder().setTextureState(BLOCK_SHEET_MIPPED)
-				.setShaderState(new ShaderStateShard(CoreShaders::enchanter))
-				.setTransparencyState(TRANSLUCENT_TRANSPARENCY)
-				.setOutputState(ITEM_ENTITY_TARGET)
-				.setLightmapState(LIGHTMAP).createCompositeState(false);
-		ENCHANTER = makeLayer(ResourcesLib.PREFIX_MOD + "enchanter_rune", DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP, VertexFormat.Mode.QUADS, 128, glState);
+		BABYLON_ICON = make("babylon", RenderSetup.builder(CoreShaders.TEXTURED_COLOR_NO_CULL)
+				.withTexture("Sampler0", Identifier.parse(ResourcesLib.MISC_BABYLON))
+				.setOutputTarget(OutputTarget.ITEM_ENTITY_TARGET)
+				.affectsCrumbling().createRenderSetup());
 
-		RenderStateShard.TextureStateShard babylonTexture = new RenderStateShard.TextureStateShard(ResourceLocation.parse(ResourcesLib.MISC_BABYLON), false, true);
-		glState = RenderType.CompositeState.builder().setTextureState(babylonTexture)
-				.setShaderState(new ShaderStateShard(CoreShaders::halo))
-				.setTransparencyState(TRANSLUCENT_TRANSPARENCY)
-				.setOutputState(ITEM_ENTITY_TARGET)
-				.setCullState(NO_CULL)
-				.createCompositeState(true);
-		BABYLON_ICON = makeLayer(ResourcesLib.PREFIX_MOD + "babylon", DefaultVertexFormat.POSITION_TEX_COLOR, VertexFormat.Mode.QUADS, 64, glState);
+		HALO = make("halo", RenderSetup.builder(CoreShaders.TEXTURED_COLOR_NO_CULL)
+				.withTexture("Sampler0", FlugelTiaraItem.textureHalo)
+				.affectsCrumbling().createRenderSetup());
 
-		RenderStateShard.TextureStateShard haloTexture = new RenderStateShard.TextureStateShard(FlugelTiaraItem.textureHalo, false, true);
-		glState = RenderType.CompositeState.builder().setTextureState(haloTexture)
-				.setShaderState(new ShaderStateShard(CoreShaders::halo))
-				.setTransparencyState(TRANSLUCENT_TRANSPARENCY)
-				.setCullState(NO_CULL)
-				.createCompositeState(true);
-		HALO = makeLayer(ResourcesLib.PREFIX_MOD + "halo", DefaultVertexFormat.POSITION_TEX_COLOR, VertexFormat.Mode.QUADS, 64, glState);
-
-		glState = RenderType.CompositeState.builder()
-				.setShaderState(new ShaderStateShard(CoreShaders::starfield))
-				.setTextureState(RenderStateShard.MultiTextureStateShard.builder()
-						.add(TheEndPortalRenderer.END_SKY_LOCATION, false, false)
-						.add(TheEndPortalRenderer.END_PORTAL_LOCATION, false, false).build())
-				.createCompositeState(false);
-		STARFIELD = makeLayer(ResourcesLib.PREFIX_MOD + "starfield", DefaultVertexFormat.POSITION, VertexFormat.Mode.QUADS, 256, false, false, glState);
-		glState = RenderType.CompositeState.builder()
-				.setShaderState(POSITION_COLOR_SHADER)
-				.setTransparencyState(LIGHTNING_TRANSPARENCY)
-				.createCompositeState(false);
-		LIGHTNING = makeLayer(ResourcesLib.PREFIX_MOD + "lightning", DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS, 256, false, true, glState);
-		TRANSLUCENT = RenderType.entityTranslucentCull(TextureAtlas.LOCATION_BLOCKS);
+		STARFIELD = make("starfield", RenderSetup.builder(CoreShaders.starfield())
+				.withTexture("Sampler0", AbstractEndPortalRenderer.END_SKY_LOCATION)
+				.withTexture("Sampler1", AbstractEndPortalRenderer.END_PORTAL_LOCATION)
+				.createRenderSetup());
+		LIGHTNING = make("lightning", RenderSetup.builder(CoreShaders.LIGHTNING_QUADS).sortOnUpload().createRenderSetup());
+		TRANSLUCENT = RenderTypes.entityTranslucentCullItemTarget(TextureAtlas.LOCATION_BLOCKS);
+		ASTROLABE_PREVIEW = RenderTypes.entityTranslucentCullItemTarget(TextureAtlas.LOCATION_BLOCKS);
 	}
 
-	private RenderHelper(String string, VertexFormat vertexFormat, VertexFormat.Mode mode, int i, boolean bl, boolean bl2, Runnable runnable, Runnable runnable2) {
-		super(string, vertexFormat, mode, i, bl, bl2, runnable, runnable2);
-		throw new UnsupportedOperationException("Should not be instantiated");
+	private static RenderType makeLine(String name, RenderPipeline pipeline, float width, boolean direct) {
+		RenderSetup.RenderSetupBuilder builder = RenderSetup.builder(pipeline)
+				.setLayeringTransform(LayeringTransform.VIEW_OFFSET_Z_LAYERING);
+		if (!direct) {
+			builder = builder.setOutputTarget(OutputTarget.ITEM_ENTITY_TARGET);
+		}
+		RenderType type = make(name, builder.createRenderSetup());
+		DeferredBufferSource.setLineWidth(type, width);
+		return type;
 	}
 
-	private static RenderType getPylonGlowDirect(String name, ResourceLocation texture) {
+	private static RenderType getPylonGlowDirect(String name, Identifier texture) {
 		return getPylonGlow(name, texture, true);
 	}
 
-	private static RenderType getPylonGlow(String name, ResourceLocation texture) {
+	private static RenderType getPylonGlow(String name, Identifier texture) {
 		return getPylonGlow(name, texture, false);
 	}
 
-	private static RenderType getPylonGlow(String name, ResourceLocation texture, boolean direct) {
-		RenderType.CompositeState.CompositeStateBuilder glState = RenderType.CompositeState.builder()
-				.setShaderState(new ShaderStateShard(CoreShaders::pylon))
-				.setTextureState(new RenderStateShard.TextureStateShard(texture, false, false))
-				.setTransparencyState(TRANSLUCENT_TRANSPARENCY)
-				.setCullState(NO_CULL)
-				.setLightmapState(LIGHTMAP)
-				.setOverlayState(OVERLAY);
+	private static RenderType getPylonGlow(String name, Identifier texture, boolean direct) {
+		RenderSetup.RenderSetupBuilder builder = RenderSetup.builder(CoreShaders.pylon())
+				.withTexture("Sampler0", safeTexture(texture))
+				.useLightmap()
+				.useOverlay();
 		if (!direct) {
-			glState = glState.setOutputState(RenderStateShard.ITEM_ENTITY_TARGET);
+			builder = builder.setOutputTarget(OutputTarget.ITEM_ENTITY_TARGET);
 		}
-		return makeLayer(ResourcesLib.PREFIX_MOD + name, DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 128, glState.createCompositeState(false));
+		return make(name, builder.createRenderSetup());
 	}
 
-	private static CompositeState lineState(double width, boolean direct, boolean noDepth) {
+	private static final Function<Identifier, RenderType> HALO_LAYERS = Util.memoize(texture -> make("crafting_halo",
+			RenderSetup.builder(CoreShaders.TEXTURED_COLOR_NO_CULL).withTexture("Sampler0", safeTexture(texture)).sortOnUpload().createRenderSetup()));
 
-		var builder = RenderType.CompositeState.builder()
-				.setShaderState(RENDERTYPE_LINES_SHADER)
-				.setLineState(new RenderStateShard.LineStateShard(OptionalDouble.of(width)))
-				.setLayeringState(VIEW_OFFSET_Z_LAYERING)
-				.setTransparencyState(TRANSLUCENT_TRANSPARENCY)
-				.setWriteMaskState(noDepth ? COLOR_WRITE : COLOR_DEPTH_WRITE)
-				.setCullState(NO_CULL);
-		if (!direct) {
-			builder = builder.setOutputState(ITEM_ENTITY_TARGET);
-		}
-		if (noDepth) {
-			builder = builder.setDepthTestState(NO_DEPTH_TEST);
-		}
-		return builder.createCompositeState(false);
+	public static RenderType getHaloLayer(Identifier texture) {
+		return HALO_LAYERS.apply(texture);
 	}
 
-	public static RenderType getHaloLayer(ResourceLocation texture) {
-		RenderType.CompositeState glState = RenderType.CompositeState.builder()
-				.setShaderState(new ShaderStateShard(GameRenderer::getPositionTexColorShader))
-				.setTextureState(new RenderStateShard.TextureStateShard(texture, true, false))
-				.setCullState(new RenderStateShard.CullStateShard(false))
-				.setTransparencyState(TRANSLUCENT_TRANSPARENCY).createCompositeState(false);
-		return makeLayer(ResourcesLib.PREFIX_MOD + "crafting_halo", DefaultVertexFormat.POSITION_TEX_COLOR, VertexFormat.Mode.QUADS, 64, false, true, glState);
-	}
+	private static final Function<Identifier, RenderType> DOPPLEGANGER = Util.memoize(texture -> make("doppleganger",
+			RenderSetup.builder(CoreShaders.doppleganger())
+					.withTexture("Sampler0", safeTexture(texture))
+					.useLightmap()
+					.useOverlay()
+					.affectsCrumbling()
+					.sortOnUpload()
+					.createRenderSetup()));
 
-	private static final Function<ResourceLocation, RenderType> DOPPLEGANGER = Util.memoize(texture -> {
-
-		CompositeState glState = RenderType.CompositeState.builder()
-				.setShaderState(new ShaderStateShard(CoreShaders::doppleganger))
-				.setTextureState(new RenderStateShard.TextureStateShard(texture, false, false))
-				.setTransparencyState(TRANSLUCENT_TRANSPARENCY)
-				.setCullState(NO_CULL)
-				.setLightmapState(LIGHTMAP)
-				.setOverlayState(OVERLAY)
-				.createCompositeState(true);
-		return makeLayer(ResourcesLib.PREFIX_MOD + "doppleganger", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, true, true, glState);
-	});
-
-	public static RenderType getDopplegangerLayer(ResourceLocation texture) {
+	public static RenderType getDopplegangerLayer(Identifier texture) {
 		return DOPPLEGANGER.apply(texture);
 	}
 
-	public static void drawTexturedModalRect(GuiGraphics gui, ResourceLocation textureId, int x, int y, int u, int v, int width, int height) {
-		gui.blit(textureId, x, y, u, v, width, height, 256, 256);
+	public static TextureAtlasSprite blockSprite(Identifier id) {
+		return Minecraft.getInstance().getAtlasManager().get(new SpriteId(TextureAtlas.LOCATION_BLOCKS, id));
+	}
+
+	public static TextureAtlasSprite itemSprite(Identifier id) {
+		return Minecraft.getInstance().getAtlasManager().get(new SpriteId(TextureAtlas.LOCATION_ITEMS, id));
+	}
+
+	public static MultiBufferSource buffers(SubmitNodeCollector collector) {
+		return new DeferredBufferSource(collector);
+	}
+
+	public static void drawTexturedModalRect(GuiGraphicsExtractor gui, Identifier textureId, int x, int y, int u, int v, int width, int height) {
+		gui.blit(RenderPipelines.GUI_TEXTURED, textureId, x, y, u, v, width, height, 256, 256);
+	}
+
+	public static void drawTexturedModalRect(GuiGraphicsExtractor gui, Identifier textureId, int x, int y, int u, int v, int width, int height, int color) {
+		gui.blit(RenderPipelines.GUI_TEXTURED, textureId, x, y, u, v, width, height, 256, 256, color);
+	}
+
+	public static int opaque(int color) {
+		return (color & 0xFF000000) == 0 ? color | 0xFF000000 : color;
+	}
+
+	public static void drawString(GuiGraphicsExtractor gui, Font font, @Nullable String text, int x, int y, int color) {
+		gui.text(font, text, x, y, opaque(color));
+	}
+
+	public static void drawString(GuiGraphicsExtractor gui, Font font, @Nullable String text, int x, int y, int color, boolean shadow) {
+		gui.text(font, text, x, y, opaque(color), shadow);
+	}
+
+	public static void drawString(GuiGraphicsExtractor gui, Font font, Component text, int x, int y, int color) {
+		gui.text(font, text, x, y, opaque(color));
+	}
+
+	public static void drawString(GuiGraphicsExtractor gui, Font font, Component text, int x, int y, int color, boolean shadow) {
+		gui.text(font, text, x, y, opaque(color), shadow);
+	}
+
+	public static void drawString(GuiGraphicsExtractor gui, Font font, FormattedCharSequence text, int x, int y, int color) {
+		gui.text(font, text, x, y, opaque(color));
+	}
+
+	public static void drawString(GuiGraphicsExtractor gui, Font font, FormattedCharSequence text, int x, int y, int color, boolean shadow) {
+		gui.text(font, text, x, y, opaque(color), shadow);
+	}
+
+	public static void drawCenteredString(GuiGraphicsExtractor gui, Font font, String text, int x, int y, int color) {
+		gui.centeredText(font, text, x, y, opaque(color));
+	}
+
+	public static void drawCenteredString(GuiGraphicsExtractor gui, Font font, Component text, int x, int y, int color) {
+		gui.centeredText(font, text, x, y, opaque(color));
+	}
+
+	public static void drawCenteredString(GuiGraphicsExtractor gui, Font font, FormattedCharSequence text, int x, int y, int color) {
+		gui.centeredText(font, text, x, y, opaque(color));
+	}
+
+	public static void renderStar(PoseStack ms, SubmitNodeCollector collector, int color, float xScale, float yScale, float zScale, long seed) {
+		renderStar(ms, buffers(collector), color, xScale, yScale, zScale, seed);
 	}
 
 	public static void renderStar(PoseStack ms, MultiBufferSource buffers, int color, float xScale, float yScale, float zScale, long seed) {
@@ -337,99 +358,180 @@ public final class RenderHelper extends RenderType {
 		buffer.addVertex(mat, xMax, y, zMax).setColor(r, g, b, a);
 	}
 
-	public static void renderProgressPie(GuiGraphics gui, int x, int y, float progress, ItemStack stack) {
-		PoseStack ms = gui.pose();
-		Minecraft mc = Minecraft.getInstance();
-		gui.renderItem(stack, x, y);
+	public static void guiGeometry(GuiGraphicsExtractor gui, RenderPipeline pipeline, int x0, int y0, int x1, int y1,
+			BiConsumer<Matrix3x2fc, VertexConsumer> builder) {
+		Matrix3x2f pose = new Matrix3x2f(gui.pose());
+		ScreenRectangle scissor = gui.peekScissorStack();
+		ScreenRectangle bounds = new ScreenRectangle(x0, y0, x1 - x0, y1 - y0).transformMaxBounds(pose);
+		if (scissor != null) {
+			bounds = scissor.intersection(bounds);
+		}
+		gui.submitGuiElementRenderState(new GuiGeometry(pipeline, TextureSetup.noTexture(), pose, builder, scissor, bounds));
+	}
 
-		RenderSystem.clear(GL11.GL_DEPTH_BUFFER_BIT, true);
-		GL11.glEnable(GL11.GL_STENCIL_TEST);
-		RenderSystem.colorMask(false, false, false, false);
-		RenderSystem.depthMask(false);
-		RenderSystem.stencilFunc(GL11.GL_NEVER, 1, 0xFF);
-		RenderSystem.stencilOp(GL11.GL_REPLACE, GL11.GL_KEEP, GL11.GL_KEEP);
-		RenderSystem.stencilMask(0xFF);
-		gui.renderItem(stack, x, y);
+	public record GuiGeometry(RenderPipeline pipeline, TextureSetup textureSetup, Matrix3x2f pose,
+			BiConsumer<Matrix3x2fc, VertexConsumer> builder,
+			@Nullable ScreenRectangle scissorArea, @Nullable ScreenRectangle bounds) implements GuiElementRenderState {
+		@Override
+		public void buildVertices(VertexConsumer vertexConsumer) {
+			builder.accept(pose, vertexConsumer);
+		}
+	}
+
+	public static void renderProgressPie(GuiGraphicsExtractor gui, int x, int y, float progress, ItemStack stack) {
+		gui.item(stack, x, y);
 
 		int r = 10;
 		int centerX = x + 8;
 		int centerY = y + 8;
 		int degs = (int) (360 * progress);
 		float a = 0.5F + 0.2F * ((float) Math.cos((double) (ClientTickHandler.ticksInGame + ClientTickHandler.partialTicks) / 10) * 0.5F + 0.5F);
+		int alpha = (int) (a * 255) & 0xFF;
+		int centerColor = alpha << 24 | 0x007F7F;
+		int edgeColor = alpha << 24 | 0x00FF7F;
 
-		RenderSystem.enableBlend();
-		RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-		RenderSystem.colorMask(true, true, true, true);
-		RenderSystem.depthMask(true);
-		RenderSystem.stencilMask(0x00);
-		RenderSystem.stencilFunc(GL11.GL_EQUAL, 1, 0xFF);
-
-		Matrix4f mat = ms.last().pose();
-		RenderSystem.setShader(GameRenderer::getPositionColorShader);
-		BufferBuilder buf = Tesselator.getInstance().begin(VertexFormat.Mode.TRIANGLE_FAN, DefaultVertexFormat.POSITION_COLOR);
-		buf.addVertex(mat, centerX, centerY, 0).setColor(0, 0.5F, 0.5F, a);
-
-		for (int i = degs; i >= 0; i--) {
-			float rad = (i - 90) / 180F * (float) Math.PI;
-			buf.addVertex(mat, centerX + Mth.cos(rad) * r, centerY + Mth.sin(rad) * r, 0).setColor(0F, 1F, 0.5F, a);
-		}
-
-		buf.addVertex(mat, centerX, centerY, 0).setColor(0F, 1F, 0.5F, a);
-		BufferUploader.drawWithShader(buf.buildOrThrow());
-
-		RenderSystem.disableBlend();
-		GL11.glDisable(GL11.GL_STENCIL_TEST);
+		gui.nextStratum();
+		guiGeometry(gui, CoreShaders.GUI_TRIANGLES, centerX - r, centerY - r, centerX + r, centerY + r, (pose, buf) -> {
+			for (int i = degs; i > 0; i--) {
+				float rad0 = (i - 90) / 180F * (float) Math.PI;
+				float rad1 = (i - 1 - 90) / 180F * (float) Math.PI;
+				buf.addVertexWith2DPose(pose, centerX, centerY).setColor(centerColor);
+				buf.addVertexWith2DPose(pose, centerX + Mth.cos(rad0) * r, centerY + Mth.sin(rad0) * r).setColor(edgeColor);
+				buf.addVertexWith2DPose(pose, centerX + Mth.cos(rad1) * r, centerY + Mth.sin(rad1) * r).setColor(edgeColor);
+			}
+		});
 	}
 
-	public static void renderItemCustomColor(LivingEntity entity, ItemStack stack, int color, PoseStack ms, MultiBufferSource buffers, int light, int overlay, @Nullable BakedModel model) {
+	public static void renderItem(ItemStack stack, ItemDisplayContext context, PoseStack ms, SubmitNodeCollector collector,
+			int light, int overlay, @Nullable Level level, int seed) {
+		if (stack.isEmpty()) {
+			return;
+		}
+		ItemStackRenderState state = new ItemStackRenderState();
+		Minecraft.getInstance().getItemModelResolver().updateForTopItem(state, stack, context, level, null, seed);
+		state.submit(ms, collector, light, overlay, 0);
+	}
+
+	public static void renderItem(LivingEntity entity, ItemStack stack, ItemDisplayContext context, PoseStack ms, SubmitNodeCollector collector,
+			int light, int overlay) {
+		if (stack.isEmpty()) {
+			return;
+		}
+		ItemStackRenderState state = new ItemStackRenderState();
+		Minecraft.getInstance().getItemModelResolver().updateForLiving(state, stack, context, entity);
+		state.submit(ms, collector, light, overlay, 0);
+	}
+
+	public static void renderItemCustomColor(LivingEntity entity, ItemStack stack, int color, PoseStack ms, SubmitNodeCollector collector, int light, int overlay, @Nullable BlockStateModelPart model) {
 		ms.pushPose();
-		if (model == null) {
-			model = Minecraft.getInstance().getItemRenderer().getModel(stack, entity.level(), entity, entity.getId());
-		}
-		model.getTransforms().getTransform(ItemDisplayContext.NONE).apply(false, ms);
-		ms.translate(-0.5D, -0.5D, -0.5D);
-
-		if (!model.isCustomRenderer() && !stack.is(Items.TRIDENT)) {
-			RenderType rendertype = ItemBlockRenderTypes.getRenderType(stack, true);
-			VertexConsumer ivertexbuilder = ItemRenderer.getFoilBufferDirect(buffers, rendertype, true, stack.hasFoil());
-			renderBakedItemModel(model, stack, color, light, overlay, ms, ivertexbuilder);
+		if (model != null) {
+			ms.translate(-0.5D, -0.5D, -0.5D);
+			renderModelPart(model, color, ms, buffers(collector), light, overlay);
 		} else {
-			throw new IllegalArgumentException("Custom renderer items not supported");
+			ItemStackRenderState state = new ItemStackRenderState();
+			Minecraft.getInstance().getItemModelResolver().updateForLiving(state, stack, ItemDisplayContext.NONE, entity);
+			state.submit(ms, new ColorOverrideSubmitNodeCollector(collector, color), light, overlay, 0);
 		}
-
 		ms.popPose();
 	}
 
-	public static void renderItemCustomColor(LivingEntity entity, ItemStack stack, int color, PoseStack ms, MultiBufferSource buffers, int light, int overlay) {
-		renderItemCustomColor(entity, stack, color, ms, buffers, light, overlay, null);
+	public static void renderItemCustomColor(LivingEntity entity, ItemStack stack, int color, PoseStack ms, SubmitNodeCollector collector, int light, int overlay) {
+		renderItemCustomColor(entity, stack, color, ms, collector, light, overlay, null);
 	}
 
-	private static void renderBakedItemModel(BakedModel model, ItemStack stack, int color, int light, int overlay, PoseStack ms, VertexConsumer buffer) {
-		var random = RandomSource.create();
-		long i = 42L;
-
+	public static List<BakedQuad> allQuads(BlockStateModelPart model) {
+		List<BakedQuad> quads = new ArrayList<>();
 		for (Direction direction : Direction.values()) {
-			random.setSeed(42L);
-			renderBakedItemQuads(ms, buffer, color, model.getQuads(null, direction, random), stack, light, overlay);
+			quads.addAll(model.getQuads(direction));
 		}
-
-		random.setSeed(42L);
-		renderBakedItemQuads(ms, buffer, color, model.getQuads(null, null, random), stack, light, overlay);
+		quads.addAll(model.getQuads(null));
+		return quads;
 	}
 
-	private static void renderBakedItemQuads(PoseStack ms, VertexConsumer buffer, int color, List<BakedQuad> quads, ItemStack stack, int light, int overlay) {
-		int a = (color >> 24) & 0xFF;
-		int r = color >> 16 & 0xFF;
-		int g = color >> 8 & 0xFF;
-		int b = color & 0xFF;
+	public static void renderModelPart(BlockStateModelPart model, int color, PoseStack ms, MultiBufferSource buffers, int light, int overlay) {
+		if (model == null) {
+			return;
+		}
+		renderQuads(ms.last(), buffers, allQuads(model), color, light, overlay);
+	}
 
-		buffer = new DelegatedVertexConsumer(buffer) {
-			@Override
-			public VertexConsumer setColor(int red, int green, int blue, int alpha) {
-				return super.setColor(r, g, b, a);
+	public static void renderModelPart(BlockStateModelPart model, PoseStack ms, MultiBufferSource buffers, int light, int overlay) {
+		renderModelPart(model, 0xFFFFFFFF, ms, buffers, light, overlay);
+	}
+
+	public static void renderQuads(PoseStack.Pose pose, MultiBufferSource buffers, List<BakedQuad> quads, int color, int light, int overlay) {
+		QuadInstance instance = new QuadInstance();
+		instance.setColor(color);
+		instance.setLightCoords(light);
+		instance.setOverlayCoords(overlay);
+		for (BakedQuad quad : quads) {
+			buffers.getBuffer(quad.materialInfo().itemRenderType()).putBakedQuad(pose, quad, instance);
+		}
+	}
+
+	public static void renderBlockState(BlockState state, PoseStack ms, MultiBufferSource buffers, @Nullable RenderType type, int color, int light, int overlay) {
+		BlockStateModel model = Minecraft.getInstance().getModelManager().getBlockStateModelSet().get(state);
+		List<BlockStateModelPart> parts = new ArrayList<>();
+		model.collectParts(RandomSource.create(42L), parts);
+		renderBlockParts(state, parts, null, null, ms, buffers, type, color, light, overlay);
+	}
+
+	public static void renderBlockInLevel(@Nullable Level level, BlockState state, BlockPos pos, PoseStack ms, MultiBufferSource buffers, int overlay) {
+		BlockStateModel model = Minecraft.getInstance().getModelManager().getBlockStateModelSet().get(state);
+		List<BlockStateModelPart> parts = new ArrayList<>();
+		RandomSource random = RandomSource.create(state.getSeed(pos));
+		BlockAndTintGetter getter = level instanceof BlockAndTintGetter g ? g : null;
+		if (getter != null) {
+			model.collectParts(getter, pos, state, random, parts);
+		} else {
+			model.collectParts(random, parts);
+		}
+		int light = level != null ? LevelRenderer.getLightCoords(level, pos) : LightCoordsUtil.FULL_BRIGHT;
+		renderBlockParts(state, parts, getter, pos, ms, buffers, null, 0xFFFFFFFF, light, overlay);
+	}
+
+	private static void renderBlockParts(BlockState state, List<BlockStateModelPart> parts, @Nullable BlockAndTintGetter level, @Nullable BlockPos pos,
+			PoseStack ms, MultiBufferSource buffers, @Nullable RenderType type, int color, int light, int overlay) {
+		QuadInstance instance = new QuadInstance();
+		instance.setLightCoords(light);
+		instance.setOverlayCoords(overlay);
+		for (BlockStateModelPart part : parts) {
+			for (int i = 0; i <= Direction.values().length; i++) {
+				List<BakedQuad> quads = part.getQuads(i == Direction.values().length ? null : Direction.values()[i]);
+				for (BakedQuad quad : quads) {
+					int quadColor = color;
+					if (quad.materialInfo().isTinted()) {
+						BlockTintSource tint = Minecraft.getInstance().getBlockColors().getTintSource(state, quad.materialInfo().tintIndex());
+						if (tint != null) {
+							int tintColor = level != null && pos != null ? tint.colorInWorld(state, level, pos) : tint.color(state);
+							quadColor = ARGB.multiply(quadColor, ARGB.opaque(tintColor));
+						}
+					}
+					instance.setColor(quadColor);
+					VertexConsumer buffer = buffers.getBuffer(type != null ? type : quad.materialInfo().itemRenderType());
+					buffer.putBakedQuad(ms.last(), quad, instance);
+				}
 			}
-		};
-		Minecraft.getInstance().getItemRenderer().renderQuadList(ms, buffer, quads, stack, light, overlay);
+		}
+	}
+
+	public static void renderItemLikeEntity(ItemStack stack, float age, float bobOffs, PoseStack ms, SubmitNodeCollector collector, int light, @Nullable Level level) {
+		ms.pushPose();
+		float bob = Mth.sin(age / 10.0F + bobOffs) * 0.1F + 0.1F;
+		ms.translate(0F, bob + 0.25F, 0F);
+		ms.mulPose(Axis.YP.rotation(age / 20.0F + bobOffs));
+		renderItem(stack, ItemDisplayContext.GROUND, ms, collector, light, OverlayTexture.NO_OVERLAY, level, 0);
+		ms.popPose();
+	}
+
+	public static void renderQuads(PoseStack.Pose pose, VertexConsumer buffer, List<BakedQuad> quads, int color, int light, int overlay) {
+		QuadInstance instance = new QuadInstance();
+		instance.setColor(color);
+		instance.setLightCoords(light);
+		instance.setOverlayCoords(overlay);
+		for (BakedQuad quad : quads) {
+			buffer.putBakedQuad(pose, quad, instance);
+		}
 	}
 
 	public static void renderIconFullBright(
@@ -483,86 +585,23 @@ public final class RenderHelper extends RenderType {
 		renderIconFullBright(ms, buffer, icon, 0xFFFFFF, alpha);
 	}
 
-	private static class AstrolabeLayer extends RenderType {
-		public AstrolabeLayer() {
-			super(ResourcesLib.PREFIX_MOD + "astrolabe", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, true, true,
-					() -> {
-						Sheets.translucentCullBlockSheet().setupRenderState();
-						RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 0.4F);
-					}, () -> {
-						Sheets.translucentCullBlockSheet().clearRenderState();
-						RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-					});
-		}
+	public static void renderGuiItemAlpha(GuiGraphicsExtractor gui, ItemStack stack, int x, int y, int alpha) {
+		gui.item(stack, x, y);
 	}
 
-	public static void renderGuiItemAlpha(ItemStack stack, int x, int y, int alpha, ItemRenderer renderer) {
-		renderGuiItemAlpha(stack, x, y, alpha, renderer.getModel(stack, null, null, 0), renderer);
-	}
-
-	public static void renderGuiItemAlpha(ItemStack stack, int x, int y, int alpha, BakedModel model, ItemRenderer renderer) {
-		Minecraft.getInstance().getTextureManager().getTexture(TextureAtlas.LOCATION_BLOCKS).setFilter(false, false);
-
-		RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_BLOCKS);
-
-		RenderSystem.enableBlend();
-		RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-
-		Matrix4fStack modelViewStack = RenderSystem.getModelViewStack();
-		modelViewStack.pushMatrix();
-		modelViewStack.translate(x, y, 100.0F);
-		modelViewStack.translate(8.0F, 8.0F, 0.0F);
-		modelViewStack.scale(1.0F, -1.0F, 1.0F);
-		modelViewStack.scale(16.0F, 16.0F, 16.0F);
-		RenderSystem.applyModelViewMatrix();
-
-		boolean flatLight = !model.usesBlockLight();
-		if (flatLight) {
-			Lighting.setupForFlatItems();
-		}
-
-		MultiBufferSource.BufferSource buffer = Minecraft.getInstance().renderBuffers().bufferSource();
-		renderer.render(
-				stack,
-				ItemDisplayContext.GUI,
-				false,
-				new PoseStack(),
-
-				wrapBuffer(buffer, alpha, alpha < 255),
-				LightTexture.FULL_BRIGHT,
-				OverlayTexture.NO_OVERLAY,
-				model
-		);
-		buffer.endBatch();
-
-		RenderSystem.enableDepthTest();
-
-		if (flatLight) {
-			Lighting.setupFor3DItems();
-		}
-
-		modelViewStack.popMatrix();
-		RenderSystem.applyModelViewMatrix();
-	}
-
-	private static MultiBufferSource wrapBuffer(MultiBufferSource buffer, int alpha, boolean forceTranslucent) {
-		return renderType -> new GhostVertexConsumer(buffer.getBuffer(forceTranslucent ? TRANSLUCENT : renderType), alpha);
-	}
-
-	public static void renderHUDBox(GuiGraphics gui, int startX, int startY, int endX, int endY) {
+	public static void renderHUDBox(GuiGraphicsExtractor gui, int startX, int startY, int endX, int endY) {
 		gui.fill(startX, startY, endX, endY, 0x40000000);
 		gui.fill(startX - 2, startY - 2, endX + 2, endY + 2, 0x40000000);
 	}
 
-	public static void renderItemWithName(GuiGraphics gui, Minecraft mc, ItemStack itemStack, int startX, int startY, int color) {
+	public static void renderItemWithName(GuiGraphicsExtractor gui, Minecraft mc, ItemStack itemStack, int startX, int startY, int color) {
 		if (!itemStack.isEmpty()) {
-			gui.drawString(mc.font, itemStack.getHoverName(), startX + ITEM_AND_PADDING_WIDTH, startY + 4, color);
-			gui.renderItem(itemStack, startX, startY);
+			gui.text(mc.font, itemStack.getHoverName(), startX + ITEM_AND_PADDING_WIDTH, startY + 4, opaque(color));
+			gui.item(itemStack, startX, startY);
 		}
 	}
 
-	public static void renderItemWithNameCentered(GuiGraphics gui, Minecraft mc, ItemStack itemStack, int startY, int color) {
+	public static void renderItemWithNameCentered(GuiGraphicsExtractor gui, Minecraft mc, ItemStack itemStack, int startY, int color) {
 		int centerX = mc.getWindow().getGuiScaledWidth() / 2;
 		int startX = centerX - (ITEM_AND_PADDING_WIDTH + mc.font.width(itemStack.getHoverName())) / 2;
 		renderItemWithName(gui, mc, itemStack, startX, startY, color);
@@ -582,6 +621,13 @@ public final class RenderHelper extends RenderType {
 		@Override
 		public VertexConsumer setColor(int red, int green, int blue, int alpha) {
 			wrapped.setColor(red, green, blue, (alpha * this.alpha) / 0xFF);
+			return this;
+		}
+
+		@Override
+		public VertexConsumer setColor(int color) {
+			int a = (color >>> 24) * this.alpha / 0xFF;
+			wrapped.setColor((color & 0xFFFFFF) | a << 24);
 			return this;
 		}
 
@@ -608,5 +654,13 @@ public final class RenderHelper extends RenderType {
 			wrapped.setNormal(x, y, z);
 			return this;
 		}
+
+		@Override
+		public VertexConsumer setLineWidth(float width) {
+			wrapped.setLineWidth(width);
+			return this;
+		}
 	}
+
+	private RenderHelper() {}
 }

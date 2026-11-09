@@ -1,7 +1,7 @@
 package velrondevs.botania.integration.jade;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 
@@ -35,7 +35,7 @@ public enum ManaSparkProvider implements IEntityComponentProvider {
 	}
 
 	@Override
-	public ResourceLocation getUid() {
+	public Identifier getUid() {
 		return BotaniaJadeIds.MANA_SPARK;
 	}
 }

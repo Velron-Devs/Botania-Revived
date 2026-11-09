@@ -3,8 +3,6 @@ package velrondevs.botania.compat.fractal;
 import de.dafuqs.fractal.api.CreativeSubTab;
 import de.dafuqs.fractal.interfaces.ICreativeTabParent;
 
-import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackLinkedSet;
@@ -20,10 +18,27 @@ final class BotaniaSubTab extends CreativeSubTab {
 	private final BotaniaCreativeSections.Section section;
 	private final boolean collectsLeftovers;
 
-	BotaniaSubTab(CreativeModeTab parent, ResourceLocation id, Component title, BotaniaCreativeSections.Section section, boolean collectsLeftovers) {
-		super(parent, id, title, (params, output) -> section.fill(output), DEFAULT_STYLE);
+	private BotaniaSubTab(Builder builder, BotaniaCreativeSections.Section section, boolean collectsLeftovers) {
+		super(builder);
 		this.section = section;
 		this.collectsLeftovers = collectsLeftovers;
+	}
+
+	static BotaniaSubTab create(CreativeModeTab parent, net.minecraft.resources.Identifier id, net.minecraft.network.chat.Component title,
+			BotaniaCreativeSections.Section section, boolean collectsLeftovers) {
+		CreativeModeTab.Builder base = CreativeModeTab.builder()
+				.title(title)
+				.icon(section::icon)
+				.displayItems((params, output) -> section.fill(output));
+		Builder builder = new Builder(base, parent, id, title) {
+			@Override
+			public CreativeSubTab build() {
+				BotaniaSubTab tab = new BotaniaSubTab(this, section, collectsLeftovers);
+				SUBTABS.add(tab);
+				return tab;
+			}
+		};
+		return (BotaniaSubTab) builder.build();
 	}
 
 	@Override

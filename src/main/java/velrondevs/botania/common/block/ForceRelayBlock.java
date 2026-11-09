@@ -42,8 +42,9 @@ public class ForceRelayBlock extends BotaniaBlock {
 	}
 
 	@Override
-	public void onRemove(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull BlockState newState, boolean isMoving) {
-		if (!world.isClientSide) {
+	protected void affectNeighborsAfterRemoval(BlockState state, ServerLevel world, BlockPos pos, boolean isMoving) {
+		BlockState newState = world.getBlockState(pos);
+		{
 			var data = WorldData.get(world);
 
 			Direction movementContextDirection = ForcePushHelper.getMovementContextDirection();
@@ -82,7 +83,7 @@ public class ForceRelayBlock extends BotaniaBlock {
 	}
 
 	public boolean onUsedByWand(Player player, ItemStack stack, Level world, BlockPos pos) {
-		if (world.isClientSide) {
+		if (world.isClientSide()) {
 			return false;
 		}
 
@@ -116,10 +117,14 @@ public class ForceRelayBlock extends BotaniaBlock {
 	public static class WorldData extends SavedData {
 
 		private static final String ID = "PistonRelayPairs";
+		public static final net.minecraft.world.level.saveddata.SavedDataType<WorldData> TYPE = new net.minecraft.world.level.saveddata.SavedDataType<>(
+				velrondevs.botania.common.lib.ResourceLocationHelper.prefix("piston_relay_pairs"),
+				() -> new WorldData(new CompoundTag()),
+				CompoundTag.CODEC.xmap(WorldData::new, data -> data.save(new CompoundTag())));
 		public final Map<BlockPos, BlockPos> mapping = new HashMap<>();
 
 		public WorldData(@NotNull CompoundTag cmp) {
-			ListTag list = cmp.getList("list", Tag.TAG_INT_ARRAY);
+			ListTag list = cmp.getListOrEmpty("list");
 			for (int i = 0; i < list.size(); i += 2) {
 				Tag from = list.get(i);
 				Tag to = list.get(i + 1);
@@ -131,8 +136,7 @@ public class ForceRelayBlock extends BotaniaBlock {
 		}
 
 		@NotNull
-		@Override
-		public CompoundTag save(@NotNull CompoundTag cmp, @NotNull HolderLookup.Provider registries) {
+		public CompoundTag save(@NotNull CompoundTag cmp) {
 			ListTag list = new ListTag();
 			for (Map.Entry<BlockPos, BlockPos> e : mapping.entrySet()) {
 				Tag from = BlockPos.CODEC.encodeStart(NbtOps.INSTANCE, e.getKey()).result().get();
@@ -145,13 +149,7 @@ public class ForceRelayBlock extends BotaniaBlock {
 		}
 
 		public static WorldData get(Level world) {
-			WorldData data = ((ServerLevel) world).getDataStorage().get(new SavedData.Factory<>(() -> new WorldData(new CompoundTag()), (tag, registries) -> new WorldData(tag)), ID);
-			if (data == null) {
-				data = new WorldData(new CompoundTag());
-				data.setDirty();
-				((ServerLevel) world).getDataStorage().set(ID, data);
-			}
-			return data;
+			return ((ServerLevel) world).getDataStorage().computeIfAbsent(TYPE);
 		}
 	}
 }

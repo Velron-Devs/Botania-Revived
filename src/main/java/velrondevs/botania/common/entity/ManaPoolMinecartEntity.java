@@ -1,5 +1,7 @@
 package velrondevs.botania.common.entity;
 
+import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -9,7 +11,9 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.vehicle.AbstractMinecart;
+import net.minecraft.world.entity.vehicle.minecart.AbstractMinecart;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -49,14 +53,8 @@ public class ManaPoolMinecartEntity extends AbstractMinecart {
 
 	@NotNull
 	@Override
-	public BlockState getDisplayBlockState() {
+	public BlockState getDefaultDisplayBlockState() {
 		return BotaniaBlocks.manaPool.defaultBlockState();
-	}
-
-	@NotNull
-	@Override
-	public AbstractMinecart.Type getMinecartType() {
-		return Type.RIDEABLE;
 	}
 
 	@Override
@@ -65,9 +63,9 @@ public class ManaPoolMinecartEntity extends AbstractMinecart {
 	}
 
 	@Override
-	protected void applyNaturalSlowdown() {
-		float f = 0.98F;
-		this.setDeltaMovement(getDeltaMovement().multiply(f, 0, f));
+	protected Vec3 applyNaturalSlowdown(Vec3 movement) {
+		double f = 0.98F;
+		return movement.multiply(f, 0, f);
 	}
 
 	@NotNull
@@ -85,7 +83,7 @@ public class ManaPoolMinecartEntity extends AbstractMinecart {
 	public void tick() {
 		super.tick();
 
-		if (level().isClientSide) {
+		if (level().isClientSide()) {
 			double particleChance = 1F - (double) getMana() / (double) ManaPoolBlockEntity.MAX_MANA * 0.1;
 			int color = ManaPoolBlockEntity.PARTICLE_COLOR;
 			float red = (color >> 16 & 0xFF) / 255F;
@@ -102,8 +100,9 @@ public class ManaPoolMinecartEntity extends AbstractMinecart {
 	}
 
 	@Override
-	public void moveAlongTrack(BlockPos pos, BlockState state) {
-		super.moveAlongTrack(pos, state);
+	protected void moveAlongTrack(ServerLevel level) {
+		super.moveAlongTrack(level);
+		BlockPos pos = getCurrentBlockPosOrRailBelow();
 
 		for (Direction dir : Direction.Plane.HORIZONTAL) {
 			BlockPos pumpPos = pos.relative(dir);
@@ -162,19 +161,19 @@ public class ManaPoolMinecartEntity extends AbstractMinecart {
 	}
 
 	@Override
-	protected void addAdditionalSaveData(@NotNull CompoundTag cmp) {
+	protected void addAdditionalSaveData(ValueOutput cmp) {
 		super.addAdditionalSaveData(cmp);
 		cmp.putInt(TAG_MANA, getMana());
 	}
 
 	@Override
-	protected void readAdditionalSaveData(CompoundTag cmp) {
+	protected void readAdditionalSaveData(ValueInput cmp) {
 		super.readAdditionalSaveData(cmp);
-		setMana(cmp.getInt(TAG_MANA));
+		setMana(cmp.getIntOr(TAG_MANA, 0));
 	}
 
 	@Override
-	public Item getDropItem() {
+	protected Item getDropItem() {
 		return BotaniaItems.poolMinecart;
 	}
 

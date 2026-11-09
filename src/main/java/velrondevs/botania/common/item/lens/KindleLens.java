@@ -17,7 +17,7 @@ public class KindleLens extends Lens {
 	@Override
 	public void updateBurst(ManaBurst burst, ItemStack stack) {
 		Entity entity = burst.entity();
-		if (!entity.level().isClientSide) {
+		if (!entity.level().isClientSide()) {
 			entity.igniteForSeconds(3);
 		}
 	}
@@ -26,7 +26,7 @@ public class KindleLens extends Lens {
 	public boolean collideBurst(ManaBurst burst, HitResult rtr, boolean isManaBlock, boolean shouldKill, ItemStack stack) {
 		Projectile entity = burst.entity();
 
-		if (!entity.level().isClientSide && rtr.getType() == HitResult.Type.BLOCK
+		if (!entity.level().isClientSide() && rtr.getType() == HitResult.Type.BLOCK
 				&& !burst.isFake() && !isManaBlock) {
 			BlockHitResult brtr = (BlockHitResult) rtr;
 			BlockPos pos = brtr.getBlockPos();
@@ -37,10 +37,10 @@ public class KindleLens extends Lens {
 			BlockState stateAt = entity.level().getBlockState(pos);
 			BlockState stateAtOffset = entity.level().getBlockState(offPos);
 
-			if (stateAt.is(Blocks.NETHER_PORTAL) && entity.mayInteract(entity.level(), pos)) {
+			if (stateAt.is(Blocks.NETHER_PORTAL) && Lens.mayInteract(entity, pos)) {
 				entity.level().destroyBlock(pos, false, entity);
 			}
-			if (!entity.mayInteract(entity.level(), offPos)) {
+			if (!Lens.mayInteract(entity, offPos)) {
 				return true;
 			}
 			if (stateAtOffset.is(Blocks.NETHER_PORTAL)) {

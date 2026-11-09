@@ -4,24 +4,25 @@ import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 
+import velrondevs.botania.client.core.helper.RenderHelper;
 import velrondevs.botania.client.core.handler.ClientTickHandler;
 import velrondevs.botania.common.block.block_entity.AnimatedTorchBlockEntity;
 import velrondevs.botania.common.helper.VecHelper;
 
 import java.util.Random;
 
-public class AnimatedTorchBlockEntityRenderer implements BlockEntityRenderer<AnimatedTorchBlockEntity> {
+public class AnimatedTorchBlockEntityRenderer extends BotaniaBlockEntityRenderer<AnimatedTorchBlockEntity> {
 
 	public AnimatedTorchBlockEntityRenderer(BlockEntityRendererProvider.Context ctx) {}
 
 	@Override
-	public void render(AnimatedTorchBlockEntity te, float partialTicks, PoseStack ms, MultiBufferSource buffers, int light, int overlay) {
+	protected void render(AnimatedTorchBlockEntity te, float partialTicks, PoseStack ms, MultiBufferSource buffers, SubmitNodeCollector collector, int light, int overlay) {
 		Minecraft mc = Minecraft.getInstance();
 		ms.pushPose();
 
@@ -45,8 +46,7 @@ public class AnimatedTorchBlockEntityRenderer implements BlockEntityRenderer<Ani
 		}
 
 		ms.mulPose(VecHelper.rotateZ(rotation));
-		mc.getItemRenderer().renderStatic(new ItemStack(Blocks.REDSTONE_TORCH), ItemDisplayContext.GROUND,
-				light, overlay, ms, buffers, te.getLevel(), 0);
+		RenderHelper.renderItem(new ItemStack(Blocks.REDSTONE_TORCH), ItemDisplayContext.GROUND, ms, collector, light, overlay, te.getLevel(), 0);
 		ms.popPose();
 	}
 

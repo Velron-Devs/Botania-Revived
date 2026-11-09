@@ -23,12 +23,8 @@
   "type": "sophisticatedbackpacks:backpack_upgrade",
   "category": "misc",
   "key": {
-    "B": {
-      "item": "botania:gaia_backpack"
-    },
-    "I": {
-      "item": "masterfulbotany:alfsteel_ingot"
-    }
+    "B": "botania:gaia_backpack",
+    "I": "masterfulbotany:alfsteel_ingot"
   },
   "pattern": [
     " I ",

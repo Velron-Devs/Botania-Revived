@@ -4,10 +4,10 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 
@@ -40,9 +40,9 @@ public class LooniumMobAttributeModifier {
 		this.operation = operation;
 	}
 
-	public ResourceLocation getId() {
-		return ResourceLocation.fromNamespaceAndPath(BotaniaAPI.MODID,
-				Util.sanitizeName(name.toLowerCase(Locale.ROOT), ResourceLocation::validPathChar));
+	public Identifier getId() {
+		return Identifier.fromNamespaceAndPath(BotaniaAPI.MODID,
+				Util.sanitizeName(name.toLowerCase(Locale.ROOT), Identifier::validPathChar));
 	}
 
 	public AttributeModifier createAttributeModifier() {

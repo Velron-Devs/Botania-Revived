@@ -1,5 +1,8 @@
 package velrondevs.botania.common.item.equipment.bauble;
 
+import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
+import velrondevs.botania.client.core.helper.RenderHelper;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
@@ -8,7 +11,7 @@ import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -33,7 +36,7 @@ public class SojournersSashItem extends BaubleItem {
 			prefix("travel_belt"),
 			0.65, AttributeModifier.Operation.ADD_VALUE);
 
-	private static final ResourceLocation texture = ResourceLocation.parse(ResourcesLib.MODEL_TRAVEL_BELT);
+	private static final Identifier texture = Identifier.parse(ResourcesLib.MODEL_TRAVEL_BELT);
 
 	private static final int COST = 1;
 	private static final int COST_INTERVAL = 10;
@@ -81,9 +84,9 @@ public class SojournersSashItem extends BaubleItem {
 		boolean hasBoost = attrib.hasModifier(STEP_BOOST.id());
 
 		if (tryConsumeMana(player)) {
-			if (player.level().isClientSide) {
+			if (player.level().isClientSide()) {
 				SojournersSashItem beltItem = (SojournersSashItem) belt.getItem();
-				if ((player.onGround() || player.getAbilities().flying) && player.zza > 0F && !player.isInWaterOrBubble()) {
+				if ((player.onGround() || player.getAbilities().flying) && player.zza > 0F && !player.isInWater()) {
 					float speed = beltItem.getSpeed(belt);
 					player.moveRelative(player.getAbilities().flying ? speed : speed, new Vec3(0, 0, 1));
 					beltItem.onMovedTick(belt, player);
@@ -105,7 +108,7 @@ public class SojournersSashItem extends BaubleItem {
 					}
 				}
 			}
-		} else if (!player.level().isClientSide && hasBoost) {
+		} else if (!player.level().isClientSide() && hasBoost) {
 			attrib.removeModifier(STEP_BOOST);
 		}
 	}
@@ -133,15 +136,16 @@ public class SojournersSashItem extends BaubleItem {
 		return !result.isEmpty() && ManaItemHandler.instance().requestManaExact(result, player, COST, false);
 	}
 
-	ResourceLocation getRenderTexture() {
+	Identifier getRenderTexture() {
 		return texture;
 	}
 
 	public static class Renderer implements AccessoryRenderer {
-		private static HumanoidModel<LivingEntity> model = null;
+		private static HumanoidModel<HumanoidRenderState> model = null;
 
 		@Override
-		public void doRender(HumanoidModel<?> bipedModel, ItemStack stack, LivingEntity living, PoseStack ms, MultiBufferSource buffers, int light, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+		public void doRender(HumanoidModel<?> bipedModel, ItemStack stack, LivingEntity living, PoseStack ms, SubmitNodeCollector collector, int light, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+			MultiBufferSource buffers = RenderHelper.buffers(collector);
 			AccessoryRenderHelper.rotateIfSneaking(ms, living);
 
 			float s = 1.15F;
@@ -151,7 +155,7 @@ public class SojournersSashItem extends BaubleItem {
 						.getEntityModels().bakeLayer(ModelLayers.PLAYER));
 			}
 
-			ResourceLocation texture = ((SojournersSashItem) stack.getItem()).getRenderTexture();
+			Identifier texture = ((SojournersSashItem) stack.getItem()).getRenderTexture();
 			VertexConsumer buffer = buffers.getBuffer(model.renderType(texture));
 			model.body.render(ms, buffer, light, OverlayTexture.NO_OVERLAY, -1);
 		}

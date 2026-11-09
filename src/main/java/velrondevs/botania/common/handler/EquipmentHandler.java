@@ -1,5 +1,6 @@
 package velrondevs.botania.common.handler;
 
+import net.minecraft.util.profiling.Profiler;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.LivingEntity;
@@ -58,7 +59,7 @@ public abstract class EquipmentHandler {
 		private final Map<Player, ItemStack[]> map = new WeakHashMap<>();
 
 		public void onPlayerTick(Player player) {
-			player.level().getProfiler().push("botania:tick_wearables");
+			Profiler.get().push("botania:tick_wearables");
 
 			ItemStack[] oldStacks = map.computeIfAbsent(player, p -> {
 				ItemStack[] array = new ItemStack[9];
@@ -89,7 +90,7 @@ public abstract class EquipmentHandler {
 					((BaubleItem) current.getItem()).onWornTick(current, player);
 				}
 			}
-			player.level().getProfiler().pop();
+			Profiler.get().pop();
 		}
 
 		@Override

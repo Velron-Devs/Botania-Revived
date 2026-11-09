@@ -1,38 +1,32 @@
 package velrondevs.botania.client.render.block_entity;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.SkullModelBase;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.ShaderInstance;
+import net.minecraft.client.renderer.PlayerSkinRenderCache;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.SkullBlockRenderer;
+import net.minecraft.client.renderer.blockentity.state.SkullBlockRenderState;
+import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
 import net.minecraft.world.entity.boss.wither.WitherBoss;
 import net.minecraft.world.entity.monster.Creeper;
-import net.minecraft.world.entity.monster.Skeleton;
-import net.minecraft.world.entity.monster.WitherSkeleton;
-import net.minecraft.world.entity.monster.Zombie;
+import net.minecraft.world.entity.monster.skeleton.Skeleton;
+import net.minecraft.world.entity.monster.skeleton.WitherSkeleton;
+import net.minecraft.world.entity.monster.zombie.Zombie;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.component.ResolvableProfile;
 import net.minecraft.world.level.block.SkullBlock;
+import net.minecraft.world.level.block.entity.SkullBlockEntity;
+import net.minecraft.world.phys.Vec3;
 
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-
-import velrondevs.botania.client.core.helper.CoreShaders;
-import velrondevs.botania.client.render.entity.GaiaGuardianRenderer;
-
-import java.util.Collections;
-import java.util.Map;
+import org.jspecify.annotations.Nullable;
 
 public class GaiaHeadBlockEntityRenderer extends SkullBlockRenderer {
-	public static Map<SkullBlock.Type, SkullModelBase> models = Collections.emptyMap();
+	private final PlayerSkinRenderCache playerSkinRenderCache;
 
 	public GaiaHeadBlockEntityRenderer(BlockEntityRendererProvider.Context ctx) {
 		super(ctx);
-		models = SkullBlockRenderer.createSkullRenderers(ctx.getModelSet());
+		this.playerSkinRenderCache = ctx.playerSkinRenderCache();
 	}
 
 	public static SkullBlock.Type getViewType() {
@@ -55,30 +49,15 @@ public class GaiaHeadBlockEntityRenderer extends SkullBlockRenderer {
 		return type;
 	}
 
-	public static void hookGetRenderType(CallbackInfoReturnable<RenderType> cir) {
+	@Override
+	public void extractRenderState(SkullBlockEntity blockEntity, SkullBlockRenderState state, float partialTicks, Vec3 cameraPosition, ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
+		super.extractRenderState(blockEntity, state, partialTicks, cameraPosition, breakProgress);
 		SkullBlock.Type type = getViewType();
-		ResolvableProfile profile = null;
+		state.skullType = type;
 		if (type == SkullBlock.Types.PLAYER && Minecraft.getInstance().getCameraEntity() instanceof Player player) {
-			profile = new ResolvableProfile(player.getGameProfile());
-		}
-
-		RenderType layer = SkullBlockRenderer.getRenderType(type, profile);
-		cir.setReturnValue(new WrapperLayer(layer));
-	}
-
-	private static class WrapperLayer extends RenderType {
-		public WrapperLayer(RenderType compose) {
-			super(compose.toString(), compose.format(), compose.mode(), compose.bufferSize(), compose.affectsCrumbling(), false,
-					() -> {
-						compose.setupRenderState();
-
-						ShaderInstance shader = CoreShaders.doppleganger();
-						if (shader != null) {
-							RenderSystem.setShader(CoreShaders::doppleganger);
-							shader.safeGetUniform("BotaniaDisfiguration").set(GaiaGuardianRenderer.DEFAULT_DISFIGURATION);
-							shader.safeGetUniform("BotaniaGrainIntensity").set(GaiaGuardianRenderer.DEFAULT_GRAIN_INTENSITY);
-						}
-					}, compose::clearRenderState);
+			state.renderType = playerSkinRenderCache.getOrDefault(ResolvableProfile.createResolved(player.getGameProfile())).renderType();
+		} else {
+			state.renderType = SkullBlockRenderer.getSkullRenderType(type, null);
 		}
 	}
 }

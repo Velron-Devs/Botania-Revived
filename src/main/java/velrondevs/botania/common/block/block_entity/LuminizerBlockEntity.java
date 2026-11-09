@@ -16,7 +16,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.ThrownEnderpearl;
+import net.minecraft.world.entity.projectile.throwableitemprojectile.ThrownEnderpearl;
 import net.minecraft.world.entity.vehicle.DismountHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -69,7 +69,7 @@ public class LuminizerBlockEntity extends BotaniaBlockEntity implements WandBind
 
 	public void mountEntity(Entity e) {
 		BlockPos nextDest = getNextDestination();
-		if (e.isPassenger() || level.isClientSide || nextDest == null || !isValidBinding()) {
+		if (e.isPassenger() || level.isClientSide() || nextDest == null || !isValidBinding()) {
 			return;
 		}
 
@@ -255,7 +255,7 @@ public class LuminizerBlockEntity extends BotaniaBlockEntity implements WandBind
 		if (isNoParticle()) {
 			return false;
 		}
-		if (!level.isClientSide) {
+		if (!level.isClientSide()) {
 			if (player == null || !player.getAbilities().instabuild) {
 				stack.shrink(1);
 			}
@@ -269,11 +269,11 @@ public class LuminizerBlockEntity extends BotaniaBlockEntity implements WandBind
 	@Override
 	public void readPacketNBT(CompoundTag cmp, HolderLookup.Provider registries) {
 		bindPos = new BlockPos(
-				cmp.getInt(TAG_BIND_X),
-				cmp.getInt(TAG_BIND_Y),
-				cmp.getInt(TAG_BIND_Z)
+				cmp.getIntOr(TAG_BIND_X, 0),
+				cmp.getIntOr(TAG_BIND_Y, 0),
+				cmp.getIntOr(TAG_BIND_Z, 0)
 		);
-		noParticle = cmp.getBoolean(TAG_NO_PARTICLE);
+		noParticle = cmp.getBooleanOr(TAG_NO_PARTICLE, false);
 	}
 
 	@Override
@@ -310,7 +310,7 @@ public class LuminizerBlockEntity extends BotaniaBlockEntity implements WandBind
 		public void tick() {
 			super.tick();
 
-			if (getPassengers().isEmpty() && !level().isClientSide) {
+			if (getPassengers().isEmpty() && !level().isClientSide()) {
 				discard();
 				return;
 			}
@@ -326,7 +326,7 @@ public class LuminizerBlockEntity extends BotaniaBlockEntity implements WandBind
 			BlockPos pos = blockPosition();
 			BlockPos exitPos = getExitPos();
 
-			if (!level().isClientSide && pos.equals(exitPos)) {
+			if (!level().isClientSide() && pos.equals(exitPos)) {
 				boolean done = true;
 				BlockEntity tile = level().getBlockEntity(pos);
 				if (tile instanceof LuminizerBlockEntity relay) {
@@ -380,17 +380,17 @@ public class LuminizerBlockEntity extends BotaniaBlockEntity implements WandBind
 		}
 
 		@Override
-		public boolean hurt(@NotNull DamageSource source, float damage) {
+		public boolean hurtServer(net.minecraft.server.level.ServerLevel level, @NotNull DamageSource source, float damage) {
 			return false;
 		}
 
 		@Override
-		protected void readAdditionalSaveData(@NotNull CompoundTag cmp) {
-			setExit(new BlockPos(cmp.getInt(TAG_EXIT_X), cmp.getInt(TAG_EXIT_Y), cmp.getInt(TAG_EXIT_Z)));
+		protected void readAdditionalSaveData(net.minecraft.world.level.storage.ValueInput cmp) {
+			setExit(new BlockPos(cmp.getIntOr(TAG_EXIT_X, 0), cmp.getIntOr(TAG_EXIT_Y, 0), cmp.getIntOr(TAG_EXIT_Z, 0)));
 		}
 
 		@Override
-		protected void addAdditionalSaveData(@NotNull CompoundTag cmp) {
+		protected void addAdditionalSaveData(net.minecraft.world.level.storage.ValueOutput cmp) {
 			BlockPos exit = getExitPos();
 			cmp.putInt(TAG_EXIT_X, exit.getX());
 			cmp.putInt(TAG_EXIT_Y, exit.getY());

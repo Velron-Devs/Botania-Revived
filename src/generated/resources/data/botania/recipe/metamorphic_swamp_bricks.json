@@ -3,9 +3,7 @@
   "category": "building",
   "group": "botania:metamorphic_brick",
   "key": {
-    "Q": {
-      "item": "botania:metamorphic_swamp_stone"
-    }
+    "Q": "botania:metamorphic_swamp_stone"
   },
   "pattern": [
     "QQ",

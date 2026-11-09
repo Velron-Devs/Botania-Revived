@@ -7,40 +7,19 @@
   ],
   "type": "botania:terra_plate",
   "ingredients": [
-    {
-      "item": "botania:fabulous_pool"
-    },
-    {
-      "item": "botania:mana_tablet"
-    },
-    {
-      "item": "botania:dragonstone_block"
-    },
-    {
-      "item": "botania:dragonstone_block"
-    },
-    {
-      "item": "botania:dragonstone_block"
-    },
-    {
-      "item": "botania:dragonstone_block"
-    },
-    {
-      "item": "botania:life_essence"
-    },
-    {
-      "item": "botania:life_essence"
-    },
-    {
-      "item": "botania:life_essence"
-    },
-    {
-      "item": "botania:life_essence"
-    }
+    "botania:fabulous_pool",
+    "botania:mana_tablet",
+    "botania:dragonstone_block",
+    "botania:dragonstone_block",
+    "botania:dragonstone_block",
+    "botania:dragonstone_block",
+    "botania:life_essence",
+    "botania:life_essence",
+    "botania:life_essence",
+    "botania:life_essence"
   ],
   "mana": 1000000,
   "result": {
-    "count": 1,
     "id": "botania:creative_pool"
   }
 }

@@ -1,6 +1,5 @@
 package velrondevs.botania.client.integration.jei;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
@@ -14,8 +13,8 @@ import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.resources.Identifier;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -77,10 +76,8 @@ public class PureDaisyRecipeCategory implements IRecipeCategory<PureDaisyRecipe>
 	}
 
 	@Override
-	public void draw(PureDaisyRecipe recipe, IRecipeSlotsView slotsView, GuiGraphics gui, double mouseX, double mouseY) {
-		RenderSystem.enableBlend();
+	public void draw(PureDaisyRecipe recipe, IRecipeSlotsView slotsView, GuiGraphicsExtractor gui, double mouseX, double mouseY) {
 		overlay.draw(gui, 17, 0);
-		RenderSystem.disableBlend();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -99,7 +96,7 @@ public class PureDaisyRecipeCategory implements IRecipeCategory<PureDaisyRecipe>
 		inputSlotBuilder.addItemStacks(input.getDisplayedStacks())
 				.addRichTooltipCallback((view, tooltip) -> tooltip.addAll(input.descriptionTooltip()));
 
-		builder.addSlot(RecipeIngredientRole.CATALYST, 39, 12)
+		builder.addSlot(RecipeIngredientRole.CRAFTING_STATION, 39, 12)
 				.addItemStack(new ItemStack(BotaniaFlowerBlocks.pureDaisy));
 
 		Block outBlock = recipe.getOutputState().getBlock();
@@ -118,7 +115,7 @@ public class PureDaisyRecipeCategory implements IRecipeCategory<PureDaisyRecipe>
 	}
 
 	@Override
-	public ResourceLocation getRegistryName(@NotNull PureDaisyRecipe recipe) {
+	public Identifier getIdentifier(@NotNull PureDaisyRecipe recipe) {
 		return JEIRecipeIds.idOf(recipe);
 	}
 }

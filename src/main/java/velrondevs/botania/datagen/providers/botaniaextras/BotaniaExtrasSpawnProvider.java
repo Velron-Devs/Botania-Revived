@@ -4,7 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import velrondevs.botania.datagen.providers.integration.JsonFileProvider;
 import velrondevs.botania.module.botaniaextras.BotaniaExtrasModule;
@@ -18,7 +18,7 @@ public class BotaniaExtrasSpawnProvider extends JsonFileProvider {
 	}
 
 	@Override
-	protected void addFiles(Map<ResourceLocation, JsonObject> files) {
+	protected void addFiles(Map<Identifier, JsonObject> files) {
 		JsonObject condition = new JsonObject();
 		condition.addProperty("type", "botania:module_enabled");
 		condition.addProperty("module", BotaniaExtrasModule.ID);

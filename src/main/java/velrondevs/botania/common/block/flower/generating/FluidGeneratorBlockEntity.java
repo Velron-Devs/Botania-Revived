@@ -52,7 +52,7 @@ public abstract class FluidGeneratorBlockEntity extends GeneratingFlowerBlockEnt
 			}
 		}
 
-		if (!getLevel().isClientSide) {
+		if (!getLevel().isClientSide()) {
 			if (burnTime > 0 && ticksExisted % getGenerationDelay() == 0) {
 				addMana(manaPerTick);
 				sync();
@@ -60,7 +60,7 @@ public abstract class FluidGeneratorBlockEntity extends GeneratingFlowerBlockEnt
 		}
 
 		if (burnTime == 0) {
-			if (getMana() < getMaxMana() && !getLevel().isClientSide) {
+			if (getMana() < getMaxMana() && !getLevel().isClientSide()) {
 				List<BlockPos> offsets = Arrays.asList(OFFSETS);
 				Collections.shuffle(offsets);
 
@@ -106,7 +106,7 @@ public abstract class FluidGeneratorBlockEntity extends GeneratingFlowerBlockEnt
 				}
 			}
 		} else {
-			if (getLevel().random.nextInt(8) == 0) {
+			if (getLevel().getRandom().nextInt(8) == 0) {
 				doBurnParticles();
 			}
 			burnTime--;
@@ -148,8 +148,8 @@ public abstract class FluidGeneratorBlockEntity extends GeneratingFlowerBlockEnt
 	public void readFromPacketNBT(CompoundTag cmp, HolderLookup.Provider registries) {
 		super.readFromPacketNBT(cmp, registries);
 
-		burnTime = cmp.getInt(TAG_BURN_TIME);
-		cooldown = cmp.getInt(TAG_COOLDOWN);
+		burnTime = cmp.getIntOr(TAG_BURN_TIME, 0);
+		cooldown = cmp.getIntOr(TAG_COOLDOWN, 0);
 	}
 
 	@Override

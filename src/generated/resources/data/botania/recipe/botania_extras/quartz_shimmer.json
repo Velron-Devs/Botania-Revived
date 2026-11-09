@@ -8,12 +8,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "C": {
-      "tag": "botania:bifrost_dyes"
-    },
-    "Q": {
-      "item": "minecraft:quartz"
-    }
+    "C": "#botania:bifrost_dyes",
+    "Q": "minecraft:quartz"
   },
   "pattern": [
     "QQQ",

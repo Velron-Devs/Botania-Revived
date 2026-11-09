@@ -6,7 +6,7 @@ import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import me.shedaniel.rei.api.common.entry.EntryIngredient;
 import me.shedaniel.rei.api.common.util.EntryStacks;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import velrondevs.botania.client.integration.rei.BotaniaReiCategory;
 import velrondevs.botania.client.integration.rei.BotaniaReiDisplay;
@@ -20,7 +20,7 @@ import static velrondevs.botania.common.lib.ResourceLocationHelper.prefix;
 
 public class TreeSuffusionReiCategory extends BotaniaReiCategory {
 	public static final CategoryIdentifier<BotaniaReiDisplay> ID = CategoryIdentifier.of(prefix("tree_suffusion"));
-	private static final ResourceLocation PETAL_TEXTURE = prefix("textures/gui/petal_overlay.png");
+	private static final Identifier PETAL_TEXTURE = prefix("textures/gui/petal_overlay.png");
 
 	public TreeSuffusionReiCategory() {
 		super(ID, "botania.nei.treeSuffusion", EntryStacks.of(BotaniaExtrasBlocks.terrasteelItemPlatform), 106, 107);

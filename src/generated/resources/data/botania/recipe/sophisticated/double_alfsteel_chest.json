@@ -23,15 +23,9 @@
   "type": "sophisticatedstorage:double_chest_tier_upgrade_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "botania:gaia_chest"
-    },
-    {
-      "item": "masterfulbotany:alfsteel_ingot"
-    },
-    {
-      "item": "masterfulbotany:alfsteel_ingot"
-    }
+    "botania:gaia_chest",
+    "masterfulbotany:alfsteel_ingot",
+    "masterfulbotany:alfsteel_ingot"
   ],
   "result": {
     "count": 1,

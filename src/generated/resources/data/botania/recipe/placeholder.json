@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "minecraft:crafting_table"
-    },
-    {
-      "item": "botania:livingrock"
-    }
+    "minecraft:crafting_table",
+    "botania:livingrock"
   ],
   "result": {
     "count": 32,

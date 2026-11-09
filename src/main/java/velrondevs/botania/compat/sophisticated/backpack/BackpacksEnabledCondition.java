@@ -2,13 +2,13 @@ package velrondevs.botania.compat.sophisticated.backpack;
 
 import com.mojang.serialization.MapCodec;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.common.conditions.ICondition;
 
 import velrondevs.botania.common.lib.LibMisc;
 
 public record BackpacksEnabledCondition() implements ICondition {
-	public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(LibMisc.MOD_ID, "backpacks_enabled");
+	public static final Identifier ID = Identifier.fromNamespaceAndPath(LibMisc.MOD_ID, "backpacks_enabled");
 	public static final BackpacksEnabledCondition INSTANCE = new BackpacksEnabledCondition();
 	public static final MapCodec<BackpacksEnabledCondition> CODEC = MapCodec.unit(INSTANCE);
 

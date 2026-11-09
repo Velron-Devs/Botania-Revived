@@ -1,5 +1,7 @@
 package velrondevs.botania.common.item.equipment.tool;
 
+import org.jetbrains.annotations.Nullable;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -24,19 +26,16 @@ public class SoulscribeItem extends ManasteelSwordItem {
 	}
 
 	@Override
-	public boolean hurtEnemy(ItemStack stack, LivingEntity target, @NotNull LivingEntity attacker) {
-		if (!target.level().isClientSide
+	public void hurtEnemy(ItemStack stack, LivingEntity target, @NotNull LivingEntity attacker) {
+		if (!target.level().isClientSide()
 				&& target instanceof EnderMan
 				&& attacker instanceof Player player) {
 			target.hurt(player.damageSources().playerAttack(player), 20);
 		}
-
-		stack.hurtAndBreak(1, attacker, EquipmentSlot.MAINHAND);
-		return true;
 	}
 
 	@Override
-	public void inventoryTick(ItemStack stack, Level world, Entity player, int slot, boolean selected) {}
+	public void inventoryTick(ItemStack stack, ServerLevel world, Entity player, @Nullable EquipmentSlot eqSlot) {}
 
 	@Override
 	public <T extends LivingEntity> int damageItem(ItemStack stack, int amount, T entity, Consumer<Item> onBroken) {

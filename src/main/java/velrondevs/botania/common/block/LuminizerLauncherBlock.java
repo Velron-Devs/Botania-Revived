@@ -1,5 +1,7 @@
 package velrondevs.botania.common.block;
 
+import net.minecraft.world.level.redstone.Orientation;
+
 import com.google.common.collect.Iterables;
 
 import net.minecraft.core.BlockPos;
@@ -47,7 +49,7 @@ public class LuminizerLauncherBlock extends BotaniaWaterloggedBlock {
 	}
 
 	@Override
-	public void neighborChanged(BlockState state, Level world, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving) {
+	public void neighborChanged(BlockState state, Level world, BlockPos pos, Block block, Orientation fromPos, boolean isMoving) {
 		boolean power = world.getBestNeighborSignal(pos) > 0;
 		boolean powered = state.getValue(BlockStateProperties.POWERED);
 
@@ -74,7 +76,7 @@ public class LuminizerLauncherBlock extends BotaniaWaterloggedBlock {
 			var items = world.getEntitiesOfClass(ItemEntity.class, aabb);
 
 			for (Entity entity : Iterables.concat(living, items)) {
-				LuminizerBlockEntity relay = relays.get(world.random.nextInt(relays.size()));
+				LuminizerBlockEntity relay = relays.get(world.getRandom().nextInt(relays.size()));
 				relay.mountEntity(entity);
 			}
 		}

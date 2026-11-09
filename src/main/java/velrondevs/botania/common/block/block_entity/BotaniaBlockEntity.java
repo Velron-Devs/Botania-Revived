@@ -9,6 +9,10 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
+
+import velrondevs.botania.api.internal.ValueIOHelper;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -18,9 +22,23 @@ public class BotaniaBlockEntity extends BlockEntity {
 		super(type, pos, state);
 	}
 
+	public static CompoundTag readTag(ValueInput input) {
+		return ValueIOHelper.readAll(input);
+	}
+
+	protected HolderLookup.Provider registries() {
+		return ValueIOHelper.registries(level);
+	}
+
 	@Override
+	protected void saveAdditional(ValueOutput output) {
+		super.saveAdditional(output);
+		CompoundTag tag = new CompoundTag();
+		saveAdditional(tag, registries());
+		ValueIOHelper.writeAll(output, tag);
+	}
+
 	public void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-		super.saveAdditional(tag, registries);
 		writePacketNBT(tag, registries);
 	}
 
@@ -33,8 +51,12 @@ public class BotaniaBlockEntity extends BlockEntity {
 	}
 
 	@Override
+	protected void loadAdditional(ValueInput input) {
+		super.loadAdditional(input);
+		loadAdditional(readTag(input), input.lookup());
+	}
+
 	public void loadAdditional(@NotNull CompoundTag tag, HolderLookup.Provider registries) {
-		super.loadAdditional(tag, registries);
 		readPacketNBT(tag, registries);
 	}
 

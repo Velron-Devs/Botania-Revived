@@ -30,7 +30,7 @@ public class ManaItemHandlerImpl implements ManaItemHandler {
 
 		List<ItemStack> toReturn = new ArrayList<>();
 
-		for (ItemStack stackInSlot : Iterables.concat(player.getInventory().items, player.getInventory().offhand)) {
+		for (ItemStack stackInSlot : Iterables.concat(player.getInventory().getNonEquipmentItems(), List.of(player.getOffhandItem()))) {
 			if (!stackInSlot.isEmpty() && XplatAbstractions.INSTANCE.findManaItem(stackInSlot) != null) {
 				toReturn.add(stackInSlot);
 			}
@@ -277,8 +277,9 @@ public class ManaItemHandlerImpl implements ManaItemHandler {
 	@Override
 	public float getFullDiscountForTools(Player player, ItemStack tool) {
 		float discount = 0F;
-		for (int i = 0; i < player.getInventory().armor.size(); i++) {
-			ItemStack armor = player.getInventory().armor.get(i);
+		EquipmentSlot[] armorSlots = { EquipmentSlot.FEET, EquipmentSlot.LEGS, EquipmentSlot.CHEST, EquipmentSlot.HEAD };
+		for (int i = 0; i < armorSlots.length; i++) {
+			ItemStack armor = player.getItemBySlot(armorSlots[i]);
 			if (!armor.isEmpty() && armor.getItem() instanceof ManaDiscountArmor discountArmor) {
 				discount += discountArmor.getDiscount(armor, i, player, tool);
 			}

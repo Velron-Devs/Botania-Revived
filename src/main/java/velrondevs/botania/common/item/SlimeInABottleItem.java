@@ -1,5 +1,8 @@
 package velrondevs.botania.common.item;
 
+import org.jetbrains.annotations.Nullable;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -16,8 +19,8 @@ public class SlimeInABottleItem extends Item {
 	}
 
 	@Override
-	public void inventoryTick(ItemStack stack, Level world, Entity entity, int something, boolean somethingelse) {
-		if (!world.isClientSide) {
+	public void inventoryTick(ItemStack stack, ServerLevel world, Entity entity, @Nullable EquipmentSlot eqSlot) {
+		if (!world.isClientSide()) {
 			boolean slime = NarslimmusBlockEntity.isSlimeChunk(world, entity.blockPosition());
 			ItemNBTHelper.setBoolean(stack, TAG_ACTIVE, slime);
 		}

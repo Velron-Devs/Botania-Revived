@@ -1,10 +1,7 @@
 {
   "type": "minecraft:stonecutting",
-  "ingredient": {
-    "item": "botania:elf_quartz"
-  },
+  "ingredient": "botania:elf_quartz",
   "result": {
-    "count": 1,
     "id": "botania:elf_quartz_stairs"
   }
 }

@@ -1,10 +1,12 @@
 package velrondevs.botania.datagen.providers.botaniaextras;
 
+import net.minecraft.tags.TagEntry;
+import net.minecraft.data.tags.TagAppender;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.tags.TagsProvider;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.DyeColor;
@@ -33,15 +35,15 @@ public final class BotaniaExtrasTagEntries {
 		return list;
 	}
 
-	private static <T> void optional(TagsProvider.TagAppender<T> appender, ResourceLocation id) {
-		appender.addOptional(id);
+	private static <T> void optional(TagAppender<T, T> appender, Identifier id) {
+		appender.add(TagEntry.optionalElement(id));
 	}
 
-	private static ResourceLocation blockId(Block block) {
+	private static Identifier blockId(Block block) {
 		return BuiltInRegistries.BLOCK.getKey(block);
 	}
 
-	private static ResourceLocation itemId(ItemLike item) {
+	private static Identifier itemId(ItemLike item) {
 		return BuiltInRegistries.ITEM.getKey(item.asItem());
 	}
 
@@ -53,9 +55,9 @@ public final class BotaniaExtrasTagEntries {
 		var replaceableByTrees = sink.tag(BlockTags.REPLACEABLE_BY_TREES);
 		var swordEfficient = sink.tag(BlockTags.SWORD_EFFICIENT);
 		for (DyeColor color : colorsAndBifrost()) {
-			ResourceLocation dirtId = blockId(BotaniaExtrasBlocks.getDirt(color));
-			ResourceLocation grassId = blockId(BotaniaExtrasBlocks.getGrass(color));
-			ResourceLocation tallId = blockId(BotaniaExtrasBlocks.getTallGrass(color));
+			Identifier dirtId = blockId(BotaniaExtrasBlocks.getDirt(color));
+			Identifier grassId = blockId(BotaniaExtrasBlocks.getGrass(color));
+			Identifier tallId = blockId(BotaniaExtrasBlocks.getTallGrass(color));
 			optional(iridescentDirt, dirtId);
 			optional(dirt, dirtId);
 			optional(shovel, dirtId);
@@ -66,7 +68,7 @@ public final class BotaniaExtrasTagEntries {
 			optional(swordEfficient, tallId);
 		}
 		optional(sink.tag(BlockTags.SMALL_FLOWERS), blockId(BotaniaExtrasBlocks.bifrostFlower));
-		optional(sink.tag(BlockTags.TALL_FLOWERS), blockId(BotaniaExtrasBlocks.tallBifrostFlower));
+		optional(sink.tag(BlockTags.FLOWERS), blockId(BotaniaExtrasBlocks.tallBifrostFlower));
 		optional(swordEfficient, blockId(BotaniaExtrasBlocks.bifrostFlower));
 		optional(swordEfficient, blockId(BotaniaExtrasBlocks.tallBifrostFlower));
 
@@ -148,7 +150,7 @@ public final class BotaniaExtrasTagEntries {
 	}
 
 	public static void addAccessoryTags(ModuleTagSink<Item> sink) {
-		var necklace = sink.tag(ItemTags.create(ResourceLocation.fromNamespaceAndPath("curios", "necklace")));
+		var necklace = sink.tag(ItemTags.create(Identifier.fromNamespaceAndPath("curios", "necklace")));
 		optional(necklace, itemId(BotaniaExtrasItems.priestEmblemThor));
 		optional(necklace, itemId(BotaniaExtrasItems.priestEmblemSif));
 		optional(necklace, itemId(BotaniaExtrasItems.priestEmblemNjord));
@@ -166,11 +168,11 @@ public final class BotaniaExtrasTagEntries {
 			optional(iridescentGrass, itemId(BotaniaExtrasBlocks.getGrass(color)));
 			optional(seeds, itemId(BotaniaExtrasItems.getSeeds(color)));
 		}
-		sink.tag(BotaniaExtrasTags.Items.BIFROST_DYES).add(ResourceKey.create(Registries.ITEM, itemId(BotaniaBlocks.bifrostPerm)));
+		sink.tag(BotaniaExtrasTags.Items.BIFROST_DYES).add(TagEntry.element(itemId(BotaniaBlocks.bifrostPerm)));
 		optional(sink.tag(BotaniaExtrasTags.Items.BIFROST_DYES), itemId(BotaniaExtrasItems.floralBifrostPowder));
 		optional(sink.tag(BotaniaTags.Items.PETALS), itemId(BotaniaExtrasItems.mysticalBifrostPetal));
 		optional(sink.tag(ItemTags.SMALL_FLOWERS), itemId(BotaniaExtrasBlocks.bifrostFlower));
-		optional(sink.tag(ItemTags.TALL_FLOWERS), itemId(BotaniaExtrasBlocks.tallBifrostFlower));
+		optional(sink.tag(ItemTags.FLOWERS), itemId(BotaniaExtrasBlocks.tallBifrostFlower));
 
 		var rods = sink.tag(BotaniaTags.Items.RODS);
 		var manaUsing = sink.tag(BotaniaTags.Items.MANA_USING_ITEMS);

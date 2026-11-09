@@ -61,7 +61,7 @@ public class PylonBlock extends BotaniaWaterloggedBlock implements EntityBlock {
 	@NotNull
 	@Override
 	public RenderShape getRenderShape(BlockState state) {
-		return RenderShape.ENTITYBLOCK_ANIMATED;
+		return RenderShape.INVISIBLE;
 	}
 
 	@NotNull
@@ -77,7 +77,7 @@ public class PylonBlock extends BotaniaWaterloggedBlock implements EntityBlock {
 	}
 
 	@Override
-	public float getEnchantPowerBonus(BlockState state, LevelReader world, BlockPos pos) {
+	public float getEnchantPowerBonus(BlockState state, BlockGetter world, BlockPos pos) {
 		return variant.enchantPowerBonus;
 	}
 }

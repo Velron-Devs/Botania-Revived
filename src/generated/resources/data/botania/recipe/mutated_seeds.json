@@ -3,15 +3,10 @@
   "category": "misc",
   "group": "botania:seeds",
   "ingredients": [
-    {
-      "item": "botania:grass_seeds"
-    },
-    {
-      "item": "minecraft:spider_eye"
-    }
+    "botania:grass_seeds",
+    "minecraft:spider_eye"
   ],
   "result": {
-    "count": 1,
     "id": "botania:mutated_seeds"
   }
 }

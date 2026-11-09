@@ -3,15 +3,10 @@
   "category": "misc",
   "group": "botania:seeds",
   "ingredients": [
-    {
-      "item": "botania:grass_seeds"
-    },
-    {
-      "item": "minecraft:green_dye"
-    }
+    "botania:grass_seeds",
+    "minecraft:green_dye"
   ],
   "result": {
-    "count": 1,
     "id": "botania:vivid_seeds"
   }
 }

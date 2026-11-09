@@ -3,5 +3,8 @@
   "flower": {
     "parent": "botania:block/wither_mana_rose"
   },
-  "loader": "botania:floating_flower"
+  "loader": "botania:floating_flower",
+  "textures": {
+    "particle": "botania:block/wither_mana_rose"
+  }
 }

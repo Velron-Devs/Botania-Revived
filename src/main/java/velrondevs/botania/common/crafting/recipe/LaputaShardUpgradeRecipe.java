@@ -8,7 +8,6 @@ import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.SimpleCraftingRecipeSerializer;
 import net.minecraft.world.level.Level;
 
 import org.jetbrains.annotations.NotNull;
@@ -18,11 +17,9 @@ import velrondevs.botania.common.item.LaputaShardItem;
 import velrondevs.botania.registry.BotaniaItems;
 
 public class LaputaShardUpgradeRecipe extends CustomRecipe {
-	public static final RecipeSerializer<LaputaShardUpgradeRecipe> SERIALIZER = new SimpleCraftingRecipeSerializer<>(LaputaShardUpgradeRecipe::new);
+	public static final RecipeSerializer<LaputaShardUpgradeRecipe> SERIALIZER = RecipeUtils.simpleSerializer(LaputaShardUpgradeRecipe::new);
 
-	public LaputaShardUpgradeRecipe(CraftingBookCategory category) {
-		super(category);
-	}
+	public LaputaShardUpgradeRecipe() {}
 
 	@Override
 	public boolean matches(@NotNull CraftingInput inv, @NotNull Level worldIn) {
@@ -46,22 +43,19 @@ public class LaputaShardUpgradeRecipe extends CustomRecipe {
 	}
 
 	@NotNull
-	@Override
 	public ItemStack getResultItem(@NotNull HolderLookup.Provider registries) {
 		return new ItemStack(BotaniaItems.laputaShard);
 	}
 
 	@NotNull
-	@Override
 	public NonNullList<Ingredient> getIngredients() {
-		return NonNullList.of(Ingredient.EMPTY,
-				Ingredient.of(BotaniaItems.laputaShard),
+		return RecipeUtils.ingredientList(Ingredient.of(BotaniaItems.laputaShard),
 				Ingredient.of(BotaniaItems.lifeEssence));
 	}
 
 	@NotNull
 	@Override
-	public ItemStack assemble(@NotNull CraftingInput inv, @NotNull HolderLookup.Provider registries) {
+	public ItemStack assemble(@NotNull CraftingInput inv) {
 		for (int i = 0; i < inv.size(); i++) {
 			ItemStack stack = inv.getItem(i);
 			if (stack.is(BotaniaItems.laputaShard)) {
@@ -73,14 +67,9 @@ public class LaputaShardUpgradeRecipe extends CustomRecipe {
 		return ItemStack.EMPTY;
 	}
 
-	@Override
-	public boolean canCraftInDimensions(int width, int height) {
-		return width * height >= 2;
-	}
-
 	@NotNull
 	@Override
-	public RecipeSerializer<?> getSerializer() {
+	public RecipeSerializer<? extends CustomRecipe> getSerializer() {
 		return SERIALIZER;
 	}
 }

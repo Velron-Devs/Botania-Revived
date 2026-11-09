@@ -1,5 +1,7 @@
 package velrondevs.botania.common.item.equipment.bauble;
 
+import velrondevs.botania.client.core.helper.RenderHelper;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
@@ -8,7 +10,7 @@ import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -59,7 +61,8 @@ public class ThirdEyeItem extends BaubleItem {
 		public static final int NUM_LAYERS = 3;
 
 		@Override
-		public void doRender(HumanoidModel<?> bipedModel, ItemStack stack, LivingEntity living, PoseStack ms, MultiBufferSource buffers, int light, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+		public void doRender(HumanoidModel<?> bipedModel, ItemStack stack, LivingEntity living, PoseStack ms, SubmitNodeCollector collector, int light, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+			MultiBufferSource buffers = RenderHelper.buffers(collector);
 			boolean armor = !living.getItemBySlot(EquipmentSlot.CHEST).isEmpty();
 
 			for (int i = 0; i < NUM_LAYERS; i++) {
@@ -84,10 +87,8 @@ public class ThirdEyeItem extends BaubleItem {
 
 				ms.translate(-0.3, 0.6, armor ? 0.10 : 0.15);
 				ms.scale(0.6F, -0.6F, -0.6F);
-				BakedModel model = MiscellaneousModels.INSTANCE.thirdEyeLayers[i];
-				VertexConsumer buffer = buffers.getBuffer(Sheets.cutoutBlockSheet());
-				Minecraft.getInstance().getBlockRenderer().getModelRenderer()
-						.renderModel(ms.last(), buffer, null, model, 1, 1, 1, light, OverlayTexture.NO_OVERLAY);
+				BlockStateModelPart model = MiscellaneousModels.INSTANCE.thirdEyeLayers[i];
+				RenderHelper.renderModelPart(model, ms, buffers, light, OverlayTexture.NO_OVERLAY);
 				ms.popPose();
 			}
 		}

@@ -3,15 +3,10 @@
   "category": "misc",
   "group": "botania:floating_flower",
   "ingredients": [
-    {
-      "tag": "botania:floating_flowers"
-    },
-    {
-      "item": "botania:pure_daisy"
-    }
+    "#botania:floating_flowers",
+    "botania:pure_daisy"
   ],
   "result": {
-    "count": 1,
     "id": "botania:floating_pure_daisy"
   }
 }

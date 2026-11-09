@@ -1,5 +1,6 @@
 package velrondevs.botania.common.crafting;
 
+import velrondevs.botania.api.recipe.BotaniaRecipe;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.MapCodec;
@@ -8,7 +9,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -35,7 +36,7 @@ public class BotanicalBreweryRecipe implements velrondevs.botania.api.recipe.Bot
 
 	public BotanicalBreweryRecipe(Brew brew, Ingredient... inputs) {
 		this.brew = brew;
-		this.inputs = NonNullList.of(Ingredient.EMPTY, inputs);
+		this.inputs = RecipeUtils.ingredientList(inputs);
 	}
 
 	@Override
@@ -86,7 +87,7 @@ public class BotanicalBreweryRecipe implements velrondevs.botania.api.recipe.Bot
 
 	@NotNull
 	@Override
-	public RecipeSerializer<?> getSerializer() {
+	public RecipeSerializer<? extends BotaniaRecipe> getSerializer() {
 		return BotaniaRecipeTypes.BREW_SERIALIZER;
 	}
 
@@ -121,14 +122,14 @@ public class BotanicalBreweryRecipe implements velrondevs.botania.api.recipe.Bot
 				&& inputs.equals(brewRecipe.inputs);
 	}
 
-	public static class Serializer implements RecipeSerializer<BotanicalBreweryRecipe> {
-		public static final Codec<Brew> BREW_CODEC = ResourceLocation.CODEC.comapFlatMap(
+	public static class Serializer implements BotaniaRecipeSerializer<BotanicalBreweryRecipe> {
+		public static final Codec<Brew> BREW_CODEC = Identifier.CODEC.comapFlatMap(
 				id -> BotaniaAPI.instance().getBrewRegistry().getOptional(id)
 						.map(DataResult::success)
 						.orElseGet(() -> DataResult.error(() -> "Unknown brew " + id)),
 				brew -> BotaniaAPI.instance().getBrewRegistry().getKey(brew));
-		public static final StreamCodec<RegistryFriendlyByteBuf, Brew> BREW_STREAM_CODEC = ResourceLocation.STREAM_CODEC.map(
-				id -> BotaniaAPI.instance().getBrewRegistry().get(id),
+		public static final StreamCodec<RegistryFriendlyByteBuf, Brew> BREW_STREAM_CODEC = Identifier.STREAM_CODEC.map(
+				id -> BotaniaAPI.instance().getBrewRegistry().getValue(id),
 				brew -> BotaniaAPI.instance().getBrewRegistry().getKey(brew)).cast();
 		public static final MapCodec<BotanicalBreweryRecipe> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
 				BREW_CODEC.fieldOf("brew").forGetter(BotanicalBreweryRecipe::getBrew),

@@ -3,15 +3,10 @@
   "category": "misc",
   "group": "botania:floating_flower",
   "ingredients": [
-    {
-      "tag": "botania:floating_flowers"
-    },
-    {
-      "item": "botania:bubbell_chibi"
-    }
+    "#botania:floating_flowers",
+    "botania:bubbell_chibi"
   ],
   "result": {
-    "count": 1,
     "id": "botania:floating_bubbell_chibi"
   }
 }

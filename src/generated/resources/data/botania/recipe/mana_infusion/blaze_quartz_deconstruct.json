@@ -5,9 +5,7 @@
     "block": "botania:alchemy_catalyst"
   },
   "group": "botania:block_deconstruction",
-  "input": {
-    "item": "botania:blaze_quartz"
-  },
+  "input": "botania:blaze_quartz",
   "mana": 25,
   "output": {
     "count": 4,

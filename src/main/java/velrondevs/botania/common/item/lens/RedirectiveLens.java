@@ -21,7 +21,7 @@ public class RedirectiveLens extends Lens {
 	public boolean collideBurst(ManaBurst burst, HitResult pos, boolean isManaBlock, boolean shouldKill, ItemStack stack) {
 		BlockPos sourcePos = burst.getBurstSourceBlockPos();
 		var burstEntity = burst.entity();
-		if (!burstEntity.level().isClientSide && !burst.isFake()) {
+		if (!burstEntity.level().isClientSide() && !burst.isFake()) {
 			if (pos instanceof BlockHitResult result
 					&& result.getType() != HitResult.Type.MISS
 					&& !result.getBlockPos().equals(sourcePos)) {
@@ -79,7 +79,7 @@ public class RedirectiveLens extends Lens {
 
 		var entity = burst.entity();
 		var hitPos = result.getBlockPos();
-		if (!entity.mayInteract(entity.level(), hitPos)) {
+		if (!Lens.mayInteract(entity, hitPos)) {
 			return;
 		}
 		var receiver = XplatAbstractions.INSTANCE.findManaReceiver(entity.level(), hitPos, result.getDirection());

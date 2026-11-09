@@ -2,7 +2,7 @@ package velrondevs.botania.integration.jade;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 
 import snownee.jade.api.BlockAccessor;
@@ -16,7 +16,7 @@ import velrondevs.botania.common.block.block_entity.RunicAltarBlockEntity;
 
 import java.util.List;
 
-public enum RunicAltarProvider implements IBlockComponentProvider, IServerDataProvider<BlockAccessor> {
+public enum RunicAltarProvider implements IBlockComponentProvider {
 	INSTANCE;
 
 	@Override
@@ -41,16 +41,7 @@ public enum RunicAltarProvider implements IBlockComponentProvider, IServerDataPr
 	}
 
 	@Override
-	public void appendServerData(CompoundTag data, BlockAccessor accessor) {
-		if (accessor.getBlockEntity() instanceof RunicAltarBlockEntity altar) {
-			data.putInt(JadeManaHelper.MANA, altar.getCurrentMana());
-			data.putInt(JadeManaHelper.MAX, altar.getTargetMana());
-			JadeManaHelper.putStack(data, JadeManaHelper.OUTPUT, accessor, altar.getCurrentRecipeOutput());
-		}
-	}
-
-	@Override
-	public ResourceLocation getUid() {
+	public Identifier getUid() {
 		return BotaniaJadeIds.RUNIC_ALTAR;
 	}
 }

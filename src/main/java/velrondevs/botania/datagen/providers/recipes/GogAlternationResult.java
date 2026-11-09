@@ -9,7 +9,7 @@ import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.crafting.Recipe;
 import net.neoforged.neoforge.common.conditions.ICondition;
 
@@ -20,18 +20,23 @@ import org.jetbrains.annotations.Nullable;
 import velrondevs.botania.common.crafting.recipe.GogAlternationRecipe;
 
 public class GogAlternationResult {
-	public record Captured(ResourceLocation id, Recipe<?> recipe, @Nullable AdvancementHolder advancement) {}
+	public record Captured(ResourceKey<Recipe<?>> id, Recipe<?> recipe, @Nullable AdvancementHolder advancement) {}
 
 	public static RecipeOutput capture(RecipeOutput parent, MutableObject<Captured> target) {
 		return new RecipeOutput() {
 			@Override
-			public void accept(@NotNull ResourceLocation id, @NotNull Recipe<?> recipe, @Nullable AdvancementHolder advancement, ICondition @NotNull... conditions) {
+			public void accept(@NotNull ResourceKey<Recipe<?>> id, @NotNull Recipe<?> recipe, @Nullable AdvancementHolder advancement, ICondition @NotNull... conditions) {
 				target.setValue(new Captured(id, recipe, advancement));
 			}
 
 			@Override
 			public Advancement.@NotNull Builder advancement() {
 				return parent.advancement();
+			}
+
+			@Override
+			public void includeRootAdvancement() {
+				parent.includeRootAdvancement();
 			}
 		};
 	}
@@ -43,6 +48,6 @@ public class GogAlternationResult {
 		json.addProperty("type", BuiltInRegistries.RECIPE_SERIALIZER.getKey(GogAlternationRecipe.SERIALIZER).toString());
 		json.add("gog", Recipe.CODEC.encodeStart(ops, gog.recipe()).getOrThrow());
 		json.add("base", Recipe.CODEC.encodeStart(ops, base.recipe()).getOrThrow());
-		jsonOutput.acceptJson(base.id(), json, base.advancement());
+		jsonOutput.acceptJson(base.id().identifier(), json, base.advancement());
 	}
 }

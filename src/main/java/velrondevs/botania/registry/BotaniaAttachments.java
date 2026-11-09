@@ -2,7 +2,10 @@ package velrondevs.botania.registry;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
+import velrondevs.botania.api.internal.ValueIOHelper;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.item.PrimedTnt;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
@@ -27,23 +30,27 @@ public final class BotaniaAttachments {
 	public static final AttachmentType<TigerseyeComponent> TIGERSEYE = make(holder -> new TigerseyeComponent());
 
 	private static <T extends SerializableComponent> AttachmentType<T> make(Function<IAttachmentHolder, T> factory) {
-		return AttachmentType.builder(factory).serialize(new IAttachmentSerializer<CompoundTag, T>() {
+		return AttachmentType.builder(factory).serialize(new IAttachmentSerializer<T>() {
 			@Override
-			public T read(IAttachmentHolder holder, CompoundTag tag, HolderLookup.Provider registries) {
+			public T read(IAttachmentHolder holder, ValueInput input) {
 				T component = factory.apply(holder);
-				component.deserializeNBT(registries, tag);
+				component.deserializeNBT(input.lookup(), ValueIOHelper.readAll(input));
 				return component;
 			}
 
-			@Nullable
 			@Override
-			public CompoundTag write(T attachment, HolderLookup.Provider registries) {
-				return attachment.serializeNBT(registries);
+			public boolean write(T attachment, ValueOutput output) {
+				CompoundTag tag = attachment.serializeNBT(ValueIOHelper.registries(null));
+				if (tag == null) {
+					return false;
+				}
+				ValueIOHelper.writeAll(output, tag);
+				return true;
 			}
 		}).build();
 	}
 
-	public static void registerAttachments(BiConsumer<AttachmentType<?>, ResourceLocation> r) {
+	public static void registerAttachments(BiConsumer<AttachmentType<?>, Identifier> r) {
 		r.accept(TNT_ETHICAL, prefix("tnt_ethical"));
 		r.accept(GHOST_RAIL, prefix("ghost_rail"));
 		r.accept(INTERNAL_ITEM, prefix("iitem"));

@@ -6,11 +6,11 @@ import net.minecraft.core.dispenser.DispenseItemBehavior;
 import net.minecraft.core.dispenser.OptionalDispenseItemBehavior;
 import net.minecraft.core.dispenser.ShearsDispenseItemBehavior;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.projectile.Projectile;
-import net.minecraft.world.item.ArmorItem;
+import net.minecraft.core.dispenser.EquipmentDispenseItemBehavior;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
@@ -81,6 +81,7 @@ import velrondevs.botania.common.entity.VineBallEntity;
 import velrondevs.botania.common.helper.ColorHelper;
 import velrondevs.botania.common.item.block.BlockItemWithSpecialRenderer;
 import velrondevs.botania.common.item.block.TinyPotatoBlockItem;
+import velrondevs.botania.common.item.block.TooltipBlockItem;
 import velrondevs.botania.common.lib.LibBlockNames;
 import velrondevs.botania.xplat.XplatAbstractions;
 
@@ -98,7 +99,7 @@ public final class BotaniaBlocks {
 	private static final BlockBehaviour.StateArgumentPredicate<EntityType<?>> NO_SPAWN = (state, world, pos, et) -> false;
 	private static final BlockBehaviour.StatePredicate NO_SUFFOCATION = (state, world, pos) -> false;
 
-	public static final Block whiteFlower = new BotaniaFlowerBlock(DyeColor.WHITE, BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).noCollission().instabreak().offsetType(BlockBehaviour.OffsetType.XZ).pushReaction(PushReaction.DESTROY).strength(0).sound(SoundType.GRASS));
+	public static final Block whiteFlower = new BotaniaFlowerBlock(DyeColor.WHITE, BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).noCollision().instabreak().offsetType(BlockBehaviour.OffsetType.XZ).pushReaction(PushReaction.DESTROY).strength(0).sound(SoundType.GRASS));
 	public static final Block orangeFlower = new BotaniaFlowerBlock(DyeColor.ORANGE, BlockBehaviour.Properties.ofFullCopy(whiteFlower));
 	public static final Block magentaFlower = new BotaniaFlowerBlock(DyeColor.MAGENTA, BlockBehaviour.Properties.ofFullCopy(whiteFlower));
 	public static final Block lightBlueFlower = new BotaniaFlowerBlock(DyeColor.LIGHT_BLUE, BlockBehaviour.Properties.ofFullCopy(whiteFlower));
@@ -372,7 +373,7 @@ public final class BotaniaBlocks {
 	public static final Block canopyDrum = new DrumBlock(DrumBlock.Variant.CANOPY, BlockBehaviour.Properties.ofFullCopy(wildDrum));
 	public static final Block spawnerClaw = new LifeImbuerBlock(BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(3).requiresCorrectToolForDrops());
 	public static final Block rfGenerator = new PowerGeneratorBlock(BlockBehaviour.Properties.ofFullCopy(livingrock));
-	public static final Block prism = new ManaPrismBlock(BlockBehaviour.Properties.ofFullCopy(elfGlass).noCollission());
+	public static final Block prism = new ManaPrismBlock(BlockBehaviour.Properties.ofFullCopy(elfGlass).noCollision());
 	public static final Block pump = new ManaPumpBlock(BlockBehaviour.Properties.ofFullCopy(livingrock));
 	public static final Block sparkChanger = new SparkTinkererBlock(BlockBehaviour.Properties.ofFullCopy(livingrock));
 	public static final Block manaBomb = new ManastormChargeBlock(BlockBehaviour.Properties.ofFullCopy(livingwood).strength(12));
@@ -412,7 +413,7 @@ public final class BotaniaBlocks {
 	public static final Block incensePlate = new IncensePlateBlock(BlockBehaviour.Properties.ofFullCopy(livingwood));
 	public static final Block hourglass = new HoveringHourglassBlock(BlockBehaviour.Properties.of().mapColor(MapColor.GOLD).strength(2).sound(SoundType.METAL));
 	public static final Block ghostRail = new SpectralRailBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.RAIL));
-	public static final Block lightRelayDefault = new LuminizerBlock(LuminizerVariant.DEFAULT, BlockBehaviour.Properties.of().noCollission());
+	public static final Block lightRelayDefault = new LuminizerBlock(LuminizerVariant.DEFAULT, BlockBehaviour.Properties.of().noCollision());
 	public static final Block lightRelayDetector = new LuminizerBlock(LuminizerVariant.DETECTOR, BlockBehaviour.Properties.ofFullCopy(lightRelayDefault));
 	public static final Block lightRelayFork = new LuminizerBlock(LuminizerVariant.FORK, BlockBehaviour.Properties.ofFullCopy(lightRelayDefault));
 	public static final Block lightRelayToggle = new LuminizerBlock(LuminizerVariant.TOGGLE, BlockBehaviour.Properties.ofFullCopy(lightRelayDefault));
@@ -421,7 +422,7 @@ public final class BotaniaBlocks {
 	public static final Block cellBlock = new CellularBlock(BlockBehaviour.Properties.of().pushReaction(PushReaction.DESTROY).sound(SoundType.WOOL));
 	public static final Block teruTeruBozu = new TeruTeruBozuBlock(BlockBehaviour.Properties.of().sound(SoundType.WOOL).instrument(NoteBlockInstrument.GUITAR).mapColor(DyeColor.WHITE));
 	public static final Block avatar = new AvatarBlock(BlockBehaviour.Properties.ofFullCopy(livingwood));
-	public static final Block fakeAir = new FakeAirBlock(BlockBehaviour.Properties.of().replaceable().noCollission().noLootTable().air().randomTicks());
+	public static final Block fakeAir = new FakeAirBlock(BlockBehaviour.Properties.of().replaceable().noCollision().noLootTable().air().randomTicks());
 	public static final Block root = new LivingRootBlock(BlockBehaviour.Properties.of().strength(1.2F).sound(SoundType.WOOD));
 	public static final Block felPumpkin = new FelPumpkinBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.CARVED_PUMPKIN));
 	public static final Block cocoon = new CocoonBlock(BlockBehaviour.Properties.of().strength(3, 60).sound(SoundType.WOOL));
@@ -446,7 +447,7 @@ public final class BotaniaBlocks {
 	public static final Block azulejo13 = new BotaniaBlock(BlockBehaviour.Properties.ofFullCopy(azulejo0));
 	public static final Block azulejo14 = new BotaniaBlock(BlockBehaviour.Properties.ofFullCopy(azulejo0));
 	public static final Block azulejo15 = new BotaniaBlock(BlockBehaviour.Properties.ofFullCopy(azulejo0));
-	public static final Block manaFlame = new ManaFlameBlock(BlockBehaviour.Properties.of().pushReaction(PushReaction.DESTROY).sound(SoundType.WOOL).lightLevel(s -> 15).noCollission());
+	public static final Block manaFlame = new ManaFlameBlock(BlockBehaviour.Properties.of().pushReaction(PushReaction.DESTROY).sound(SoundType.WOOL).lightLevel(s -> 15).noCollision());
 	public static final Block blazeBlock = new BotaniaBlock(BlockBehaviour.Properties.ofFullCopy(manasteelBlock).instrument(NoteBlockInstrument.PLING).lightLevel(s -> 15).mapColor(MapColor.GOLD));
 	public static final Block gaiaHead = new GaiaHeadBlock(BlockBehaviour.Properties.of().pushReaction(PushReaction.DESTROY).strength(1));
 	public static final Block gaiaHeadWall = new WallGaiaHeadBlock(BlockBehaviour.Properties.ofFullCopy(gaiaHead));
@@ -703,7 +704,7 @@ public final class BotaniaBlocks {
 		return new FlowerPotBlock(block, lightLevel > 0 ? properties.lightLevel(blockState -> lightLevel) : properties);
 	}
 
-	public static void registerBlocks(BiConsumer<Block, ResourceLocation> r) {
+	public static void registerBlocks(BiConsumer<Block, Identifier> r) {
 
 		Stream.<Triple<Function<DyeColor, Block>, String, String>>of(
 				Triple.of(BotaniaBlocks::getFlower, "", LibBlockNames.MYSTICAL_FLOWER_SUFFIX),
@@ -1113,7 +1114,7 @@ public final class BotaniaBlocks {
 		r.accept(bifrostPane, prefix(LibBlockNames.BIFROST + "_pane"));
 	}
 
-	public static void registerItemBlocks(BiConsumer<Item, ResourceLocation> r) {
+	public static void registerItemBlocks(BiConsumer<Item, Identifier> r) {
 		Item.Properties props = BotaniaItems.defaultBuilder();
 		Stream.<Function<DyeColor, Block>>of(
 				BotaniaBlocks::getFlower,
@@ -1210,7 +1211,7 @@ public final class BotaniaBlocks {
 		r.accept(new BlockItem(redstoneSpreader, props), BuiltInRegistries.BLOCK.getKey(redstoneSpreader));
 		r.accept(new BlockItem(elvenSpreader, props), BuiltInRegistries.BLOCK.getKey(elvenSpreader));
 		r.accept(new BlockItem(gaiaSpreader, props), BuiltInRegistries.BLOCK.getKey(gaiaSpreader));
-		r.accept(new BlockItem(manaPool, props), BuiltInRegistries.BLOCK.getKey(manaPool));
+		r.accept(new TooltipBlockItem(manaPool, props), BuiltInRegistries.BLOCK.getKey(manaPool));
 		r.accept(new BlockItem(creativePool, BotaniaItems.defaultBuilder().rarity(Rarity.EPIC)), BuiltInRegistries.BLOCK.getKey(creativePool));
 		r.accept(new BlockItem(dilutedPool, props), BuiltInRegistries.BLOCK.getKey(dilutedPool));
 		r.accept(new BlockItem(fabulousPool, props), BuiltInRegistries.BLOCK.getKey(fabulousPool));
@@ -1252,9 +1253,9 @@ public final class BotaniaBlocks {
 		r.accept(new BlockItem(openCrate, props), BuiltInRegistries.BLOCK.getKey(openCrate));
 		r.accept(new BlockItem(craftCrate, props), BuiltInRegistries.BLOCK.getKey(craftCrate));
 		r.accept(new BlockItem(forestEye, props), BuiltInRegistries.BLOCK.getKey(forestEye));
-		r.accept(new BlockItem(abstrusePlatform, props), BuiltInRegistries.BLOCK.getKey(abstrusePlatform));
-		r.accept(new BlockItem(spectralPlatform, props), BuiltInRegistries.BLOCK.getKey(spectralPlatform));
-		r.accept(new BlockItem(infrangiblePlatform, BotaniaItems.defaultBuilder().rarity(Rarity.EPIC)), BuiltInRegistries.BLOCK.getKey(infrangiblePlatform));
+		r.accept(new TooltipBlockItem(abstrusePlatform, props), BuiltInRegistries.BLOCK.getKey(abstrusePlatform));
+		r.accept(new TooltipBlockItem(spectralPlatform, props), BuiltInRegistries.BLOCK.getKey(spectralPlatform));
+		r.accept(new TooltipBlockItem(infrangiblePlatform, BotaniaItems.defaultBuilder().rarity(Rarity.EPIC)), BuiltInRegistries.BLOCK.getKey(infrangiblePlatform));
 		r.accept(new TinyPotatoBlockItem(tinyPotato, BotaniaItems.defaultBuilder().rarity(Rarity.UNCOMMON)), BuiltInRegistries.BLOCK.getKey(tinyPotato));
 		r.accept(new BlockItem(enderEye, props), BuiltInRegistries.BLOCK.getKey(enderEye));
 		r.accept(new BlockItem(redStringContainer, props), BuiltInRegistries.BLOCK.getKey(redStringContainer));
@@ -1310,7 +1311,7 @@ public final class BotaniaBlocks {
 		r.accept(new BlockItem(azulejo14, props), BuiltInRegistries.BLOCK.getKey(azulejo14));
 		r.accept(new BlockItem(azulejo15, props), BuiltInRegistries.BLOCK.getKey(azulejo15));
 		r.accept(new BlazeItemBlock(blazeBlock, props), BuiltInRegistries.BLOCK.getKey(blazeBlock));
-		r.accept(new StandingAndWallBlockItem(gaiaHead, gaiaHeadWall, BotaniaItems.defaultBuilder().rarity(Rarity.UNCOMMON), Direction.DOWN), BuiltInRegistries.BLOCK.getKey(gaiaHead));
+		r.accept(new StandingAndWallBlockItem(gaiaHead, gaiaHeadWall, Direction.DOWN, BotaniaItems.defaultBuilder().rarity(Rarity.UNCOMMON)), BuiltInRegistries.BLOCK.getKey(gaiaHead));
 		r.accept(new BlockItem(shimmerrock, props), BuiltInRegistries.BLOCK.getKey(shimmerrock));
 		r.accept(new BlockItem(shimmerrockSlab, props), BuiltInRegistries.BLOCK.getKey(shimmerrockSlab));
 		r.accept(new BlockItem(shimmerrockStairs, props), BuiltInRegistries.BLOCK.getKey(shimmerrockStairs));
@@ -1323,9 +1324,9 @@ public final class BotaniaBlocks {
 		r.accept(new BlockItem(scorchedGrass, props), BuiltInRegistries.BLOCK.getKey(scorchedGrass));
 		r.accept(new BlockItem(infusedGrass, props), BuiltInRegistries.BLOCK.getKey(infusedGrass));
 		r.accept(new BlockItem(mutatedGrass, props), BuiltInRegistries.BLOCK.getKey(mutatedGrass));
-		r.accept(new BlockItem(motifDaybloom, props), BuiltInRegistries.BLOCK.getKey(motifDaybloom));
-		r.accept(new BlockItem(motifNightshade, props), BuiltInRegistries.BLOCK.getKey(motifNightshade));
-		r.accept(new BlockItem(motifHydroangeas, props), BuiltInRegistries.BLOCK.getKey(motifHydroangeas));
+		r.accept(new TooltipBlockItem(motifDaybloom, props), BuiltInRegistries.BLOCK.getKey(motifDaybloom));
+		r.accept(new TooltipBlockItem(motifNightshade, props), BuiltInRegistries.BLOCK.getKey(motifNightshade));
+		r.accept(new TooltipBlockItem(motifHydroangeas, props), BuiltInRegistries.BLOCK.getKey(motifHydroangeas));
 
 		r.accept(new BlockItem(darkQuartz, props), BuiltInRegistries.BLOCK.getKey(darkQuartz));
 		r.accept(new BlockItem(darkQuartzPillar, props), BuiltInRegistries.BLOCK.getKey(darkQuartzPillar));
@@ -1522,7 +1523,7 @@ public final class BotaniaBlocks {
 			@NotNull
 			@Override
 			protected ItemStack execute(@NotNull BlockSource source, @NotNull ItemStack stack) {
-				setSuccess(ArmorItem.dispenseArmor(source, stack));
+				setSuccess(EquipmentDispenseItemBehavior.dispenseEquipment(source, stack));
 				return stack;
 			}
 		});
@@ -1800,7 +1801,7 @@ public final class BotaniaBlocks {
 		};
 	}
 
-	public static void registerFlowerPotPlants(BiConsumer<ResourceLocation, Supplier<? extends Block>> consumer) {
+	public static void registerFlowerPotPlants(BiConsumer<Identifier, Supplier<? extends Block>> consumer) {
 		ColorHelper.supportedColors().forEach(dyeColor -> {
 			consumer.accept(prefix(dyeColor.getName() + MYSTICAL_FLOWER_SUFFIX), () -> getPottedFlower(dyeColor));
 			consumer.accept(prefix(dyeColor.getName() + SHINY_FLOWER_SUFFIX), () -> getPottedShinyFlower(dyeColor));

@@ -1,8 +1,10 @@
 package velrondevs.botania.compat.sophisticated;
 
+import net.minecraft.world.item.Item;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.level.Level;
 import net.p3pp3rf1y.sophisticatedcore.api.IStorageWrapper;
 import net.p3pp3rf1y.sophisticatedcore.upgrades.IUpgradeItem;
@@ -24,7 +26,7 @@ public class RunicAltarUpgradeItem extends UpgradeItemBase<RunicAltarUpgradeItem
 	public static final UpgradeType<Wrapper> TYPE = new UpgradeType<>(Wrapper::new);
 
 	public RunicAltarUpgradeItem() {
-		super(UpgradeLimits.of(SophisticatedConfig::altarMaxPerStorage));
+		super(UpgradeLimits.of(SophisticatedConfig::altarMaxPerStorage), new Item.Properties());
 	}
 
 	@Override
@@ -84,7 +86,7 @@ public class RunicAltarUpgradeItem extends UpgradeItemBase<RunicAltarUpgradeItem
 				return null;
 			}
 			ContainerRecipeInput input = new ContainerRecipeInput(container);
-			Optional<RecipeHolder<RunicAltarRecipe>> holder = level.getRecipeManager().getRecipeFor(BotaniaRecipeTypes.RUNE_TYPE, input, level);
+			Optional<RecipeHolder<RunicAltarRecipe>> holder = BotaniaRecipeTypes.getRecipeFor(level, BotaniaRecipeTypes.RUNE_TYPE, (RecipeInput) input);
 			if (holder.isEmpty()) {
 				return null;
 			}

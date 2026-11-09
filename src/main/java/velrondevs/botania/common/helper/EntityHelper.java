@@ -51,10 +51,10 @@ public class EntityHelper {
 	}
 
 	public static void addTeleportTicketIfFarAway(Entity entity, BlockPos sourcePos) {
-		ChunkPos entityChunk = new ChunkPos(entity.blockPosition());
-		ChunkPos sourceChunk = new ChunkPos(sourcePos);
+		ChunkPos entityChunk = ChunkPos.containing(entity.blockPosition());
+		ChunkPos sourceChunk = ChunkPos.containing(sourcePos);
 		if (entity.level() instanceof ServerLevel serverLevel && entityChunk.getChessboardDistance(sourceChunk) > 2) {
-			serverLevel.getChunkSource().addRegionTicket(TicketType.POST_TELEPORT, entityChunk, 0, entity.getId());
+			serverLevel.getChunkSource().addTicketWithRadius(TicketType.ENDER_PEARL, entityChunk, 0);
 		}
 	}
 

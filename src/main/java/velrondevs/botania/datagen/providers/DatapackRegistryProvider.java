@@ -13,7 +13,7 @@ import net.minecraft.data.worldgen.placement.PlacementUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.util.random.SimpleWeightedRandomList;
+import net.minecraft.util.random.WeightedList;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.JukeboxSong;
@@ -26,17 +26,18 @@ import net.minecraft.world.level.levelgen.VerticalAnchor;
 import net.minecraft.world.level.levelgen.blockpredicates.BlockPredicate;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
-import net.minecraft.world.level.levelgen.feature.configurations.RandomPatchConfiguration;
 import net.minecraft.world.level.levelgen.feature.configurations.SimpleBlockConfiguration;
 import net.minecraft.world.level.levelgen.feature.configurations.SimpleRandomFeatureConfiguration;
 import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvider;
 import net.minecraft.world.level.levelgen.feature.stateproviders.WeightedStateProvider;
 import net.minecraft.world.level.levelgen.placement.BiomeFilter;
+import net.minecraft.world.level.levelgen.placement.BlockPredicateFilter;
 import net.minecraft.world.level.levelgen.placement.CountPlacement;
 import net.minecraft.world.level.levelgen.placement.HeightRangePlacement;
 import net.minecraft.world.level.levelgen.placement.HeightmapPlacement;
 import net.minecraft.world.level.levelgen.placement.InSquarePlacement;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
+import net.minecraft.world.level.levelgen.placement.RandomOffsetPlacement;
 import net.minecraft.world.level.levelgen.placement.RarityFilter;
 import net.neoforged.neoforge.common.data.DatapackBuiltinEntriesProvider;
 import net.neoforged.neoforge.common.world.BiomeModifier;
@@ -91,29 +92,28 @@ public class DatapackRegistryProvider extends DatapackBuiltinEntriesProvider {
 
 	@SuppressWarnings("unchecked")
 	private static void configuredFeatures(BootstrapContext<ConfiguredFeature<?, ?>> context) {
-		Feature<MysticalFlowerConfig> mysticalFlower = (Feature<MysticalFlowerConfig>) BuiltInRegistries.FEATURE.get(prefix("mystical_flower"));
+		Feature<MysticalFlowerConfig> mysticalFlower = (Feature<MysticalFlowerConfig>) BuiltInRegistries.FEATURE.getValue(prefix("mystical_flower"));
 		HolderGetter<ConfiguredFeature<?, ?>> configured = context.lookup(Registries.CONFIGURED_FEATURE);
 
 		List<Holder<PlacedFeature>> patches = new ArrayList<>();
 		for (DyeColor color : DyeColor.values()) {
 			ResourceKey<ConfiguredFeature<?, ?>> key = flowerPatchKey(color);
-			context.register(key, new ConfiguredFeature<>(Feature.RANDOM_PATCH, new RandomPatchConfiguration(32, 6, 4,
-					PlacementUtils.filtered(mysticalFlower,
-							new MysticalFlowerConfig(0.05F, BlockStateProvider.simple(BotaniaBlocks.getFlower(color))),
-							BlockPredicate.matchesBlocks(Blocks.AIR)))));
-			patches.add(PlacementUtils.inlinePlaced(configured.getOrThrow(key)));
+			context.register(key, new ConfiguredFeature<>(mysticalFlower,
+					new MysticalFlowerConfig(0.05F, BlockStateProvider.simple(BotaniaBlocks.getFlower(color)))));
+			patches.add(PlacementUtils.inlinePlaced(configured.getOrThrow(key),
+					CountPlacement.of(32),
+					RandomOffsetPlacement.ofTriangle(6, 4),
+					BlockPredicateFilter.forPredicate(BlockPredicate.matchesBlocks(Blocks.AIR))));
 		}
 		context.register(MYSTICAL_FLOWERS, new ConfiguredFeature<>(Feature.SIMPLE_RANDOM_SELECTOR,
 				new SimpleRandomFeatureConfiguration(HolderSet.direct(patches))));
 
-		SimpleWeightedRandomList.Builder<BlockState> mushrooms = SimpleWeightedRandomList.builder();
+		WeightedList.Builder<BlockState> mushrooms = WeightedList.builder();
 		for (DyeColor color : DyeColor.values()) {
 			mushrooms.add(BotaniaBlocks.getMushroom(color).defaultBlockState(), 1);
 		}
-		context.register(MYSTICAL_MUSHROOMS, new ConfiguredFeature<>(Feature.RANDOM_PATCH, new RandomPatchConfiguration(40, 16, 4,
-				PlacementUtils.filtered(Feature.SIMPLE_BLOCK,
-						new SimpleBlockConfiguration(new WeightedStateProvider(mushrooms)),
-						BlockPredicate.matchesBlocks(Blocks.AIR)))));
+		context.register(MYSTICAL_MUSHROOMS, new ConfiguredFeature<>(Feature.SIMPLE_BLOCK,
+				new SimpleBlockConfiguration(new WeightedStateProvider(mushrooms))));
 	}
 
 	private static void placedFeatures(BootstrapContext<PlacedFeature> context) {
@@ -127,7 +127,10 @@ public class DatapackRegistryProvider extends DatapackBuiltinEntriesProvider {
 		context.register(BotaniaFeatures.MYSTICAL_MUSHROOMS_PLACED_FEATURE, new PlacedFeature(configured.getOrThrow(MYSTICAL_MUSHROOMS), List.of(
 				InSquarePlacement.spread(),
 				HeightRangePlacement.uniform(VerticalAnchor.aboveBottom(0), VerticalAnchor.absolute(30)),
-				BiomeFilter.biome())));
+				BiomeFilter.biome(),
+				CountPlacement.of(40),
+				RandomOffsetPlacement.ofTriangle(16, 4),
+				BlockPredicateFilter.forPredicate(BlockPredicate.matchesBlocks(Blocks.AIR)))));
 	}
 
 	private static void biomeModifiers(BootstrapContext<BiomeModifier> context) {

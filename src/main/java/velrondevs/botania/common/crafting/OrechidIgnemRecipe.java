@@ -1,5 +1,6 @@
 package velrondevs.botania.common.crafting;
 
+import velrondevs.botania.api.recipe.BotaniaRecipe;
 import com.mojang.serialization.MapCodec;
 
 import net.minecraft.commands.CacheableFunction;
@@ -31,11 +32,11 @@ public class OrechidIgnemRecipe extends OrechidRecipe {
 	}
 
 	@Override
-	public RecipeSerializer<?> getSerializer() {
+	public RecipeSerializer<? extends BotaniaRecipe> getSerializer() {
 		return BotaniaRecipeTypes.ORECHID_IGNEM_SERIALIZER;
 	}
 
-	public static class Serializer implements RecipeSerializer<OrechidIgnemRecipe> {
+	public static class Serializer implements BotaniaRecipeSerializer<OrechidIgnemRecipe> {
 		public static final MapCodec<OrechidIgnemRecipe> CODEC = OrechidRecipe.Serializer.CODEC
 				.xmap(OrechidIgnemRecipe::new, recipe -> recipe);
 		public static final StreamCodec<RegistryFriendlyByteBuf, OrechidIgnemRecipe> STREAM_CODEC = OrechidRecipe.Serializer.STREAM_CODEC

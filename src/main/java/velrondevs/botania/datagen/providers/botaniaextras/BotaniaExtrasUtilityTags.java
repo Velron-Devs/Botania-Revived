@@ -1,9 +1,10 @@
 package velrondevs.botania.datagen.providers.botaniaextras;
 
+import net.minecraft.tags.TagEntry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Item;
@@ -18,31 +19,30 @@ import velrondevs.botania.registry.BotaniaItems;
 public final class BotaniaExtrasUtilityTags {
 	private BotaniaExtrasUtilityTags() {}
 
-	private static ResourceLocation itemId(ItemLike item) {
+	private static Identifier itemId(ItemLike item) {
 		return BuiltInRegistries.ITEM.getKey(item.asItem());
 	}
 
-	private static ResourceLocation curios(String slot) {
-		return ResourceLocation.fromNamespaceAndPath("curios", slot);
+	private static Identifier curios(String slot) {
+		return Identifier.fromNamespaceAndPath("curios", slot);
 	}
 
 	public static void addBlockTags(ModuleTagSink<Block> sink) {
-		sink.tag(BlockTags.MINEABLE_WITH_AXE).addOptional(BuiltInRegistries.BLOCK.getKey(BotaniaExtrasUtilities.livingwoodFunnel));
+		sink.tag(BlockTags.MINEABLE_WITH_AXE).add(TagEntry.optionalElement(BuiltInRegistries.BLOCK.getKey(BotaniaExtrasUtilities.livingwoodFunnel)));
 	}
 
 	public static void addItemTags(ModuleTagSink<Item> sink) {
 		var blacklist = sink.tag(ToolbeltItem.BLACKLIST);
-		blacklist.addOptional(itemId(BotaniaExtrasUtilities.toolbelt));
-		blacklist.add(ResourceKey.create(Registries.ITEM, itemId(BotaniaItems.baubleBox)));
-		sink.tag(ItemTags.DYEABLE).addOptional(itemId(BotaniaExtrasUtilities.clericalColorizer));
+		blacklist.add(TagEntry.optionalElement(itemId(BotaniaExtrasUtilities.toolbelt)));
+		blacklist.add(TagEntry.element(itemId(BotaniaItems.baubleBox)));
 	}
 
 	public static void addAccessoryTags(ModuleTagSink<Item> sink) {
-		sink.tag(ItemTags.create(curios("belt"))).addOptional(itemId(BotaniaExtrasUtilities.toolbelt));
-		sink.tag(ItemTags.create(curios("ring"))).addOptional(itemId(BotaniaExtrasUtilities.clericalColorizer));
+		sink.tag(ItemTags.create(curios("belt"))).add(TagEntry.optionalElement(itemId(BotaniaExtrasUtilities.toolbelt)));
+		sink.tag(ItemTags.create(curios("ring"))).add(TagEntry.optionalElement(itemId(BotaniaExtrasUtilities.clericalColorizer)));
 		var necklace = sink.tag(ItemTags.create(curios("necklace")));
 		for (Item coat : BotaniaExtrasUtilities.coats()) {
-			necklace.addOptional(itemId(coat));
+			necklace.add(TagEntry.optionalElement(itemId(coat)));
 		}
 	}
 }

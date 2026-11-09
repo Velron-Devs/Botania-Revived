@@ -7,7 +7,6 @@ import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.SimpleCraftingRecipeSerializer;
 import net.minecraft.world.level.Level;
 
 import org.jetbrains.annotations.NotNull;
@@ -18,11 +17,9 @@ import velrondevs.botania.common.item.brew.BaseBrewItem;
 import java.util.Objects;
 
 public class MergeVialRecipe extends CustomRecipe {
-	public static final RecipeSerializer<MergeVialRecipe> SERIALIZER = new SimpleCraftingRecipeSerializer<>(MergeVialRecipe::new);
+	public static final RecipeSerializer<MergeVialRecipe> SERIALIZER = RecipeUtils.simpleSerializer(MergeVialRecipe::new);
 
-	public MergeVialRecipe(CraftingBookCategory category) {
-		super(category);
-	}
+	public MergeVialRecipe() {}
 
 	@Override
 	public boolean matches(CraftingInput inv, @NotNull Level worldIn) {
@@ -52,7 +49,7 @@ public class MergeVialRecipe extends CustomRecipe {
 
 	@NotNull
 	@Override
-	public ItemStack assemble(CraftingInput inv, @NotNull HolderLookup.Provider registries) {
+	public ItemStack assemble(CraftingInput inv) {
 		ItemStack firstStack = ItemStack.EMPTY;
 		BaseBrewItem brew = null;
 		int swigs = 0;
@@ -113,14 +110,9 @@ public class MergeVialRecipe extends CustomRecipe {
 		return remaining;
 	}
 
-	@Override
-	public boolean canCraftInDimensions(int width, int height) {
-		return width * height > 2;
-	}
-
 	@NotNull
 	@Override
-	public RecipeSerializer<?> getSerializer() {
+	public RecipeSerializer<? extends CustomRecipe> getSerializer() {
 		return SERIALIZER;
 	}
 }

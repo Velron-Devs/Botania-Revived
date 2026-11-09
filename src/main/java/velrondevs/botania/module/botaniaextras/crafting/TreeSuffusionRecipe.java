@@ -12,6 +12,9 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.PlacementInfo;
+import net.minecraft.world.item.crafting.RecipeBookCategories;
+import net.minecraft.world.item.crafting.RecipeBookCategory;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -89,13 +92,28 @@ public class TreeSuffusionRecipe implements Recipe<RecipeInput> {
 
 	@NotNull
 	@Override
-	public ItemStack assemble(@NotNull RecipeInput input, @NotNull HolderLookup.Provider registries) {
-		return getResultItem(registries).copy();
+	public ItemStack assemble(@NotNull RecipeInput input) {
+		return getResultItem().copy();
 	}
 
 	@Override
-	public boolean canCraftInDimensions(int width, int height) {
+	public boolean showNotification() {
 		return false;
+	}
+
+	@Override
+	public String group() {
+		return "";
+	}
+
+	@Override
+	public PlacementInfo placementInfo() {
+		return PlacementInfo.NOT_PLACEABLE;
+	}
+
+	@Override
+	public RecipeBookCategory recipeBookCategory() {
+		return RecipeBookCategories.CRAFTING_MISC;
 	}
 
 	@Override
@@ -104,36 +122,33 @@ public class TreeSuffusionRecipe implements Recipe<RecipeInput> {
 	}
 
 	@NotNull
-	@Override
-	public ItemStack getResultItem(@NotNull HolderLookup.Provider registries) {
+	public ItemStack getResultItem() {
 		return new ItemStack(output.getBlock());
 	}
 
 	@NotNull
-	@Override
 	public NonNullList<Ingredient> getIngredients() {
 		return inputs;
 	}
 
 	@NotNull
-	@Override
 	public ItemStack getToastSymbol() {
 		return new ItemStack(BotaniaExtrasBlocks.terrasteelItemPlatform);
 	}
 
 	@NotNull
 	@Override
-	public RecipeSerializer<?> getSerializer() {
+	public RecipeSerializer<TreeSuffusionRecipe> getSerializer() {
 		return BotaniaExtrasRecipeTypes.TREE_SUFFUSION_SERIALIZER;
 	}
 
 	@NotNull
 	@Override
-	public RecipeType<?> getType() {
+	public RecipeType<TreeSuffusionRecipe> getType() {
 		return BotaniaExtrasRecipeTypes.TREE_SUFFUSION_TYPE;
 	}
 
-	public static class Serializer implements RecipeSerializer<TreeSuffusionRecipe> {
+	public static final class Serializer {
 		public static final MapCodec<TreeSuffusionRecipe> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
 				StateIngredientHelper.BLOCK_STATE_CODEC.fieldOf("output").forGetter(TreeSuffusionRecipe::getOutputState),
 				Codec.INT.fieldOf("mana").forGetter(TreeSuffusionRecipe::getMana),
@@ -147,14 +162,8 @@ public class TreeSuffusionRecipe implements Recipe<RecipeInput> {
 				RecipeUtils.INGREDIENTS_STREAM_CODEC, TreeSuffusionRecipe::getInputs,
 				TreeSuffusionRecipe::new);
 
-		@Override
-		public MapCodec<TreeSuffusionRecipe> codec() {
-			return CODEC;
-		}
-
-		@Override
-		public StreamCodec<RegistryFriendlyByteBuf, TreeSuffusionRecipe> streamCodec() {
-			return STREAM_CODEC;
+		public static RecipeSerializer<TreeSuffusionRecipe> create() {
+			return new RecipeSerializer<>(CODEC, STREAM_CODEC);
 		}
 	}
 }

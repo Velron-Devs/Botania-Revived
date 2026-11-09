@@ -35,7 +35,7 @@ public class ShulkMeNotBlockEntity extends GeneratingFlowerBlockEntity {
 		super.tickFlower();
 
 		Level world = getLevel();
-		if (world.isClientSide) {
+		if (world.isClientSide()) {
 			return;
 		}
 		int generate = getMaxMana();

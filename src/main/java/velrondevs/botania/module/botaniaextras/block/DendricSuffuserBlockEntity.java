@@ -1,10 +1,12 @@
 package velrondevs.botania.module.botaniaextras.block;
 
+import velrondevs.botania.common.block.RecipeLookup;
+
 import com.google.common.base.Predicates;
 import com.google.common.base.Suppliers;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -213,7 +215,7 @@ public class DendricSuffuserBlockEntity extends BotaniaBlockEntity implements Ma
 		if (input.items().isEmpty() || !(level.getBlockState(worldPosition.below(SAPLING_DEPTH)).getBlock() instanceof IridescentSaplingBlock)) {
 			return null;
 		}
-		return level.getRecipeManager().getRecipeFor(BotaniaExtrasRecipeTypes.TREE_SUFFUSION_TYPE, input, level)
+		return RecipeLookup.getRecipeFor(level, BotaniaExtrasRecipeTypes.TREE_SUFFUSION_TYPE, input, level)
 				.map(RecipeHolder::value).orElse(null);
 	}
 
@@ -224,7 +226,7 @@ public class DendricSuffuserBlockEntity extends BotaniaBlockEntity implements Ma
 
 	public static void commonTick(Level level, BlockPos pos, BlockState state, DendricSuffuserBlockEntity self) {
 		self.ticksAlive++;
-		if (level.isClientSide) {
+		if (level.isClientSide()) {
 			self.clientTick();
 			return;
 		}
@@ -316,14 +318,14 @@ public class DendricSuffuserBlockEntity extends BotaniaBlockEntity implements Ma
 		}
 		for (int[] p : PLATFORMS) {
 			if (level.getBlockEntity(worldPosition.offset(p[0], -SAPLING_DEPTH, p[1])) instanceof ItemPlatformBlockEntity platform && !platform.getDisplayed().isEmpty() && mana > 0) {
-				if (level.random.nextInt(3) == 0) {
+				if (level.getRandom().nextInt(3) == 0) {
 					double fromX = worldPosition.getX() + p[0] + 0.5;
 					double fromY = worldPosition.getY() - SAPLING_DEPTH + 1.2;
 					double fromZ = worldPosition.getZ() + p[1] + 0.5;
 					double dx = (worldPosition.getX() + 0.5 - fromX) / 30;
 					double dy = (worldPosition.getY() + 0.5 - fromY) / 30;
 					double dz = (worldPosition.getZ() + 0.5 - fromZ) / 30;
-					WispParticleData data = WispParticleData.wisp(0.2F + level.random.nextFloat() * 0.1F, 1F, 1F, 1F);
+					WispParticleData data = WispParticleData.wisp(0.2F + level.getRandom().nextFloat() * 0.1F, 1F, 1F, 1F);
 					level.addParticle(data, fromX, fromY, fromZ, dx, dy, dz);
 				}
 			}
@@ -333,7 +335,7 @@ public class DendricSuffuserBlockEntity extends BotaniaBlockEntity implements Ma
 	@Override
 	public boolean triggerEvent(int event, int param) {
 		if (event == CRAFT_EFFECT_EVENT) {
-			if (level.isClientSide) {
+			if (level.isClientSide()) {
 				for (int i = 0; i < 25; i++) {
 					SparkleParticleData data = SparkleParticleData.sparkle((float) Math.random(), (float) Math.random(), (float) Math.random(), (float) Math.random(), 10);
 					level.addParticle(data, worldPosition.getX() + Math.random() * 0.4 + 0.3, worldPosition.getY() - SAPLING_DEPTH + 0.5 + Math.random(), worldPosition.getZ() + Math.random() * 0.4 + 0.3, 0, 0, 0);
@@ -360,10 +362,10 @@ public class DendricSuffuserBlockEntity extends BotaniaBlockEntity implements Ma
 
 	@Override
 	public void readPacketNBT(CompoundTag cmp, HolderLookup.Provider registries) {
-		stage = cmp.getInt(TAG_STAGE);
-		mana = cmp.getInt(TAG_MANA);
-		manaRequired = cmp.getInt(TAG_MANA_REQUIRED);
-		throttle = cmp.contains(TAG_THROTTLE) ? cmp.getInt(TAG_THROTTLE) : -1;
+		stage = cmp.getIntOr(TAG_STAGE, 0);
+		mana = cmp.getIntOr(TAG_MANA, 0);
+		manaRequired = cmp.getIntOr(TAG_MANA_REQUIRED, 0);
+		throttle = cmp.contains(TAG_THROTTLE) ? cmp.getIntOr(TAG_THROTTLE, 0) : -1;
 	}
 
 	@Override
@@ -432,7 +434,7 @@ public class DendricSuffuserBlockEntity extends BotaniaBlockEntity implements Ma
 		}
 
 		@Override
-		public void renderHUD(GuiGraphics gui, Minecraft mc) {
+		public void renderHUD(GuiGraphicsExtractor gui, Minecraft mc) {
 			if (suffuser.manaRequired > 0 && suffuser.stage == 1) {
 				int x = mc.getWindow().getGuiScaledWidth() / 2 + 8;
 				int y = mc.getWindow().getGuiScaledHeight() / 2 - 12;

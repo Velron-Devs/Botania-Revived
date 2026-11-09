@@ -7,30 +7,14 @@
   ],
   "type": "botania:tree_suffusion",
   "ingredients": [
-    {
-      "item": "minecraft:nether_brick"
-    },
-    {
-      "item": "minecraft:nether_brick"
-    },
-    {
-      "item": "minecraft:nether_brick"
-    },
-    {
-      "item": "botania:rune_fire"
-    },
-    {
-      "item": "botania:red_iridescent_leaves"
-    },
-    {
-      "item": "botania:red_iridescent_leaves"
-    },
-    {
-      "item": "botania:red_iridescent_leaves"
-    },
-    {
-      "item": "botania:blaze_block"
-    }
+    "minecraft:nether_brick",
+    "minecraft:nether_brick",
+    "minecraft:nether_brick",
+    "botania:rune_fire",
+    "botania:red_iridescent_leaves",
+    "botania:red_iridescent_leaves",
+    "botania:red_iridescent_leaves",
+    "botania:blaze_block"
   ],
   "mana": 10000,
   "output": {

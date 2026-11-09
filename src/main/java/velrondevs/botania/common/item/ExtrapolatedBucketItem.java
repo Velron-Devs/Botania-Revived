@@ -1,5 +1,6 @@
 package velrondevs.botania.common.item;
 
+import net.minecraft.world.InteractionResult;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -8,7 +9,6 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -35,13 +35,13 @@ public class ExtrapolatedBucketItem extends Item {
 
 	@NotNull
 	@Override
-	public InteractionResultHolder<ItemStack> use(Level level, Player player, @NotNull InteractionHand interactionHand) {
+	public InteractionResult use(Level level, Player player, @NotNull InteractionHand interactionHand) {
 		ItemStack itemStack = player.getItemInHand(interactionHand);
 		BlockHitResult blockHitResult = getPlayerPOVHitResult(level, player, ClipContext.Fluid.SOURCE_ONLY);
 		if (blockHitResult.getType() == HitResult.Type.MISS) {
-			return InteractionResultHolder.pass(itemStack);
+			return InteractionResult.PASS;
 		} else if (blockHitResult.getType() != HitResult.Type.BLOCK) {
-			return InteractionResultHolder.pass(itemStack);
+			return InteractionResult.PASS;
 		} else {
 			BlockPos blockPos = blockHitResult.getBlockPos();
 			Direction direction = blockHitResult.getDirection();
@@ -60,16 +60,16 @@ public class ExtrapolatedBucketItem extends Item {
 						spawnParticles(level, blockPos);
 						level.gameEvent(player, GameEvent.FLUID_PICKUP, blockPos);
 						ItemStack itemStack3 = itemStack;
-						if (!level.isClientSide) {
+						if (!level.isClientSide()) {
 							CriteriaTriggers.FILLED_BUCKET.trigger((ServerPlayer) player, itemStack2);
 						}
 
-						return InteractionResultHolder.sidedSuccess(itemStack3, level.isClientSide());
+						return InteractionResult.SUCCESS.heldItemTransformedTo(itemStack3);
 					}
 				} else if (blockState.getBlock() instanceof AbstractCauldronBlock cauldronBlock) {
 					CauldronInteraction interaction = ((AbstractCauldronBlockAccessor) cauldronBlock)
-							.botania_getInteractions().map().get(Items.BUCKET);
-					if (interaction != null) {
+							.botania_getInteractions().get(new ItemStack(Items.BUCKET));
+					if (interaction != CauldronInteraction.DEFAULT) {
 
 						BlockState fullState = blockState.hasProperty(LayeredCauldronBlock.LEVEL)
 								? blockState.setValue(LayeredCauldronBlock.LEVEL, LayeredCauldronBlock.MAX_FILL_LEVEL)
@@ -83,12 +83,12 @@ public class ExtrapolatedBucketItem extends Item {
 
 							player.setItemInHand(interactionHand, itemStack);
 						}
-						return new InteractionResultHolder<>(result.result(), itemStack);
+						return result instanceof InteractionResult.Success success ? success.heldItemTransformedTo(itemStack) : result;
 					}
 				}
 
 			}
-			return InteractionResultHolder.fail(itemStack);
+			return InteractionResult.FAIL;
 		}
 	}
 

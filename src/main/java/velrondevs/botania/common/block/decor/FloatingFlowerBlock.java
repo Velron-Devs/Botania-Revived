@@ -3,7 +3,7 @@ package velrondevs.botania.common.block.decor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
@@ -53,9 +53,9 @@ public class FloatingFlowerBlock extends BotaniaWaterloggedBlock implements Enti
 	@Override
 	public RenderShape getRenderShape(BlockState state) {
 		if (!XplatAbstractions.INSTANCE.isPhysicalClient()) {
-			return RenderShape.ENTITYBLOCK_ANIMATED;
+			return RenderShape.INVISIBLE;
 		}
-		return BotaniaConfig.client().staticFloaters() || PatchouliUtils.isInVisualizer() ? RenderShape.MODEL : RenderShape.ENTITYBLOCK_ANIMATED;
+		return BotaniaConfig.client().staticFloaters() || PatchouliUtils.isInVisualizer() ? RenderShape.MODEL : RenderShape.INVISIBLE;
 	}
 
 	@Override
@@ -72,7 +72,7 @@ public class FloatingFlowerBlock extends BotaniaWaterloggedBlock implements Enti
 	}
 
 	@Override
-	public ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+	public InteractionResult useItemOn(ItemStack stack, BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
 		BlockEntity te = world.getBlockEntity(pos);
 		if (!stack.isEmpty() && te instanceof FloatingFlowerProvider provider && provider.getFloatingData() != null) {
 			FloatingFlower flower = provider.getFloatingData();
@@ -87,7 +87,7 @@ public class FloatingFlowerBlock extends BotaniaWaterloggedBlock implements Enti
 			}
 
 			if (type != null && type != flower.getIslandType()) {
-				if (!world.isClientSide) {
+				if (!world.isClientSide()) {
 					flower.setIslandType(type);
 					VanillaPacketDispatcher.dispatchTEToNearbyPlayers(te);
 				}
@@ -95,10 +95,10 @@ public class FloatingFlowerBlock extends BotaniaWaterloggedBlock implements Enti
 				if (!player.getAbilities().instabuild) {
 					stack.shrink(1);
 				}
-				return ItemInteractionResult.sidedSuccess(world.isClientSide());
+				return InteractionResult.SUCCESS;
 			}
 		}
-		return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+		return InteractionResult.TRY_WITH_EMPTY_HAND;
 	}
 
 	@NotNull

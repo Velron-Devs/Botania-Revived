@@ -3,15 +3,10 @@
   "category": "misc",
   "group": "botania:floating_flower",
   "ingredients": [
-    {
-      "tag": "botania:floating_flowers"
-    },
-    {
-      "item": "botania:loonium"
-    }
+    "#botania:floating_flowers",
+    "botania:loonium"
   ],
   "result": {
-    "count": 1,
     "id": "botania:floating_loonium"
   }
 }

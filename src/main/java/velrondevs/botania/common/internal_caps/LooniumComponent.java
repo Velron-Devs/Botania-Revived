@@ -1,5 +1,6 @@
 package velrondevs.botania.common.internal_caps;
 
+import velrondevs.botania.common.helper.ItemNBTHelper;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
@@ -55,15 +56,15 @@ public class LooniumComponent extends SerializableComponent {
 	@Override
 	public void readFromNbt(CompoundTag tag, HolderLookup.Provider registries) {
 		if (tag.contains(TAG_TO_DROP)) {
-			setDrop(ItemStack.parseOptional(registries, tag.getCompound(TAG_TO_DROP)));
+			setDrop(ItemNBTHelper.parseStack(registries, tag.get(TAG_TO_DROP)));
 		} else {
 			setDrop(ItemStack.EMPTY);
 		}
 		if (tag.contains(TAG_OVERRIDE_DROP)) {
-			setOverrideDrop(tag.getBoolean(TAG_OVERRIDE_DROP));
+			setOverrideDrop(tag.getBooleanOr(TAG_OVERRIDE_DROP, false));
 		}
 		if (tag.contains(TAG_SLOW_DESPAWN)) {
-			setSlowDespawn(tag.getBoolean(TAG_SLOW_DESPAWN));
+			setSlowDespawn(tag.getBooleanOr(TAG_SLOW_DESPAWN, false));
 		}
 	}
 
@@ -71,7 +72,7 @@ public class LooniumComponent extends SerializableComponent {
 	public void writeToNbt(CompoundTag tag, HolderLookup.Provider registries) {
 		if (isOverrideDrop()) {
 			if (!getDrop().isEmpty()) {
-				tag.put(TAG_TO_DROP, getDrop().save(registries));
+				tag.put(TAG_TO_DROP, ItemNBTHelper.saveStack(registries, getDrop()));
 			}
 			tag.putBoolean(TAG_OVERRIDE_DROP, true);
 		}

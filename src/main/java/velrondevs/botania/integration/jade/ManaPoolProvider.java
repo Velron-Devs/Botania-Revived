@@ -2,7 +2,7 @@ package velrondevs.botania.integration.jade;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 
 import snownee.jade.api.BlockAccessor;
@@ -16,7 +16,7 @@ import velrondevs.botania.common.block.block_entity.mana.ManaPoolBlockEntity;
 
 import java.util.List;
 
-public enum ManaPoolProvider implements IBlockComponentProvider, IServerDataProvider<BlockAccessor> {
+public enum ManaPoolProvider implements IBlockComponentProvider {
 	INSTANCE;
 
 	private static final String OUTPUTTING = "outputting";
@@ -45,22 +45,13 @@ public enum ManaPoolProvider implements IBlockComponentProvider, IServerDataProv
 		}
 
 		if (accessor.showDetails()) {
-			boolean outputting = data.contains(OUTPUTTING) ? data.getBoolean(OUTPUTTING) : pool.isOutputtingPower();
+			boolean outputting = data.contains(OUTPUTTING) ? data.getBooleanOr(OUTPUTTING, false) : pool.isOutputtingPower();
 			tooltip.add(JadeManaHelper.gray(Component.translatable(outputting ? "botaniamisc.outputtingPower" : "botaniamisc.inputtingPower")));
 		}
 	}
 
 	@Override
-	public void appendServerData(CompoundTag data, BlockAccessor accessor) {
-		if (accessor.getBlockEntity() instanceof ManaPoolBlockEntity pool) {
-			data.putInt(JadeManaHelper.MANA, pool.getCurrentMana());
-			data.putInt(JadeManaHelper.MAX, pool.getMaxMana());
-			data.putBoolean(OUTPUTTING, pool.isOutputtingPower());
-		}
-	}
-
-	@Override
-	public ResourceLocation getUid() {
+	public Identifier getUid() {
 		return BotaniaJadeIds.MANA_POOL;
 	}
 }

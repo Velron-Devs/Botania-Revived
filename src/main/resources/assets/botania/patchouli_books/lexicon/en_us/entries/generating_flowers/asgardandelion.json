@@ -19,6 +19,11 @@
       "item": "botania:asgardandelion",
       "title": "botania.entry.asgardandelion",
       "text": "botania.page.asgardandelion2"
+    },
+    {
+      "type": "text",
+      "flag": "mod:avaritia",
+      "text": "botania.page.asgardandelion3"
     }
   ],
   "extra_recipe_mappings": {

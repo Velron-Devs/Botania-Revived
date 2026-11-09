@@ -1,11 +1,8 @@
 {
   "type": "botania:mana_infusion",
-  "input": {
-    "item": "minecraft:potato"
-  },
+  "input": "minecraft:potato",
   "mana": 1337,
   "output": {
-    "count": 1,
     "id": "botania:tiny_potato"
   }
 }

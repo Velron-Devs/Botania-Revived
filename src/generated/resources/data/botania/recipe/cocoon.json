@@ -4,18 +4,10 @@
     "type": "minecraft:crafting_shaped",
     "category": "misc",
     "key": {
-      "C": {
-        "item": "botania:manaweave_cloth"
-      },
-      "D": {
-        "item": "botania:pixie_dust"
-      },
-      "P": {
-        "item": "botania:fel_pumpkin"
-      },
-      "S": {
-        "item": "minecraft:string"
-      }
+      "C": "botania:manaweave_cloth",
+      "D": "botania:pixie_dust",
+      "P": "botania:fel_pumpkin",
+      "S": "minecraft:string"
     },
     "pattern": [
       "SSS",
@@ -23,7 +15,6 @@
       "SDS"
     ],
     "result": {
-      "count": 1,
       "id": "botania:cocoon"
     }
   },
@@ -31,15 +22,9 @@
     "type": "minecraft:crafting_shaped",
     "category": "misc",
     "key": {
-      "I": {
-        "tag": "botania:manasteel_ingots"
-      },
-      "P": {
-        "item": "botania:fel_pumpkin"
-      },
-      "S": {
-        "item": "minecraft:string"
-      }
+      "I": "#botania:manasteel_ingots",
+      "P": "botania:fel_pumpkin",
+      "S": "minecraft:string"
     },
     "pattern": [
       "SSS",
@@ -47,7 +32,6 @@
       "SIS"
     ],
     "result": {
-      "count": 1,
       "id": "botania:cocoon"
     }
   }

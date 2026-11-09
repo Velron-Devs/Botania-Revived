@@ -1,40 +1,19 @@
 {
   "type": "botania:runic_altar",
   "ingredients": [
-    {
-      "item": "botania:unactivated_wither_mana_rose"
-    },
-    {
-      "tag": "botania:mana_diamond_gems"
-    },
-    {
-      "item": "botania:mana_pearl"
-    },
-    {
-      "tag": "botania:mana_dusts"
-    },
-    {
-      "item": "botania:loonium"
-    },
-    {
-      "item": "botania:daybloom_motif"
-    },
-    {
-      "item": "botania:rune_pride"
-    },
-    {
-      "item": "botania:rune_deception"
-    },
-    {
-      "item": "botania:rune_fire"
-    },
-    {
-      "item": "botania:rune_water"
-    }
+    "botania:unactivated_wither_mana_rose",
+    "#botania:mana_diamond_gems",
+    "botania:mana_pearl",
+    "#botania:mana_dusts",
+    "botania:loonium",
+    "botania:daybloom_motif",
+    "botania:rune_pride",
+    "botania:rune_deception",
+    "botania:rune_fire",
+    "botania:rune_water"
   ],
   "mana": 20000,
   "output": {
-    "count": 1,
     "id": "botania:wither_mana_rose"
   }
 }

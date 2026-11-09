@@ -1,28 +1,25 @@
 package velrondevs.botania.common.item;
 
+import velrondevs.botania.client.core.helper.RenderHelper;
+import velrondevs.botania.client.core.helper.CoreShaders;
+import net.minecraft.world.InteractionResult;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.BufferUploader;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.blaze3d.vertex.VertexFormat;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemUtils;
-import net.minecraft.world.item.UseAnim;
+import net.minecraft.world.item.ItemUseAnimation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Rotation;
@@ -53,7 +50,7 @@ import java.util.stream.Stream;
 import static velrondevs.botania.common.lib.ResourceLocationHelper.prefix;
 
 public class WorldshaperssSextantItem extends Item {
-	public static final ResourceLocation MULTIBLOCK_ID = prefix("sextant");
+	public static final Identifier MULTIBLOCK_ID = prefix("sextant");
 	private static final int MAX_RADIUS = 256;
 	private static final String TAG_SOURCE_X = "sourceX";
 	private static final String TAG_SOURCE_Y = "sourceY";
@@ -66,8 +63,8 @@ public class WorldshaperssSextantItem extends Item {
 
 	@NotNull
 	@Override
-	public UseAnim getUseAnimation(ItemStack stack) {
-		return UseAnim.BOW;
+	public ItemUseAnimation getUseAnimation(ItemStack stack) {
+		return ItemUseAnimation.BOW;
 	}
 
 	@Override
@@ -79,7 +76,7 @@ public class WorldshaperssSextantItem extends Item {
 	public void onUseTick(Level world, LivingEntity living, ItemStack stack, int count) {
 		if (getUseDuration(stack, living) - count < 10
 				|| !(living instanceof Player)
-				|| !world.isClientSide) {
+				|| !world.isClientSide()) {
 			return;
 		}
 
@@ -147,9 +144,9 @@ public class WorldshaperssSextantItem extends Item {
 	}
 
 	@Override
-	public void releaseUsing(ItemStack stack, Level world, LivingEntity living, int time) {
+	public boolean releaseUsing(ItemStack stack, Level world, LivingEntity living, int time) {
 		if (!(living instanceof Player)) {
-			return;
+			return false;
 		}
 
 		double radius = calculateRadius(stack, living);
@@ -166,6 +163,7 @@ public class WorldshaperssSextantItem extends Item {
 						new BlockPos(x, y, z), Rotation.NONE);
 			}
 		}
+		return true;
 	}
 
 	private static void makeCircle(IStateMatcher matcher, double radius, Map<BlockPos, IStateMatcher> map) {
@@ -198,7 +196,7 @@ public class WorldshaperssSextantItem extends Item {
 
 	private void reset(Level world, Player player, ItemStack stack) {
 		if (ItemNBTHelper.getInt(stack, TAG_SOURCE_Y, Integer.MIN_VALUE) == Integer.MIN_VALUE) {
-			if (!world.isClientSide) {
+			if (!world.isClientSide()) {
 				Modes currentMode = getMode(stack);
 				int numModes = Modes.values().length;
 				int nextMode = currentMode.ordinal() + 1;
@@ -209,7 +207,7 @@ public class WorldshaperssSextantItem extends Item {
 		} else {
 			ItemNBTHelper.setInt(stack, TAG_SOURCE_Y, Integer.MIN_VALUE);
 		}
-		if (world.isClientSide) {
+		if (world.isClientSide()) {
 			Proxy.INSTANCE.clearSextantMultiblock();
 		}
 	}
@@ -220,12 +218,12 @@ public class WorldshaperssSextantItem extends Item {
 
 	@NotNull
 	@Override
-	public InteractionResultHolder<ItemStack> use(Level world, Player player, @NotNull InteractionHand hand) {
+	public InteractionResult use(Level world, Player player, @NotNull InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
 		if (!player.isSecondaryUseActive()) {
 			BlockHitResult rtr = ToolCommons.raytraceFromEntity(player, 128, false);
 			if (rtr.getType() == HitResult.Type.BLOCK) {
-				if (!world.isClientSide) {
+				if (!world.isClientSide()) {
 					BlockPos pos = rtr.getBlockPos();
 					ItemNBTHelper.setInt(stack, TAG_SOURCE_X, pos.getX());
 					ItemNBTHelper.setInt(stack, TAG_SOURCE_Y, pos.getY());
@@ -233,10 +231,10 @@ public class WorldshaperssSextantItem extends Item {
 				}
 				return ItemUtils.startUsingInstantly(world, player, hand);
 			}
-			return InteractionResultHolder.pass(stack);
+			return InteractionResult.PASS;
 		} else {
 			reset(world, player, stack);
-			return InteractionResultHolder.success(stack);
+			return InteractionResult.SUCCESS;
 		}
 	}
 
@@ -286,8 +284,7 @@ public class WorldshaperssSextantItem extends Item {
 	}
 
 	public static class Hud {
-		public static void render(GuiGraphics gui, Player player, ItemStack stack) {
-			PoseStack ms = gui.pose();
+		public static void render(GuiGraphicsExtractor gui, Player player, ItemStack stack) {
 			ItemStack onUse = player.getUseItem();
 			int time = player.getUseItemRemainingTicks();
 
@@ -303,20 +300,30 @@ public class WorldshaperssSextantItem extends Item {
 					s = ChatFormatting.RED + s;
 				}
 
-				gui.drawString(font, s, x - font.width(s) / 2, y - 4, 0xFFFFFF);
+				gui.text(font, s, x - font.width(s) / 2, y - 4, 0xFFFFFFFF);
 
 				if (inRange) {
 					radius += 4;
-					RenderSystem.lineWidth(3F);
-					BufferBuilder lineBuffer = Tesselator.getInstance().begin(VertexFormat.Mode.LINE_STRIP, DefaultVertexFormat.POSITION);
-					RenderSystem.setShaderColor(0F, 1F, 1F, 1F);
-					for (int i = 0; i < 361; i++) {
-						float radian = (float) (i * Math.PI / 180);
-						float xp = x + net.minecraft.util.Mth.cos(radian) * (float) radius;
-						float yp = y + net.minecraft.util.Mth.sin(radian) * (float) radius;
-						lineBuffer.addVertex(ms.last().pose(), xp, yp, 0);
-					}
-					BufferUploader.drawWithShader(lineBuffer.buildOrThrow());
+					float ringRadius = (float) radius;
+					int extent = (int) Math.ceil(ringRadius + 2);
+					RenderHelper.guiGeometry(gui, CoreShaders.GUI_TRIANGLES, x - extent, y - extent, x + extent, y + extent, (pose, buf) -> {
+						for (int i = 0; i < 360; i++) {
+							float rad0 = (float) (i * Math.PI / 180);
+							float rad1 = (float) ((i + 1) * Math.PI / 180);
+							float inner = ringRadius - 1.5F;
+							float outer = ringRadius + 1.5F;
+							float c0 = net.minecraft.util.Mth.cos(rad0);
+							float s0 = net.minecraft.util.Mth.sin(rad0);
+							float c1 = net.minecraft.util.Mth.cos(rad1);
+							float s1 = net.minecraft.util.Mth.sin(rad1);
+							buf.addVertexWith2DPose(pose, x + c0 * inner, y + s0 * inner).setColor(0xFF00FFFF);
+							buf.addVertexWith2DPose(pose, x + c0 * outer, y + s0 * outer).setColor(0xFF00FFFF);
+							buf.addVertexWith2DPose(pose, x + c1 * outer, y + s1 * outer).setColor(0xFF00FFFF);
+							buf.addVertexWith2DPose(pose, x + c0 * inner, y + s0 * inner).setColor(0xFF00FFFF);
+							buf.addVertexWith2DPose(pose, x + c1 * outer, y + s1 * outer).setColor(0xFF00FFFF);
+							buf.addVertexWith2DPose(pose, x + c1 * inner, y + s1 * inner).setColor(0xFF00FFFF);
+						}
+					});
 				}
 			}
 		}

@@ -1,5 +1,6 @@
 package velrondevs.botania.common.brew.effect;
 
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
@@ -20,7 +21,7 @@ public class AllureMobEffect extends MobEffect {
 	}
 
 	@Override
-	public boolean applyEffectTick(@NotNull LivingEntity living, int amplified) {
+	public boolean applyEffectTick(ServerLevel level, @NotNull LivingEntity living, int amplified) {
 		if (living instanceof Player player) {
 			FishingHook hook = player.fishing;
 			if (hook != null) {

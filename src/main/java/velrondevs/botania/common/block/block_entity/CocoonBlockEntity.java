@@ -1,5 +1,7 @@
 package velrondevs.botania.common.block.block_entity;
 
+import net.minecraft.world.entity.EntitySpawnReason;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -10,8 +12,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.*;
-import net.minecraft.world.entity.npc.Villager;
-import net.minecraft.world.entity.npc.VillagerType;
+import net.minecraft.world.entity.npc.villager.Villager;
+import net.minecraft.world.entity.npc.villager.VillagerType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.Blocks;
@@ -53,7 +55,7 @@ public class CocoonBlockEntity extends BotaniaBlockEntity {
 	}
 
 	private void hatch() {
-		if (!level.isClientSide) {
+		if (!level.isClientSide()) {
 			timePassed = 0;
 			level.destroyBlock(worldPosition, false);
 
@@ -74,16 +76,15 @@ public class CocoonBlockEntity extends BotaniaBlockEntity {
 			}
 
 			if (Math.random() < shulkerChance) {
-				entity = EntityType.SHULKER.create(level);
+				entity = EntityType.SHULKER.create(level, EntitySpawnReason.EVENT);
 			} else if (Math.random() < villagerChance) {
-				Villager villager = EntityType.VILLAGER.create(level);
+				Villager villager = EntityType.VILLAGER.create(level, EntitySpawnReason.EVENT);
 				if (villager != null) {
-					VillagerType type = VillagerType.byBiome(level.getBiome(worldPosition));
-					villager.setVillagerData(villager.getVillagerData().setType(type));
+					villager.setVillagerData(villager.getVillagerData().withType(level.registryAccess(), VillagerType.byBiome(level.getBiome(worldPosition))));
 				}
 				entity = villager;
 			} else if (!validWater.isEmpty()) {
-				placePos = validWater.get(level.random.nextInt(validWater.size()));
+				placePos = validWater.get(level.getRandom().nextInt(validWater.size()));
 				if (Math.random() < rareChance) {
 					entity = random(BotaniaTags.Entities.COCOON_RARE_AQUATIC);
 				} else {
@@ -98,7 +99,7 @@ public class CocoonBlockEntity extends BotaniaBlockEntity {
 			}
 
 			if (entity != null) {
-				if (level.random.nextFloat() < 0.01) {
+				if (level.getRandom().nextFloat() < 0.01) {
 
 					var name = Component.literal("Jeanne d'");
 					name.append(entity.getName());
@@ -111,7 +112,7 @@ public class CocoonBlockEntity extends BotaniaBlockEntity {
 				if (entity instanceof AgeableMob ageable) {
 					ageable.setAge(-24000);
 				}
-				entity.finalizeSpawn((ServerLevelAccessor) level, level.getCurrentDifficultyAt(getBlockPos()), MobSpawnType.EVENT, null);
+				entity.finalizeSpawn((ServerLevelAccessor) level, ((ServerLevelAccessor) level).getCurrentDifficultyAt(getBlockPos()), EntitySpawnReason.EVENT, null);
 				entity.setPersistenceRequired();
 				level.addFreshEntity(entity);
 				entity.spawnAnim();
@@ -126,18 +127,18 @@ public class CocoonBlockEntity extends BotaniaBlockEntity {
 
 	@Nullable
 	private Mob random(TagKey<EntityType<?>> tag) {
-		EntityType<?> type = BuiltInRegistries.ENTITY_TYPE.getTag(tag)
-				.flatMap(t -> t.getRandomElement(level.random))
+		EntityType<?> type = BuiltInRegistries.ENTITY_TYPE.get(tag)
+				.flatMap(t -> t.getRandomElement(level.getRandom()))
 				.map(Holder::value)
 				.orElse(null);
 		if (type == null) {
 			return null;
 		}
 
-		if (type == EntityType.COW && level.random.nextFloat() < 0.01) {
+		if (type == EntityType.COW && level.getRandom().nextFloat() < 0.01) {
 			type = EntityType.MOOSHROOM;
 		}
-		Entity entity = type.create(level);
+		Entity entity = type.create(level, EntitySpawnReason.EVENT);
 		return entity instanceof Mob mob ? mob : null;
 	}
 
@@ -151,9 +152,9 @@ public class CocoonBlockEntity extends BotaniaBlockEntity {
 
 	@Override
 	public void readPacketNBT(CompoundTag cmp, HolderLookup.Provider registries) {
-		timePassed = cmp.getInt(TAG_TIME_PASSED);
-		emeraldsGiven = cmp.getInt(TAG_EMERALDS_GIVEN);
-		chorusFruitGiven = cmp.getInt(TAG_CHORUS_FRUIT_GIVEN);
-		gaiaSpiritGiven = cmp.getBoolean(TAG_GAIA_SPIRIT_GIVEN);
+		timePassed = cmp.getIntOr(TAG_TIME_PASSED, 0);
+		emeraldsGiven = cmp.getIntOr(TAG_EMERALDS_GIVEN, 0);
+		chorusFruitGiven = cmp.getIntOr(TAG_CHORUS_FRUIT_GIVEN, 0);
+		gaiaSpiritGiven = cmp.getBooleanOr(TAG_GAIA_SPIRIT_GIVEN, false);
 	}
 }

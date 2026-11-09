@@ -1,17 +1,20 @@
 package velrondevs.botania.client.core.handler;
 
+import net.minecraft.client.renderer.RenderPipelines;
+
+import org.joml.Matrix3x2fStack;
+
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.BossEvent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
-import velrondevs.botania.client.core.helper.CoreShaders;
 import velrondevs.botania.client.core.helper.RenderHelper;
 import velrondevs.botania.client.lib.ResourcesLib;
 import velrondevs.botania.common.entity.GaiaGuardianEntity;
@@ -23,9 +26,9 @@ public final class BossBarHandler {
 	private BossBarHandler() {}
 
 	public static final Set<GaiaGuardianEntity> bosses = Collections.newSetFromMap(new WeakHashMap<>());
-	private static final ResourceLocation BAR_TEXTURE = ResourceLocation.parse(ResourcesLib.GUI_BOSS_BAR);
+	private static final Identifier BAR_TEXTURE = Identifier.parse(ResourcesLib.GUI_BOSS_BAR);
 
-	public static OptionalInt onBarRender(GuiGraphics gui, int x, int y, BossEvent bossEvent, boolean drawName) {
+	public static OptionalInt onBarRender(GuiGraphicsExtractor gui, int x, int y, BossEvent bossEvent, boolean drawName) {
 		for (GaiaGuardianEntity currentBoss : bosses) {
 			if (currentBoss.getBossInfoUuid().equals(bossEvent.getId())) {
 				Minecraft mc = Minecraft.getInstance();
@@ -37,7 +40,6 @@ public final class BossBarHandler {
 				int healthX = x + (frameWidth - healthWidth) / 2;
 				int healthY = y + (frameHeight - healthHeight) / 2;
 
-				RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
 				int playerCountHeight = drawPlayerCount(currentBoss.getPlayerCount(), gui, x, y);
 				RenderHelper.drawTexturedModalRect(gui, BAR_TEXTURE, x, y, frameU, frameV,
 						frameWidth, frameHeight);
@@ -47,7 +49,7 @@ public final class BossBarHandler {
 				if (drawName) {
 					Component name = bossEvent.getName();
 					int centerX = mc.getWindow().getGuiScaledWidth() / 2;
-					gui.drawCenteredString(mc.font, name, centerX, y - 10, 0xA2018C);
+					RenderHelper.drawCenteredString(gui, mc.font, name, centerX, y - 10, 0xA2018C);
 				}
 
 				return OptionalInt.of(frameHeight + playerCountHeight + (drawName ? mc.font.lineHeight : 0));
@@ -57,44 +59,24 @@ public final class BossBarHandler {
 		return OptionalInt.empty();
 	}
 
-	private static int drawPlayerCount(int playerCount, GuiGraphics gui, int x, int y) {
-		PoseStack ps = gui.pose();
-		ps.pushPose();
+	private static int drawPlayerCount(int playerCount, GuiGraphicsExtractor gui, int x, int y) {
+		Matrix3x2fStack ps = gui.pose();
+		ps.pushMatrix();
 		int px = x + 160;
 		int py = y + 12;
 
 		Minecraft mc = Minecraft.getInstance();
 		ItemStack stack = new ItemStack(Items.PLAYER_HEAD);
-		gui.renderItem(stack, px, py);
+		gui.item(stack, px, py);
 
-		gui.drawString(mc.font, Integer.toString(playerCount), px + 15, py + 4, 0xFFFFFF);
-		ps.popPose();
+		RenderHelper.drawString(gui, mc.font, Integer.toString(playerCount), px + 15, py + 4, 0xFFFFFF);
+		ps.popMatrix();
 
 		return 5;
 	}
 
-	private static void drawHealthBar(GuiGraphics gui, GaiaGuardianEntity currentBoss, int x, int y, int u, int v, int w, int h, boolean bg) {
-		var shader = CoreShaders.dopplegangerBar();
-		if (shader != null) {
-			float time = currentBoss.getInvulTime();
-			float grainIntensity = time > 20 ? 1F : Math.max(currentBoss.isHardMode() ? 0.5F : 0F, time / 20F);
-			shader.safeGetUniform("BotaniaGrainIntensity").set(grainIntensity);
-			shader.safeGetUniform("BotaniaHpFract").set(currentBoss.getHealth() / currentBoss.getMaxHealth());
-		}
-
-		float minU = u / 256.0F;
-		float maxU = (u + w) / 256.0F;
-		float minV = v / 256.0F;
-		float maxV = (v + h) / 256.0F;
-
-		var matrix = gui.pose().last().pose();
-		RenderSystem.setShader(CoreShaders::dopplegangerBar);
-		BufferBuilder builder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-		builder.addVertex(matrix, x, y + h, 0).setUv(minU, maxV);
-		builder.addVertex(matrix, x + w, y + h, 0).setUv(maxU, maxV);
-		builder.addVertex(matrix, x + w, y, 0).setUv(maxU, minV);
-		builder.addVertex(matrix, x, y, 0).setUv(minU, minV);
-		BufferUploader.drawWithShader(builder.buildOrThrow());
+	private static void drawHealthBar(GuiGraphicsExtractor gui, GaiaGuardianEntity currentBoss, int x, int y, int u, int v, int w, int h, boolean bg) {
+		gui.blit(RenderPipelines.GUI_TEXTURED, BAR_TEXTURE, x, y, u, v, w, h, 256, 256);
 	}
 
 }

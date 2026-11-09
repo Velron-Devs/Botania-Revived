@@ -8,16 +8,13 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "Q": {
-      "item": "botania:infernal_log"
-    }
+    "Q": "botania:infernal_log"
   },
   "pattern": [
     "Q",
     "Q"
   ],
   "result": {
-    "count": 1,
     "id": "botania:infernal_twig"
   }
 }

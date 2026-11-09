@@ -10,8 +10,9 @@ import dev.latvian.mods.rhino.util.HideFromJS;
 import net.minecraft.commands.arguments.blocks.BlockStateParser;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.block.Block;
@@ -49,7 +50,7 @@ public abstract class BotaniaKubeRecipe<T extends BotaniaKubeRecipe<T>> {
 	private final String type;
 	private final SourceLine sourceLine;
 	@Nullable
-	private ResourceLocation id;
+	private Identifier id;
 	private boolean failed;
 
 	protected BotaniaKubeRecipe(Context cx, String type) {
@@ -63,7 +64,7 @@ public abstract class BotaniaKubeRecipe<T extends BotaniaKubeRecipe<T>> {
 	}
 
 	public T id(Object id) {
-		ResourceLocation key = guard("id", () -> ID.kjs(id));
+		Identifier key = guard("id", () -> ID.kjs(id));
 		if (key != null) {
 			this.id = key;
 		}
@@ -72,7 +73,7 @@ public abstract class BotaniaKubeRecipe<T extends BotaniaKubeRecipe<T>> {
 
 	@HideFromJS
 	@Nullable
-	public ResourceLocation getId() {
+	public Identifier getId() {
 		return id;
 	}
 
@@ -116,8 +117,26 @@ public abstract class BotaniaKubeRecipe<T extends BotaniaKubeRecipe<T>> {
 		return new IllegalStateException("Missing " + what);
 	}
 
-	protected static String path(ItemStack stack) {
-		return BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath();
+	protected static String path(ItemStackTemplate stack) {
+		return BuiltInRegistries.ITEM.getKey(stack.item().value()).getPath();
+	}
+
+	protected static ItemStackTemplate template(Context cx, Object o) {
+		return ItemStackTemplate.fromNonEmptyStack(item(cx, o));
+	}
+
+	protected static List<ItemStackTemplate> templates(Context cx, Object o) {
+		List<ItemStackTemplate> list = new ArrayList<>();
+		for (ItemStack stack : items(cx, o)) {
+			list.add(ItemStackTemplate.fromNonEmptyStack(stack));
+		}
+		return list;
+	}
+
+	protected static NonNullList<Ingredient> ingredientList(Ingredient[] inputs) {
+		NonNullList<Ingredient> list = NonNullList.create();
+		list.addAll(List.of(inputs));
+		return list;
 	}
 
 	protected static ItemStack item(Context cx, Object o) {
@@ -201,16 +220,16 @@ public abstract class BotaniaKubeRecipe<T extends BotaniaKubeRecipe<T>> {
 		if (o instanceof CharSequence cs) {
 			String s = cs.toString().trim();
 			if (s.startsWith("#")) {
-				return StateIngredientHelper.of(ResourceLocation.parse(s.substring(1)));
+				return StateIngredientHelper.of(Identifier.parse(s.substring(1)));
 			}
 			if (s.contains("[")) {
 				try {
-					return StateIngredientHelper.of(BlockStateParser.parseForBlock(BuiltInRegistries.BLOCK.asLookup(), s, false).blockState());
+					return StateIngredientHelper.of(BlockStateParser.parseForBlock(BuiltInRegistries.BLOCK, s, false).blockState());
 				} catch (Exception e) {
 					throw new IllegalArgumentException("Invalid block state " + s, e);
 				}
 			}
-			ResourceLocation key = ResourceLocation.parse(s);
+			Identifier key = Identifier.parse(s);
 			Block block = BuiltInRegistries.BLOCK.getOptional(key).orElse(Blocks.AIR);
 			if (block == Blocks.AIR) {
 				throw new IllegalArgumentException("Unknown block " + key);
@@ -228,13 +247,13 @@ public abstract class BotaniaKubeRecipe<T extends BotaniaKubeRecipe<T>> {
 	}
 
 	public static class RunicAltar extends BotaniaKubeRecipe<RunicAltar> {
-		private final ItemStack output;
+		private final ItemStackTemplate output;
 		private final Ingredient[] inputs;
 		private int mana = -1;
 
 		public RunicAltar(Context cx, Object output, Object inputs) {
 			super(cx, "runic_altar");
-			this.output = guard("output", () -> item(cx, output));
+			this.output = guard("output", () -> template(cx, output));
 			this.inputs = guard("inputs", () -> ingredients(cx, inputs));
 		}
 
@@ -258,13 +277,13 @@ public abstract class BotaniaKubeRecipe<T extends BotaniaKubeRecipe<T>> {
 	}
 
 	public static class PetalApothecary extends BotaniaKubeRecipe<PetalApothecary> {
-		private final ItemStack output;
+		private final ItemStackTemplate output;
 		private final Ingredient[] inputs;
 		private Ingredient reagent;
 
 		public PetalApothecary(Context cx, Object output, Object inputs) {
 			super(cx, "petal_apothecary");
-			this.output = guard("output", () -> item(cx, output));
+			this.output = guard("output", () -> template(cx, output));
 			this.inputs = guard("inputs", () -> ingredients(cx, inputs));
 		}
 
@@ -283,13 +302,13 @@ public abstract class BotaniaKubeRecipe<T extends BotaniaKubeRecipe<T>> {
 
 		@Override
 		public Recipe<?> build() {
-			Ingredient r = reagent == null ? Ingredient.of(BotaniaTags.Items.SEED_APOTHECARY_REAGENT) : reagent;
+			Ingredient r = reagent == null ? Ingredient.of(BuiltInRegistries.ITEM.getOrThrow(BotaniaTags.Items.SEED_APOTHECARY_REAGENT)) : reagent;
 			return new PetalsRecipe(output, r, inputs);
 		}
 	}
 
 	public static class ManaInfusion extends BotaniaKubeRecipe<ManaInfusion> {
-		private final ItemStack output;
+		private final ItemStackTemplate output;
 		private final Ingredient input;
 		private int mana = -1;
 		@Nullable
@@ -299,7 +318,7 @@ public abstract class BotaniaKubeRecipe<T extends BotaniaKubeRecipe<T>> {
 
 		public ManaInfusion(Context cx, Object output, Object input) {
 			super(cx, "mana_infusion");
-			this.output = guard("output", () -> item(cx, output));
+			this.output = guard("output", () -> template(cx, output));
 			this.input = guard("input", () -> ingredient(cx, input));
 		}
 
@@ -336,18 +355,18 @@ public abstract class BotaniaKubeRecipe<T extends BotaniaKubeRecipe<T>> {
 	}
 
 	public static class ElvenTrade extends BotaniaKubeRecipe<ElvenTrade> {
-		private final ItemStack[] outputs;
+		private final List<ItemStackTemplate> outputs;
 		private final Ingredient[] inputs;
 
 		public ElvenTrade(Context cx, Object outputs, Object inputs) {
 			super(cx, "elven_trade");
-			this.outputs = guard("outputs", () -> items(cx, outputs));
+			this.outputs = guard("outputs", () -> templates(cx, outputs));
 			this.inputs = guard("inputs", () -> ingredients(cx, inputs));
 		}
 
 		@Override
 		public String autoIdPath() {
-			return path(outputs[0]);
+			return path(outputs.get(0));
 		}
 
 		@Override
@@ -357,13 +376,13 @@ public abstract class BotaniaKubeRecipe<T extends BotaniaKubeRecipe<T>> {
 	}
 
 	public static class TerraPlate extends BotaniaKubeRecipe<TerraPlate> {
-		private final ItemStack output;
+		private final ItemStackTemplate output;
 		private final Ingredient[] inputs;
 		private int mana = -1;
 
 		public TerraPlate(Context cx, Object output, Object inputs) {
 			super(cx, "terra_plate");
-			this.output = guard("output", () -> item(cx, output));
+			this.output = guard("output", () -> template(cx, output));
 			this.inputs = guard("inputs", () -> ingredients(cx, inputs));
 		}
 
@@ -382,12 +401,12 @@ public abstract class BotaniaKubeRecipe<T extends BotaniaKubeRecipe<T>> {
 			if (mana < 0) {
 				throw missing("mana, call .mana(n)");
 			}
-			return new RecipeTerraPlate(mana, NonNullList.of(Ingredient.EMPTY, inputs), output);
+			return new RecipeTerraPlate(mana, ingredientList(inputs), output);
 		}
 	}
 
 	public static class BrewRecipe extends BotaniaKubeRecipe<BrewRecipe> {
-		private final ResourceLocation brewId;
+		private final Identifier brewId;
 		private final Brew brew;
 		private final Ingredient[] inputs;
 
@@ -396,10 +415,11 @@ public abstract class BotaniaKubeRecipe<T extends BotaniaKubeRecipe<T>> {
 			this.brewId = guard("brew", () -> ID.mc(brew));
 			this.brew = brewId == null ? null : guard("brew", () -> {
 				var registry = BotaniaAPI.instance().getBrewRegistry();
-				if (registry == null || !registry.containsKey(brewId)) {
+				Brew value = registry == null ? null : registry.getValue(brewId);
+				if (value == null) {
 					throw new IllegalArgumentException("Unknown brew " + brewId);
 				}
-				return registry.get(brewId);
+				return value;
 			});
 			this.inputs = guard("inputs", () -> ingredients(cx, inputs));
 		}

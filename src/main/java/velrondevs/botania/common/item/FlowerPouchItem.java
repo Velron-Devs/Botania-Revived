@@ -7,7 +7,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.SlotAccess;
@@ -84,7 +83,7 @@ public class FlowerPouchItem extends Item {
 			}
 
 			for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
-				if (i == player.getInventory().selected) {
+				if (i == player.getInventory().getSelectedSlot()) {
 					continue;
 				}
 
@@ -118,8 +117,8 @@ public class FlowerPouchItem extends Item {
 
 	@NotNull
 	@Override
-	public InteractionResultHolder<ItemStack> use(Level world, Player player, @NotNull InteractionHand hand) {
-		if (!world.isClientSide) {
+	public InteractionResult use(Level world, Player player, @NotNull InteractionHand hand) {
+		if (!world.isClientSide()) {
 			ItemStack stack = player.getItemInHand(hand);
 			XplatAbstractions.INSTANCE.openMenu((ServerPlayer) player, new MenuProvider() {
 				@Override
@@ -133,7 +132,7 @@ public class FlowerPouchItem extends Item {
 				}
 			}, buf -> buf.writeBoolean(hand == InteractionHand.MAIN_HAND));
 		}
-		return InteractionResultHolder.sidedSuccess(player.getItemInHand(hand), world.isClientSide());
+		return InteractionResult.SUCCESS;
 	}
 
 	@NotNull
@@ -146,7 +145,7 @@ public class FlowerPouchItem extends Item {
 		BlockEntity tile = world.getBlockEntity(pos);
 		if ((ctx.getPlayer() == null || ctx.getPlayer().isSecondaryUseActive())
 				&& XplatAbstractions.INSTANCE.hasInventory(world, pos, side)) {
-			if (!world.isClientSide) {
+			if (!world.isClientSide()) {
 				Container bagInv = getInventory(ctx.getItemInHand());
 				for (int i = 0; i < bagInv.getContainerSize(); i++) {
 					ItemStack flower = bagInv.getItem(i);
@@ -156,7 +155,7 @@ public class FlowerPouchItem extends Item {
 
 			}
 
-			return InteractionResult.sidedSuccess(world.isClientSide());
+			return InteractionResult.SUCCESS;
 		}
 		return InteractionResult.PASS;
 	}
@@ -167,7 +166,7 @@ public class FlowerPouchItem extends Item {
 		var stream = IntStream.range(0, container.getContainerSize())
 				.mapToObj(container::getItem)
 				.filter(s -> !s.isEmpty());
-		ItemUtils.onContainerDestroyed(entity, stream.toList());
+		ItemUtils.onContainerDestroyed(entity, stream);
 		container.clearContent();
 	}
 

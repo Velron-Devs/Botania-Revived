@@ -4,7 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.level.ServerLevelAccessor;
 
@@ -19,8 +19,8 @@ import velrondevs.botania.common.brew.effect.BloodthirstMobEffect;
 public class SpawnPlacementsMixin {
 
 	@Inject(at = @At("RETURN"), cancellable = true, method = "checkSpawnRules")
-	private static <T extends Entity> void bloodthirstOverride(EntityType<T> type, ServerLevelAccessor world, MobSpawnType reason, BlockPos position, RandomSource random, CallbackInfoReturnable<Boolean> cir) {
-		if (reason == MobSpawnType.NATURAL && BloodthirstMobEffect.overrideSpawn(world, position, type.getCategory())) {
+	private static <T extends Entity> void bloodthirstOverride(EntityType<T> type, ServerLevelAccessor world, EntitySpawnReason reason, BlockPos position, RandomSource random, CallbackInfoReturnable<Boolean> cir) {
+		if (reason == EntitySpawnReason.NATURAL && BloodthirstMobEffect.overrideSpawn(world, position, type.getCategory())) {
 			cir.setReturnValue(true);
 		}
 	}

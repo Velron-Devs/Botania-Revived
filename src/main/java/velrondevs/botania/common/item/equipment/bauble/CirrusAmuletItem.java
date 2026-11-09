@@ -1,5 +1,7 @@
 package velrondevs.botania.common.item.equipment.bauble;
 
+import velrondevs.botania.client.core.helper.RenderHelper;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
@@ -9,7 +11,7 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -53,7 +55,7 @@ public class CirrusAmuletItem extends BaubleItem {
 						timesJumped = 1;
 						jumpDown = true;
 					}
-					if (playerSp.input.jumping) {
+					if (playerSp.input.keyPresses.jump()) {
 						if (!jumpDown && timesJumped < ((CirrusAmuletItem) stack.getItem()).getMaxAllowedJumps()) {
 							playerSp.jumpFromGround();
 							ClientXplatAbstractions.INSTANCE.sendToServer(JumpPacket.INSTANCE);
@@ -73,7 +75,7 @@ public class CirrusAmuletItem extends BaubleItem {
 	}
 
 	public static boolean popJumping(Player entity) {
-		if (entity.level().isClientSide) {
+		if (entity.level().isClientSide()) {
 			return timesJumped > 0;
 		}
 		return JUMPING_PLAYERS.remove(entity);
@@ -81,18 +83,17 @@ public class CirrusAmuletItem extends BaubleItem {
 
 	public static class Renderer implements AccessoryRenderer {
 		@Override
-		public void doRender(HumanoidModel<?> bipedModel, ItemStack stack, LivingEntity living, PoseStack ms, MultiBufferSource buffers, int light, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+		public void doRender(HumanoidModel<?> bipedModel, ItemStack stack, LivingEntity living, PoseStack ms, SubmitNodeCollector collector, int light, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+			MultiBufferSource buffers = RenderHelper.buffers(collector);
 			boolean armor = !living.getItemBySlot(EquipmentSlot.CHEST).isEmpty();
 			bipedModel.body.translateAndRotate(ms);
 			ms.translate(-0.3, 0.4, armor ? 0.05 : 0.12);
 			ms.scale(0.5F, -0.5F, -0.5F);
 
-			BakedModel model = stack.is(BotaniaItems.superCloudPendant)
+			BlockStateModelPart model = stack.is(BotaniaItems.superCloudPendant)
 					? MiscellaneousModels.INSTANCE.nimbusGem
 					: MiscellaneousModels.INSTANCE.cirrusGem;
-			VertexConsumer buffer = buffers.getBuffer(Sheets.cutoutBlockSheet());
-			Minecraft.getInstance().getBlockRenderer().getModelRenderer()
-					.renderModel(ms.last(), buffer, null, model, 1, 1, 1, light, OverlayTexture.NO_OVERLAY);
+			RenderHelper.renderModelPart(model, ms, buffers, light, OverlayTexture.NO_OVERLAY);
 		}
 	}
 

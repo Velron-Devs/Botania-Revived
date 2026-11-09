@@ -1,10 +1,14 @@
 package velrondevs.botania.common.block.block_entity;
 
+import net.minecraft.util.profiling.Profiler;
+
+import velrondevs.botania.common.block.RecipeLookup;
+
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraft.world.Container;
@@ -46,7 +50,7 @@ public class CraftyCrateBlockEntity extends OpenCrateBlockEntity implements Wand
 	private int signal = 0;
 	private ItemStack craftResult = ItemStack.EMPTY;
 
-	private final Queue<ResourceLocation> lastRecipes = new ArrayDeque<>();
+	private final Queue<net.minecraft.resources.ResourceKey<net.minecraft.world.item.crafting.Recipe<?>>> lastRecipes = new ArrayDeque<>();
 	private boolean dirty;
 	private boolean matchFailed;
 	private int lastRecipeEpoch = recipeEpoch;
@@ -62,7 +66,7 @@ public class CraftyCrateBlockEntity extends OpenCrateBlockEntity implements Wand
 
 	@Override
 	protected SimpleContainer createItemHandler() {
-		return new SimpleContainer(9) {
+		return new Inventory(9) {
 			@Override
 			public int getMaxStackSize() {
 				return 1;
@@ -117,7 +121,7 @@ public class CraftyCrateBlockEntity extends OpenCrateBlockEntity implements Wand
 	}
 
 	private boolean craft(boolean fullCheck, @Nullable Player player) {
-		level.getProfiler().push("craft");
+		Profiler.get().push("craft");
 		if (fullCheck && !isFull()) {
 			return false;
 		}
@@ -149,7 +153,7 @@ public class CraftyCrateBlockEntity extends OpenCrateBlockEntity implements Wand
 		Optional<RecipeHolder<CraftingRecipe>> matchingRecipe = getMatchingRecipe(input);
 		matchingRecipe.ifPresent(holder -> {
 			CraftingRecipe recipe = holder.value();
-			ItemStack result = recipe.assemble(input, this.getLevel().registryAccess());
+			ItemStack result = recipe.assemble(input);
 
 			if (result.isEmpty()) {
 
@@ -159,7 +163,7 @@ public class CraftyCrateBlockEntity extends OpenCrateBlockEntity implements Wand
 
 			if (player != null) {
 				player.triggerRecipeCrafted(holder, List.of(result));
-				result.onCraftedBy(level, player, result.getCount());
+				result.onCraftedBy(player, result.getCount());
 			}
 
 			Container handler = getItemHandler();
@@ -185,19 +189,19 @@ public class CraftyCrateBlockEntity extends OpenCrateBlockEntity implements Wand
 			matchFailed = true;
 		}
 
-		level.getProfiler().pop();
+		Profiler.get().pop();
 
 		return matchingRecipe.isPresent() && !craftResult.isEmpty();
 	}
 
 	private Optional<RecipeHolder<CraftingRecipe>> getMatchingRecipe(CraftingInput craft) {
-		for (ResourceLocation currentRecipe : lastRecipes) {
-			RecipeHolder<?> holder = level.getRecipeManager().byKey(currentRecipe).orElse(null);
+		for (var currentRecipe : lastRecipes) {
+			RecipeHolder<?> holder = RecipeLookup.byKey(level, currentRecipe).orElse(null);
 			if (holder != null && holder.value() instanceof CraftingRecipe craftingRecipe && craftingRecipe.matches(craft, level)) {
 				return Optional.of(new RecipeHolder<>(holder.id(), craftingRecipe));
 			}
 		}
-		Optional<RecipeHolder<CraftingRecipe>> recipe = level.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, craft, level);
+		Optional<RecipeHolder<CraftingRecipe>> recipe = RecipeLookup.getRecipeFor(level, RecipeType.CRAFTING, craft, level);
 		if (recipe.isPresent()) {
 			if (lastRecipes.size() >= 8) {
 				lastRecipes.remove();
@@ -247,7 +251,7 @@ public class CraftyCrateBlockEntity extends OpenCrateBlockEntity implements Wand
 
 	@Override
 	public boolean onUsedByWand(@Nullable Player player, ItemStack stack, Direction side) {
-		if (!getLevel().isClientSide && canEject()) {
+		if (!getLevel().isClientSide() && canEject()) {
 			craft(false, player);
 			ejectAll();
 		}
@@ -257,7 +261,7 @@ public class CraftyCrateBlockEntity extends OpenCrateBlockEntity implements Wand
 	@Override
 	public void setChanged() {
 		super.setChanged();
-		if (level != null && !level.isClientSide) {
+		if (level != null && !level.isClientSide()) {
 			this.dirty = true;
 			this.matchFailed = false;
 		}
@@ -275,7 +279,7 @@ public class CraftyCrateBlockEntity extends OpenCrateBlockEntity implements Wand
 		}
 
 		@Override
-		public void renderHUD(GuiGraphics gui, Minecraft mc) {
+		public void renderHUD(GuiGraphicsExtractor gui, Minecraft mc) {
 			int width = 52;
 			int height = 52;
 			int xc = mc.getWindow().getGuiScaledWidth() / 2 + 12;
@@ -297,7 +301,7 @@ public class CraftyCrateBlockEntity extends OpenCrateBlockEntity implements Wand
 					gui.fill(xp, yp, xp + 16, yp + 16, enabled ? 0x22FFFFFF : 0x22FF0000);
 
 					ItemStack item = crate.getItemHandler().getItem(index);
-					gui.renderItem(item, xp, yp);
+					gui.item(item, xp, yp);
 				}
 			}
 		}

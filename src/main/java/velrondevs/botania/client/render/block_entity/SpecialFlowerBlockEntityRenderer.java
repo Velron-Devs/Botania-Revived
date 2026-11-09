@@ -5,7 +5,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
@@ -27,7 +27,7 @@ import velrondevs.botania.common.helper.PlayerHelper;
 import velrondevs.botania.common.item.WandOfTheForestItem;
 import velrondevs.botania.common.item.equipment.bauble.ManaseerMonocleItem;
 
-public class SpecialFlowerBlockEntityRenderer<T extends SpecialFlowerBlockEntity> implements BlockEntityRenderer<T> {
+public class SpecialFlowerBlockEntityRenderer<T extends SpecialFlowerBlockEntity> extends BotaniaBlockEntityRenderer<T> {
 
 	public static final int INNER_ALPHA = 32;
 	public static final int OUTER_ALPHA = 64;
@@ -40,11 +40,11 @@ public class SpecialFlowerBlockEntityRenderer<T extends SpecialFlowerBlockEntity
 	public SpecialFlowerBlockEntityRenderer(BlockEntityRendererProvider.Context ctx) {}
 
 	@Override
-	public void render(SpecialFlowerBlockEntity tile, float partialTicks, PoseStack ms, MultiBufferSource buffers, int light, int overlay) {
+	protected void render(T tile, float partialTicks, PoseStack ms, MultiBufferSource buffers, SubmitNodeCollector collector, int light, int overlay) {
 		if (tile.isFloating()) {
 			FloatingFlowerBlockEntityRenderer.renderFloatingIsland(tile, partialTicks, ms, buffers, overlay);
 		}
-		if (!(Minecraft.getInstance().cameraEntity instanceof LivingEntity view)) {
+		if (!(Minecraft.getInstance().getCameraEntity() instanceof LivingEntity view)) {
 			return;
 		}
 

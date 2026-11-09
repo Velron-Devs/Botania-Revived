@@ -2,7 +2,8 @@ package velrondevs.botania.common.block.block_entity.corporea;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.util.random.WeightedRandomList;
+import net.minecraft.util.random.Weighted;
+import net.minecraft.util.random.WeightedList;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.decoration.ItemFrame;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -35,11 +36,9 @@ public class CorporeaFunnelBlockEntity extends BaseCorporeaBlockEntity implement
 	public void doRequest() {
 		CorporeaSpark spark = getSpark();
 		if (spark != null && spark.getMaster() != null) {
-			WeightedRandomList<FilterHelper.WeightedItemStack> filter = getFilter();
+			WeightedList<ItemStack> filter = getFilter();
 			if (!filter.isEmpty()) {
-				ItemStack stack = filter.getRandom(level.random)
-						.map(FilterHelper.WeightedItemStack::stack)
-						.orElse(ItemStack.EMPTY);
+				ItemStack stack = filter.getRandom(level.getRandom()).orElse(ItemStack.EMPTY);
 
 				if (!stack.isEmpty()) {
 					var matcher = CorporeaHelper.instance().createMatcher(stack, true);
@@ -49,8 +48,8 @@ public class CorporeaFunnelBlockEntity extends BaseCorporeaBlockEntity implement
 		}
 	}
 
-	public WeightedRandomList<FilterHelper.WeightedItemStack> getFilter() {
-		List<FilterHelper.WeightedItemStack> filter = new ArrayList<>();
+	public WeightedList<ItemStack> getFilter() {
+		List<Weighted<ItemStack>> filter = new ArrayList<>();
 
 		for (Direction dir : Direction.values()) {
 			List<ItemFrame> frames = level.getEntitiesOfClass(ItemFrame.class, new AABB(Vec3.atLowerCornerOf(worldPosition.relative(dir)), Vec3.atLowerCornerOf(worldPosition.relative(dir).offset(1, 1, 1))));
@@ -61,14 +60,14 @@ public class CorporeaFunnelBlockEntity extends BaseCorporeaBlockEntity implement
 					if (!filterStacks.isEmpty()) {
 						int stackSize = ROTATION_TO_STACK_SIZE[frame.getRotation()];
 						filterStacks.stream()
-								.map(s -> FilterHelper.WeightedItemStack.of(s.copyWithCount(stackSize), s.getCount()))
+								.map(s -> new Weighted<>(s.copyWithCount(stackSize), s.getCount()))
 								.forEach(filter::add);
 					}
 				}
 			}
 		}
 
-		return WeightedRandomList.create(filter);
+		return WeightedList.of(filter);
 	}
 
 	@Override

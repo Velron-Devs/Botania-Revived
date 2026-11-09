@@ -1,5 +1,8 @@
 package velrondevs.botania.common.entity;
 
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -12,7 +15,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.TamableAnimal;
-import net.minecraft.world.entity.animal.horse.AbstractHorse;
+import net.minecraft.world.entity.animal.equine.AbstractHorse;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ThrowableProjectile;
@@ -46,7 +49,8 @@ public class MagicMissileEntity extends ThrowableProjectile {
 	}
 
 	public MagicMissileEntity(LivingEntity owner, boolean evil) {
-		super(BotaniaEntities.MAGIC_MISSILE, owner, owner.level());
+		super(BotaniaEntities.MAGIC_MISSILE, owner.getX(), owner.getEyeY() - 0.1F, owner.getZ(), owner.level());
+		setOwner(owner);
 		setEvil(evil);
 	}
 
@@ -86,7 +90,7 @@ public class MagicMissileEntity extends ThrowableProjectile {
 
 		super.tick();
 
-		if (!level().isClientSide && (!findTarget() || time > 40)) {
+		if (!level().isClientSide() && (!findTarget() || time > 40)) {
 			discard();
 			return;
 		}
@@ -104,7 +108,7 @@ public class MagicMissileEntity extends ThrowableProjectile {
 		for (int i = 0; i < steps; i++) {
 			level().addParticle(data, particlePos.x, particlePos.y, particlePos.z, 0, 0, 0);
 
-			if (level().random.nextInt(steps) <= 1) {
+			if (level().getRandom().nextInt(steps) <= 1) {
 				level().addParticle(data, particlePos.x + (Math.random() - 0.5) * 0.4, particlePos.y + (Math.random() - 0.5) * 0.4, particlePos.z + (Math.random() - 0.5) * 0.4, 0, 0, 0);
 			}
 
@@ -153,15 +157,15 @@ public class MagicMissileEntity extends ThrowableProjectile {
 	}
 
 	@Override
-	public void addAdditionalSaveData(CompoundTag cmp) {
+	public void addAdditionalSaveData(ValueOutput cmp) {
 		super.addAdditionalSaveData(cmp);
 		cmp.putInt(TAG_TIME, time);
 	}
 
 	@Override
-	public void readAdditionalSaveData(CompoundTag cmp) {
+	public void readAdditionalSaveData(ValueInput cmp) {
 		super.readAdditionalSaveData(cmp);
-		time = cmp.getInt(TAG_TIME);
+		time = cmp.getIntOr(TAG_TIME, 0);
 	}
 
 	public boolean findTarget() {
@@ -178,7 +182,7 @@ public class MagicMissileEntity extends ThrowableProjectile {
 		double range = 12;
 		AABB bounds = new AABB(getX() - range, getY() - range, getZ() - range, getX() + range, getY() + range, getZ() + range);
 		DamageSource source = this.getDamageSource();
-		Predicate<Entity> vulnerableTo = e -> !e.isInvulnerableTo(source);
+		Predicate<Entity> vulnerableTo = e -> !(e instanceof LivingEntity living && level() instanceof ServerLevel serverLevel && living.isInvulnerableTo(serverLevel, source));
 		List<? extends LivingEntity> entities;
 		if (isEvil()) {
 			entities = level().getEntitiesOfClass(Player.class, bounds,
@@ -191,7 +195,7 @@ public class MagicMissileEntity extends ThrowableProjectile {
 		}
 
 		if (!entities.isEmpty()) {
-			target = entities.get(level().random.nextInt(entities.size()));
+			target = entities.get(level().getRandom().nextInt(entities.size()));
 			setTarget(target);
 		}
 
@@ -229,7 +233,7 @@ public class MagicMissileEntity extends ThrowableProjectile {
 	protected void onHitBlock(@NotNull BlockHitResult hit) {
 		super.onHitBlock(hit);
 		BlockState state = level().getBlockState(hit.getBlockPos());
-		if (!level().isClientSide
+		if (!level().isClientSide()
 				&& !(state.getBlock() instanceof BushBlock)
 				&& !state.is(BlockTags.LEAVES)) {
 			discard();
@@ -239,7 +243,7 @@ public class MagicMissileEntity extends ThrowableProjectile {
 	@Override
 	protected void onHitEntity(@NotNull EntityHitResult hit) {
 		super.onHitEntity(hit);
-		if (!level().isClientSide && hit.getEntity() == getTargetEntity()) {
+		if (!level().isClientSide() && hit.getEntity() == getTargetEntity()) {
 			discard();
 		}
 	}

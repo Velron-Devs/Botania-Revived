@@ -1,9 +1,15 @@
 package velrondevs.botania.common.block.block_entity.corporea;
 
+import velrondevs.botania.common.block.block_entity.BlockEntityNbt;
+
+import net.minecraft.util.profiling.Profiler;
+
+import org.joml.Matrix3x2fStack;
+
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -75,7 +81,7 @@ public class CorporeaCrystalCubeBlockEntity extends BaseCorporeaBlockEntity impl
 	}
 
 	public void doRequest(Player player) {
-		if (level.isClientSide) {
+		if (level.isClientSide()) {
 			return;
 		}
 
@@ -88,7 +94,7 @@ public class CorporeaCrystalCubeBlockEntity extends BaseCorporeaBlockEntity impl
 	}
 
 	private void updateCount() {
-		if (level.isClientSide) {
+		if (level.isClientSide()) {
 			return;
 		}
 
@@ -119,7 +125,7 @@ public class CorporeaCrystalCubeBlockEntity extends BaseCorporeaBlockEntity impl
 		super.writePacketNBT(tag, registries);
 		CompoundTag cmp = new CompoundTag();
 		if (!requestTarget.isEmpty()) {
-			cmp = (CompoundTag) requestTarget.save(registries, cmp);
+			cmp = (CompoundTag) BlockEntityNbt.save(requestTarget, registries, cmp);
 		}
 		tag.put(TAG_REQUEST_TARGET, cmp);
 		tag.putInt(TAG_ITEM_COUNT, itemCount);
@@ -130,11 +136,11 @@ public class CorporeaCrystalCubeBlockEntity extends BaseCorporeaBlockEntity impl
 	@Override
 	public void readPacketNBT(CompoundTag tag, HolderLookup.Provider registries) {
 		super.readPacketNBT(tag, registries);
-		CompoundTag cmp = tag.getCompound(TAG_REQUEST_TARGET);
-		requestTarget = ItemStack.parseOptional(registries, cmp);
-		setCount(tag.getInt(TAG_ITEM_COUNT));
-		locked = tag.getBoolean(TAG_LOCK);
-		hideCount = tag.getBoolean(TAG_HIDE_COUNT);
+		CompoundTag cmp = tag.getCompoundOrEmpty(TAG_REQUEST_TARGET);
+		requestTarget = BlockEntityNbt.parseOptional(registries, cmp);
+		setCount(tag.getIntOr(TAG_ITEM_COUNT, 0));
+		locked = tag.getBooleanOr(TAG_LOCK, false);
+		hideCount = tag.getBooleanOr(TAG_HIDE_COUNT, false);
 	}
 
 	public int getComparatorValue() {
@@ -199,10 +205,10 @@ public class CorporeaCrystalCubeBlockEntity extends BaseCorporeaBlockEntity impl
 	}
 
 	public static class Hud {
-		public static void render(GuiGraphics gui, CorporeaCrystalCubeBlockEntity cube) {
-			PoseStack ps = gui.pose();
+		public static void render(GuiGraphicsExtractor gui, CorporeaCrystalCubeBlockEntity cube) {
+			Matrix3x2fStack ps = gui.pose();
 			Minecraft mc = Minecraft.getInstance();
-			ProfilerFiller profiler = mc.getProfiler();
+			ProfilerFiller profiler = Profiler.get();
 
 			profiler.push("crystalCube");
 			ItemStack target = cube.getRequestTarget();
@@ -218,20 +224,20 @@ public class CorporeaCrystalCubeBlockEntity extends BaseCorporeaBlockEntity impl
 
 				int centerX = mc.getWindow().getGuiScaledWidth() / 2;
 				int centerY = mc.getWindow().getGuiScaledHeight() / 2;
-				ps.pushPose();
-				ps.translate(centerX, centerY, 0);
+				ps.pushMatrix();
+				ps.translate((float) (centerX), (float) (centerY));
 
 				RenderHelper.renderHUDBox(gui, 8, -11, strlen + 32, cube.locked ? 21 : 11);
 
-				gui.drawString(mc.font, nameStr, 30, -9, 0x6666FF);
-				gui.drawString(mc.font, countStr, 30, 1, 0xFFFFFF);
+				gui.text(mc.font, nameStr, 30, -9, 0xFF6666FF);
+				gui.text(mc.font, countStr, 30, 1, 0xFFFFFFFF);
 				if (cube.locked) {
-					gui.drawString(mc.font, lockedStr, 30, 11, 0xFFAA00);
+					gui.text(mc.font, lockedStr, 30, 11, 0xFFFFAA00);
 				}
 
-				gui.renderItem(target, 10, -9);
+				gui.item(target, 10, -9);
 
-				ps.popPose();
+				ps.popMatrix();
 			}
 
 			profiler.pop();

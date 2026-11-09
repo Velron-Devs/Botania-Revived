@@ -7,12 +7,9 @@
   ],
   "type": "botania:mana_infusion",
   "group": "botania:iridescent_seeds",
-  "input": {
-    "item": "botania:bifrost_grass"
-  },
+  "input": "botania:bifrost_grass",
   "mana": 2500,
   "output": {
-    "count": 1,
     "id": "botania:bifrost_seeds"
   }
 }

@@ -5,8 +5,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
-import net.minecraft.util.random.Weight;
-import net.minecraft.util.random.WeightedEntry;
+import net.minecraft.util.random.Weighted;
+import net.minecraft.world.item.component.TypedEntityData;
 import net.minecraft.world.entity.decoration.GlowItemFrame;
 import net.minecraft.world.entity.decoration.ItemFrame;
 import net.minecraft.world.item.BlockItem;
@@ -46,16 +46,20 @@ public class FilterHelper {
 
 			ItemContainerContents containerContents = filterStack.get(DataComponents.CONTAINER);
 			if (containerContents != null) {
-				List<ItemStack> containedItems = containerContents.nonEmptyStream().map(ItemStack::copy).toList();
+				List<ItemStack> containedItems = containerContents.nonEmptyItemCopyStream().toList();
 				if (!containedItems.isEmpty()) {
 					return containedItems;
 				}
 			}
-			CustomData data = filterStack.getItem() instanceof BlockItem
-					? filterStack.get(DataComponents.BLOCK_ENTITY_DATA)
-					: filterStack.get(DataComponents.CUSTOM_DATA);
-			CompoundTag tag = data == null ? null : data.copyTag();
-			if (tag != null && tag.contains(ITEMS_TAG, Tag.TAG_LIST)) {
+			CompoundTag tag;
+			if (filterStack.getItem() instanceof BlockItem) {
+				TypedEntityData<?> data = filterStack.get(DataComponents.BLOCK_ENTITY_DATA);
+				tag = data == null ? null : data.copyTagWithoutId();
+			} else {
+				CustomData data = filterStack.get(DataComponents.CUSTOM_DATA);
+				tag = data == null ? null : data.copyTag();
+			}
+			if (tag != null && tag.contains(ITEMS_TAG)) {
 
 				List<ItemStack> items = getItemStacks(tag);
 				if (items != null) {
@@ -69,10 +73,10 @@ public class FilterHelper {
 	@Nullable
 	private static List<ItemStack> getItemStacks(CompoundTag tag) {
 		try {
-			ListTag contents = tag.getList(ITEMS_TAG, CompoundTag.TAG_COMPOUND);
+			ListTag contents = tag.getListOrEmpty(ITEMS_TAG);
 			List<ItemStack> items = new ArrayList<>(contents.size());
 			for (int i = 0; i < contents.size(); i++) {
-				CompoundTag entry = contents.getCompound(i);
+				CompoundTag entry = contents.getCompoundOrEmpty(i);
 				ItemStack stack = ItemStack.OPTIONAL_CODEC.parse(NbtOps.INSTANCE, entry).result().orElse(ItemStack.EMPTY);
 				if (!stack.isEmpty()) {
 					items.add(stack);
@@ -87,15 +91,18 @@ public class FilterHelper {
 		return null;
 	}
 
-	public record WeightedItemStack(ItemStack stack, Weight weight) implements WeightedEntry {
+	public record WeightedItemStack(ItemStack stack, int weight) {
 		public static WeightedItemStack of(ItemStack stack, int weight) {
-			return new WeightedItemStack(stack, Weight.of(weight));
+			return new WeightedItemStack(stack, weight);
+		}
+
+		public int getWeight() {
+			return weight;
 		}
 
 		@NotNull
-		@Override
-		public Weight getWeight() {
-			return weight;
+		public Weighted<WeightedItemStack> weighted() {
+			return new Weighted<>(this, weight);
 		}
 	}
 }

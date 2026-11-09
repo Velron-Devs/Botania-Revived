@@ -8,9 +8,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "building",
   "key": {
-    "Q": {
-      "item": "botania:shimmer_quartz"
-    }
+    "Q": "botania:shimmer_quartz"
   },
   "pattern": [
     "Q  ",

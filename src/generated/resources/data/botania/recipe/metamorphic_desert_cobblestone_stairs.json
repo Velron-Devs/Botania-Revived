@@ -3,9 +3,7 @@
   "category": "building",
   "group": "botania:metamorphic_cobble_stairs",
   "key": {
-    "Q": {
-      "item": "botania:metamorphic_desert_cobblestone"
-    }
+    "Q": "botania:metamorphic_desert_cobblestone"
   },
   "pattern": [
     "Q  ",

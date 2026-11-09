@@ -3,15 +3,10 @@
   "category": "misc",
   "group": "botania:floating_flower",
   "ingredients": [
-    {
-      "tag": "botania:floating_flowers"
-    },
-    {
-      "item": "botania:hyacidus"
-    }
+    "#botania:floating_flowers",
+    "botania:hyacidus"
   ],
   "result": {
-    "count": 1,
     "id": "botania:floating_hyacidus"
   }
 }

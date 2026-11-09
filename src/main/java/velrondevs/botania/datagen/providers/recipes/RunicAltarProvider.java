@@ -3,7 +3,7 @@ package velrondevs.botania.datagen.providers.recipes;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -38,9 +38,9 @@ public class RunicAltarProvider extends BotaniaRecipeProvider {
 		final int costTier3 = 12000;
 		final int costWitherManaRose = 20000;
 
-		Ingredient manaSteel = Ingredient.of(BotaniaTags.Items.INGOTS_MANASTEEL);
-		Ingredient manaDiamond = Ingredient.of(BotaniaTags.Items.GEMS_MANA_DIAMOND);
-		Ingredient manaPowder = Ingredient.of(BotaniaTags.Items.DUSTS_MANA);
+		Ingredient manaSteel = tag(BotaniaTags.Items.INGOTS_MANASTEEL);
+		Ingredient manaDiamond = tag(BotaniaTags.Items.GEMS_MANA_DIAMOND);
+		Ingredient manaPowder = tag(BotaniaTags.Items.DUSTS_MANA);
 		rune(consumer, idFor("water"), new ItemStack(BotaniaItems.runeWater, 2), costTier1, manaPowder, manaSteel, Ingredient.of(Items.BONE_MEAL), Ingredient.of(Blocks.SUGAR_CANE), Ingredient.of(Items.FISHING_ROD));
 		rune(consumer, idFor("fire"), new ItemStack(BotaniaItems.runeFire, 2), costTier1, manaPowder, manaSteel, Ingredient.of(Items.NETHER_BRICK), Ingredient.of(Items.GUNPOWDER), Ingredient.of(Items.NETHER_WART));
 
@@ -48,21 +48,21 @@ public class RunicAltarProvider extends BotaniaRecipeProvider {
 		Ingredient coalBlock = Ingredient.of(Blocks.COAL_BLOCK);
 		rune(consumer, idFor("earth"), new ItemStack(BotaniaItems.runeEarth, 2), costTier1, manaPowder, manaSteel, stone, coalBlock, Ingredient.of(Blocks.BROWN_MUSHROOM, Blocks.RED_MUSHROOM));
 
-		rune(consumer, idFor("air"), new ItemStack(BotaniaItems.runeAir, 2), costTier1, manaPowder, manaSteel, Ingredient.of(ItemTags.WOOL_CARPETS), Ingredient.of(Items.FEATHER), Ingredient.of(Items.STRING));
+		rune(consumer, idFor("air"), new ItemStack(BotaniaItems.runeAir, 2), costTier1, manaPowder, manaSteel, tag(ItemTags.WOOL_CARPETS), Ingredient.of(Items.FEATHER), Ingredient.of(Items.STRING));
 
 		Ingredient fire = Ingredient.of(BotaniaItems.runeFire);
 		Ingredient water = Ingredient.of(BotaniaItems.runeWater);
 		Ingredient earth = Ingredient.of(BotaniaItems.runeEarth);
 		Ingredient air = Ingredient.of(BotaniaItems.runeAir);
 
-		Ingredient sapling = Ingredient.of(ItemTags.SAPLINGS);
-		Ingredient leaves = Ingredient.of(ItemTags.LEAVES);
-		Ingredient sand = Ingredient.of(ItemTags.SAND);
+		Ingredient sapling = tag(ItemTags.SAPLINGS);
+		Ingredient leaves = tag(ItemTags.LEAVES);
+		Ingredient sand = tag(ItemTags.SAND);
 		rune(consumer, idFor("spring"), new ItemStack(BotaniaItems.runeSpring), costTier2, water, fire, sapling, sapling, sapling, Ingredient.of(Items.WHEAT));
 		rune(consumer, idFor("summer"), new ItemStack(BotaniaItems.runeSummer), costTier2, earth, air, sand, sand, Ingredient.of(Items.SLIME_BALL), Ingredient.of(Items.MELON_SLICE));
 		rune(consumer, idFor("autumn"), new ItemStack(BotaniaItems.runeAutumn), costTier2, fire, air, leaves, leaves, leaves, Ingredient.of(Items.SPIDER_EYE));
 
-		rune(consumer, idFor("winter"), new ItemStack(BotaniaItems.runeWinter), costTier2, water, earth, Ingredient.of(Blocks.SNOW_BLOCK), Ingredient.of(Blocks.SNOW_BLOCK), Ingredient.of(ItemTags.WOOL), Ingredient.of(Blocks.CAKE));
+		rune(consumer, idFor("winter"), new ItemStack(BotaniaItems.runeWinter), costTier2, water, earth, Ingredient.of(Blocks.SNOW_BLOCK), Ingredient.of(Blocks.SNOW_BLOCK), tag(ItemTags.WOOL), Ingredient.of(Blocks.CAKE));
 
 		Ingredient spring = Ingredient.of(BotaniaItems.runeSpring);
 		Ingredient summer = Ingredient.of(BotaniaItems.runeSummer);
@@ -95,15 +95,15 @@ public class RunicAltarProvider extends BotaniaRecipeProvider {
 				water);
 	}
 
-	private static ResourceLocation idFor(String s) {
+	private static Identifier idFor(String s) {
 		return prefix("runic_altar/" + s);
 	}
 
-	protected static void rune(RecipeOutput consumer, ResourceLocation id, ItemStack output, int mana, Ingredient... inputs) {
-		consumer.accept(id, new RunicAltarRecipe(output, mana, inputs), null);
+	protected static void rune(RecipeOutput consumer, Identifier id, ItemStack output, int mana, Ingredient... inputs) {
+		consumer.accept(key(id), new RunicAltarRecipe(output, mana, inputs), null);
 	}
 
-	private static void head(RecipeOutput consumer, ResourceLocation id, ItemStack output, int mana, Ingredient... inputs) {
-		consumer.accept(id, new HeadRecipe(output, mana, inputs), null);
+	private static void head(RecipeOutput consumer, Identifier id, ItemStack output, int mana, Ingredient... inputs) {
+		consumer.accept(key(id), new HeadRecipe(output, mana, inputs), null);
 	}
 }

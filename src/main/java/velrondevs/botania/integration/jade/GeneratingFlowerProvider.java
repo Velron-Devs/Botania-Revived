@@ -2,7 +2,7 @@ package velrondevs.botania.integration.jade;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 
@@ -23,7 +23,7 @@ import velrondevs.botania.common.block.flower.generating.MunchdewBlockEntity;
 import velrondevs.botania.common.block.flower.generating.RafflowsiaBlockEntity;
 import velrondevs.botania.common.block.flower.generating.SpectrolusBlockEntity;
 
-public enum GeneratingFlowerProvider implements IBlockComponentProvider, IServerDataProvider<BlockAccessor> {
+public enum GeneratingFlowerProvider implements IBlockComponentProvider {
 	INSTANCE;
 
 	private static final String BURN = "burn";
@@ -44,25 +44,25 @@ public enum GeneratingFlowerProvider implements IBlockComponentProvider, IServer
 		JadeManaHelper.addManaBar(tooltip, config, mana, max, JadeManaHelper.manaColor(config, flower.getColor()));
 
 		if (config.get(BotaniaJadeIds.GENERATING_FLOWER_TIMERS)) {
-			int digesting = data.getInt(DIGESTING);
+			int digesting = data.getIntOr(DIGESTING, 0);
 			if (digesting > 0) {
-				tooltip.add(Component.translatable("botania.jade.digesting", JadeManaHelper.number(config, digesting), JadeManaHelper.time(data.getInt(COOLDOWN))));
-			} else if (data.getInt(COOLDOWN) > 0) {
-				tooltip.add(Component.translatable("botania.jade.cooldown", JadeManaHelper.time(data.getInt(COOLDOWN))));
+				tooltip.add(Component.translatable("botania.jade.digesting", JadeManaHelper.number(config, digesting), JadeManaHelper.time(data.getIntOr(COOLDOWN, 0))));
+			} else if (data.getIntOr(COOLDOWN, 0) > 0) {
+				tooltip.add(Component.translatable("botania.jade.cooldown", JadeManaHelper.time(data.getIntOr(COOLDOWN, 0))));
 			}
-			if (data.getInt(BURN) > 0) {
-				tooltip.add(IThemeHelper.get().success(Component.translatable("botania.jade.burn_time", JadeManaHelper.time(data.getInt(BURN)))));
+			if (data.getIntOr(BURN, 0) > 0) {
+				tooltip.add(IThemeHelper.get().success(Component.translatable("botania.jade.burn_time", JadeManaHelper.time(data.getIntOr(BURN, 0)))));
 			}
-			if (data.getInt(STREAK) > 0) {
-				tooltip.add(Component.translatable("botania.jade.streak", data.getInt(STREAK)));
+			if (data.getIntOr(STREAK, 0) > 0) {
+				tooltip.add(Component.translatable("botania.jade.streak", data.getIntOr(STREAK, 0)));
 			}
 			if (data.contains(NEXT_COLOR)) {
-				DyeColor color = DyeColor.byId(data.getInt(NEXT_COLOR));
+				DyeColor color = DyeColor.byId(data.getIntOr(NEXT_COLOR, 0));
 				ItemStack wool = new ItemStack(ColorHelper.WOOL_MAP.apply(color));
 				JadeManaHelper.addItemLine(tooltip, wool, Component.translatable("botania.jade.next_color", Component.translatable("color.minecraft." + color.getName())));
 			}
 			if (data.contains(DECAY)) {
-				int left = data.getInt(DECAY);
+				int left = data.getIntOr(DECAY, 0);
 				JadeManaHelper.addProgressBar(tooltip, config, (float) left / HydroangeasBlockEntity.DECAY_TIME,
 						Component.translatable("botania.jade.decay", JadeManaHelper.time(left)));
 			}
@@ -76,37 +76,7 @@ public enum GeneratingFlowerProvider implements IBlockComponentProvider, IServer
 	}
 
 	@Override
-	public void appendServerData(CompoundTag data, BlockAccessor accessor) {
-		if (!(accessor.getBlockEntity() instanceof GeneratingFlowerBlockEntity flower)) {
-			return;
-		}
-		data.putInt(JadeManaHelper.MANA, flower.getMana());
-		data.putInt(JadeManaHelper.MAX, flower.getMaxMana());
-		JadeManaHelper.putBinding(data, accessor, accessor.getLevel(), flower.getBinding());
-
-		if (flower instanceof EndoflameBlockEntity endoflame) {
-			data.putInt(BURN, endoflame.getBurnTimeLeft());
-		} else if (flower instanceof FluidGeneratorBlockEntity generator) {
-			data.putInt(BURN, generator.getBurnTimeLeft());
-			data.putInt(COOLDOWN, generator.getCooldown());
-			if (generator instanceof HydroangeasBlockEntity hydroangeas) {
-				data.putInt(DECAY, Math.max(0, HydroangeasBlockEntity.DECAY_TIME - hydroangeas.getPassiveDecayTicks()));
-			}
-		} else if (flower instanceof GourmaryllisBlockEntity gourmaryllis) {
-			data.putInt(COOLDOWN, gourmaryllis.getCooldown());
-			data.putInt(DIGESTING, gourmaryllis.getDigestingMana());
-			data.putInt(STREAK, gourmaryllis.getStreakLength());
-		} else if (flower instanceof MunchdewBlockEntity munchdew) {
-			data.putInt(COOLDOWN, munchdew.getCooldown());
-		} else if (flower instanceof RafflowsiaBlockEntity rafflowsia) {
-			data.putInt(STREAK, rafflowsia.getStreakLength());
-		} else if (flower instanceof SpectrolusBlockEntity spectrolus) {
-			data.putInt(NEXT_COLOR, spectrolus.getNextColor().getId());
-		}
-	}
-
-	@Override
-	public ResourceLocation getUid() {
+	public Identifier getUid() {
 		return BotaniaJadeIds.GENERATING_FLOWER;
 	}
 }

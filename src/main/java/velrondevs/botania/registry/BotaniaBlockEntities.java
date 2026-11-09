@@ -1,7 +1,7 @@
 package velrondevs.botania.registry;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -56,7 +56,7 @@ import static velrondevs.botania.registry.BotaniaBlocks.*;
 import static velrondevs.botania.common.lib.ResourceLocationHelper.prefix;
 
 public class BotaniaBlockEntities {
-	private static final Map<ResourceLocation, BlockEntityType<?>> ALL = new HashMap<>();
+	private static final Map<Identifier, BlockEntityType<?>> ALL = new HashMap<>();
 	public static final BlockEntityType<PetalApothecaryBlockEntity> ALTAR = type(prefix(LibBlockNames.ALTAR), PetalApothecaryBlockEntity::new,
 			defaultAltar, forestAltar, plainsAltar, mountainAltar, fungalAltar,
 			swampAltar, desertAltar, taigaAltar, mesaAltar, mossyAltar,
@@ -112,7 +112,7 @@ public class BotaniaBlockEntities {
 	public static final BlockEntityType<AvatarBlockEntity> AVATAR = type(prefix(LibBlockNames.AVATAR), AvatarBlockEntity::new, avatar);
 	public static final BlockEntityType<AnimatedTorchBlockEntity> ANIMATED_TORCH = type(prefix(LibBlockNames.ANIMATED_TORCH), AnimatedTorchBlockEntity::new, animatedTorch);
 
-	private static <T extends BlockEntity> BlockEntityType<T> type(ResourceLocation id, BiFunction<BlockPos, BlockState, T> func, Block... blocks) {
+	private static <T extends BlockEntity> BlockEntityType<T> type(Identifier id, BiFunction<BlockPos, BlockState, T> func, Block... blocks) {
 		var ret = XplatAbstractions.INSTANCE.createBlockEntityType(func, blocks);
 		var old = ALL.put(id, ret);
 		if (old != null) {
@@ -121,7 +121,7 @@ public class BotaniaBlockEntities {
 		return ret;
 	}
 
-	public static void registerTiles(BiConsumer<BlockEntityType<?>, ResourceLocation> r) {
+	public static void registerTiles(BiConsumer<BlockEntityType<?>, Identifier> r) {
 		for (var e : ALL.entrySet()) {
 			r.accept(e.getValue(), e.getKey());
 		}

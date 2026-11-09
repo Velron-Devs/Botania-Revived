@@ -7,12 +7,9 @@
   ],
   "type": "botania:mana_infusion",
   "group": "botania:iridescent_seeds",
-  "input": {
-    "item": "botania:gray_iridescent_grass"
-  },
+  "input": "botania:gray_iridescent_grass",
   "mana": 2500,
   "output": {
-    "count": 1,
     "id": "botania:gray_iridescent_seeds"
   }
 }

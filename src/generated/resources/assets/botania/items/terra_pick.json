@@ -1,0 +1,73 @@
+{
+  "model": {
+    "type": "minecraft:condition",
+    "kind": "terra_pick_tipped",
+    "on_false": {
+      "type": "minecraft:condition",
+      "kind": "terra_pick_active",
+      "on_false": {
+        "type": "minecraft:model",
+        "model": "botania:item/terra_pick",
+        "tints": [
+          {
+            "type": "minecraft:constant",
+            "value": -1
+          },
+          {
+            "type": "botania:tint",
+            "kind": "terra_pick"
+          }
+        ]
+      },
+      "on_true": {
+        "type": "minecraft:model",
+        "model": "botania:item/terra_pick_active",
+        "tints": [
+          {
+            "type": "minecraft:constant",
+            "value": -1
+          },
+          {
+            "type": "botania:tint",
+            "kind": "terra_pick"
+          }
+        ]
+      },
+      "property": "botania:flag"
+    },
+    "on_true": {
+      "type": "minecraft:condition",
+      "kind": "terra_pick_active",
+      "on_false": {
+        "type": "minecraft:model",
+        "model": "botania:item/terra_pick_tipped",
+        "tints": [
+          {
+            "type": "minecraft:constant",
+            "value": -1
+          },
+          {
+            "type": "botania:tint",
+            "kind": "terra_pick"
+          }
+        ]
+      },
+      "on_true": {
+        "type": "minecraft:model",
+        "model": "botania:item/terra_pick_tipped_active",
+        "tints": [
+          {
+            "type": "minecraft:constant",
+            "value": -1
+          },
+          {
+            "type": "botania:tint",
+            "kind": "terra_pick"
+          }
+        ]
+      },
+      "property": "botania:flag"
+    },
+    "property": "botania:flag"
+  }
+}

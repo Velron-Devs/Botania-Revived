@@ -4,10 +4,12 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.StonecutterRecipe;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
@@ -85,19 +87,19 @@ public class StonecuttingProvider extends BotaniaRecipeProvider {
 
 		List<Item> allAzulejos = IntStream.range(0, 16).mapToObj(i -> "azulejo_" + i)
 				.map(ResourceLocationHelper::prefix)
-				.map(BuiltInRegistries.ITEM::get)
-				.collect(Collectors.toList());
+				.map(BuiltInRegistries.ITEM::getValue)
+				.toList();
 		for (Item azulejo : allAzulejos) {
 			anyToAnyStonecutting(consumer, allAzulejos, azulejo);
 		}
 	}
 
 	private void registerForQuartz(String variant, RecipeOutput consumer) {
-		Block base = BuiltInRegistries.BLOCK.get(prefix(variant));
-		Block slab = BuiltInRegistries.BLOCK.get(prefix(variant + LibBlockNames.SLAB_SUFFIX));
-		Block stairs = BuiltInRegistries.BLOCK.get(prefix(variant + LibBlockNames.STAIR_SUFFIX));
-		Block chiseled = BuiltInRegistries.BLOCK.get(prefix("chiseled_" + variant));
-		Block pillar = BuiltInRegistries.BLOCK.get(prefix(variant + "_pillar"));
+		Block base = BuiltInRegistries.BLOCK.getValue(prefix(variant));
+		Block slab = BuiltInRegistries.BLOCK.getValue(prefix(variant + LibBlockNames.SLAB_SUFFIX));
+		Block stairs = BuiltInRegistries.BLOCK.getValue(prefix(variant + LibBlockNames.STAIR_SUFFIX));
+		Block chiseled = BuiltInRegistries.BLOCK.getValue(prefix("chiseled_" + variant));
+		Block pillar = BuiltInRegistries.BLOCK.getValue(prefix(variant + "_pillar"));
 		stonecutting(consumer, base, slab, 2);
 		stonecutting(consumer, base, stairs);
 		stonecutting(consumer, base, chiseled);
@@ -105,27 +107,27 @@ public class StonecuttingProvider extends BotaniaRecipeProvider {
 	}
 
 	private void registerForPavement(String color, RecipeOutput consumer) {
-		Block base = BuiltInRegistries.BLOCK.get(prefix(color + LibBlockNames.PAVEMENT_SUFFIX));
-		Block slab = BuiltInRegistries.BLOCK.get(prefix(color + LibBlockNames.PAVEMENT_SUFFIX + LibBlockNames.SLAB_SUFFIX));
-		Block stair = BuiltInRegistries.BLOCK.get(prefix(color + LibBlockNames.PAVEMENT_SUFFIX + LibBlockNames.STAIR_SUFFIX));
+		Block base = BuiltInRegistries.BLOCK.getValue(prefix(color + LibBlockNames.PAVEMENT_SUFFIX));
+		Block slab = BuiltInRegistries.BLOCK.getValue(prefix(color + LibBlockNames.PAVEMENT_SUFFIX + LibBlockNames.SLAB_SUFFIX));
+		Block stair = BuiltInRegistries.BLOCK.getValue(prefix(color + LibBlockNames.PAVEMENT_SUFFIX + LibBlockNames.STAIR_SUFFIX));
 		stonecutting(consumer, base, slab, 2);
 		stonecutting(consumer, base, stair);
 	}
 
 	private void registerForMetamorphic(String variant, RecipeOutput consumer) {
-		Block base = BuiltInRegistries.BLOCK.get(prefix(LibBlockNames.METAMORPHIC_PREFIX + variant + "_stone"));
-		Block slab = BuiltInRegistries.BLOCK.get(prefix(LibBlockNames.METAMORPHIC_PREFIX + variant + "_stone" + LibBlockNames.SLAB_SUFFIX));
-		Block stair = BuiltInRegistries.BLOCK.get(prefix(LibBlockNames.METAMORPHIC_PREFIX + variant + "_stone" + LibBlockNames.STAIR_SUFFIX));
-		Block wall = BuiltInRegistries.BLOCK.get(prefix(LibBlockNames.METAMORPHIC_PREFIX + variant + "_stone" + LibBlockNames.WALL_SUFFIX));
-		Block brick = BuiltInRegistries.BLOCK.get(prefix(LibBlockNames.METAMORPHIC_PREFIX + variant + "_bricks"));
-		Block brickSlab = BuiltInRegistries.BLOCK.get(prefix(LibBlockNames.METAMORPHIC_PREFIX + variant + "_bricks" + LibBlockNames.SLAB_SUFFIX));
-		Block brickStair = BuiltInRegistries.BLOCK.get(prefix(LibBlockNames.METAMORPHIC_PREFIX + variant + "_bricks" + LibBlockNames.STAIR_SUFFIX));
-		Block brickWall = BuiltInRegistries.BLOCK.get(prefix(LibBlockNames.METAMORPHIC_PREFIX + variant + "_bricks" + LibBlockNames.WALL_SUFFIX));
-		Block chiseledBrick = BuiltInRegistries.BLOCK.get(prefix("chiseled_" + LibBlockNames.METAMORPHIC_PREFIX + variant + "_bricks"));
-		Block cobble = BuiltInRegistries.BLOCK.get(prefix(LibBlockNames.METAMORPHIC_PREFIX + variant + "_cobblestone"));
-		Block cobbleSlab = BuiltInRegistries.BLOCK.get(prefix(LibBlockNames.METAMORPHIC_PREFIX + variant + "_cobblestone" + LibBlockNames.SLAB_SUFFIX));
-		Block cobbleStair = BuiltInRegistries.BLOCK.get(prefix(LibBlockNames.METAMORPHIC_PREFIX + variant + "_cobblestone" + LibBlockNames.STAIR_SUFFIX));
-		Block cobbleWall = BuiltInRegistries.BLOCK.get(prefix(LibBlockNames.METAMORPHIC_PREFIX + variant + "_cobblestone" + LibBlockNames.WALL_SUFFIX));
+		Block base = BuiltInRegistries.BLOCK.getValue(prefix(LibBlockNames.METAMORPHIC_PREFIX + variant + "_stone"));
+		Block slab = BuiltInRegistries.BLOCK.getValue(prefix(LibBlockNames.METAMORPHIC_PREFIX + variant + "_stone" + LibBlockNames.SLAB_SUFFIX));
+		Block stair = BuiltInRegistries.BLOCK.getValue(prefix(LibBlockNames.METAMORPHIC_PREFIX + variant + "_stone" + LibBlockNames.STAIR_SUFFIX));
+		Block wall = BuiltInRegistries.BLOCK.getValue(prefix(LibBlockNames.METAMORPHIC_PREFIX + variant + "_stone" + LibBlockNames.WALL_SUFFIX));
+		Block brick = BuiltInRegistries.BLOCK.getValue(prefix(LibBlockNames.METAMORPHIC_PREFIX + variant + "_bricks"));
+		Block brickSlab = BuiltInRegistries.BLOCK.getValue(prefix(LibBlockNames.METAMORPHIC_PREFIX + variant + "_bricks" + LibBlockNames.SLAB_SUFFIX));
+		Block brickStair = BuiltInRegistries.BLOCK.getValue(prefix(LibBlockNames.METAMORPHIC_PREFIX + variant + "_bricks" + LibBlockNames.STAIR_SUFFIX));
+		Block brickWall = BuiltInRegistries.BLOCK.getValue(prefix(LibBlockNames.METAMORPHIC_PREFIX + variant + "_bricks" + LibBlockNames.WALL_SUFFIX));
+		Block chiseledBrick = BuiltInRegistries.BLOCK.getValue(prefix("chiseled_" + LibBlockNames.METAMORPHIC_PREFIX + variant + "_bricks"));
+		Block cobble = BuiltInRegistries.BLOCK.getValue(prefix(LibBlockNames.METAMORPHIC_PREFIX + variant + "_cobblestone"));
+		Block cobbleSlab = BuiltInRegistries.BLOCK.getValue(prefix(LibBlockNames.METAMORPHIC_PREFIX + variant + "_cobblestone" + LibBlockNames.SLAB_SUFFIX));
+		Block cobbleStair = BuiltInRegistries.BLOCK.getValue(prefix(LibBlockNames.METAMORPHIC_PREFIX + variant + "_cobblestone" + LibBlockNames.STAIR_SUFFIX));
+		Block cobbleWall = BuiltInRegistries.BLOCK.getValue(prefix(LibBlockNames.METAMORPHIC_PREFIX + variant + "_cobblestone" + LibBlockNames.WALL_SUFFIX));
 
 		stonecutting(consumer, base, slab, 2);
 		stonecutting(consumer, base, stair);
@@ -152,9 +154,9 @@ public class StonecuttingProvider extends BotaniaRecipeProvider {
 		return "Botania stonecutting recipes";
 	}
 
-	protected ResourceLocation idFor(ItemLike a, ItemLike b) {
-		ResourceLocation aId = BuiltInRegistries.ITEM.getKey(a.asItem());
-		ResourceLocation bId = BuiltInRegistries.ITEM.getKey(b.asItem());
+	protected Identifier idFor(ItemLike a, ItemLike b) {
+		Identifier aId = BuiltInRegistries.ITEM.getKey(a.asItem());
+		Identifier bId = BuiltInRegistries.ITEM.getKey(b.asItem());
 		return prefix("stonecutting/" + aId.getPath() + "_to_" + bId.getPath());
 	}
 
@@ -163,15 +165,15 @@ public class StonecuttingProvider extends BotaniaRecipeProvider {
 	}
 
 	protected void stonecutting(RecipeOutput consumer, ItemLike input, ItemLike output, int count) {
-		consumer.accept(idFor(input, output), new StonecutterRecipe("", Ingredient.of(input), new ItemStack(output, count)), null);
+		consumer.accept(key(idFor(input, output)), new StonecutterRecipe(new Recipe.CommonInfo(true), Ingredient.of(input), new ItemStackTemplate(output.asItem(), count)), null);
 	}
 
 	protected void anyToAnyStonecutting(RecipeOutput consumer, List<? extends ItemLike> inputs, ItemLike output) {
 		Ingredient input = Ingredient.of(inputs.stream().filter(obj -> output != obj).toArray(ItemLike[]::new));
-		consumer.accept(prefix("stonecutting/" + BuiltInRegistries.ITEM.getKey(output.asItem()).getPath()), new StonecutterRecipe("", input, new ItemStack(output)), null);
+		consumer.accept(key(prefix("stonecutting/" + BuiltInRegistries.ITEM.getKey(output.asItem()).getPath())), new StonecutterRecipe(new Recipe.CommonInfo(true), input, new ItemStackTemplate(output.asItem())), null);
 	}
 
-	protected ResourceLocation prefix(String path) {
+	protected Identifier prefix(String path) {
 		return ResourceLocationHelper.prefix(path);
 	}
 }

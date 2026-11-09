@@ -1,0 +1,15 @@
+{
+  "model": {
+    "type": "minecraft:condition",
+    "kind": "holiday",
+    "on_false": {
+      "type": "minecraft:model",
+      "model": "botania:item/manaweave_helmet"
+    },
+    "on_true": {
+      "type": "minecraft:model",
+      "model": "botania:item/manaweave_helmet_holiday"
+    },
+    "property": "botania:flag"
+  }
+}

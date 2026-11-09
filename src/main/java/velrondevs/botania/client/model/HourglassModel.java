@@ -3,30 +3,27 @@ package velrondevs.botania.client.model;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
-import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.resources.Identifier;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.util.FastColor;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.util.ARGB;
 
 import velrondevs.botania.common.helper.VecHelper;
 
-public class HourglassModel extends Model {
-
+public class HourglassModel {
 	private final ModelPart top;
 	private final ModelPart glassT;
 	private final ModelPart ring;
 	private final ModelPart glassB;
 	private final ModelPart bottom;
-
 	private final ModelPart sandT;
 	private final ModelPart sandB;
 
 	public HourglassModel(ModelPart root) {
-		super(RenderType::entityTranslucent);
-
 		top = root.getChild("top");
 		glassT = root.getChild("glass_top");
 		ring = root.getChild("ring");
@@ -56,7 +53,6 @@ public class HourglassModel extends Model {
 		return mesh;
 	}
 
-	@Override
 	public void renderToBuffer(PoseStack ms, VertexConsumer buffer, int light, int overlay, int color) {
 		render(ms, buffer, light, overlay, color, 0, 1, false);
 	}
@@ -67,13 +63,11 @@ public class HourglassModel extends Model {
 			fract1 = fract2;
 			fract2 = tmp;
 		}
-
 		float f = 1F / 16F;
-		int glassColor = FastColor.ARGB32.color(FastColor.ARGB32.alpha(color), 0xFFFFFF);
+		int glassColor = ARGB.color(ARGB.alpha(color), 0xFFFFFF);
 		ring.render(ms, buffer, light, overlay, glassColor);
 		top.render(ms, buffer, light, overlay, glassColor);
 		bottom.render(ms, buffer, light, overlay, glassColor);
-
 		if (fract1 > 0) {
 			ms.pushPose();
 			if (flip) {
@@ -86,7 +80,6 @@ public class HourglassModel extends Model {
 			sandT.render(ms, buffer, light, overlay, color);
 			ms.popPose();
 		}
-
 		if (fract2 > 0) {
 			ms.pushPose();
 			if (flip) {
@@ -99,9 +92,11 @@ public class HourglassModel extends Model {
 			sandB.render(ms, buffer, light, overlay, color);
 			ms.popPose();
 		}
-
 		glassT.render(ms, buffer, light, overlay, glassColor);
 		glassB.render(ms, buffer, light, overlay, glassColor);
 	}
 
+	public RenderType renderType(Identifier texture) {
+		return RenderTypes.entityTranslucent(texture);
+	}
 }

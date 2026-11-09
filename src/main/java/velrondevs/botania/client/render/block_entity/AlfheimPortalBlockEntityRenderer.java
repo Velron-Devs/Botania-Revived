@@ -3,17 +3,18 @@ package velrondevs.botania.client.render.block_entity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.world.inventory.InventoryMenu;
 
 import org.jetbrains.annotations.NotNull;
 import org.joml.Matrix4f;
 
+import velrondevs.botania.client.core.helper.RenderHelper;
 import velrondevs.botania.api.state.BotaniaStateProperties;
 import velrondevs.botania.api.state.enums.AlfheimPortalState;
 import velrondevs.botania.client.core.handler.ClientTickHandler;
@@ -24,18 +25,17 @@ import java.util.Objects;
 
 import static velrondevs.botania.common.lib.ResourceLocationHelper.prefix;
 
-public class AlfheimPortalBlockEntityRenderer implements BlockEntityRenderer<AlfheimPortalBlockEntity> {
+public class AlfheimPortalBlockEntityRenderer extends BotaniaBlockEntityRenderer<AlfheimPortalBlockEntity> {
 	private final TextureAtlasSprite portalSprite;
 
 	public AlfheimPortalBlockEntityRenderer(BlockEntityRendererProvider.Context ctx) {
 		this.portalSprite = Objects.requireNonNull(
-				Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
-						.apply(prefix("block/alfheim_portal_swirl"))
+				RenderHelper.blockSprite(prefix("block/alfheim_portal_swirl"))
 		);
 	}
 
 	@Override
-	public void render(@NotNull AlfheimPortalBlockEntity portal, float f, PoseStack ms, MultiBufferSource buffers, int light, int overlay) {
+	protected void render(@NotNull AlfheimPortalBlockEntity portal, float f, PoseStack ms, MultiBufferSource buffers, SubmitNodeCollector collector, int light, int overlay) {
 		AlfheimPortalState state = portal.getBlockState().getValue(BotaniaStateProperties.ALFPORTAL_STATE);
 		if (state == AlfheimPortalState.OFF) {
 			return;

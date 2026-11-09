@@ -4,10 +4,10 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.FastColor;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.ARGB;
 import net.minecraft.world.item.ItemStack;
 
 import org.jetbrains.annotations.Nullable;
@@ -21,9 +21,9 @@ import velrondevs.botania.common.helper.VecHelper;
 
 import java.util.Random;
 
-public class HoveringHourglassBlockEntityRenderer implements BlockEntityRenderer<HoveringHourglassBlockEntity> {
+public class HoveringHourglassBlockEntityRenderer extends BotaniaBlockEntityRenderer<HoveringHourglassBlockEntity> {
 
-	final ResourceLocation texture = ResourceLocation.parse(ResourcesLib.MODEL_HOURGLASS);
+	final Identifier texture = Identifier.parse(ResourcesLib.MODEL_HOURGLASS);
 	private final HourglassModel model;
 
 	public HoveringHourglassBlockEntityRenderer(BlockEntityRendererProvider.Context ctx) {
@@ -31,7 +31,7 @@ public class HoveringHourglassBlockEntityRenderer implements BlockEntityRenderer
 	}
 
 	@Override
-	public void render(@Nullable HoveringHourglassBlockEntity hourglass, float ticks, PoseStack ms, MultiBufferSource buffers, int light, int overlay) {
+	protected void render(@Nullable HoveringHourglassBlockEntity hourglass, float ticks, PoseStack ms, MultiBufferSource buffers, SubmitNodeCollector collector, int light, int overlay) {
 		ms.pushPose();
 		boolean hasWorld = hourglass != null && hourglass.getLevel() != null;
 		int wtime = !hasWorld ? 0 : ClientTickHandler.ticksInGame;
@@ -59,7 +59,7 @@ public class HoveringHourglassBlockEntityRenderer implements BlockEntityRenderer
 		ms.scale(1F, -1F, -1F);
 		int color = hasWorld ? hourglass.getColor() : 0;
 		VertexConsumer buffer = buffers.getBuffer(model.renderType(texture));
-		model.render(ms, buffer, light, overlay, FastColor.ARGB32.opaque(color), fract1, fract2, hasWorld && hourglass.flip);
+		model.render(ms, buffer, light, overlay, ARGB.opaque(color), fract1, fract2, hasWorld && hourglass.flip);
 		ms.popPose();
 	}
 

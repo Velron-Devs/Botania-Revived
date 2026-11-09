@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "building",
   "key": {
-    "I": {
-      "tag": "botania:manasteel_ingots"
-    }
+    "I": "#botania:manasteel_ingots"
   },
   "pattern": [
     "III",
@@ -12,7 +10,6 @@
     "III"
   ],
   "result": {
-    "count": 1,
     "id": "botania:manasteel_block"
   }
 }

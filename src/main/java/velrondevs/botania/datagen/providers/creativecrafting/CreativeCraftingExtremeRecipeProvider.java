@@ -4,8 +4,9 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
+import velrondevs.botania.common.item.ManaTabletItem;
 import velrondevs.botania.common.lib.LibMisc;
 import velrondevs.botania.datagen.providers.integration.JsonFileProvider;
 import velrondevs.botania.module.creativecrafting.CreativeCraftingModule;
@@ -19,33 +20,32 @@ public class CreativeCraftingExtremeRecipeProvider extends JsonFileProvider {
 	public static final String AVARITIA = "avaritia";
 	public static final String SHAPED_TABLE = "avaritia:shaped_table";
 	public static final int TIER_EXTREME = 4;
-	public static final int TABLET_MANA = 500000;
 
 	public CreativeCraftingExtremeRecipeProvider(PackOutput output) {
 		super(output, PackOutput.Target.DATA_PACK, "recipe", "Botania Creative Crafting recipes for the Re-Avaritia Extreme Crafting Table");
 	}
 
 	@Override
-	protected void addFiles(Map<ResourceLocation, JsonObject> files) {
+	protected void addFiles(Map<Identifier, JsonObject> files) {
 		files.put(id("creative_pool_extreme"), creativePool());
 		files.put(id("creative_mana_tablet_extreme"), creativeTablet());
 		files.put(id("creative_corporea_spark_extreme"), creativeSpark());
 		files.put(id("infrangible_platform_extreme"), infrangiblePlatform());
 	}
 
-	private static ResourceLocation id(String name) {
+	private static Identifier id(String name) {
 		return prefix(CreativeCraftingModule.ID + "/" + name);
 	}
 
 	private static JsonObject creativePool() {
 		Map<Character, String> key = new LinkedHashMap<>();
-		key.put('N', "terrasteel_block");
-		key.put('X', "life_essence");
-		key.put('C', "mana_pool");
-		key.put('E', "dragonstone_block");
-		key.put('Y', "fabulous_pool");
-		key.put('F', "mana_tablet");
-		return shaped(key, new String[] {
+		key.put('N', botania("terrasteel_block"));
+		key.put('X', botania("life_essence"));
+		key.put('C', botania("mana_pool"));
+		key.put('E', botania("dragonstone_block"));
+		key.put('Y', botania("fabulous_pool"));
+		key.put('F', botania("mana_tablet"));
+		return shapedTable(CreativeCraftingModule.ID, key, new String[] {
 				"NNNNNNNNN",
 				"NXCXYXCXN",
 				"NCXEYEXCN",
@@ -55,33 +55,41 @@ public class CreativeCraftingExtremeRecipeProvider extends JsonFileProvider {
 				"NCXEYEXCN",
 				"NXCXYXCXN",
 				"NNNNNNNNN"
-		}, result("creative_pool", 1, false));
+		}, result(botania("creative_pool"), 1));
 	}
 
 	private static JsonObject creativeTablet() {
 		Map<Character, String> key = new LinkedHashMap<>();
-		key.put('A', "elementium_block");
-		key.put('B', "rune_envy");
-		key.put('C', "rune_gluttony");
-		key.put('D', "rune_winter");
-		key.put('E', "rune_lust");
-		key.put('F', "rune_pride");
-		key.put('G', "rune_wrath");
-		key.put('H', "rune_greed");
-		key.put('I', "rune_sloth");
-		key.put('J', "infinite_fruit");
-		key.put('K', "flight_tiara");
-		key.put('L', "king_key");
-		key.put('M', "flugel_eye");
-		key.put('N', "odin_ring");
-		key.put('O', "spawner_mover");
-		key.put('P', "mana_mirror");
-		key.put('Q', "thor_ring");
-		key.put('R', "mana_tablet");
-		key.put('S', "dice");
-		key.put('T', "fabulous_pool");
-		key.put('U', "terrasteel_block");
-		return shaped(key, new String[] {
+		key.put('A', botania("elementium_block"));
+		key.put('B', botania("rune_envy"));
+		key.put('C', botania("rune_gluttony"));
+		key.put('D', botania("rune_winter"));
+		key.put('E', botania("rune_lust"));
+		key.put('F', botania("rune_pride"));
+		key.put('G', botania("rune_wrath"));
+		key.put('H', botania("rune_greed"));
+		key.put('I', botania("rune_sloth"));
+		key.put('J', botania("infinite_fruit"));
+		key.put('K', botania("flight_tiara"));
+		key.put('L', botania("king_key"));
+		key.put('M', botania("flugel_eye"));
+		key.put('N', botania("odin_ring"));
+		key.put('O', botania("spawner_mover"));
+		key.put('P', botania("mana_mirror"));
+		key.put('Q', botania("thor_ring"));
+		key.put('R', botania("mana_tablet"));
+		key.put('S', botania("dice"));
+		key.put('T', botania("fabulous_pool"));
+		key.put('U', botania("terrasteel_block"));
+		JsonObject result = result(botania("mana_tablet"), 1);
+		JsonObject data = new JsonObject();
+		data.addProperty("creative", true);
+		data.addProperty("mana", ManaTabletItem.MAX_MANA);
+		JsonObject components = new JsonObject();
+		components.add("minecraft:custom_data", data);
+		components.addProperty("minecraft:rarity", "epic");
+		result.add("components", components);
+		return shapedTable(CreativeCraftingModule.ID, key, new String[] {
 				"BAAACAAAD",
 				"ATTJKLTTA",
 				"ATUUMUUTA",
@@ -91,47 +99,47 @@ public class CreativeCraftingExtremeRecipeProvider extends JsonFileProvider {
 				"ATUUUUUTA",
 				"ATTSISTTA",
 				"GAAAHAAAA"
-		}, result("mana_tablet", 1, true));
+		}, result);
 	}
 
 	private static JsonObject creativeSpark() {
 		Map<Character, String> key = new LinkedHashMap<>();
-		key.put('E', "elementium_block");
-		key.put('R', "rune_mana");
-		key.put('L', "life_essence");
-		key.put('P', "pixie_dust");
-		key.put('S', "corporea_spark_master");
-		return shaped(key, new String[] {
+		key.put('E', botania("elementium_block"));
+		key.put('R', botania("rune_mana"));
+		key.put('L', botania("life_essence"));
+		key.put('P', botania("pixie_dust"));
+		key.put('S', botania("corporea_spark_master"));
+		return shapedTable(CreativeCraftingModule.ID, key, new String[] {
 				"E R E",
 				" L L ",
 				"P S P",
 				" L L ",
 				"E P E"
-		}, result("corporea_spark_creative", 1, false));
+		}, result(botania("corporea_spark_creative"), 1));
 	}
 
 	private static JsonObject infrangiblePlatform() {
 		Map<Character, String> key = new LinkedHashMap<>();
-		key.put('T', "terrasteel_block");
-		key.put('A', "abstruse_platform");
-		key.put('D', "dragonstone_block");
-		return shaped(key, new String[] {
+		key.put('T', botania("terrasteel_block"));
+		key.put('A', botania("abstruse_platform"));
+		key.put('D', botania("dragonstone_block"));
+		return shapedTable(CreativeCraftingModule.ID, key, new String[] {
 				"TAT",
 				"ADA",
 				"TAT"
-		}, result("infrangible_platform", 4, false));
+		}, result(botania("infrangible_platform"), 4));
 	}
 
-	private static JsonObject shaped(Map<Character, String> key, String[] pattern, JsonObject result) {
+	public static String botania(String path) {
+		return LibMisc.MOD_ID + ":" + path;
+	}
+
+	public static JsonObject shapedTable(String module, Map<Character, String> key, String[] pattern, JsonObject result) {
 		JsonObject recipe = new JsonObject();
-		recipe.add("neoforge:conditions", conditions());
+		recipe.add("neoforge:conditions", conditions(module));
 		recipe.addProperty("type", SHAPED_TABLE);
 		JsonObject keys = new JsonObject();
-		key.forEach((symbol, item) -> {
-			JsonObject ingredient = new JsonObject();
-			ingredient.addProperty("item", LibMisc.MOD_ID + ":" + item);
-			keys.add(String.valueOf(symbol), ingredient);
-		});
+		key.forEach((symbol, item) -> keys.addProperty(String.valueOf(symbol), item));
 		recipe.add("key", keys);
 		JsonArray rows = new JsonArray();
 		for (String row : pattern) {
@@ -143,36 +151,25 @@ public class CreativeCraftingExtremeRecipeProvider extends JsonFileProvider {
 		return recipe;
 	}
 
-	private static JsonObject result(String item, int count, boolean creativeTablet) {
+	public static JsonObject result(String item, int count) {
 		JsonObject result = new JsonObject();
-		result.addProperty("count", count);
-		result.addProperty("id", LibMisc.MOD_ID + ":" + item);
-		if (creativeTablet) {
-			JsonObject data = new JsonObject();
-			data.addProperty("creative", true);
-			data.addProperty("mana", TABLET_MANA);
-			JsonObject components = new JsonObject();
-			components.add("minecraft:custom_data", data);
-			result.add("components", components);
+		result.addProperty("id", item);
+		if (count > 1) {
+			result.addProperty("count", count);
 		}
 		return result;
 	}
 
-	private static JsonArray conditions() {
+	private static JsonArray conditions(String module) {
 		JsonObject loaded = new JsonObject();
 		loaded.addProperty("type", "neoforge:mod_loaded");
 		loaded.addProperty("modid", AVARITIA);
 		JsonObject enabled = new JsonObject();
-		enabled.addProperty("type", "botania:module_enabled");
-		enabled.addProperty("module", CreativeCraftingModule.ID);
-		JsonArray values = new JsonArray();
-		values.add(loaded);
-		values.add(enabled);
-		JsonObject and = new JsonObject();
-		and.addProperty("type", "neoforge:and");
-		and.add("values", values);
+		enabled.addProperty("type", LibMisc.MOD_ID + ":module_enabled");
+		enabled.addProperty("module", module);
 		JsonArray conditions = new JsonArray();
-		conditions.add(and);
+		conditions.add(loaded);
+		conditions.add(enabled);
 		return conditions;
 	}
 }

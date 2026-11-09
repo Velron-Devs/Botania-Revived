@@ -3,9 +3,7 @@
   "category": "misc",
   "group": "botania:metamorphic_brick_wall",
   "key": {
-    "B": {
-      "item": "botania:metamorphic_plains_bricks"
-    }
+    "B": "botania:metamorphic_plains_bricks"
   },
   "pattern": [
     "BBB",

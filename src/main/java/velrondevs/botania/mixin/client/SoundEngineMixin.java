@@ -37,7 +37,7 @@ public class SoundEngineMixin {
 	}
 
 	@Inject(at = @At("HEAD"), method = "play")
-	private void captureSound2(SoundInstance sound, CallbackInfo ci) {
+	private void captureSound2(SoundInstance sound, CallbackInfoReturnable<SoundEngine.PlayResult> cir) {
 		tmpSound = sound;
 	}
 
@@ -80,7 +80,7 @@ public class SoundEngineMixin {
 	}
 
 	@Inject(at = @At("RETURN"), method = "play")
-	private void clearSound2(SoundInstance sound, CallbackInfo ci) {
+	private void clearSound2(SoundInstance sound, CallbackInfoReturnable<SoundEngine.PlayResult> cir) {
 		tmpSound = null;
 	}
 }

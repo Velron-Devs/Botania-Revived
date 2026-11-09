@@ -1,5 +1,7 @@
 package velrondevs.botania.common.block.block_entity;
 
+import velrondevs.botania.common.block.RecipeLookup;
+
 import com.google.common.base.Predicates;
 import com.google.common.base.Suppliers;
 
@@ -8,7 +10,7 @@ import net.neoforged.neoforge.common.Tags;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.SimpleContainer;
@@ -109,7 +111,7 @@ public class TerrestrialAgglomerationPlateBlockEntity extends BotaniaBlockEntity
 					ItemStack result = recipe.assemble(new ContainerRecipeInput(inv), level.registryAccess());
 					if (player != null) {
 						player.triggerRecipeCrafted(holder, List.of(result));
-						result.onCraftedBy(level, player, result.getCount());
+						result.onCraftedBy(player, result.getCount());
 					}
 					for (ItemStack item : items) {
 						item.setCount(0);
@@ -199,7 +201,7 @@ public class TerrestrialAgglomerationPlateBlockEntity extends BotaniaBlockEntity
 		if (items.isEmpty()) {
 			return null;
 		}
-		return level.getRecipeManager().getRecipeFor(BotaniaRecipeTypes.TERRA_PLATE_TYPE, new ContainerRecipeInput(items), level).orElse(null);
+		return RecipeLookup.getRecipeFor(level, BotaniaRecipeTypes.TERRA_PLATE_TYPE, new ContainerRecipeInput(items), level).orElse(null);
 	}
 
 	private boolean isActive() {
@@ -217,7 +219,7 @@ public class TerrestrialAgglomerationPlateBlockEntity extends BotaniaBlockEntity
 
 	@Override
 	public void readPacketNBT(CompoundTag cmp, HolderLookup.Provider registries) {
-		mana = cmp.getInt(TAG_MANA);
+		mana = cmp.getIntOr(TAG_MANA, 0);
 	}
 
 	@Override

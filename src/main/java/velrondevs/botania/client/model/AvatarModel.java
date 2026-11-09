@@ -3,15 +3,15 @@ package velrondevs.botania.client.model;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
-import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.resources.Identifier;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 
-public class AvatarModel extends Model {
-
+public class AvatarModel {
 	private final ModelPart body;
 	private final ModelPart rightarm;
 	private final ModelPart leftarm;
@@ -20,7 +20,6 @@ public class AvatarModel extends Model {
 	private final ModelPart head;
 
 	public AvatarModel(ModelPart root) {
-		super(RenderType::entitySolid);
 		leftleg = root.getChild("left_leg");
 		rightarm = root.getChild("right_arm");
 		leftarm = root.getChild("left_arm");
@@ -53,7 +52,6 @@ public class AvatarModel extends Model {
 		return mesh;
 	}
 
-	@Override
 	public void renderToBuffer(PoseStack ms, VertexConsumer buffer, int light, int overlay, int color) {
 		leftleg.render(ms, buffer, light, overlay, color);
 		rightarm.render(ms, buffer, light, overlay, color);
@@ -63,4 +61,7 @@ public class AvatarModel extends Model {
 		body.render(ms, buffer, light, overlay, color);
 	}
 
+	public RenderType renderType(Identifier texture) {
+		return RenderTypes.entitySolid(texture);
+	}
 }

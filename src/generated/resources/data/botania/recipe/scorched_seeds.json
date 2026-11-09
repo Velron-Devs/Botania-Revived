@@ -3,15 +3,10 @@
   "category": "misc",
   "group": "botania:seeds",
   "ingredients": [
-    {
-      "item": "botania:grass_seeds"
-    },
-    {
-      "item": "minecraft:blaze_powder"
-    }
+    "botania:grass_seeds",
+    "minecraft:blaze_powder"
   ],
   "result": {
-    "count": 1,
     "id": "botania:scorched_seeds"
   }
 }

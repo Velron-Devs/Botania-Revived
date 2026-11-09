@@ -1,5 +1,7 @@
 package velrondevs.botania.common.item.lens;
 
+import java.util.function.Consumer;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -45,16 +47,16 @@ public class LensItem extends Item implements ControlLensItem, CompositableLensI
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext world, List<Component> stacks, TooltipFlag flags) {
+	public void appendHoverText(ItemStack stack, TooltipContext world, TooltipDisplay tooltipDisplay, Consumer<Component> stacks, TooltipFlag flags) {
 		int storedColor = getStoredColor(stack);
 		if (storedColor != -1) {
 			var colorName = Component.translatable(storedColor == 16 ? "botania.color.rainbow" : "color.minecraft." + DyeColor.byId(storedColor));
 			TextColor realColor = TextColor.fromRgb(getLensColor(stack, world.level()));
-			stacks.add(Component.translatable("botaniamisc.color", colorName).withStyle(s -> s.withColor(realColor)));
+			stacks.accept(Component.translatable("botaniamisc.color", colorName).withStyle(s -> s.withColor(realColor)));
 		}
 
 		if (lens instanceof StormLens) {
-			stacks.add(Component.translatable("botaniamisc.creative").withStyle(ChatFormatting.GRAY));
+			stacks.accept(Component.translatable("botaniamisc.creative").withStyle(ChatFormatting.GRAY));
 		}
 	}
 
@@ -65,8 +67,8 @@ public class LensItem extends Item implements ControlLensItem, CompositableLensI
 		if (compositeLens.isEmpty()) {
 			return super.getName(stack);
 		}
-		String shortKeyA = stack.getDescriptionId() + ".short";
-		String shortKeyB = compositeLens.getDescriptionId() + ".short";
+		String shortKeyA = stack.getItem().getDescriptionId() + ".short";
+		String shortKeyB = compositeLens.getItem().getDescriptionId() + ".short";
 		return Component.translatable("item.botania.composite_lens", Component.translatable(shortKeyA), Component.translatable(shortKeyB));
 	}
 
@@ -101,7 +103,7 @@ public class LensItem extends Item implements ControlLensItem, CompositableLensI
 	public void updateBurst(ManaBurst burst, ItemStack stack) {
 		int storedColor = getStoredColor(stack);
 
-		if (storedColor == 16 && burst.entity().level().isClientSide) {
+		if (storedColor == 16 && burst.entity().level().isClientSide()) {
 			burst.setColor(getLensColor(stack, burst.entity().level()));
 		}
 

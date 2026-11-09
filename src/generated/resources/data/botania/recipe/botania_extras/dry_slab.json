@@ -8,9 +8,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "building",
   "key": {
-    "Q": {
-      "item": "botania:dry_planks"
-    }
+    "Q": "botania:dry_planks"
   },
   "pattern": [
     "QQQ"

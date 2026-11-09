@@ -1,15 +1,19 @@
 package velrondevs.botania.module.botaniaextras.item;
 
+import java.util.function.Consumer;
+
+import net.minecraft.world.item.component.TooltipDisplay;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab;
@@ -57,7 +61,7 @@ public class VibrantPlainsRodItem extends Item implements CustomCreativeTabConte
 	public static final int COST = 150;
 	public static final int BIFROST = 16;
 	private static final String TAG_COLOR = "color";
-	private static final ResourceLocation AVATAR_OVERLAY = prefix("textures/model/botania_extras/avatar_vibrant_plains.png");
+	private static final Identifier AVATAR_OVERLAY = prefix("textures/model/botania_extras/avatar_vibrant_plains.png");
 
 	public VibrantPlainsRodItem(Properties props) {
 		super(props);
@@ -101,16 +105,16 @@ public class VibrantPlainsRodItem extends Item implements CustomCreativeTabConte
 
 	@NotNull
 	@Override
-	public InteractionResultHolder<ItemStack> use(Level level, Player player, @NotNull InteractionHand hand) {
+	public InteractionResult use(Level level, Player player, @NotNull InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
 		if (player.isShiftKeyDown()) {
-			if (!level.isClientSide) {
+			if (!level.isClientSide()) {
 				int next = (getColorIndex(stack) + 1) % (BIFROST + 1);
 				setColorIndex(stack, next);
 				level.playSound(null, player.getX(), player.getY(), player.getZ(), BotaniaSounds.ding, SoundSource.PLAYERS, 0.1F, 1F);
 				ItemsRemainingRenderHandler.send(player, new ItemStack(dirtOf(stack)), -2, IridescentColors.displayName(dyeOf(next)));
 			}
-			return InteractionResultHolder.sidedSuccess(stack, level.isClientSide);
+			return InteractionResult.SUCCESS;
 		}
 		if (ManaItemHandler.instance().requestManaExactForTool(stack, player, COST * 2, false)) {
 			double reach = PriestEmblemItem.hasEmblem(player, PriestEmblemItem.Type.SIF)
@@ -125,7 +129,7 @@ public class VibrantPlainsRodItem extends Item implements CustomCreativeTabConte
 				BlockHitResult hit = new BlockHitResult(Vec3.ZERO, Direction.DOWN, new BlockPos(x, y, z), false);
 				InteractionResult result = PlayerHelper.substituteUse(new UseOnContext(player, hand, hit), new ItemStack(dirtOf(stack)));
 				if (result.consumesAction()) {
-					if (!level.isClientSide) {
+					if (!level.isClientSide()) {
 						ManaItemHandler.instance().requestManaExactForTool(stack, player, COST * 2, true);
 					}
 					float[] c = rgb(stack);
@@ -136,12 +140,12 @@ public class VibrantPlainsRodItem extends Item implements CustomCreativeTabConte
 				}
 			}
 		}
-		return InteractionResultHolder.sidedSuccess(stack, level.isClientSide);
+		return InteractionResult.SUCCESS;
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flags) {
-		tooltip.add(IridescentColors.displayName(dyeOf(getColorIndex(stack))).copy().withStyle(ChatFormatting.GRAY));
+	public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltip, TooltipFlag flags) {
+		tooltip.accept(IridescentColors.displayName(dyeOf(getColorIndex(stack))).copy().withStyle(ChatFormatting.GRAY));
 	}
 
 	@Override
@@ -192,7 +196,7 @@ public class VibrantPlainsRodItem extends Item implements CustomCreativeTabConte
 			BlockEntity te = (BlockEntity) tile;
 			Level level = te.getLevel();
 			ManaReceiver receiver = XplatAbstractions.INSTANCE.findManaReceiver(level, te.getBlockPos(), te.getBlockState(), te, null);
-			if (level.isClientSide || receiver == null || receiver.getCurrentMana() < COST || !tile.isEnabled() || tile.getElapsedFunctionalTicks() % 50 != 0) {
+			if (level.isClientSide() || receiver == null || receiver.getCurrentMana() < COST || !tile.isEnabled() || tile.getElapsedFunctionalTicks() % 50 != 0) {
 				return;
 			}
 			BlockPos pos = te.getBlockPos().relative(tile.getAvatarFacing());
@@ -205,7 +209,7 @@ public class VibrantPlainsRodItem extends Item implements CustomCreativeTabConte
 		}
 
 		@Override
-		public ResourceLocation getOverlayResource(Avatar tile) {
+		public Identifier getOverlayResource(Avatar tile) {
 			return AVATAR_OVERLAY;
 		}
 	}

@@ -1,0 +1,35 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "avaritia"
+    },
+    {
+      "type": "botania:module_enabled",
+      "module": "asg"
+    }
+  ],
+  "type": "avaritia:shaped_table",
+  "key": {
+    "D": "botania:dragonstone_block",
+    "F": "minecraft:dandelion",
+    "L": "botania:life_essence",
+    "R": "botania:wither_mana_rose",
+    "T": "botania:terrasteel_block"
+  },
+  "pattern": [
+    "TTTTDTTTT",
+    "TL  D  LT",
+    "T  DRD  T",
+    "T D L D T",
+    "DRDLFLDRD",
+    "T D L D T",
+    "T  DRD  T",
+    "TL  D  LT",
+    "TTTTDTTTT"
+  ],
+  "result": {
+    "id": "botania:asgardandelion"
+  },
+  "tier": 4
+}

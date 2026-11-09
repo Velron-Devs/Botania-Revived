@@ -1,24 +1,26 @@
 package velrondevs.botania.datagen.providers.loot;
 
-import net.minecraft.advancements.critereon.EnchantmentPredicate;
-import net.minecraft.advancements.critereon.ItemEnchantmentsPredicate;
-import net.minecraft.advancements.critereon.ItemPredicate;
-import net.minecraft.advancements.critereon.ItemSubPredicates;
-import net.minecraft.advancements.critereon.MinMaxBounds;
-import net.minecraft.advancements.critereon.StatePropertiesPredicate;
+import net.minecraft.advancements.criterion.EnchantmentPredicate;
+import net.minecraft.advancements.criterion.DataComponentMatchers;
+import net.minecraft.core.component.predicates.DataComponentPredicates;
+import net.minecraft.core.component.predicates.EnchantmentsPredicate;
+import net.minecraft.advancements.criterion.ItemPredicate;
+import net.minecraft.advancements.criterion.MinMaxBounds;
+import net.minecraft.advancements.criterion.StatePropertiesPredicate;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.loot.LootTableSubProvider;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.block.state.properties.SlabType;
+import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.AlternativesEntry;
@@ -29,6 +31,7 @@ import net.minecraft.world.level.storage.loot.functions.ApplyExplosionDecay;
 import net.minecraft.world.level.storage.loot.functions.CopyComponentsFunction;
 import net.minecraft.world.level.storage.loot.functions.CopyNameFunction;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.level.storage.loot.predicates.ExplosionCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemBlockStatePropertyCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
@@ -65,11 +68,11 @@ public class BlockLootProvider implements LootTableSubProvider {
 	public BlockLootProvider(HolderLookup.Provider registries) {
 		HolderLookup.RegistryLookup<Enchantment> enchantments = registries.lookupOrThrow(Registries.ENCHANTMENT);
 		this.silkTouch = MatchTool.toolMatches(ItemPredicate.Builder.item()
-				.withSubPredicate(ItemSubPredicates.ENCHANTMENTS, ItemEnchantmentsPredicate.enchantments(
-						List.of(new EnchantmentPredicate(enchantments.getOrThrow(Enchantments.SILK_TOUCH), MinMaxBounds.Ints.atLeast(1))))));
+				.withComponents(DataComponentMatchers.Builder.components().partial(DataComponentPredicates.ENCHANTMENTS, EnchantmentsPredicate.enchantments(
+						List.of(new EnchantmentPredicate(enchantments.getOrThrow(Enchantments.SILK_TOUCH), MinMaxBounds.Ints.atLeast(1))))).build()));
 
 		for (Block b : BuiltInRegistries.BLOCK) {
-			ResourceLocation id = BuiltInRegistries.BLOCK.getKey(b);
+			Identifier id = BuiltInRegistries.BLOCK.getKey(b);
 			if (!LibMisc.MOD_ID.equals(id.getNamespace()) || BotaniaModules.isModuleBlock(b)) {
 				continue;
 			}
@@ -119,7 +122,7 @@ public class BlockLootProvider implements LootTableSubProvider {
 	@Override
 	public void generate(BiConsumer<ResourceKey<LootTable>, LootTable.Builder> output) {
 		for (Block b : BuiltInRegistries.BLOCK) {
-			ResourceLocation id = BuiltInRegistries.BLOCK.getKey(b);
+			Identifier id = BuiltInRegistries.BLOCK.getKey(b);
 			if (!LibMisc.MOD_ID.equals(id.getNamespace()) || BotaniaModules.isModuleBlock(b)) {
 				continue;
 			}
@@ -141,7 +144,7 @@ public class BlockLootProvider implements LootTableSubProvider {
 
 	protected static LootTable.Builder genCopyBlockEntityData(Block b) {
 		LootPoolEntryContainer.Builder<?> entry = LootItem.lootTableItem(b);
-		CopyComponentsFunction.Builder func = CopyComponentsFunction.copyComponents(CopyComponentsFunction.Source.BLOCK_ENTITY)
+		CopyComponentsFunction.Builder func = CopyComponentsFunction.copyComponentsFromBlockEntity(LootContextParams.BLOCK_ENTITY)
 				.include(DataComponents.BLOCK_ENTITY_DATA);
 		LootPool.Builder pool = LootPool.lootPool().setRolls(ConstantValue.exactly(1)).add(entry)
 				.when(ExplosionCondition.survivesExplosion())
@@ -157,7 +160,7 @@ public class BlockLootProvider implements LootTableSubProvider {
 
 	protected static LootTable.Builder genTinyPotato(Block b) {
 		LootPoolEntryContainer.Builder<?> entry = LootItem.lootTableItem(b)
-				.apply(CopyNameFunction.copyName(CopyNameFunction.NameSource.BLOCK_ENTITY));
+				.apply(CopyNameFunction.copyName(LootContext.BlockEntityTarget.BLOCK_ENTITY));
 		LootPool.Builder pool = LootPool.lootPool().setRolls(ConstantValue.exactly(1)).add(entry)
 				.when(ExplosionCondition.survivesExplosion());
 		return LootTable.lootTable().withPool(pool);
@@ -179,7 +182,7 @@ public class BlockLootProvider implements LootTableSubProvider {
 	}
 
 	protected static LootTable.Builder genSolidVine(Block b) {
-		LootPoolEntryContainer.Builder<?> entry = NestedLootTable.lootTableReference(Blocks.VINE.getLootTable());
+		LootPoolEntryContainer.Builder<?> entry = NestedLootTable.lootTableReference(Blocks.VINE.getLootTable().orElseThrow());
 		return LootTable.lootTable().withPool(LootPool.lootPool().setRolls(ConstantValue.exactly(1)).add(entry));
 	}
 

@@ -1,6 +1,6 @@
 package velrondevs.botania.compat.sophisticated.mixin;
 
-import net.minecraft.client.resources.model.Material;
+import net.minecraft.client.resources.model.sprite.SpriteId;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.ChestType;
 
@@ -20,8 +20,8 @@ public class ChestSubRendererMixin {
 	private ChestType chestType;
 
 	@Inject(method = "getTierMaterial", at = @At("HEAD"), cancellable = true, remap = false)
-	private void botania$tierMaterial(Block block, CallbackInfoReturnable<Material> cir) {
-		Material material = BotaniaStorageClient.chestMaterial(block, chestType);
+	private void botania$tierMaterial(Block block, CallbackInfoReturnable<SpriteId> cir) {
+		SpriteId material = BotaniaStorageClient.chestMaterial(block, chestType);
 		if (material != null) {
 			cir.setReturnValue(material);
 		}

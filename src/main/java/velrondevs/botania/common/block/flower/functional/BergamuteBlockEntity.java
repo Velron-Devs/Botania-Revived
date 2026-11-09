@@ -31,7 +31,7 @@ public class BergamuteBlockEntity extends SpecialFlowerBlockEntity {
 		super.tickFlower();
 
 		disabled = getLevel().hasNeighborSignal(getBlockPos());
-		if (getLevel().isClientSide) {
+		if (getLevel().isClientSide()) {
 			clientFlowers.add(this);
 		} else {
 			serverFlowers.add(this);
@@ -41,7 +41,7 @@ public class BergamuteBlockEntity extends SpecialFlowerBlockEntity {
 	@Override
 	public void setRemoved() {
 		super.setRemoved();
-		if (getLevel().isClientSide) {
+		if (getLevel().isClientSide()) {
 			clientFlowers.remove(this);
 		} else {
 			serverFlowers.remove(this);
@@ -52,7 +52,7 @@ public class BergamuteBlockEntity extends SpecialFlowerBlockEntity {
 		int count = 0;
 		BergamuteBlockEntity tile = null;
 
-		for (BergamuteBlockEntity f : level.isClientSide ? clientFlowers : serverFlowers) {
+		for (BergamuteBlockEntity f : level.isClientSide() ? clientFlowers : serverFlowers) {
 			if (!f.disabled
 					&& level == f.level
 					&& f.getEffectivePos().distToCenterSqr(x, y, z) <= RANGE * RANGE) {
@@ -87,7 +87,7 @@ public class BergamuteBlockEntity extends SpecialFlowerBlockEntity {
 		double vibrationTravelDist = vibrationTravelVector.length();
 		Vec3 vibrationTravelDir = vibrationTravelVector.normalize();
 
-		for (BergamuteBlockEntity f : level.isClientSide ? clientFlowers : serverFlowers) {
+		for (BergamuteBlockEntity f : level.isClientSide() ? clientFlowers : serverFlowers) {
 			if (f.disabled || f.level != level) {
 				continue;
 			}

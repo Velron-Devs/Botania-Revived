@@ -2,18 +2,10 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "A": {
-      "item": "botania:ender_air_bottle"
-    },
-    "D": {
-      "tag": "botania:mana_diamond_gems"
-    },
-    "I": {
-      "tag": "botania:elementium_ingots"
-    },
-    "T": {
-      "item": "botania:terra_sword"
-    }
+    "A": "botania:ender_air_bottle",
+    "D": "#botania:mana_diamond_gems",
+    "I": "#botania:elementium_ingots",
+    "T": "botania:terra_sword"
   },
   "pattern": [
     "  I",
@@ -21,7 +13,6 @@
     "TA "
   ],
   "result": {
-    "count": 1,
     "id": "botania:thunder_sword"
   }
 }

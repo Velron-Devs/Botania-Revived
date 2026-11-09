@@ -3,12 +3,8 @@
   "category": "equipment",
   "group": "botania:twig_wand",
   "key": {
-    "P": {
-      "tag": "botania:petals"
-    },
-    "S": {
-      "item": "botania:livingwood_twig"
-    }
+    "P": "#botania:petals",
+    "S": "botania:livingwood_twig"
   },
   "pattern": [
     " PS",
@@ -16,7 +12,6 @@
     "S  "
   ],
   "result": {
-    "count": 1,
     "id": "botania:twig_wand"
   }
 }

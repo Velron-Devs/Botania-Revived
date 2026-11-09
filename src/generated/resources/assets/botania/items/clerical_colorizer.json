@@ -1,0 +1,12 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "botania:item/clerical_colorizer",
+    "tints": [
+      {
+        "type": "minecraft:dye",
+        "default": -5197648
+      }
+    ]
+  }
+}

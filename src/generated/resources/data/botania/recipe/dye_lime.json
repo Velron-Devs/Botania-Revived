@@ -3,12 +3,9 @@
   "category": "misc",
   "group": "botania:dye",
   "ingredients": [
-    {
-      "tag": "botania:petals/lime"
-    }
+    "#botania:petals/lime"
   ],
   "result": {
-    "count": 1,
     "id": "minecraft:lime_dye"
   }
 }

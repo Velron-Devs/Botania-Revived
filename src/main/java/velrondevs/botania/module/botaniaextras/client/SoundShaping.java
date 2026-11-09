@@ -9,7 +9,7 @@ import net.minecraft.client.sounds.AudioStream;
 import net.minecraft.client.sounds.SoundBufferLibrary;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.client.sounds.WeighedSoundEvents;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.state.BlockState;
@@ -64,7 +64,7 @@ public final class SoundShaping {
 				if (chunk == null) {
 					continue;
 				}
-				for (int sy = Math.max(minY, level.getMinBuildHeight()) >> 4; sy <= Math.min(maxY, level.getMaxBuildHeight() - 1) >> 4; sy++) {
+				for (int sy = Math.max(minY, level.getMinY()) >> 4; sy <= Math.min(maxY, level.getMaxY()) >> 4; sy++) {
 					int index = chunk.getSectionIndexFromSectionY(sy);
 					if (index < 0 || index >= chunk.getSections().length) {
 						continue;
@@ -116,8 +116,8 @@ public final class SoundShaping {
 		}
 
 		@Override
-		public ResourceLocation getLocation() {
-			return delegate.getLocation();
+		public Identifier getIdentifier() {
+			return delegate.getIdentifier();
 		}
 
 		@Override

@@ -22,6 +22,7 @@ public class BotaniaTags {
 		public static final TagKey<Item> INGOTS_ELEMENTIUM = tag("elementium_ingots");
 		public static final TagKey<Item> INGOTS_MANASTEEL = tag("manasteel_ingots");
 		public static final TagKey<Item> INGOTS_TERRASTEEL = tag("terrasteel_ingots");
+		public static final TagKey<Item> MANAWEAVE_CLOTH = tag("manaweave_cloth");
 
 		public static final TagKey<Item> NUGGETS_ELEMENTIUM = tag("elementium_nuggets");
 		public static final TagKey<Item> NUGGETS_MANASTEEL = tag("manasteel_nuggets");

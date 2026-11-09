@@ -1,5 +1,9 @@
 package velrondevs.botania.common.entity;
 
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
@@ -51,6 +55,11 @@ public abstract class SparkBaseEntity extends Entity implements SparkEntity, Man
 	}
 
 	@Override
+	public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
+		return false;
+	}
+
+	@Override
 	public boolean isPickable() {
 		return true;
 	}
@@ -66,13 +75,13 @@ public abstract class SparkBaseEntity extends Entity implements SparkEntity, Man
 	}
 
 	@Override
-	protected void readAdditionalSaveData(CompoundTag compound) {
-		setInvisible(compound.getBoolean(TAG_INVIS));
-		setNetwork(DyeColor.byId(compound.getInt(TAG_NETWORK)));
+	protected void readAdditionalSaveData(ValueInput compound) {
+		setInvisible(compound.getBooleanOr(TAG_INVIS, false));
+		setNetwork(DyeColor.byId(compound.getIntOr(TAG_NETWORK, 0)));
 	}
 
 	@Override
-	protected void addAdditionalSaveData(CompoundTag compound) {
+	protected void addAdditionalSaveData(ValueOutput compound) {
 		compound.putBoolean(TAG_INVIS, isInvisible());
 		compound.putInt(TAG_NETWORK, getNetwork().getId());
 	}

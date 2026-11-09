@@ -4,7 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 
 import org.joml.Matrix4f;
@@ -12,11 +12,11 @@ import org.joml.Matrix4f;
 import velrondevs.botania.client.core.helper.RenderHelper;
 import velrondevs.botania.common.block.block_entity.StarfieldCreatorBlockEntity;
 
-public class StarfieldCreatorBlockEntityRenderer implements BlockEntityRenderer<StarfieldCreatorBlockEntity> {
+public class StarfieldCreatorBlockEntityRenderer extends BotaniaBlockEntityRenderer<StarfieldCreatorBlockEntity> {
 	public StarfieldCreatorBlockEntityRenderer(BlockEntityRendererProvider.Context ctx) {}
 
 	@Override
-	public void render(StarfieldCreatorBlockEntity tile, float partialTicsk, PoseStack pose, MultiBufferSource buffers, int light, int overlay) {
+	protected void render(StarfieldCreatorBlockEntity tile, float partialTicsk, PoseStack pose, MultiBufferSource buffers, SubmitNodeCollector collector, int light, int overlay) {
 
 		Matrix4f matrix4f = pose.last().pose();
 		float offset = 0.24F;

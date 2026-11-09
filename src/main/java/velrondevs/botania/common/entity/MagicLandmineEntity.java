@@ -1,5 +1,9 @@
 package velrondevs.botania.common.entity;
 
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
@@ -54,7 +58,7 @@ public class MagicLandmineEntity extends Entity {
 				level().addParticle(data, getX(), getY() + 1, getZ(), (float) (Math.random() - 0.5F) * m, (float) (Math.random() - 0.5F) * m, (float) (Math.random() - 0.5F) * m);
 			}
 
-			if (!level().isClientSide) {
+			if (!level().isClientSide()) {
 				List<Player> players = level().getEntitiesOfClass(Player.class, getBoundingBox());
 				for (Player player : players) {
 					player.hurt(this.damageSources().indirectMagic(this, summoner), 10);
@@ -73,10 +77,15 @@ public class MagicLandmineEntity extends Entity {
 	protected void defineSynchedData(SynchedEntityData.Builder builder) {}
 
 	@Override
-	protected void readAdditionalSaveData(@NotNull CompoundTag var1) {}
+	public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
+		return false;
+	}
 
 	@Override
-	protected void addAdditionalSaveData(@NotNull CompoundTag var1) {}
+	protected void readAdditionalSaveData(ValueInput var1) {}
+
+	@Override
+	protected void addAdditionalSaveData(ValueOutput var1) {}
 
 	@Override
 	public Packet<ClientGamePacketListener> getAddEntityPacket(ServerEntity serverEntity) {

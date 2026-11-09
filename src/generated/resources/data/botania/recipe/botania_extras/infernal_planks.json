@@ -9,9 +9,7 @@
   "category": "building",
   "group": "botania:infernal_planks",
   "ingredients": [
-    {
-      "item": "botania:infernal_log"
-    }
+    "botania:infernal_log"
   ],
   "result": {
     "count": 4,

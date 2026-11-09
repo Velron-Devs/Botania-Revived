@@ -2,7 +2,7 @@ package velrondevs.botania.mixin;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.block.FarmBlock;
+import net.minecraft.world.level.block.FarmlandBlock;
 import net.minecraft.world.level.block.state.BlockState;
 
 import org.spongepowered.asm.mixin.Mixin;
@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import velrondevs.botania.common.block.decor.FloatingFlowerBlock;
 
-@Mixin(FarmBlock.class)
+@Mixin(FarmlandBlock.class)
 public class FarmBlockMixin {
 	@Inject(
 		method = "canSurvive", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/world/level/LevelReader;getBlockState(Lnet/minecraft/core/BlockPos;)Lnet/minecraft/world/level/block/state/BlockState;"),

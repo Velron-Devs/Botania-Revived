@@ -9,9 +9,7 @@
   "category": "misc",
   "cookingtime": 200,
   "experience": 0.1,
-  "ingredient": {
-    "item": "botania:infernal_planks"
-  },
+  "ingredient": "botania:infernal_planks",
   "result": {
     "count": 2,
     "id": "botania:infernal_splinters"

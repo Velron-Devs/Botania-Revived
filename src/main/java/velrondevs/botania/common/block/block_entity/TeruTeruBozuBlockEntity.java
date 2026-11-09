@@ -1,5 +1,7 @@
 package velrondevs.botania.common.block.block_entity;
 
+import net.minecraft.server.level.ServerLevel;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -17,8 +19,8 @@ public class TeruTeruBozuBlockEntity extends BotaniaBlockEntity {
 
 	public static void serverTick(Level level, BlockPos worldPosition, BlockState state, TeruTeruBozuBlockEntity self) {
 		boolean isRaining = level.isRaining();
-		if (isRaining && level.random.nextInt(9600) == 0) {
-			level.getLevelData().setRaining(false);
+		if (isRaining && level.getRandom().nextInt(9600) == 0) {
+			setRaining(level, false);
 			resetRainTime(level);
 		}
 
@@ -28,11 +30,16 @@ public class TeruTeruBozuBlockEntity extends BotaniaBlockEntity {
 		self.wasRaining = isRaining;
 	}
 
+	public static void setRaining(Level w, boolean raining) {
+		if (w instanceof ServerLevel serverLevel) {
+			serverLevel.getWeatherData().setRaining(raining);
+		}
+	}
+
 	public static void resetRainTime(Level w) {
-		int time = w.random.nextInt(w.getLevelData().isRaining() ? 12000 : 168000) + 12000;
-		LevelData info = w.getLevelData();
-		if (info instanceof ServerLevelData serverInfo) {
-			serverInfo.setRainTime(time);
+		if (w instanceof ServerLevel serverLevel) {
+			var data = serverLevel.getWeatherData();
+			data.setRainTime(w.getRandom().nextInt(data.isRaining() ? 12000 : 168000) + 12000);
 		}
 	}
 }

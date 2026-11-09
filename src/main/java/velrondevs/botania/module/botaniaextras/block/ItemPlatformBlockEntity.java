@@ -20,7 +20,7 @@ public class ItemPlatformBlockEntity extends ExposedSimpleInventoryBlockEntity {
 
 	@Override
 	protected SimpleContainer createItemHandler() {
-		return new SimpleContainer(1) {
+		return new Inventory(1) {
 			@Override
 			public int getMaxStackSize() {
 				return 1;
@@ -31,7 +31,7 @@ public class ItemPlatformBlockEntity extends ExposedSimpleInventoryBlockEntity {
 	@Override
 	public void setChanged() {
 		super.setChanged();
-		if (level != null && !level.isClientSide) {
+		if (level != null && !level.isClientSide()) {
 			VanillaPacketDispatcher.dispatchTEToNearbyPlayers(this);
 			level.updateNeighbourForOutputSignal(worldPosition, getBlockState().getBlock());
 		}

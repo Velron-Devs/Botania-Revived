@@ -9,15 +9,9 @@
   "category": "misc",
   "group": "botania:frozen_star",
   "key": {
-    "D": {
-      "tag": "c:dyes/brown"
-    },
-    "E": {
-      "item": "botania:ender_air_bottle"
-    },
-    "G": {
-      "item": "minecraft:glowstone_dust"
-    }
+    "D": "#c:dyes/brown",
+    "E": "botania:ender_air_bottle",
+    "G": "minecraft:glowstone_dust"
   },
   "pattern": [
     " E ",

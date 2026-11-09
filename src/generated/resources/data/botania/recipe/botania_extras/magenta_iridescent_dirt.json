@@ -9,12 +9,8 @@
   "category": "building",
   "group": "botania:iridescent_dirt",
   "key": {
-    "D": {
-      "item": "minecraft:dirt"
-    },
-    "P": {
-      "tag": "c:dyes/magenta"
-    }
+    "D": "minecraft:dirt",
+    "P": "#c:dyes/magenta"
   },
   "pattern": [
     "DDD",

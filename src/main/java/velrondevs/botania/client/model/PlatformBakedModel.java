@@ -1,83 +1,67 @@
 package velrondevs.botania.client.model;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
+import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.client.ChunkRenderTypeSet;
-import net.neoforged.neoforge.client.model.BakedModelWrapper;
-import net.neoforged.neoforge.client.model.data.ModelData;
-import net.neoforged.neoforge.client.model.data.ModelProperty;
+import net.neoforged.neoforge.client.model.DelegateBlockStateModel;
 
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import velrondevs.botania.common.block.PlatformBlock;
 import velrondevs.botania.common.block.block_entity.PlatformBlockEntity;
 import velrondevs.botania.common.lib.BotaniaTags;
 
 import java.util.List;
 
-public class PlatformBakedModel extends BakedModelWrapper<BakedModel> {
-	public static final ModelProperty<PlatformBlockEntity.PlatformData> PROPERTY = new ModelProperty<>();
-
-	public PlatformBakedModel(BakedModel originalModel) {
+public class PlatformBakedModel extends DelegateBlockStateModel {
+	public PlatformBakedModel(BlockStateModel originalModel) {
 		super(originalModel);
 	}
 
-	@NotNull
-	@Override
-	public ModelData getModelData(@NotNull BlockAndTintGetter world, @NotNull BlockPos pos, @NotNull BlockState state, @NotNull ModelData tileData) {
-		if (world.getBlockEntity(pos) instanceof PlatformBlockEntity platform) {
-			return ModelData.builder()
-					.with(PROPERTY, new PlatformBlockEntity.PlatformData(platform))
-					.build();
+	@Nullable
+	private static BlockState getHeldState(BlockAndTintGetter level, BlockPos pos) {
+		if (level.getBlockEntity(pos) instanceof PlatformBlockEntity platform) {
+			BlockState heldState = new PlatformBlockEntity.PlatformData(platform).state();
+			if (heldState != null && !heldState.is(BotaniaTags.Blocks.UNSUPPORTED_PLATFORM_DISGUISE)) {
+				return heldState;
+			}
 		}
-		return tileData;
+		return null;
 	}
 
-	@NotNull
-	@Override
-	public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side,
-			@NotNull RandomSource rand, @NotNull ModelData extraData, @Nullable RenderType renderType) {
-		var data = extraData.get(PROPERTY);
-		if (state == null || !(state.getBlock() instanceof PlatformBlock) || data == null) {
-			return Minecraft.getInstance().getBlockRenderer().getBlockModelShaper()
-					.getModelManager().getMissingModel().getQuads(state, side, rand, extraData, renderType);
-		}
-
-		BlockState heldState = data.state();
-
-		if (heldState == null || heldState.is(BotaniaTags.Blocks.UNSUPPORTED_PLATFORM_DISGUISE)) {
-
-			return super.getQuads(state, side, rand, extraData, renderType);
-		} else {
-			BakedModel model = Minecraft.getInstance().getBlockRenderer()
-					.getBlockModelShaper().getBlockModel(heldState);
-			return model.getQuads(heldState, side, rand, ModelData.EMPTY, renderType);
-		}
+	private static BlockStateModel getModel(BlockState state) {
+		return Minecraft.getInstance().getModelManager().getBlockStateModelSet().get(state);
 	}
 
-	@NotNull
 	@Override
-	public ChunkRenderTypeSet getRenderTypes(@NotNull BlockState state, @NotNull RandomSource rand, @NotNull ModelData extraData) {
-		var data = extraData.get(PROPERTY);
-		if (!(state.getBlock() instanceof PlatformBlock) || data == null) {
-			return Minecraft.getInstance().getBlockRenderer().getBlockModelShaper()
-					.getModelManager().getMissingModel().getRenderTypes(state, rand, extraData);
-		}
-
-		BlockState heldState = data.state();
+	public void collectParts(BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random, List<BlockStateModelPart> parts) {
+		BlockState heldState = getHeldState(level, pos);
 		if (heldState == null) {
-			return super.getRenderTypes(state, rand, extraData);
+			super.collectParts(level, pos, state, random, parts);
 		} else {
-			BakedModel model = Minecraft.getInstance().getBlockRenderer().getBlockModelShaper().getBlockModel(heldState);
-			return model.getRenderTypes(heldState, rand, ModelData.EMPTY);
+			getModel(heldState).collectParts(level, pos, heldState, random, parts);
 		}
+	}
+
+	@Override
+	public Material.Baked particleMaterial(BlockAndTintGetter level, BlockPos pos, BlockState state) {
+		BlockState heldState = getHeldState(level, pos);
+		if (heldState == null) {
+			return super.particleMaterial(level, pos, state);
+		}
+		return getModel(heldState).particleMaterial(level, pos, heldState);
+	}
+
+	@Override
+	public int materialFlags(BlockAndTintGetter level, BlockPos pos, BlockState state) {
+		BlockState heldState = getHeldState(level, pos);
+		if (heldState == null) {
+			return super.materialFlags(level, pos, state);
+		}
+		return getModel(heldState).materialFlags(level, pos, heldState);
 	}
 }

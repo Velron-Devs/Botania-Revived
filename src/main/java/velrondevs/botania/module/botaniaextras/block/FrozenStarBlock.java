@@ -52,12 +52,12 @@ public class FrozenStarBlock extends BaseEntityBlock {
 
 	@Override
 	public BlockState playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
-		if (!level.isClientSide && !player.getAbilities().instabuild
+		if (!level.isClientSide() && !player.getAbilities().instabuild
 				&& level.getBlockEntity(pos) instanceof FrozenStarBlockEntity star) {
 			ItemStack stack = FrozenStarItem.forColor(star.getColor());
 			FrozenStarItem.setSize(stack, star.getSize());
 			ItemEntity item = new ItemEntity(level, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, stack);
-			item.setDeltaMovement(level.random.nextGaussian() * 0.05, level.random.nextGaussian() * 0.05 + 0.2, level.random.nextGaussian() * 0.05);
+			item.setDeltaMovement(level.getRandom().nextGaussian() * 0.05, level.getRandom().nextGaussian() * 0.05 + 0.2, level.getRandom().nextGaussian() * 0.05);
 			item.setDefaultPickUpDelay();
 			level.addFreshEntity(item);
 		}
@@ -65,10 +65,10 @@ public class FrozenStarBlock extends BaseEntityBlock {
 	}
 
 	@Override
-	public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state) {
+	public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state, boolean includeData) {
 		if (level.getBlockEntity(pos) instanceof FrozenStarBlockEntity star) {
 			return FrozenStarItem.forColor(star.getColor());
 		}
-		return super.getCloneItemStack(level, pos, state);
+		return super.getCloneItemStack(level, pos, state, includeData);
 	}
 }

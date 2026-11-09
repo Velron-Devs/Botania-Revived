@@ -1,18 +1,22 @@
 package velrondevs.botania.client.gui;
 
+import net.minecraft.util.ARGB;
+
+import net.minecraft.util.profiling.Profiler;
+
+import org.joml.Matrix3x2fStack;
+
 import com.google.common.collect.Iterables;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.ChatScreen;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.Container;
@@ -24,7 +28,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 
-import org.lwjgl.opengl.GL11;
 
 import velrondevs.botania.api.BotaniaAPI;
 import velrondevs.botania.api.mana.ManaItemHandler;
@@ -57,7 +60,7 @@ public final class HUDHandler {
 
 	private HUDHandler() {}
 
-	public static final ResourceLocation manaBar = ResourceLocation.parse(ResourcesLib.GUI_MANA_HUD);
+	public static final Identifier manaBar = Identifier.parse(ResourcesLib.GUI_MANA_HUD);
 
 	private static boolean didOptifineDetection = false;
 
@@ -71,13 +74,13 @@ public final class HUDHandler {
 		}
 	}
 
-	public static void onDrawScreenPost(GuiGraphics gui, float partialTicks) {
-		PoseStack ms = gui.pose();
+	public static void onDrawScreenPost(GuiGraphicsExtractor gui, float partialTicks) {
+		Matrix3x2fStack ms = gui.pose();
 		Minecraft mc = Minecraft.getInstance();
 		if (mc.options.hideGui) {
 			return;
 		}
-		ProfilerFiller profiler = mc.getProfiler();
+		ProfilerFiller profiler = Profiler.get();
 		ItemStack main = mc.player.getMainHandItem();
 		ItemStack offhand = mc.player.getOffhandItem();
 
@@ -213,10 +216,9 @@ public final class HUDHandler {
 		profiler.pop();
 		profiler.pop();
 
-		RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
 	}
 
-	private static void renderManaInvBar(GuiGraphics gui, int totalMana, int totalMaxMana) {
+	private static void renderManaInvBar(GuiGraphicsExtractor gui, int totalMana, int totalMaxMana) {
 		Minecraft mc = Minecraft.getInstance();
 		int width = 182;
 		int x = mc.getWindow().getGuiScaledWidth() / 2 - width / 2;
@@ -240,18 +242,12 @@ public final class HUDHandler {
 		int r = (color >> 16 & 0xFF);
 		int g = (color >> 8 & 0xFF);
 		int b = color & 0xFF;
-		RenderSystem.setShaderColor(r / 255F, g / 255F, b / 255F, 1 - (r / 255F));
-
-		RenderSystem.enableBlend();
-		RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-		RenderHelper.drawTexturedModalRect(gui, manaBar, x, y, 0, 251, width, 5);
-		RenderSystem.disableBlend();
-		RenderSystem.setShaderColor(1, 1, 1, 1);
+		RenderHelper.drawTexturedModalRect(gui, manaBar, x, y, 0, 251, width, 5, ARGB.colorFromFloat(1 - (r / 255F), r / 255F, g / 255F, b / 255F));
 	}
 
-	private static void renderPoolRecipeHUD(GuiGraphics gui, ManaPoolBlockEntity tile, ItemStack stack, boolean alternateRecipeHudPosition) {
+	private static void renderPoolRecipeHUD(GuiGraphicsExtractor gui, ManaPoolBlockEntity tile, ItemStack stack, boolean alternateRecipeHudPosition) {
 		Minecraft mc = Minecraft.getInstance();
-		ProfilerFiller profiler = mc.getProfiler();
+		ProfilerFiller profiler = Profiler.get();
 
 		profiler.push("poolRecipe");
 		ManaInfusionRecipe recipe = tile.getMatchingRecipe(stack, tile.getLevel().getBlockState(tile.getBlockPos().below()));
@@ -262,23 +258,19 @@ public final class HUDHandler {
 			int u = tile.getCurrentMana() >= recipe.getManaToConsume() ? 0 : 22;
 			int v = mc.player.getName().getString().equals("haighyorkie") && mc.player.isShiftKeyDown() ? 23 : 8;
 
-			RenderSystem.enableBlend();
-			RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
 			RenderHelper.drawTexturedModalRect(gui, manaBar, x, y, u, v, 22, 15);
-			RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
 
-			gui.renderItem(stack, x - 20, y);
+			gui.item(stack, x - 20, y);
 			ItemStack result = recipe.getResultItem(mc.level.registryAccess());
-			gui.renderItem(result, x + 26, y);
-			gui.renderItemDecorations(mc.font, result, x + 26, y);
+			gui.item(result, x + 26, y);
+			gui.itemDecorations(mc.font, result, x + 26, y);
 
-			RenderSystem.disableBlend();
 		}
 		profiler.pop();
 	}
 
-	private static void renderNearIndexDisplay(GuiGraphics gui) {
+	private static void renderNearIndexDisplay(GuiGraphicsExtractor gui) {
 		Minecraft mc = Minecraft.getInstance();
 		String txt0 = I18n.get("botaniamisc.nearIndex0");
 		String txt1 = ChatFormatting.GRAY + I18n.get("botaniamisc.nearIndex1");
@@ -289,32 +281,29 @@ public final class HUDHandler {
 		int y = mc.getWindow().getGuiScaledHeight() - 60;
 
 		RenderHelper.renderHUDBox(gui, x - 4, y - 4, x + l + 4, y + 35);
-		gui.renderItem(new ItemStack(BotaniaBlocks.corporeaIndex), x, y + 10);
+		gui.item(new ItemStack(BotaniaBlocks.corporeaIndex), x, y + 10);
 
-		gui.drawString(mc.font, txt0, x + 20, y, 0xFFFFFF);
-		gui.drawString(mc.font, txt1, x + 20, y + 14, 0xFFFFFF);
-		gui.drawString(mc.font, txt2, x + 20, y + 24, 0xFFFFFF);
+		RenderHelper.drawString(gui, mc.font, txt0, x + 20, y, 0xFFFFFF);
+		RenderHelper.drawString(gui, mc.font, txt1, x + 20, y + 14, 0xFFFFFF);
+		RenderHelper.drawString(gui, mc.font, txt2, x + 20, y + 24, 0xFFFFFF);
 	}
 
-	public static void drawSimpleManaHUD(GuiGraphics gui, int color, int mana, int maxMana, String name) {
-		RenderSystem.enableBlend();
-		RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+	public static void drawSimpleManaHUD(GuiGraphicsExtractor gui, int color, int mana, int maxMana, String name) {
 		Minecraft mc = Minecraft.getInstance();
 		int x = mc.getWindow().getGuiScaledWidth() / 2 - mc.font.width(name) / 2;
 		int y = mc.getWindow().getGuiScaledHeight() / 2 + 10;
 
-		gui.drawString(mc.font, name, x, y, color);
+		RenderHelper.drawString(gui, mc.font, name, x, y, color);
 
 		x = mc.getWindow().getGuiScaledWidth() / 2 - 51;
 		y += 10;
 
 		renderManaBar(gui, x, y, color, 1F, mana, maxMana);
 
-		RenderSystem.disableBlend();
 	}
 
-	public static void drawComplexManaHUD(int color, GuiGraphics gui, int mana, int maxMana, String name, ItemStack bindDisplay, boolean properlyBound) {
-		PoseStack ms = gui.pose();
+	public static void drawComplexManaHUD(int color, GuiGraphicsExtractor gui, int mana, int maxMana, String name, ItemStack bindDisplay, boolean properlyBound) {
+		Matrix3x2fStack ms = gui.pose();
 		drawSimpleManaHUD(gui, color, mana, maxMana, name);
 
 		Minecraft mc = Minecraft.getInstance();
@@ -322,26 +311,22 @@ public final class HUDHandler {
 		int x = mc.getWindow().getGuiScaledWidth() / 2 + Math.max(51, mc.font.width(name) / 2) + 4;
 		int y = mc.getWindow().getGuiScaledHeight() / 2 + 12;
 
-		gui.renderItem(bindDisplay, x, y);
+		gui.item(bindDisplay, x, y);
 
-		RenderSystem.disableDepthTest();
-		ms.pushPose();
+		ms.pushMatrix();
 
-		ms.translate(0, 0, 200);
 		if (properlyBound) {
-			gui.drawString(mc.font, "✔", x + 10, y + 9, 0x004C00);
-			gui.drawString(mc.font, "✔", x + 10, y + 8, 0x0BD20D);
+			RenderHelper.drawString(gui, mc.font, "✔", x + 10, y + 9, 0x004C00);
+			RenderHelper.drawString(gui, mc.font, "✔", x + 10, y + 8, 0x0BD20D);
 		} else {
-			gui.drawString(mc.font, "✘", x + 10, y + 9, 0x4C0000);
-			gui.drawString(mc.font, "✘", x + 10, y + 8, 0xD2080D);
+			RenderHelper.drawString(gui, mc.font, "✘", x + 10, y + 9, 0x4C0000);
+			RenderHelper.drawString(gui, mc.font, "✘", x + 10, y + 8, 0xD2080D);
 		}
-		ms.popPose();
-		RenderSystem.enableDepthTest();
+		ms.popMatrix();
 	}
 
-	public static void renderManaBar(GuiGraphics gui, int x, int y, int color, float alpha, int mana, int maxMana) {
-		RenderSystem.setShaderColor(1F, 1F, 1F, alpha);
-		RenderHelper.drawTexturedModalRect(gui, manaBar, x, y, 0, 0, 102, 5);
+	public static void renderManaBar(GuiGraphicsExtractor gui, int x, int y, int color, float alpha, int mana, int maxMana) {
+		RenderHelper.drawTexturedModalRect(gui, manaBar, x, y, 0, 0, 102, 5, ARGB.colorFromFloat(alpha, 1F, 1F, 1F));
 
 		int manaPercentage = Math.max(0, (int) ((double) mana / (double) maxMana * 100));
 
@@ -349,13 +334,11 @@ public final class HUDHandler {
 			manaPercentage = 1;
 		}
 
-		RenderHelper.drawTexturedModalRect(gui, manaBar, x + 1, y + 1, 0, 5, 100, 3);
+		RenderHelper.drawTexturedModalRect(gui, manaBar, x + 1, y + 1, 0, 5, 100, 3, ARGB.colorFromFloat(alpha, 1F, 1F, 1F));
 
 		float red = (color >> 16 & 0xFF) / 255F;
 		float green = (color >> 8 & 0xFF) / 255F;
 		float blue = (color & 0xFF) / 255F;
-		RenderSystem.setShaderColor(red, green, blue, alpha);
-		RenderHelper.drawTexturedModalRect(gui, manaBar, x + 1, y + 1, 0, 5, Math.min(100, manaPercentage), 3);
-		RenderSystem.setShaderColor(1, 1, 1, 1);
+		RenderHelper.drawTexturedModalRect(gui, manaBar, x + 1, y + 1, 0, 5, Math.min(100, manaPercentage), 3, ARGB.colorFromFloat(alpha, red, green, blue));
 	}
 }

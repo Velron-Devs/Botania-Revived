@@ -1,12 +1,14 @@
 package velrondevs.botania.common.entity;
 
+import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.npc.Villager;
+import net.minecraft.world.entity.npc.villager.Villager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -44,7 +46,7 @@ public class FallingStarEntity extends ThrowableCopyEntity {
 	public void tick() {
 		super.tick();
 
-		if (!hasBeenInAir && !level().isClientSide) {
+		if (!hasBeenInAir && !level().isClientSide()) {
 			var bs = getInBlockState();
 			hasBeenInAir = bs.isAir() || isInWater() || isInLava();
 		}
@@ -59,7 +61,7 @@ public class FallingStarEntity extends ThrowableCopyEntity {
 		}
 
 		Entity thrower = getOwner();
-		if (!level().isClientSide && thrower != null) {
+		if (!level().isClientSide() && thrower != null) {
 			AABB axis = new AABB(getX(), getY(), getZ(), xOld, yOld, zOld).inflate(2);
 			List<LivingEntity> entities = level().getEntitiesOfClass(LivingEntity.class, axis);
 			for (LivingEntity living : entities) {
@@ -87,7 +89,7 @@ public class FallingStarEntity extends ThrowableCopyEntity {
 		if (e instanceof Villager) {
 			return;
 		}
-		if (!level().isClientSide) {
+		if (!level().isClientSide()) {
 			if (e != getOwner() && e.isAlive()) {
 				if (getOwner() instanceof Player player) {
 					e.hurt(player.damageSources().playerAttack(player), Math.random() < 0.25 ? 10 : 5);
@@ -102,7 +104,7 @@ public class FallingStarEntity extends ThrowableCopyEntity {
 	@Override
 	protected void onHitBlock(BlockHitResult hit) {
 		super.onHitBlock(hit);
-		if (!level().isClientSide) {
+		if (!level().isClientSide()) {
 			BlockPos bpos = hit.getBlockPos();
 			BlockState state = level().getBlockState(bpos);
 			if (hasBeenInAir) {
@@ -115,14 +117,14 @@ public class FallingStarEntity extends ThrowableCopyEntity {
 	}
 
 	@Override
-	protected void addAdditionalSaveData(CompoundTag tag) {
+	protected void addAdditionalSaveData(ValueOutput tag) {
 		super.addAdditionalSaveData(tag);
 		tag.putBoolean(TAG_HAS_BEEN_IN_AIR, hasBeenInAir);
 	}
 
 	@Override
-	protected void readAdditionalSaveData(CompoundTag tag) {
+	protected void readAdditionalSaveData(ValueInput tag) {
 		super.readAdditionalSaveData(tag);
-		this.hasBeenInAir = tag.getBoolean(TAG_HAS_BEEN_IN_AIR);
+		this.hasBeenInAir = tag.getBooleanOr(TAG_HAS_BEEN_IN_AIR, false);
 	}
 }

@@ -23,15 +23,9 @@
   "type": "sophisticatedstorage:double_chest_tier_upgrade_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "sophisticatedatm:unobtainium_chest"
-    },
-    {
-      "tag": "botania:manasteel_ingots"
-    },
-    {
-      "tag": "botania:manasteel_ingots"
-    }
+    "sophisticatedatm:unobtainium_chest",
+    "#botania:manasteel_ingots",
+    "#botania:manasteel_ingots"
   ],
   "result": {
     "count": 1,

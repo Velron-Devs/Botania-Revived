@@ -12,7 +12,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.BonemealableBlock;
-import net.minecraft.world.level.block.BushBlock;
+import net.minecraft.world.level.block.VegetationBlock;
 import net.minecraft.world.level.block.DoublePlantBlock;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
@@ -25,7 +25,7 @@ import velrondevs.botania.client.fx.SparkleParticleData;
 import velrondevs.botania.common.item.material.MysticalPetalItem;
 import velrondevs.botania.registry.BotaniaBlocks;
 
-public class BuriedPetalBlock extends BushBlock implements BonemealableBlock {
+public class BuriedPetalBlock extends VegetationBlock implements BonemealableBlock {
 
 	private static final VoxelShape SHAPE = box(0, 0, 0, 16, 1.6, 16);
 

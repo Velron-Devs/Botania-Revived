@@ -1,144 +1,152 @@
 package velrondevs.botania.client.core.helper;
 
+import com.mojang.blaze3d.pipeline.BlendFunction;
+import com.mojang.blaze3d.pipeline.ColorTargetState;
+import com.mojang.blaze3d.pipeline.DepthStencilState;
+import com.mojang.blaze3d.pipeline.RenderPipeline;
+import com.mojang.blaze3d.platform.CompareOp;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
 
-import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.renderer.ShaderInstance;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.renderer.RenderPipelines;
 
-import velrondevs.botania.network.TriConsumer;
-import velrondevs.botania.xplat.BotaniaConfig;
-
+import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 import static velrondevs.botania.common.lib.ResourceLocationHelper.prefix;
 
 public class CoreShaders {
-	private static ShaderInstance starfieldShaderInstance;
-	private static ShaderInstance doppleganger;
-	private static ShaderInstance manaPool;
-	private static ShaderInstance terraPlate;
-	private static ShaderInstance enchanter;
-	private static ShaderInstance pylon;
-	private static ShaderInstance halo;
-	private static ShaderInstance filmGrainParticle;
-	private static ShaderInstance dopplegangerBar;
+	public static final RenderPipeline STAR = RenderPipeline.builder(RenderPipelines.MATRICES_FOG_SNIPPET)
+			.withLocation(prefix("pipeline/star"))
+			.withVertexShader("core/rendertype_lightning")
+			.withFragmentShader("core/rendertype_lightning")
+			.withColorTargetState(new ColorTargetState(Optional.of(BlendFunction.LIGHTNING), ColorTargetState.WRITE_COLOR))
+			.withVertexFormat(DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.TRIANGLES)
+			.withDepthStencilState(new DepthStencilState(CompareOp.LESS_THAN_OR_EQUAL, false))
+			.build();
 
-	public static void init(TriConsumer<ResourceLocation, VertexFormat, Consumer<ShaderInstance>> registrations) {
-		registrations.accept(
-				prefix("starfield"),
-				DefaultVertexFormat.POSITION,
-				inst -> starfieldShaderInstance = inst
-		);
-		registrations.accept(
-				prefix("doppleganger"),
-				DefaultVertexFormat.NEW_ENTITY,
-				inst -> doppleganger = inst
-		);
-		registrations.accept(
-				prefix("mana_pool"),
-				DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP,
-				inst -> manaPool = inst
-		);
-		registrations.accept(
-				prefix("terra_plate_rune"),
-				DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP,
-				inst -> terraPlate = inst
-		);
-		registrations.accept(
-				prefix("enchanter_rune"),
-				DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP,
-				inst -> enchanter = inst
-		);
-		registrations.accept(
-				prefix("pylon"),
-				DefaultVertexFormat.NEW_ENTITY,
-				inst -> pylon = inst
-		);
-		registrations.accept(
-				prefix("halo"),
-				DefaultVertexFormat.POSITION_TEX_COLOR,
-				inst -> halo = inst
-		);
-		registrations.accept(
-				prefix("film_grain_particle"),
-				DefaultVertexFormat.PARTICLE,
-				inst -> filmGrainParticle = inst
-		);
-		registrations.accept(
-				prefix("doppleganger_bar"),
-				DefaultVertexFormat.POSITION_TEX,
-				inst -> dopplegangerBar = inst
-		);
+	public static final RenderPipeline HIGHLIGHT_QUADS = RenderPipeline.builder(RenderPipelines.DEBUG_FILLED_SNIPPET)
+			.withLocation(prefix("pipeline/highlight_quads"))
+			.withCull(false)
+			.withDepthStencilState(DepthStencilState.DEFAULT)
+			.build();
+
+	public static final RenderPipeline HIGHLIGHT_TRIANGLES = RenderPipeline.builder(RenderPipelines.DEBUG_FILLED_SNIPPET)
+			.withLocation(prefix("pipeline/highlight_triangles"))
+			.withCull(false)
+			.withVertexFormat(DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.TRIANGLES)
+			.withDepthStencilState(DepthStencilState.DEFAULT)
+			.build();
+
+	public static final RenderPipeline LINES_NO_DEPTH = RenderPipeline.builder(RenderPipelines.LINES_SNIPPET)
+			.withLocation(prefix("pipeline/lines_no_depth"))
+			.withColorTargetState(new ColorTargetState(Optional.of(BlendFunction.TRANSLUCENT), ColorTargetState.WRITE_COLOR))
+			.withDepthStencilState(Optional.empty())
+			.build();
+
+	public static final RenderPipeline TEXTURED_LIGHTMAP = RenderPipeline.builder(RenderPipelines.TEXT_SNIPPET, RenderPipelines.FOG_SNIPPET)
+			.withLocation(prefix("pipeline/textured_lightmap"))
+			.withVertexShader("core/rendertype_text")
+			.withFragmentShader("core/rendertype_text")
+			.withSampler("Sampler0")
+			.withSampler("Sampler2")
+			.build();
+
+	public static final RenderPipeline TEXTURED_COLOR = RenderPipeline.builder(RenderPipelines.MATRICES_PROJECTION_SNIPPET)
+			.withLocation(prefix("pipeline/textured_color"))
+			.withVertexShader("core/position_tex_color")
+			.withFragmentShader("core/position_tex_color")
+			.withSampler("Sampler0")
+			.withColorTargetState(new ColorTargetState(BlendFunction.TRANSLUCENT))
+			.withVertexFormat(DefaultVertexFormat.POSITION_TEX_COLOR, VertexFormat.Mode.QUADS)
+			.withDepthStencilState(DepthStencilState.DEFAULT)
+			.build();
+
+	public static final RenderPipeline TEXTURED_COLOR_NO_CULL = RenderPipeline.builder(RenderPipelines.MATRICES_PROJECTION_SNIPPET)
+			.withLocation(prefix("pipeline/textured_color_no_cull"))
+			.withVertexShader("core/position_tex_color")
+			.withFragmentShader("core/position_tex_color")
+			.withSampler("Sampler0")
+			.withColorTargetState(new ColorTargetState(BlendFunction.TRANSLUCENT))
+			.withVertexFormat(DefaultVertexFormat.POSITION_TEX_COLOR, VertexFormat.Mode.QUADS)
+			.withDepthStencilState(DepthStencilState.DEFAULT)
+			.withCull(false)
+			.build();
+
+	public static final RenderPipeline LIGHTNING_QUADS = RenderPipeline.builder(RenderPipelines.MATRICES_FOG_SNIPPET)
+			.withLocation(prefix("pipeline/lightning_quads"))
+			.withVertexShader("core/rendertype_lightning")
+			.withFragmentShader("core/rendertype_lightning")
+			.withColorTargetState(new ColorTargetState(BlendFunction.LIGHTNING))
+			.withVertexFormat(DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS)
+			.withDepthStencilState(DepthStencilState.DEFAULT)
+			.build();
+
+	public static final RenderPipeline ADDITIVE_PARTICLE = RenderPipeline.builder(RenderPipelines.PARTICLE_SNIPPET)
+			.withLocation(prefix("pipeline/additive_particle"))
+			.withColorTargetState(new ColorTargetState(BlendFunction.LIGHTNING))
+			.withDepthStencilState(new DepthStencilState(CompareOp.LESS_THAN_OR_EQUAL, false))
+			.build();
+
+	public static final RenderPipeline ADDITIVE_PARTICLE_NO_DEPTH = RenderPipeline.builder(RenderPipelines.PARTICLE_SNIPPET)
+			.withLocation(prefix("pipeline/additive_particle_no_depth"))
+			.withColorTargetState(new ColorTargetState(BlendFunction.LIGHTNING))
+			.withDepthStencilState(Optional.empty())
+			.build();
+
+	public static final RenderPipeline GUI_TRIANGLE_FAN =RenderPipeline.builder(RenderPipelines.GUI_SNIPPET)
+			.withLocation(prefix("pipeline/gui_triangle_fan"))
+			.withVertexFormat(DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.TRIANGLE_FAN)
+			.build();
+
+	public static final RenderPipeline GUI_TRIANGLES = RenderPipeline.builder(RenderPipelines.GUI_SNIPPET)
+			.withLocation(prefix("pipeline/gui_triangles"))
+			.withVertexFormat(DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.TRIANGLES)
+			.build();
+
+	private static final List<RenderPipeline> ALL = List.of(
+			STAR, HIGHLIGHT_QUADS, HIGHLIGHT_TRIANGLES, LINES_NO_DEPTH, TEXTURED_LIGHTMAP, TEXTURED_COLOR,
+			TEXTURED_COLOR_NO_CULL, LIGHTNING_QUADS, ADDITIVE_PARTICLE, ADDITIVE_PARTICLE_NO_DEPTH, GUI_TRIANGLE_FAN, GUI_TRIANGLES
+	);
+
+	public static void init(Consumer<RenderPipeline> registrations) {
+		ALL.forEach(registrations);
 	}
 
-	public static ShaderInstance starfield() {
-
-		return starfieldShaderInstance;
+	public static RenderPipeline starfield() {
+		return RenderPipelines.END_PORTAL;
 	}
 
-	public static ShaderInstance doppleganger() {
-		if (BotaniaConfig.client().useShaders()) {
-			return doppleganger;
-		} else {
-			return GameRenderer.getRendertypeEntityTranslucentShader();
-		}
+	public static RenderPipeline doppleganger() {
+		return RenderPipelines.ENTITY_TRANSLUCENT;
 	}
 
-	public static ShaderInstance manaPool() {
-		if (BotaniaConfig.client().useShaders()) {
-			return manaPool;
-		} else {
-			return GameRenderer.getPositionColorTexLightmapShader();
-		}
+	public static RenderPipeline manaPool() {
+		return TEXTURED_LIGHTMAP;
 	}
 
-	public static ShaderInstance terraPlate() {
-		if (BotaniaConfig.client().useShaders()) {
-			return terraPlate;
-		} else {
-			return GameRenderer.getPositionColorTexLightmapShader();
-		}
+	public static RenderPipeline terraPlate() {
+		return TEXTURED_LIGHTMAP;
 	}
 
-	public static ShaderInstance enchanter() {
-		if (BotaniaConfig.client().useShaders()) {
-			return enchanter;
-		} else {
-			return GameRenderer.getPositionColorTexLightmapShader();
-		}
+	public static RenderPipeline enchanter() {
+		return TEXTURED_LIGHTMAP;
 	}
 
-	public static ShaderInstance pylon() {
-		if (BotaniaConfig.client().useShaders()) {
-			return pylon;
-		} else {
-			return GameRenderer.getRendertypeEntityTranslucentShader();
-		}
+	public static RenderPipeline pylon() {
+		return RenderPipelines.ENTITY_TRANSLUCENT;
 	}
 
-	public static ShaderInstance halo() {
-		if (BotaniaConfig.client().useShaders()) {
-			return halo;
-		} else {
-			return GameRenderer.getPositionTexColorShader();
-		}
+	public static RenderPipeline halo() {
+		return TEXTURED_COLOR;
 	}
 
-	public static ShaderInstance filmGrainParticle() {
-		if (BotaniaConfig.client().useShaders()) {
-			return filmGrainParticle;
-		} else {
-			return GameRenderer.getParticleShader();
-		}
+	public static RenderPipeline filmGrainParticle() {
+		return ADDITIVE_PARTICLE;
 	}
 
-	public static ShaderInstance dopplegangerBar() {
-		if (BotaniaConfig.client().useShaders()) {
-			return dopplegangerBar;
-		} else {
-			return GameRenderer.getPositionTexShader();
-		}
+	public static RenderPipeline dopplegangerBar() {
+		return RenderPipelines.GUI_TEXTURED;
 	}
 }

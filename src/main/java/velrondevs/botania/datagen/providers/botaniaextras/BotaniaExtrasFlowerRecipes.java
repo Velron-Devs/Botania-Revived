@@ -13,20 +13,22 @@ import velrondevs.botania.module.botaniaextras.BotaniaExtrasModule;
 import velrondevs.botania.registry.BotaniaItems;
 
 import static velrondevs.botania.common.lib.ResourceLocationHelper.prefix;
+import static velrondevs.botania.datagen.providers.recipes.BotaniaRecipeProvider.key;
+import static velrondevs.botania.datagen.providers.recipes.BotaniaRecipeProvider.tag;
 
 public final class BotaniaExtrasFlowerRecipes {
 	private BotaniaExtrasFlowerRecipes() {}
 
 	private static Ingredient petal(String color) {
-		return Ingredient.of(TagKey.create(Registries.ITEM, prefix("petals/" + color)));
+		return tag(TagKey.create(Registries.ITEM, prefix("petals/" + color)));
 	}
 
 	public static void build(RecipeOutput output) {
 		Ingredient orange = petal("orange");
 		Ingredient black = petal("black");
 		Ingredient lightBlue = petal("light_blue");
-		output.accept(prefix(BotaniaExtrasModule.ID + "/petal_apothecary/crysanthermum"),
-				new PetalsRecipe(new ItemStack(BotaniaExtrasFlowers.crysanthermum), Ingredient.of(BotaniaTags.Items.SEED_APOTHECARY_REAGENT),
+		output.accept(key(prefix(BotaniaExtrasModule.ID + "/petal_apothecary/crysanthermum")),
+				new PetalsRecipe(new ItemStack(BotaniaExtrasFlowers.crysanthermum), tag(BotaniaTags.Items.SEED_APOTHECARY_REAGENT),
 						orange, orange, black, lightBlue, lightBlue, Ingredient.of(BotaniaItems.runeWinter), Ingredient.of(BotaniaItems.runeSummer)),
 				null);
 	}

@@ -33,7 +33,7 @@ public class ForceLens extends Lens {
 
 				return false;
 			}
-			if (entity.mayInteract(entity.level(), blockPos)) {
+			if (Lens.mayInteract(entity, blockPos)) {
 
 				moveBlocks(entity.level(), blockPos.relative(rtr.getDirection()), rtr.getDirection().getOpposite(),
 						ManaBurst.NO_SOURCE);

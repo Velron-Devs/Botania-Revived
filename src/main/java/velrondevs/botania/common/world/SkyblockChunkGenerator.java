@@ -5,7 +5,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.core.*;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerChunkCache;
 import net.minecraft.server.level.WorldGenRegion;
 import net.minecraft.world.level.*;
@@ -29,7 +29,7 @@ public class SkyblockChunkGenerator extends NoiseBasedChunkGenerator {
 					NoiseGeneratorSettings.CODEC.fieldOf("settings").forGetter(NoiseBasedChunkGenerator::generatorSettings))
 					.apply(instance, instance.stable(SkyblockChunkGenerator::new)));
 
-	public static void submitRegistration(BiConsumer<MapCodec<? extends ChunkGenerator>, ResourceLocation> consumer) {
+	public static void submitRegistration(BiConsumer<MapCodec<? extends ChunkGenerator>, Identifier> consumer) {
 		consumer.accept(SkyblockChunkGenerator.CODEC, prefix("skyblock"));
 	}
 
@@ -55,7 +55,7 @@ public class SkyblockChunkGenerator extends NoiseBasedChunkGenerator {
 	@Override
 	public void applyCarvers(@NotNull WorldGenRegion worldGenRegion, long seed, @NotNull RandomState randomState,
 			@NotNull BiomeManager biomeManager, @NotNull StructureManager structureManager,
-			@NotNull ChunkAccess chunkAccess, GenerationStep.@NotNull Carving carving) {}
+			@NotNull ChunkAccess chunkAccess) {}
 
 	@Override
 	public @NotNull CompletableFuture<ChunkAccess> fillFromNoise(@NotNull Blender blender,
@@ -73,7 +73,7 @@ public class SkyblockChunkGenerator extends NoiseBasedChunkGenerator {
 	public int getBaseHeightInEquivalentNoiseWorld(int x, int z, Heightmap.Types heightmap, WorldGenLevel level) {
 		RandomState randomState = RandomState.create(
 				generatorSettings().value(),
-				level.registryAccess().registryOrThrow(Registries.NOISE).asLookup(),
+				level.registryAccess().lookupOrThrow(Registries.NOISE),
 				level.getSeed());
 		return super.getBaseHeight(x, z, heightmap, level, randomState);
 	}

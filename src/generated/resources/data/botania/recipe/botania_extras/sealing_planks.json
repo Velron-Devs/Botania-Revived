@@ -9,9 +9,7 @@
   "category": "building",
   "group": "botania:sealing_planks",
   "ingredients": [
-    {
-      "item": "botania:sealing_log"
-    }
+    "botania:sealing_log"
   ],
   "result": {
     "count": 4,

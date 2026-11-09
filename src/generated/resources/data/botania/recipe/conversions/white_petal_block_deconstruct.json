@@ -3,9 +3,7 @@
   "category": "misc",
   "group": "botania:petal_block_deconstruct",
   "ingredients": [
-    {
-      "item": "botania:white_petal_block"
-    }
+    "botania:white_petal_block"
   ],
   "result": {
     "count": 9,

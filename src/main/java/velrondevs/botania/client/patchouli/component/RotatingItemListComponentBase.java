@@ -1,8 +1,11 @@
 package velrondevs.botania.client.patchouli.component;
 
-import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.Minecraft;
 
-import net.minecraft.client.gui.GuiGraphics;
+import org.joml.Matrix3x2fStack;
+
+
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.world.item.crafting.Ingredient;
 
@@ -26,12 +29,12 @@ public abstract class RotatingItemListComponentBase implements ICustomComponent 
 	protected abstract List<Ingredient> makeIngredients();
 
 	@Override
-	public void render(GuiGraphics gui, IComponentRenderContext context, float pticks, int mouseX, int mouseY) {
+	public void extractRenderState(GuiGraphicsExtractor gui, IComponentRenderContext context, float pticks, int mouseX, int mouseY) {
 		int degreePerInput = (int) (360F / ingredients.size());
 		int ticksElapsed = context.getTicksInBook();
 
 		float currentDegree = BotaniaConfig.client().lexiconRotatingItems()
-				? Screen.hasShiftDown()
+				? Minecraft.getInstance().hasShiftDown()
 						? ticksElapsed
 						: ticksElapsed + pticks
 				: 0;
@@ -43,8 +46,8 @@ public abstract class RotatingItemListComponentBase implements ICustomComponent 
 		}
 	}
 
-	private void renderIngredientAtAngle(GuiGraphics gui, IComponentRenderContext context, float angle, Ingredient ingredient, int mouseX, int mouseY) {
-		PoseStack ms = gui.pose();
+	private void renderIngredientAtAngle(GuiGraphicsExtractor gui, IComponentRenderContext context, float angle, Ingredient ingredient, int mouseX, int mouseY) {
+		Matrix3x2fStack ms = gui.pose();
 		if (ingredient.isEmpty()) {
 			return;
 		}
@@ -54,10 +57,10 @@ public abstract class RotatingItemListComponentBase implements ICustomComponent 
 		double xPos = x + Math.cos(angle * Math.PI / 180D) * radius + 32;
 		double yPos = y + Math.sin(angle * Math.PI / 180D) * radius + 32;
 
-		ms.pushPose();
-		ms.translate(xPos - (int) xPos, yPos - (int) yPos, 0);
+		ms.pushMatrix();
+		ms.translate((float) (xPos - (int) xPos), (float) (yPos - (int) yPos));
 		context.renderIngredient(gui, (int) xPos, (int) yPos, mouseX, mouseY, ingredient);
-		ms.popPose();
+		ms.popMatrix();
 	}
 
 }

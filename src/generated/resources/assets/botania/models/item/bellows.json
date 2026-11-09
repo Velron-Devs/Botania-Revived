@@ -1,5 +1,5 @@
 {
-  "parent": "minecraft:builtin/entity",
+  "parent": "botania:block/bellows",
   "display": {
     "firstperson_righthand": {
       "rotation": [

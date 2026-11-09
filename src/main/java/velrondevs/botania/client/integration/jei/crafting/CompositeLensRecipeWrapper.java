@@ -12,6 +12,9 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.display.SlotDisplay;
+
+import velrondevs.botania.client.integration.jei.JeiSlotDisplays;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -31,6 +34,12 @@ public class CompositeLensRecipeWrapper implements ICraftingCategoryExtension<Co
 				.filter(s -> ((LensItem) s.getItem()).isCombinable(s))
 				.map(ItemStack::getItem)
 				.toList();
+	}
+
+	@Override
+	public List<SlotDisplay> getIngredients(@NotNull RecipeHolder<CompositeLensRecipe> recipeHolder) {
+		List<ItemStack> lenses = getAllLenses().stream().map(ItemStack::new).toList();
+		return JeiSlotDisplays.ofAll(List.of(lenses, List.of(new ItemStack(Items.SLIME_BALL)), lenses));
 	}
 
 	@Override

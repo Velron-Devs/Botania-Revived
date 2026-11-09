@@ -4,9 +4,9 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
 import org.jetbrains.annotations.Nullable;
@@ -17,8 +17,8 @@ import velrondevs.botania.client.model.BotaniaModelLayers;
 import velrondevs.botania.common.block.block_entity.mana.BellowsBlockEntity;
 import velrondevs.botania.common.helper.VecHelper;
 
-public class BellowsBlockEntityRenderer implements BlockEntityRenderer<BellowsBlockEntity> {
-	private static final ResourceLocation texture = ResourceLocation.parse(ResourcesLib.MODEL_BELLOWS);
+public class BellowsBlockEntityRenderer extends BotaniaBlockEntityRenderer<BellowsBlockEntity> {
+	private static final Identifier texture = Identifier.parse(ResourcesLib.MODEL_BELLOWS);
 	private final BellowsModel model;
 
 	public BellowsBlockEntityRenderer(BlockEntityRendererProvider.Context ctx) {
@@ -26,7 +26,7 @@ public class BellowsBlockEntityRenderer implements BlockEntityRenderer<BellowsBl
 	}
 
 	@Override
-	public void render(@Nullable BellowsBlockEntity bellows, float f, PoseStack ms, MultiBufferSource buffers, int light, int overlay) {
+	protected void render(@Nullable BellowsBlockEntity bellows, float f, PoseStack ms, MultiBufferSource buffers, SubmitNodeCollector collector, int light, int overlay) {
 		ms.pushPose();
 		ms.translate(0.5F, 1.5F, 0.5F);
 		ms.scale(1F, -1F, -1F);

@@ -1,6 +1,6 @@
 package velrondevs.botania.client.patchouli.processor;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.Level;
 
 import velrondevs.botania.api.recipe.RecipeWithReagent;
@@ -13,7 +13,7 @@ import java.util.List;
 
 public abstract class ReagentRecipeProcessor implements IComponentProcessor {
 	protected RecipeWithReagent recipe;
-	protected ResourceLocation recipeId;
+	protected Identifier recipeId;
 
 	@Override
 	public abstract void setup(Level level, IVariableProvider variables);

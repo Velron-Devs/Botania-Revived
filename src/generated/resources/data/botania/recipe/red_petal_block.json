@@ -3,9 +3,7 @@
   "category": "misc",
   "group": "botania:petal_block",
   "key": {
-    "P": {
-      "item": "botania:red_petal"
-    }
+    "P": "botania:red_petal"
   },
   "pattern": [
     "PPP",
@@ -13,7 +11,6 @@
     "PPP"
   ],
   "result": {
-    "count": 1,
     "id": "botania:red_petal_block"
   }
 }

@@ -1,5 +1,13 @@
 package velrondevs.botania.module.botaniaextras.item;
 
+import velrondevs.botania.client.core.helper.RenderHelper;
+
+import net.minecraft.client.renderer.SubmitNodeCollector;
+
+import java.util.function.Consumer;
+
+import net.minecraft.world.item.component.TooltipDisplay;
+
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
@@ -12,13 +20,13 @@ import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionHand;
@@ -51,7 +59,7 @@ import static velrondevs.botania.common.lib.ResourceLocationHelper.prefix;
 public class ToolbeltItem extends BaubleItem {
 	public static final int SEGMENTS = 12;
 	public static final TagKey<Item> BLACKLIST = TagKey.create(Registries.ITEM, prefix("toolbelt_blacklisted"));
-	public static final ResourceLocation BELT_TEXTURE = prefix("textures/model/botania_extras/toolbelt.png");
+	public static final Identifier BELT_TEXTURE = prefix("textures/model/botania_extras/toolbelt.png");
 
 	public ToolbeltItem(Properties props) {
 		super(props);
@@ -126,7 +134,7 @@ public class ToolbeltItem extends BaubleItem {
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flags) {
+	public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltip, TooltipFlag flags) {
 		Map<String, Integer> counts = new TreeMap<>();
 		Map<String, Component> names = new TreeMap<>();
 		for (ItemStack content : contents(stack)) {
@@ -137,12 +145,12 @@ public class ToolbeltItem extends BaubleItem {
 			}
 		}
 		if (counts.isEmpty()) {
-			tooltip.add(Component.translatable("botaniamisc.botania_extras.containsNothing").withStyle(ChatFormatting.AQUA));
+			tooltip.accept(Component.translatable("botaniamisc.botania_extras.containsNothing").withStyle(ChatFormatting.AQUA));
 		} else {
-			tooltip.add(Component.translatable("botaniamisc.botania_extras.contains").withStyle(ChatFormatting.AQUA));
-			counts.forEach((key, count) -> tooltip.add(Component.literal(count + "x ").append(names.get(key).copy().withStyle(ChatFormatting.WHITE))));
+			tooltip.accept(Component.translatable("botaniamisc.botania_extras.contains").withStyle(ChatFormatting.AQUA));
+			counts.forEach((key, count) -> tooltip.accept(Component.literal(count + "x ").append(names.get(key).copy().withStyle(ChatFormatting.WHITE))));
 		}
-		super.appendHoverText(stack, context, tooltip, flags);
+		super.appendHoverText(stack, context, tooltipDisplay, tooltip, flags);
 	}
 
 	public static class BlockProviderImpl implements BlockProvider {
@@ -213,9 +221,10 @@ public class ToolbeltItem extends BaubleItem {
 		}
 
 		@Override
-		public void doRender(HumanoidModel<?> bipedModel, ItemStack stack, LivingEntity living, PoseStack ms, MultiBufferSource buffers, int light, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+		public void doRender(HumanoidModel<?> bipedModel, ItemStack stack, LivingEntity living, PoseStack ms, SubmitNodeCollector collector, int light, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+			MultiBufferSource buffers = RenderHelper.buffers(collector);
 			bipedModel.body.translateAndRotate(ms);
-			VertexConsumer buffer = buffers.getBuffer(RenderType.entityCutoutNoCull(BELT_TEXTURE));
+			VertexConsumer buffer = buffers.getBuffer(RenderTypes.entityCutout(BELT_TEXTURE));
 			part().render(ms, buffer, light, OverlayTexture.NO_OVERLAY);
 		}
 	}

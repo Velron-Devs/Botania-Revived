@@ -13,6 +13,7 @@ description="${mod_description}"
 authors="${authors}"
 itemIcon="${item_icon}" 
 configBackground="${background}" 
+rrv_client="velrondevs.botania.client.integration.rrv.BotaniaRrvPlugin"
 
 [[mixins]]
 config="botania.mixins.json"
@@ -26,14 +27,14 @@ file="META-INF/accesstransformer.cfg"
 [[dependencies.${mod_id}]]
     modId="neoforge"
     type="required"
-    versionRange="[${neo_version},)"
+    versionRange="${neo_version_range}"
     ordering="NONE"
     side="BOTH"
 
 [[dependencies.${mod_id}]]
     modId="minecraft"
     type="required"
-    versionRange="${minecraft_version}"
+    versionRange="[${minecraft_version}]"
     ordering="NONE"
     side="BOTH"
 
@@ -45,100 +46,9 @@ file="META-INF/accesstransformer.cfg"
     side="BOTH"
 
 [[dependencies.${mod_id}]]
-    modId="curios"
+    modId="fractal"
     type="optional"
-    versionRange="[${curios_version},)"
-    ordering="NONE"
-    side="BOTH"
-
-[[dependencies.${mod_id}]]
-    modId="kubejs"
-    type="optional"
-    versionRange="[${kubejs_version},)"
-    ordering="NONE"
-    side="BOTH"
-
-[[dependencies.${mod_id}]]
-    modId="rhino"
-    type="optional"
-    versionRange="[${rhino_version},)"
-    ordering="NONE"
-    side="BOTH"
-
-[[dependencies.${mod_id}]]
-    modId="wthit"
-    type="optional"
-    versionRange="[${wthit_version},)"
-    ordering="NONE"
-    side="BOTH"
-
-[[dependencies.${mod_id}]]
-    modId="jade"
-    type="optional"
-    versionRange="[${jade_version},)"
-    ordering="NONE"
-    side="BOTH"
-
-[[dependencies.${mod_id}]]
-    modId="roughlyenoughitems"
-    type="optional"
-    versionRange="[${rei_version},)"
-    ordering="NONE"
-    side="CLIENT"
-
-[[dependencies.${mod_id}]]
-    modId="jei"
-    type="optional"
-    versionRange="[${jei_version},)"
-    ordering="NONE"
-    side="CLIENT"
-
-[[dependencies.${mod_id}]]
-    modId="emi"
-    type="optional"
-    versionRange="[${emi_version},)"
-    ordering="NONE"
-    side="CLIENT"
-
-[[dependencies.${mod_id}]]
-    modId="ears"
-    type="optional"
-    versionRange="[${ears_version},)"
-    ordering="NONE"
-    side="CLIENT"
-
-[[dependencies.${mod_id}]]
-    modId="sodium"
-    type="optional"
-    versionRange="[${sodium_version},)"
-    ordering="NONE"
-    side="CLIENT"
-
-[[dependencies.${mod_id}]]
-    modId="botanypots"
-    type="optional"
-    versionRange="[${botanypots_version},)"
-    ordering="AFTER"
-    side="BOTH"
-
-[[dependencies.${mod_id}]]
-    modId="ponder"
-    type="optional"
-    versionRange="[${ponder_version},)"
-    ordering="NONE"
-    side="CLIENT"
-
-[[dependencies.${mod_id}]]
-    modId="ars_nouveau"
-    type="optional"
-    versionRange="${arsnouveau_version}"
-    ordering="AFTER"
-    side="BOTH"
-
-[[dependencies.${mod_id}]]
-    modId="thaumaturge"
-    type="optional"
-    versionRange="[${thaumaturge_version},)"
+    versionRange="[2.1.0,)"
     ordering="AFTER"
     side="BOTH"
 
@@ -161,4 +71,88 @@ file="META-INF/accesstransformer.cfg"
     type="optional"
     versionRange="[${sb_version},)"
     ordering="AFTER"
+    side="BOTH"
+
+[[dependencies.${mod_id}]]
+    modId="kubejs"
+    type="optional"
+    versionRange="[${kubejs_version},)"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.${mod_id}]]
+    modId="rhino"
+    type="optional"
+    versionRange="[${rhino_version},)"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.${mod_id}]]
+    modId="curios"
+    type="optional"
+    versionRange="[${curios_version},)"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.${mod_id}]]
+    modId="sodium"
+    type="optional"
+    versionRange="[${sodium_version},)"
+    ordering="NONE"
+    side="CLIENT"
+
+[[dependencies.${mod_id}]]
+    modId="thaumaturge"
+    type="optional"
+    versionRange="[${thaumaturge_version},)"
+    ordering="AFTER"
+    side="BOTH"
+
+[[dependencies.${mod_id}]]
+    modId="jei"
+    type="optional"
+    versionRange="[${jei_version},)"
+    ordering="NONE"
+    side="CLIENT"
+
+[[dependencies.${mod_id}]]
+    modId="jade"
+    type="optional"
+    versionRange="[${jade_version},)"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.${mod_id}]]
+    modId="wthit"
+    type="optional"
+    versionRange="[${wthit_version},)"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.${mod_id}]]
+    modId="roughlyenoughitems"
+    type="optional"
+    versionRange="[${rei_version},)"
+    ordering="NONE"
+    side="CLIENT"
+
+[[dependencies.${mod_id}]]
+    modId="rrv"
+    type="optional"
+    versionRange="[${rrv_version},)"
+    ordering="NONE"
+    side="CLIENT"
+
+[[dependencies.${mod_id}]]
+    modId="ponder"
+    type="optional"
+    versionRange="[${ponder_version},)"
+    ordering="NONE"
+    side="CLIENT"
+
+[[dependencies.${mod_id}]]
+    modId="avaritia"
+    type="optional"
+    versionRange="[0,)"
+    ordering="NONE"
     side="BOTH"

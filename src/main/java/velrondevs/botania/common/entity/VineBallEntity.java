@@ -43,7 +43,8 @@ public class VineBallEntity extends ThrowableProjectile implements ItemSupplier 
 	}
 
 	public VineBallEntity(LivingEntity thrower, boolean gravity) {
-		super(BotaniaEntities.VINE_BALL, thrower, thrower.level());
+		super(BotaniaEntities.VINE_BALL, thrower.getX(), thrower.getEyeY() - 0.1F, thrower.getZ(), thrower.level());
+		setOwner(thrower);
 		entityData.set(GRAVITY, gravity ? 0.03F : 0F);
 	}
 
@@ -61,7 +62,7 @@ public class VineBallEntity extends ThrowableProjectile implements ItemSupplier 
 	public void handleEntityEvent(byte id) {
 		if (id == EntityEvent.DEATH) {
 			for (int j = 0; j < 16; j++) {
-				level().addParticle(new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(BotaniaItems.vineBall)), getX(), getY(), getZ(), Math.random() * 0.2 - 0.1, Math.random() * 0.25, Math.random() * 0.2 - 0.1);
+				level().addParticle(new ItemParticleOption(ParticleTypes.ITEM, BotaniaItems.vineBall), getX(), getY(), getZ(), Math.random() * 0.2 - 0.1, Math.random() * 0.25, Math.random() * 0.2 - 0.1);
 			}
 		}
 	}
@@ -81,14 +82,14 @@ public class VineBallEntity extends ThrowableProjectile implements ItemSupplier 
 	@Override
 	protected void onHitEntity(@NotNull EntityHitResult hit) {
 		super.onHitEntity(hit);
-		if (!level().isClientSide) {
+		if (!level().isClientSide()) {
 			effectAndDieWithDrop();
 		}
 	}
 
 	@Override
 	protected void onHitBlock(@NotNull BlockHitResult hit) {
-		if (!this.level().isClientSide) {
+		if (!this.level().isClientSide()) {
 			Direction dir = hit.getDirection();
 
 			BlockPos pos = hit.getBlockPos();

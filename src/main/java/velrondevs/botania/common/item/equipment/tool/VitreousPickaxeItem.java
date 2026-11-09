@@ -1,5 +1,8 @@
 package velrondevs.botania.common.item.equipment.tool;
 
+import org.jetbrains.annotations.Nullable;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.BlockTags;
@@ -7,8 +10,8 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Tier;
-import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.ToolMaterial;
+import net.neoforged.neoforge.common.Tags;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
@@ -23,37 +26,7 @@ import velrondevs.botania.xplat.XplatAbstractions;
 public class VitreousPickaxeItem extends ManasteelPickaxeItem implements BlockStartBreakItem {
 	private static final String TAG_SILK_HACK = "botania:silk_hack";
 	private static final int MANA_PER_DAMAGE = 160;
-	private static final Tier MATERIAL = new Tier() {
-		@Override
-		public int getUses() {
-			return 125;
-		}
-
-		@Override
-		public float getSpeed() {
-			return 4.8F;
-		}
-
-		@Override
-		public float getAttackDamageBonus() {
-			return 0;
-		}
-
-		@Override
-		public TagKey<Block> getIncorrectBlocksForDrops() {
-			return BlockTags.INCORRECT_FOR_WOODEN_TOOL;
-		}
-
-		@Override
-		public int getEnchantmentValue() {
-			return 10;
-		}
-
-		@Override
-		public Ingredient getRepairIngredient() {
-			return Ingredient.of(Blocks.GLASS);
-		}
-	};
+	private static final ToolMaterial MATERIAL = new ToolMaterial(BlockTags.INCORRECT_FOR_WOODEN_TOOL, 125, 4.8F, 0, 10, Tags.Items.GLASS_BLOCKS_COLORLESS);
 
 	public VitreousPickaxeItem(Properties props) {
 		super(MATERIAL, props, -1);
@@ -76,8 +49,8 @@ public class VitreousPickaxeItem extends ManasteelPickaxeItem implements BlockSt
 	}
 
 	@Override
-	public void inventoryTick(ItemStack stack, Level world, Entity player, int slot, boolean selected) {
-		super.inventoryTick(stack, world, player, slot, selected);
+	public void inventoryTick(ItemStack stack, ServerLevel world, Entity player, @Nullable EquipmentSlot eqSlot) {
+		super.inventoryTick(stack, world, player, eqSlot);
 		if (ItemNBTHelper.getBoolean(stack, TAG_SILK_HACK, false)) {
 			ItemNBTHelper.removeEntry(stack, TAG_SILK_HACK);
 			EnchantmentHelper.updateEnchantments(stack, enchantments -> enchantments.removeIf(ench -> ench.is(Enchantments.SILK_TOUCH)));

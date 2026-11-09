@@ -3,18 +3,11 @@
   "category": "misc",
   "group": "botania:spark_upgrade",
   "ingredients": [
-    {
-      "item": "botania:pixie_dust"
-    },
-    {
-      "tag": "botania:manasteel_ingots"
-    },
-    {
-      "item": "botania:rune_fire"
-    }
+    "botania:pixie_dust",
+    "#botania:manasteel_ingots",
+    "botania:rune_fire"
   ],
   "result": {
-    "count": 1,
     "id": "botania:spark_upgrade_dominant"
   }
 }

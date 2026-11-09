@@ -3,7 +3,7 @@ package velrondevs.botania.datagen.providers.recipes;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.item.crafting.ShapelessRecipe;
@@ -27,13 +27,18 @@ public class WrapperResult {
 	public static RecipeOutput transform(RecipeOutput parent, UnaryOperator<Recipe<?>> transform) {
 		return new RecipeOutput() {
 			@Override
-			public void accept(@NotNull ResourceLocation id, @NotNull Recipe<?> recipe, @Nullable AdvancementHolder advancement, ICondition @NotNull... conditions) {
+			public void accept(@NotNull ResourceKey<Recipe<?>> id, @NotNull Recipe<?> recipe, @Nullable AdvancementHolder advancement, ICondition @NotNull... conditions) {
 				parent.accept(id, transform.apply(recipe), advancement, conditions);
 			}
 
 			@Override
 			public Advancement.@NotNull Builder advancement() {
 				return parent.advancement();
+			}
+
+			@Override
+			public void includeRootAdvancement() {
+				parent.includeRootAdvancement();
 			}
 		};
 	}

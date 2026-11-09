@@ -2,7 +2,7 @@ package velrondevs.botania.integration.jade;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import snownee.jade.api.BlockAccessor;
 import snownee.jade.api.IBlockComponentProvider;
@@ -13,7 +13,7 @@ import snownee.jade.api.theme.IThemeHelper;
 
 import velrondevs.botania.api.block_entity.FunctionalFlowerBlockEntity;
 
-public enum FunctionalFlowerProvider implements IBlockComponentProvider, IServerDataProvider<BlockAccessor> {
+public enum FunctionalFlowerProvider implements IBlockComponentProvider {
 	INSTANCE;
 
 	private static final String REDSTONE = "redstone";
@@ -28,7 +28,7 @@ public enum FunctionalFlowerProvider implements IBlockComponentProvider, IServer
 		int max = JadeManaHelper.getInt(data, JadeManaHelper.MAX, flower.getMaxMana());
 		JadeManaHelper.addManaBar(tooltip, config, mana, max, JadeManaHelper.manaColor(config, flower.getColor()));
 
-		boolean redstone = data.contains(REDSTONE) ? data.getBoolean(REDSTONE) : flower.acceptsRedstone() && flower.redstoneSignal > 0;
+		boolean redstone = data.contains(REDSTONE) ? data.getBooleanOr(REDSTONE, false) : flower.acceptsRedstone() && flower.redstoneSignal > 0;
 		if (redstone) {
 			tooltip.add(IThemeHelper.get().warning(Component.translatable("botania.jade.redstone_disabled")));
 		}
@@ -41,17 +41,7 @@ public enum FunctionalFlowerProvider implements IBlockComponentProvider, IServer
 	}
 
 	@Override
-	public void appendServerData(CompoundTag data, BlockAccessor accessor) {
-		if (accessor.getBlockEntity() instanceof FunctionalFlowerBlockEntity flower) {
-			data.putInt(JadeManaHelper.MANA, flower.getMana());
-			data.putInt(JadeManaHelper.MAX, flower.getMaxMana());
-			data.putBoolean(REDSTONE, flower.acceptsRedstone() && flower.redstoneSignal > 0);
-			JadeManaHelper.putBinding(data, accessor, accessor.getLevel(), flower.getBinding());
-		}
-	}
-
-	@Override
-	public ResourceLocation getUid() {
+	public Identifier getUid() {
 		return BotaniaJadeIds.FUNCTIONAL_FLOWER;
 	}
 }

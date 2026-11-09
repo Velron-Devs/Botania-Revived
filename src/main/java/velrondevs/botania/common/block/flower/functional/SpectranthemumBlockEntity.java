@@ -43,7 +43,7 @@ public class SpectranthemumBlockEntity extends FunctionalFlowerBlockEntity {
 	public void tickFlower() {
 		super.tickFlower();
 
-		if (!getLevel().isClientSide && redstoneSignal == 0 && getLevel().hasChunkAt(bindPos)) {
+		if (!getLevel().isClientSide() && redstoneSignal == 0 && getLevel().hasChunkAt(bindPos)) {
 			BlockPos pos = getEffectivePos();
 
 			boolean did = false;
@@ -100,9 +100,9 @@ public class SpectranthemumBlockEntity extends FunctionalFlowerBlockEntity {
 	public void readFromPacketNBT(CompoundTag cmp, HolderLookup.Provider registries) {
 		super.readFromPacketNBT(cmp, registries);
 		bindPos = new BlockPos(
-				cmp.getInt(TAG_BIND_X),
-				cmp.getInt(TAG_BIND_Y),
-				cmp.getInt(TAG_BIND_Z)
+				cmp.getIntOr(TAG_BIND_X, 0),
+				cmp.getIntOr(TAG_BIND_Y, 0),
+				cmp.getIntOr(TAG_BIND_Z, 0)
 		);
 	}
 

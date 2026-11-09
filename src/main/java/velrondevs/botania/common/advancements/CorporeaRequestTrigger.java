@@ -4,9 +4,9 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.advancements.Criterion;
-import net.minecraft.advancements.critereon.*;
+import net.minecraft.advancements.criterion.*;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 
@@ -17,7 +17,7 @@ import java.util.Optional;
 import static velrondevs.botania.common.lib.ResourceLocationHelper.prefix;
 
 public class CorporeaRequestTrigger extends SimpleCriterionTrigger<CorporeaRequestTrigger.Instance> {
-	public static final ResourceLocation ID = prefix("corporea_index_request");
+	public static final Identifier ID = prefix("corporea_index_request");
 	public static final CorporeaRequestTrigger INSTANCE = new CorporeaRequestTrigger();
 
 	private CorporeaRequestTrigger() {}

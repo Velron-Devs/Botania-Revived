@@ -23,7 +23,7 @@ public class SparkTinkererBlockEntity extends ExposedSimpleInventoryBlockEntity 
 	}
 
 	public void doSwap() {
-		if (level.isClientSide) {
+		if (level.isClientSide()) {
 			return;
 		}
 
@@ -45,7 +45,7 @@ public class SparkTinkererBlockEntity extends ExposedSimpleInventoryBlockEntity 
 		}
 
 		if (attachables.size() > 0) {
-			SparkAttachable attach = attachables.get(level.random.nextInt(attachables.size()));
+			SparkAttachable attach = attachables.get(level.getRandom().nextInt(attachables.size()));
 			ManaSpark spark = attach.getAttachedSpark();
 			SparkUpgradeType upg = spark.getUpgrade();
 			ItemStack sparkStack = SparkAugmentItem.getByType(upg);
@@ -57,7 +57,7 @@ public class SparkTinkererBlockEntity extends ExposedSimpleInventoryBlockEntity 
 
 	@Override
 	protected SimpleContainer createItemHandler() {
-		return new SimpleContainer(1) {
+		return new Inventory(1) {
 			@Override
 			public int getMaxStackSize() {
 				return 1;
@@ -73,7 +73,7 @@ public class SparkTinkererBlockEntity extends ExposedSimpleInventoryBlockEntity 
 	@Override
 	public void setChanged() {
 		super.setChanged();
-		if (level != null && !level.isClientSide) {
+		if (level != null && !level.isClientSide()) {
 			VanillaPacketDispatcher.dispatchTEToNearbyPlayers(this);
 		}
 	}

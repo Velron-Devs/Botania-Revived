@@ -3,12 +3,8 @@
   "category": "misc",
   "group": "botania:metamorphic_apothecary",
   "key": {
-    "C": {
-      "item": "botania:metamorphic_mesa_cobblestone"
-    },
-    "P": {
-      "tag": "botania:petals"
-    }
+    "C": "botania:metamorphic_mesa_cobblestone",
+    "P": "#botania:petals"
   },
   "pattern": [
     "CPC",
@@ -16,7 +12,6 @@
     "CCC"
   ],
   "result": {
-    "count": 1,
     "id": "botania:apothecary_mesa"
   }
 }

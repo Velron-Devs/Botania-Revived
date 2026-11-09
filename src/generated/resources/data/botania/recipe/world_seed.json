@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "D": {
-      "tag": "botania:dragonstone_gems"
-    },
-    "G": {
-      "item": "minecraft:grass_block"
-    },
-    "S": {
-      "item": "minecraft:wheat_seeds"
-    }
+    "D": "#botania:dragonstone_gems",
+    "G": "minecraft:grass_block",
+    "S": "minecraft:wheat_seeds"
   },
   "pattern": [
     "G",

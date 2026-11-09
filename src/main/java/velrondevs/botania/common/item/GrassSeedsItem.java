@@ -62,7 +62,7 @@ public class GrassSeedsItem extends Item implements FloatingFlowerVariant {
 		BlockState state = world.getBlockState(pos);
 
 		if (state.is(BotaniaTags.Blocks.PASTURE_SEED_REPLACEABLE) && state != stateForType(type)) {
-			if (!world.isClientSide) {
+			if (!world.isClientSide()) {
 				BlockSwapper swapper = addBlockSwapper(world, pos, type);
 				world.setBlockAndUpdate(pos, swapper.stateToSet);
 				stack.shrink(1);
@@ -71,7 +71,7 @@ public class GrassSeedsItem extends Item implements FloatingFlowerVariant {
 				spawnParticles(world, pos, extractR(color), extractG(color), extractB(color));
 			}
 
-			return InteractionResult.sidedSuccess(world.isClientSide());
+			return InteractionResult.SUCCESS;
 		}
 
 		return InteractionResult.PASS;
@@ -205,8 +205,8 @@ public class GrassSeedsItem extends Item implements FloatingFlowerVariant {
 
 				return false;
 			}
-			int lightLevel = LightEngine.getLightBlockInto(world, state, pos, aboveState, abovePos, Direction.UP, aboveState.getLightBlock(world, abovePos));
-			return lightLevel < world.getMaxLightLevel();
+			int lightLevel = LightEngine.getLightBlockInto(state, aboveState, Direction.UP, aboveState.getLightDampening());
+			return lightLevel < 15;
 		}
 
 		private boolean canPropagate(BlockPos pos) {

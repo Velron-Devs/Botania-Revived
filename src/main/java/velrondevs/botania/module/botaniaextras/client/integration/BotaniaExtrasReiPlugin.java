@@ -8,10 +8,10 @@ import me.shedaniel.rei.forge.REIPluginClient;
 import me.shedaniel.rei.api.common.util.EntryIngredients;
 import me.shedaniel.rei.api.common.util.EntryStacks;
 
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
 import velrondevs.botania.client.integration.rei.BotaniaReiDisplay;
+import velrondevs.botania.registry.BotaniaRecipeTypes;
 import velrondevs.botania.module.BotaniaModules;
 import velrondevs.botania.module.botaniaextras.BotaniaExtrasBlocks;
 import velrondevs.botania.module.botaniaextras.BotaniaExtrasModule;
@@ -51,17 +51,16 @@ public class BotaniaExtrasReiPlugin implements REIClientPlugin {
 		if (!enabled()) {
 			return;
 		}
-		List<RecipeHolder<TreeSuffusionRecipe>> holders = registry.getRecipeManager()
-				.getAllRecipesFor(BotaniaExtrasRecipeTypes.TREE_SUFFUSION_TYPE).stream()
-				.sorted(Comparator.comparing(RecipeHolder::id))
+		List<RecipeHolder<TreeSuffusionRecipe>> holders = BotaniaRecipeTypes.getAllRecipesFor(null, BotaniaExtrasRecipeTypes.TREE_SUFFUSION_TYPE).stream()
+				.sorted(Comparator.comparing(holder -> holder.id().identifier()))
 				.toList();
 		for (RecipeHolder<TreeSuffusionRecipe> holder : holders) {
 			TreeSuffusionRecipe recipe = holder.value();
 			registry.add(new BotaniaReiDisplay(TreeSuffusionReiCategory.ID,
 					EntryIngredients.ofIngredients(recipe.getIngredients()),
 					List.of(EntryIngredients.of(BotaniaExtrasWoods.sapling)),
-					List.<EntryIngredient>of(EntryIngredients.of(recipe.getResultItem(RegistryAccess.EMPTY))),
-					holder.id(), recipe.getMana(), null));
+					List.<EntryIngredient>of(EntryIngredients.of(recipe.getResultItem())),
+					holder.id().identifier(), recipe.getMana(), null));
 		}
 	}
 }

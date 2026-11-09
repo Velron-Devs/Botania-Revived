@@ -3,18 +3,11 @@
   "category": "misc",
   "group": "botania:shiny_flower",
   "ingredients": [
-    {
-      "item": "minecraft:glowstone_dust"
-    },
-    {
-      "item": "minecraft:glowstone_dust"
-    },
-    {
-      "item": "botania:yellow_mystical_flower"
-    }
+    "minecraft:glowstone_dust",
+    "minecraft:glowstone_dust",
+    "botania:yellow_mystical_flower"
   ],
   "result": {
-    "count": 1,
     "id": "botania:yellow_shiny_flower"
   }
 }

@@ -1,15 +1,16 @@
 package velrondevs.botania.common.item.rod;
 
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemUtils;
-import net.minecraft.world.item.UseAnim;
+import net.minecraft.world.item.ItemUseAnimation;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.Level;
@@ -42,8 +43,8 @@ public class MoltenCoreRodItem extends Item {
 
 	@NotNull
 	@Override
-	public UseAnim getUseAnimation(ItemStack stack) {
-		return UseAnim.BOW;
+	public ItemUseAnimation getUseAnimation(ItemStack stack) {
+		return ItemUseAnimation.BOW;
 	}
 
 	@Override
@@ -53,7 +54,7 @@ public class MoltenCoreRodItem extends Item {
 
 	@NotNull
 	@Override
-	public InteractionResultHolder<ItemStack> use(Level world, Player player, @NotNull InteractionHand hand) {
+	public InteractionResult use(Level world, Player player, @NotNull InteractionHand hand) {
 		return ItemUtils.startUsingInstantly(world, player, hand);
 	}
 
@@ -66,14 +67,18 @@ public class MoltenCoreRodItem extends Item {
 			return;
 		}
 
+		if (!(world instanceof ServerLevel serverLevel)) {
+			return;
+		}
+
 		BlockHitResult pos = ToolCommons.raytraceFromEntity(p, 32, false);
 
 		if (pos.getType() == HitResult.Type.BLOCK) {
 			BlockState state = world.getBlockState(pos.getBlockPos());
 
 			SingleRecipeInput dummyInv = new SingleRecipeInput(new ItemStack(state.getBlock()));
-			world.getRecipeManager().getRecipeFor(RecipeType.SMELTING, dummyInv, p.level())
-					.map(r -> r.value().assemble(dummyInv, world.registryAccess()))
+			serverLevel.recipeAccess().getRecipeFor(RecipeType.SMELTING, dummyInv, serverLevel)
+					.map(r -> r.value().assemble(dummyInv))
 					.filter(r -> !r.isEmpty() && r.getItem() instanceof BlockItem)
 					.ifPresent(result -> {
 						boolean decremented = false;
@@ -85,7 +90,7 @@ public class MoltenCoreRodItem extends Item {
 								data.progress--;
 								decremented = true;
 								if (data.progress <= 0) {
-									if (!world.isClientSide) {
+									if (!world.isClientSide()) {
 										world.setBlockAndUpdate(pos.getBlockPos(), Block.byItem(result.getItem()).defaultBlockState());
 										world.playSound(null, p.getX(), p.getY(), p.getZ(), BotaniaSounds.smeltRod, SoundSource.PLAYERS, 1F, 1F);
 										world.playSound(null, p.getX(), p.getY(), p.getZ(), BotaniaSounds.smeltRod2, SoundSource.PLAYERS, 1F, 1F);
@@ -100,7 +105,7 @@ public class MoltenCoreRodItem extends Item {
 										double x = pos.getBlockPos().getX() + Math.random();
 										double y = pos.getBlockPos().getY() + Math.random();
 										double z = pos.getBlockPos().getZ() + Math.random();
-										world.addParticle(data1, x, y, z, 0, (float) -Math.random() / 10F, 0);
+										serverLevel.sendParticles(data1, x, y, z, 0, 0, (float) -Math.random() / 10F, 0, 1);
 									}
 								}
 							}
@@ -114,7 +119,7 @@ public class MoltenCoreRodItem extends Item {
 								double y = pos.getBlockPos().getY() + Math.random();
 								double z = pos.getBlockPos().getZ() + Math.random();
 								WispParticleData data = WispParticleData.wisp(0.5F, 1F, 0.2F, 0.2F, 1);
-								world.addParticle(data, x, y, z, 0, (float) Math.random() / 10F, 0);
+								serverLevel.sendParticles(data, x, y, z, 0, 0, (float) Math.random() / 10F, 0, 1);
 							}
 							if (time % 10 == 0) {
 								world.playSound(null, p.getX(), p.getY(), p.getZ(), BotaniaSounds.smeltRodSimmer, SoundSource.PLAYERS, (float) Math.random() / 2F + 0.5F, 1F);

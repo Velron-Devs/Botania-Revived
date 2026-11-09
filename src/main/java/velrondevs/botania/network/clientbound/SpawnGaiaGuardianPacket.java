@@ -5,7 +5,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 
 import velrondevs.botania.common.entity.GaiaGuardianEntity;
@@ -18,7 +18,7 @@ import static velrondevs.botania.common.lib.ResourceLocationHelper.prefix;
 public record SpawnGaiaGuardianPacket(ClientboundAddEntityPacket inner, int playerCount, boolean hardMode,
 		BlockPos source, UUID bossInfoId) implements BotaniaPacket {
 
-	public static final ResourceLocation ID = prefix("spg");
+	public static final Identifier ID = prefix("spg");
 	public static final Type<SpawnGaiaGuardianPacket> TYPE = new Type<>(ID);
 	public static final StreamCodec<RegistryFriendlyByteBuf, SpawnGaiaGuardianPacket> STREAM_CODEC = StreamCodec.ofMember(SpawnGaiaGuardianPacket::encode, SpawnGaiaGuardianPacket::decode);
 

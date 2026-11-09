@@ -1,0 +1,27 @@
+{
+  "model": {
+    "type": "minecraft:condition",
+    "kind": "pool_full",
+    "on_false": {
+      "type": "minecraft:model",
+      "model": "botania:block/creative_pool",
+      "tints": [
+        {
+          "type": "botania:tint",
+          "kind": "block"
+        }
+      ]
+    },
+    "on_true": {
+      "type": "minecraft:model",
+      "model": "botania:block/creative_pool_full",
+      "tints": [
+        {
+          "type": "botania:tint",
+          "kind": "block"
+        }
+      ]
+    },
+    "property": "botania:flag"
+  }
+}

@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "B": {
-      "item": "botania:corporea_brick"
-    }
+    "B": "botania:corporea_brick"
   },
   "pattern": [
     "BBB",

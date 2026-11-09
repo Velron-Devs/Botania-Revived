@@ -5,12 +5,9 @@
     "block": "botania:alchemy_catalyst"
   },
   "group": "botania:fish_cycle",
-  "input": {
-    "item": "minecraft:pufferfish"
-  },
+  "input": "minecraft:pufferfish",
   "mana": 200,
   "output": {
-    "count": 1,
     "id": "minecraft:cod"
   }
 }

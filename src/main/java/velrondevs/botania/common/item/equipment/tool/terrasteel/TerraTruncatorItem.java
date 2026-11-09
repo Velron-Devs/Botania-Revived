@@ -84,7 +84,7 @@ public class TerraTruncatorItem extends ManasteelAxeItem implements SequentialBr
 
 	private static void addBlockSwapper(Level world, Player player, ItemStack stack, BlockPos origCoords) {
 
-		if (world.isClientSide) {
+		if (world.isClientSide()) {
 			return;
 		}
 

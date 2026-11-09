@@ -34,7 +34,7 @@ public class AsgardandelionBlockEntity extends GeneratingFlowerBlockEntity {
 
 	@Override
 	public void tickFlower() {
-		if (!getLevel().isClientSide && isEnabled()) {
+		if (!getLevel().isClientSide() && isEnabled()) {
 			int missing = getMaxMana() - getMana();
 			if (missing > 0) {
 				addMana(Math.min(manaPerTick(), missing));

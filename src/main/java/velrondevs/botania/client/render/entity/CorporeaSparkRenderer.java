@@ -1,9 +1,11 @@
 package velrondevs.botania.client.render.entity;
 
+import velrondevs.botania.client.core.helper.RenderHelper;
+
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.world.inventory.InventoryMenu;
 
 import velrondevs.botania.common.entity.CorporeaSparkEntity;
 
@@ -18,10 +20,9 @@ public class CorporeaSparkRenderer extends BaseSparkRenderer<CorporeaSparkEntity
 
 	public CorporeaSparkRenderer(EntityRendererProvider.Context ctx) {
 		super(ctx);
-		var atlas = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS);
-		this.corporeaWorldSprite = Objects.requireNonNull(atlas.apply(prefix("item/corporea_spark")));
-		this.corporeaMasterWorldSprite = Objects.requireNonNull(atlas.apply(prefix("item/corporea_spark_master")));
-		this.corporeaCreativeWorldSprite = Objects.requireNonNull(atlas.apply(prefix("item/corporea_spark_creative")));
+		this.corporeaWorldSprite = Objects.requireNonNull(RenderHelper.itemSprite(prefix("item/corporea_spark")));
+		this.corporeaMasterWorldSprite = Objects.requireNonNull(RenderHelper.itemSprite(prefix("item/corporea_spark_master")));
+		this.corporeaCreativeWorldSprite = Objects.requireNonNull(RenderHelper.itemSprite(prefix("item/corporea_spark_creative")));
 	}
 
 	@Override

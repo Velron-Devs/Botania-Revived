@@ -1,5 +1,6 @@
 package velrondevs.botania.compat.sophisticated;
 
+import net.minecraft.world.item.Item;
 import net.p3pp3rf1y.sophisticatedcore.api.IStorageWrapper;
 import net.p3pp3rf1y.sophisticatedcore.upgrades.IUpgradeItem;
 import net.p3pp3rf1y.sophisticatedcore.upgrades.UpgradeItemBase;
@@ -15,7 +16,7 @@ public class ManaLinkUpgradeItem extends UpgradeItemBase<ManaLinkUpgradeItem.Wra
 	public static final UpgradeType<Wrapper> TYPE = new UpgradeType<>(Wrapper::new);
 
 	public ManaLinkUpgradeItem() {
-		super(UpgradeLimits.of(SophisticatedConfig::linkMaxPerStorage));
+		super(UpgradeLimits.of(SophisticatedConfig::linkMaxPerStorage), new Item.Properties());
 	}
 
 	@Override
@@ -26,6 +27,15 @@ public class ManaLinkUpgradeItem extends UpgradeItemBase<ManaLinkUpgradeItem.Wra
 	@Override
 	public List<IUpgradeItem.UpgradeConflictDefinition> getUpgradeConflicts() {
 		return List.of();
+	}
+
+	public static boolean isActive(IStorageWrapper storage) {
+		for (Wrapper link : storage.getUpgradeHandler().getTypeWrappers(TYPE)) {
+			if (link.isEnabled()) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public static class Wrapper extends UpgradeWrapperBase<Wrapper, ManaLinkUpgradeItem> {

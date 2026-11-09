@@ -5,10 +5,8 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 
-import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderBuffers;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
@@ -37,14 +35,10 @@ public class BoltRenderer {
 
 	private final List<BoltEmitter> boltEmitters = new LinkedList<>();
 
-	public static void onWorldRenderLast(Camera camera, float partialTicks, PoseStack ps, RenderBuffers buffers) {
+	public static void onWorldRenderLast(Vec3 camVec, float partialTicks, PoseStack ps, MultiBufferSource buffers) {
 		ps.pushPose();
-
-		Vec3 camVec = camera.getPosition();
 		ps.translate(-camVec.x, -camVec.y, -camVec.z);
-		var bufferSource = buffers.bufferSource();
-		BoltRenderer.INSTANCE.render(partialTicks, ps, bufferSource);
-		bufferSource.endBatch(RenderHelper.LIGHTNING);
+		BoltRenderer.INSTANCE.render(partialTicks, ps, buffers);
 		ps.popPose();
 	}
 
@@ -67,7 +61,7 @@ public class BoltRenderer {
 	}
 
 	public void add(Level level, BoltParticleOptions options, float partialTicks) {
-		if (!level.isClientSide) {
+		if (!level.isClientSide()) {
 			return;
 		}
 		var emitter = new BoltEmitter(options);

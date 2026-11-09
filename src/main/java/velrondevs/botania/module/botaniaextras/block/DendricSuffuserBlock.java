@@ -1,5 +1,7 @@
 package velrondevs.botania.module.botaniaextras.block;
 
+import net.minecraft.core.Direction;
+
 import com.mojang.serialization.MapCodec;
 
 import net.minecraft.core.BlockPos;
@@ -52,7 +54,7 @@ public class DendricSuffuserBlock extends BaseEntityBlock {
 	}
 
 	@Override
-	public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state) {
+	public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state, boolean includeData) {
 		return new ItemStack(planksFor(state));
 	}
 
@@ -75,7 +77,7 @@ public class DendricSuffuserBlock extends BaseEntityBlock {
 		if (index < 0 || !DendricSuffuserBlockEntity.canSuffuserExist(level, pos)) {
 			return false;
 		}
-		if (!level.isClientSide) {
+		if (!level.isClientSide()) {
 			level.setBlockAndUpdate(pos, BotaniaExtrasBlocks.dendricSuffuser.defaultBlockState().setValue(COLOR, index));
 			level.playSound(null, pos, BotaniaSounds.enchanterForm, SoundSource.BLOCKS, 1F, 1F);
 		} else {
@@ -97,7 +99,7 @@ public class DendricSuffuserBlock extends BaseEntityBlock {
 	}
 
 	@Override
-	protected int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos) {
+	protected int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos, Direction direction) {
 		return level.getBlockEntity(pos) instanceof DendricSuffuserBlockEntity suffuser ? suffuser.getSignal() : 0;
 	}
 

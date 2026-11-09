@@ -1,25 +1,14 @@
 {
   "type": "botania:runic_altar",
   "ingredients": [
-    {
-      "item": "botania:rune_spring"
-    },
-    {
-      "item": "botania:rune_water"
-    },
-    {
-      "item": "botania:pixie_dust"
-    },
-    {
-      "item": "botania:dreamwood_twig"
-    },
-    {
-      "item": "botania:mana_diamond_block"
-    }
+    "botania:rune_spring",
+    "botania:rune_water",
+    "botania:pixie_dust",
+    "botania:dreamwood_twig",
+    "botania:mana_diamond_block"
   ],
   "mana": 20000,
   "output": {
-    "count": 1,
     "id": "botania:rune_deception"
   }
 }

@@ -3,9 +3,7 @@
   "category": "misc",
   "group": "botania:petal",
   "ingredients": [
-    {
-      "item": "botania:orange_mystical_flower"
-    }
+    "botania:orange_mystical_flower"
   ],
   "result": {
     "count": 2,

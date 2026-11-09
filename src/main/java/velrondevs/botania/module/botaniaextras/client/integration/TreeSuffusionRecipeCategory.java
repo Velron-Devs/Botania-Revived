@@ -1,6 +1,5 @@
 package velrondevs.botania.module.botaniaextras.client.integration;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
@@ -11,8 +10,7 @@ import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.core.RegistryAccess;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
@@ -70,16 +68,14 @@ public class TreeSuffusionRecipeCategory implements IRecipeCategory<TreeSuffusio
 	}
 
 	@Override
-	public void draw(TreeSuffusionRecipe recipe, @NotNull IRecipeSlotsView slotsView, @NotNull GuiGraphics gui, double mouseX, double mouseY) {
-		RenderSystem.enableBlend();
+	public void draw(TreeSuffusionRecipe recipe, @NotNull IRecipeSlotsView slotsView, @NotNull GuiGraphicsExtractor gui, double mouseX, double mouseY) {
 		overlay.draw(gui, 0, 4);
 		HUDHandler.renderManaBar(gui, 6, 98, 0x0000FF, 0.75F, recipe.getMana(), ManaPoolBlockEntity.MAX_MANA / 10);
-		RenderSystem.disableBlend();
 	}
 
 	@Override
 	public void setRecipe(@NotNull IRecipeLayoutBuilder builder, @NotNull TreeSuffusionRecipe recipe, @NotNull IFocusGroup focusGroup) {
 		PetalApothecaryRecipeCategory.setRecipeLayout(builder, recipe.getIngredients(), BotaniaExtrasWoods.sapling,
-				recipe.getResultItem(RegistryAccess.EMPTY));
+				recipe.getResultItem());
 	}
 }

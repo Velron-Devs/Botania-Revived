@@ -1,5 +1,9 @@
 package velrondevs.botania.module.botaniaextras.item;
 
+import java.util.function.Consumer;
+
+import net.minecraft.world.item.component.TooltipDisplay;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -70,14 +74,14 @@ public class FrozenStarItem extends BlockItem implements CustomCreativeTabConten
 	@Override
 	protected boolean updateCustomBlockEntityTag(BlockPos pos, Level level, @Nullable Player player, ItemStack stack, BlockState state) {
 		boolean ret = super.updateCustomBlockEntityTag(pos, level, player, stack, state);
-		if (!level.isClientSide && level.getBlockEntity(pos) instanceof FrozenStarBlockEntity star) {
+		if (!level.isClientSide() && level.getBlockEntity(pos) instanceof FrozenStarBlockEntity star) {
 			star.setStar(getColor(stack), getSize(stack));
 		}
 		return ret;
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
+	public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltip, TooltipFlag flag) {
 		int color = getColor(stack);
 		Component name = null;
 		if (color == RAINBOW) {
@@ -93,10 +97,10 @@ public class FrozenStarItem extends BlockItem implements CustomCreativeTabConten
 		if (name == null) {
 			name = Component.literal("#" + String.format(Locale.ROOT, "%06X", color & 0xFFFFFF));
 		}
-		tooltip.add(name.copy().withStyle(ChatFormatting.GRAY));
+		tooltip.accept(name.copy().withStyle(ChatFormatting.GRAY));
 		float size = getSize(stack);
 		if (size != DEFAULT_SIZE) {
-			tooltip.add(Component.translatable("botaniamisc.botania_extras.customSize", String.format(Locale.ROOT, "%.1f", size / 0.1F)).withStyle(ChatFormatting.GRAY));
+			tooltip.accept(Component.translatable("botaniamisc.botania_extras.customSize", String.format(Locale.ROOT, "%.1f", size / 0.1F)).withStyle(ChatFormatting.GRAY));
 		}
 	}
 

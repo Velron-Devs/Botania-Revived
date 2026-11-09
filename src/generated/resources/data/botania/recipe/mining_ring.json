@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "E": {
-      "item": "botania:rune_earth"
-    },
-    "M": {
-      "tag": "botania:manasteel_ingots"
-    },
-    "P": {
-      "item": "minecraft:golden_pickaxe"
-    }
+    "E": "botania:rune_earth",
+    "M": "#botania:manasteel_ingots",
+    "P": "minecraft:golden_pickaxe"
   },
   "pattern": [
     "EMP",
@@ -18,7 +12,6 @@
     " M "
   ],
   "result": {
-    "count": 1,
     "id": "botania:mining_ring"
   }
 }

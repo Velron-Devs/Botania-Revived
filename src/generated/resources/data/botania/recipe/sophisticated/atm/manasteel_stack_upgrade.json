@@ -34,12 +34,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "C": {
-      "tag": "botania:sophisticated_unobtainium_stack_upgrades"
-    },
-    "I": {
-      "tag": "botania:manasteel_ingots"
-    }
+    "C": "#botania:sophisticated_unobtainium_stack_upgrades",
+    "I": "#botania:manasteel_ingots"
   },
   "pattern": [
     "III",

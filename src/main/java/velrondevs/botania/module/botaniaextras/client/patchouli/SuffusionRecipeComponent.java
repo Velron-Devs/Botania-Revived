@@ -1,11 +1,13 @@
 package velrondevs.botania.module.botaniaextras.client.patchouli;
 
+import velrondevs.botania.common.block.RecipeLookup;
+
 import com.google.common.collect.ImmutableList;
 import com.google.gson.annotations.SerializedName;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
@@ -27,9 +29,9 @@ public class SuffusionRecipeComponent extends RotatingItemListComponentBase {
 		if (level == null) {
 			return ImmutableList.of();
 		}
-		ResourceLocation id = ResourceLocation.parse(recipeName);
-		for (RecipeHolder<TreeSuffusionRecipe> holder : level.getRecipeManager().getAllRecipesFor(BotaniaExtrasRecipeTypes.TREE_SUFFUSION_TYPE)) {
-			if (holder.id().equals(id)) {
+		Identifier id = Identifier.parse(recipeName);
+		for (RecipeHolder<TreeSuffusionRecipe> holder : RecipeLookup.getAllRecipesFor(level, BotaniaExtrasRecipeTypes.TREE_SUFFUSION_TYPE)) {
+			if (holder.id().identifier().equals(id)) {
 				return holder.value().getIngredients();
 			}
 		}

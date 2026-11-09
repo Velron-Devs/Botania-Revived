@@ -1,5 +1,11 @@
 package velrondevs.botania.common.item;
 
+import com.google.gson.JsonParser;
+import com.mojang.serialization.JsonOps;
+import net.minecraft.network.chat.ComponentSerialization;
+import java.util.function.Consumer;
+import net.minecraft.world.item.component.TooltipDisplay;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
@@ -7,7 +13,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
@@ -50,22 +55,22 @@ public class LexicaBotaniaItem extends Item implements ItemWithBannerPattern, Cu
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext worldIn, List<Component> tooltip, TooltipFlag flagIn) {
-		tooltip.add(getEdition().copy().withStyle(ChatFormatting.GRAY));
+	public void appendHoverText(ItemStack stack, TooltipContext worldIn, TooltipDisplay tooltipDisplay, Consumer<Component> tooltip, TooltipFlag flagIn) {
+		tooltip.accept(getEdition().copy().withStyle(ChatFormatting.GRAY));
 	}
 
 	@NotNull
 	@Override
-	public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, InteractionHand handIn) {
+	public InteractionResult use(Level worldIn, Player playerIn, InteractionHand handIn) {
 		ItemStack stack = playerIn.getItemInHand(handIn);
 
 		if (playerIn instanceof ServerPlayer player) {
-			UseItemSuccessTrigger.INSTANCE.trigger(player, stack, player.serverLevel(), player.getX(), player.getY(), player.getZ());
+			UseItemSuccessTrigger.INSTANCE.trigger(player, stack, player.level(), player.getX(), player.getY(), player.getZ());
 			PatchouliAPI.get().openBookGUI(player, BuiltInRegistries.ITEM.getKey(this));
 			playerIn.playSound(BotaniaSounds.lexiconOpen, 1F, (float) (0.7 + Math.random() * 0.4));
 		}
 
-		return InteractionResultHolder.sidedSuccess(stack, worldIn.isClientSide());
+		return InteractionResult.SUCCESS;
 	}
 
 	public static Component getEdition() {
@@ -82,7 +87,12 @@ public class LexicaBotaniaItem extends Item implements ItemWithBannerPattern, Cu
 		String akashicTomeNBT = "akashictome:displayName";
 		if (ItemNBTHelper.verifyExistance(stack, akashicTomeNBT)) {
 			CompoundTag nameTextComponent = ItemNBTHelper.getCompound(stack, akashicTomeNBT, false);
-			title = Component.Serializer.fromJson(nameTextComponent.getString("text"), ItemStackSerialization.registries());
+			Component fallback = title;
+			try {
+				title = ComponentSerialization.CODEC.parse(ItemStackSerialization.registries().createSerializationContext(JsonOps.INSTANCE), JsonParser.parseString(nameTextComponent.getStringOr("text", ""))).result().orElse(fallback);
+			} catch (RuntimeException e) {
+				title = fallback;
+			}
 		}
 
 		return title;

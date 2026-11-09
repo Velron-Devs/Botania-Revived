@@ -12,7 +12,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -27,12 +27,12 @@ import velrondevs.botania.api.recipe.StateIngredient;
 import java.util.*;
 
 public class StateIngredientHelper {
-	private static final Codec<Block> LENIENT_BLOCK_CODEC = ResourceLocation.CODEC.xmap(BuiltInRegistries.BLOCK::get, BuiltInRegistries.BLOCK::getKey);
+	private static final Codec<Block> LENIENT_BLOCK_CODEC = Identifier.CODEC.xmap(BuiltInRegistries.BLOCK::getValue, BuiltInRegistries.BLOCK::getKey);
 
-	private record StateData(ResourceLocation name, Map<String, String> properties) {}
+	private record StateData(Identifier name, Map<String, String> properties) {}
 
 	private static final MapCodec<StateData> STATE_DATA_CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-			ResourceLocation.CODEC.fieldOf("name").forGetter(StateData::name),
+			Identifier.CODEC.fieldOf("name").forGetter(StateData::name),
 			Codec.unboundedMap(Codec.STRING, Codec.STRING).optionalFieldOf("properties", Map.of()).forGetter(StateData::properties)
 	).apply(instance, StateData::new));
 
@@ -73,7 +73,7 @@ public class StateIngredientHelper {
 
 	private static DataResult<MapCodec<? extends StateIngredient>> getCodec(String type, Codec<StateIngredient> self) {
 		return switch (type) {
-			case "tag" -> DataResult.success(ResourceLocation.CODEC.fieldOf("tag")
+			case "tag" -> DataResult.success(Identifier.CODEC.fieldOf("tag")
 					.xmap(TagStateIngredient::new, TagStateIngredient::getTagId));
 			case "block" -> DataResult.success(LENIENT_BLOCK_CODEC.fieldOf("block")
 					.xmap(BlockStateIngredient::new, BlockStateIngredient::getBlock));
@@ -82,7 +82,7 @@ public class StateIngredientHelper {
 			case "blocks" -> DataResult.success(LENIENT_BLOCK_CODEC.listOf().fieldOf("blocks")
 					.xmap(BlocksStateIngredient::new, ingredient -> ingredient.blocks.asList()));
 			case "tag_excluding" -> DataResult.success(RecordCodecBuilder.<TagExcludingStateIngredient>mapCodec(instance -> instance.group(
-					ResourceLocation.CODEC.fieldOf("tag").forGetter(TagStateIngredient::getTagId),
+					Identifier.CODEC.fieldOf("tag").forGetter(TagStateIngredient::getTagId),
 					self.listOf().fieldOf("exclude").forGetter(TagExcludingStateIngredient::getExcludes)
 			).apply(instance, TagExcludingStateIngredient::new)));
 			case "compound" -> DataResult.success(self.listOf().fieldOf("ingredients")
@@ -113,9 +113,7 @@ public class StateIngredientHelper {
 
 	private static StateData fromState(BlockState state) {
 		Map<String, String> properties = new TreeMap<>();
-		for (Map.Entry<Property<?>, Comparable<?>> entry : state.getValues().entrySet()) {
-			properties.put(entry.getKey().getName(), getValueName(entry.getKey(), entry.getValue()));
-		}
+		state.getValues().forEach(entry -> properties.put(entry.property().getName(), getValueName(entry.property(), entry.value())));
 		return new StateData(BuiltInRegistries.BLOCK.getKey(state.getBlock()), properties);
 	}
 
@@ -136,7 +134,7 @@ public class StateIngredientHelper {
 		return of(tag.location());
 	}
 
-	public static StateIngredient of(ResourceLocation id) {
+	public static StateIngredient of(Identifier id) {
 		return new TagStateIngredient(id);
 	}
 

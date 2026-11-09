@@ -1,6 +1,6 @@
 package velrondevs.botania.api.item;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 
 import org.jetbrains.annotations.Nullable;
@@ -17,7 +17,7 @@ public interface Relic {
 	void tickBinding(Player player);
 
 	@Nullable
-	default ResourceLocation getAdvancement() {
+	default Identifier getAdvancement() {
 		return null;
 	}
 

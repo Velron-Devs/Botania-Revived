@@ -1,5 +1,6 @@
 package velrondevs.botania.common.item.equipment.armor.elementium;
 
+import net.minecraft.world.item.equipment.ArmorType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.item.ItemStack;
@@ -12,7 +13,7 @@ import velrondevs.botania.common.handler.PixieHandler;
 public class ElementiumBootsItem extends ElementiumArmorItem {
 
 	public ElementiumBootsItem(Properties props) {
-		super(Type.BOOTS, props);
+		super(ArmorType.BOOTS, props);
 	}
 
 	@NotNull

@@ -1,6 +1,6 @@
 package velrondevs.botania.compat.sophisticated;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 
 import velrondevs.botania.common.lib.LibMisc;
@@ -31,7 +31,7 @@ public final class SophisticatedItems {
 
 	private SophisticatedItems() {}
 
-	static void register(BiConsumer<Item, ResourceLocation> consumer) {
+	static void register(BiConsumer<Item, Identifier> consumer) {
 		consumer.accept(MANASTEEL_STACK_UPGRADE, id(MANASTEEL_STACK));
 		consumer.accept(ELEMENTIUM_STACK_UPGRADE, id(ELEMENTIUM_STACK));
 		consumer.accept(TERRASTEEL_STACK_UPGRADE, id(TERRASTEEL_STACK));
@@ -46,7 +46,7 @@ public final class SophisticatedItems {
 		consumer.accept(BREWERY_UPGRADE, id(BREWERY));
 	}
 
-	static ResourceLocation id(String path) {
-		return ResourceLocation.fromNamespaceAndPath(LibMisc.MOD_ID, path);
+	static Identifier id(String path) {
+		return Identifier.fromNamespaceAndPath(LibMisc.MOD_ID, path);
 	}
 }

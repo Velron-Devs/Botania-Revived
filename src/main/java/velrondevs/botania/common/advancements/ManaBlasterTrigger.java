@@ -4,8 +4,10 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.advancements.Criterion;
-import net.minecraft.advancements.critereon.*;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.advancements.criterion.*;
+import net.minecraft.world.level.storage.loot.Validatable;
+import net.minecraft.world.level.storage.loot.ValidationContextSource;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 
@@ -16,7 +18,7 @@ import java.util.Optional;
 import static velrondevs.botania.common.lib.ResourceLocationHelper.prefix;
 
 public class ManaBlasterTrigger extends SimpleCriterionTrigger<ManaBlasterTrigger.Instance> {
-	public static final ResourceLocation ID = prefix("fire_mana_blaster");
+	public static final Identifier ID = prefix("fire_mana_blaster");
 	public static final ManaBlasterTrigger INSTANCE = new ManaBlasterTrigger();
 
 	private ManaBlasterTrigger() {}
@@ -53,9 +55,9 @@ public class ManaBlasterTrigger extends SimpleCriterionTrigger<ManaBlasterTrigge
 		}
 
 		@Override
-		public void validate(@NotNull CriterionValidator validator) {
+		public void validate(@NotNull ValidationContextSource validator) {
 			SimpleCriterionTrigger.SimpleInstance.super.validate(validator);
-			validator.validateEntity(this.user, ".user");
+			Validatable.validate(validator.entityContext(), "user", this.user);
 		}
 	}
 }

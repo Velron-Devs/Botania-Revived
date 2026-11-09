@@ -1,6 +1,5 @@
 package velrondevs.botania.client.integration.jei;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
@@ -13,8 +12,8 @@ import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.resources.Identifier;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -79,10 +78,8 @@ public class PetalApothecaryRecipeCategory implements IRecipeCategory<PetalApoth
 	}
 
 	@Override
-	public void draw(@NotNull PetalApothecaryRecipe recipe, @NotNull IRecipeSlotsView slotsView, @NotNull GuiGraphics gui, double mouseX, double mouseY) {
-		RenderSystem.enableBlend();
+	public void draw(@NotNull PetalApothecaryRecipe recipe, @NotNull IRecipeSlotsView slotsView, @NotNull GuiGraphicsExtractor gui, double mouseX, double mouseY) {
 		overlay.draw(gui, 0, 4);
-		RenderSystem.disableBlend();
 	}
 
 	@Override
@@ -95,7 +92,7 @@ public class PetalApothecaryRecipeCategory implements IRecipeCategory<PetalApoth
 		Vec2 center = new Vec2(CENTER_X, CENTER_Y);
 		if (reagents.length > 0) {
 			Vec2 reagentPoint = new Vec2(CENTER_X, CENTER_Y + 10);
-			builder.addSlot(RecipeIngredientRole.CATALYST, (int) reagentPoint.x, (int) reagentPoint.y).addItemStack(new ItemStack(catalyst));
+			builder.addSlot(RecipeIngredientRole.CRAFTING_STATION, (int) reagentPoint.x, (int) reagentPoint.y).addItemStack(new ItemStack(catalyst));
 
 			double angleBetweenReagents = 360.0 / (reagents.length + 1);
 			for (int i = 0; i < reagents.length; i++) {
@@ -103,7 +100,7 @@ public class PetalApothecaryRecipeCategory implements IRecipeCategory<PetalApoth
 				builder.addSlot(RecipeIngredientRole.INPUT, (int) reagentPoint.x, (int) reagentPoint.y).addIngredients(reagents[i]);
 			}
 		} else {
-			builder.addSlot(RecipeIngredientRole.CATALYST, CENTER_X, CENTER_Y).addItemStack(new ItemStack(catalyst));
+			builder.addSlot(RecipeIngredientRole.CRAFTING_STATION, CENTER_X, CENTER_Y).addItemStack(new ItemStack(catalyst));
 		}
 		double angleBetweenEach = 360.0 / ingredients.size();
 		Vec2 point = new Vec2(CENTER_X, 13);
@@ -125,7 +122,7 @@ public class PetalApothecaryRecipeCategory implements IRecipeCategory<PetalApoth
 	}
 
 	@Override
-	public ResourceLocation getRegistryName(@NotNull PetalApothecaryRecipe recipe) {
+	public Identifier getIdentifier(@NotNull PetalApothecaryRecipe recipe) {
 		return JEIRecipeIds.idOf(recipe);
 	}
 }

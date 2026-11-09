@@ -9,9 +9,7 @@
   "category": "building",
   "group": "botania:thunderous_planks",
   "ingredients": [
-    {
-      "item": "botania:thunderous_log"
-    }
+    "botania:thunderous_log"
   ],
   "result": {
     "count": 4,

@@ -8,15 +8,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "B": {
-      "tag": "botania:bifrost_dyes"
-    },
-    "D": {
-      "item": "botania:dreamwood_twig"
-    },
-    "G": {
-      "item": "minecraft:glowstone"
-    }
+    "B": "#botania:bifrost_dyes",
+    "D": "botania:dreamwood_twig",
+    "G": "minecraft:glowstone"
   },
   "pattern": [
     " GB",
@@ -24,7 +18,6 @@
     "D  "
   ],
   "result": {
-    "count": 1,
     "id": "botania:prismatic_lake_rod"
   }
 }

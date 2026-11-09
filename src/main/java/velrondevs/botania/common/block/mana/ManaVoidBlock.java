@@ -1,7 +1,7 @@
 package velrondevs.botania.common.block.mana;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -14,21 +14,21 @@ import static velrondevs.botania.common.lib.ResourceLocationHelper.prefix;
 
 public class ManaVoidBlock extends BotaniaBlock implements PoolOverlayProvider {
 	private static final int SPARKLE_EVENT = 0;
-	private static final ResourceLocation OVERLAY_ICON = prefix("block/mana_void_overlay");
+	private static final Identifier OVERLAY_ICON = prefix("block/mana_void_overlay");
 
 	public ManaVoidBlock(Properties builder) {
 		super(builder);
 	}
 
 	@Override
-	public ResourceLocation getIcon(Level world, BlockPos pos) {
+	public Identifier getIcon(Level world, BlockPos pos) {
 		return OVERLAY_ICON;
 	}
 
 	@Override
 	public boolean triggerEvent(BlockState state, Level level, BlockPos pos, int id, int payload) {
 		if (id == SPARKLE_EVENT) {
-			if (level.isClientSide) {
+			if (level.isClientSide()) {
 				for (int i = 0; i < 10; i++) {
 					SparkleParticleData data = SparkleParticleData.sparkle(0.7F + 0.5F * (float) Math.random(), 0.2F, 0.2F, 0.2F, 5);
 					level.addParticle(data, pos.getX() + Math.random(), pos.getY() + Math.random(), pos.getZ() + Math.random(), 0, 0, 0);

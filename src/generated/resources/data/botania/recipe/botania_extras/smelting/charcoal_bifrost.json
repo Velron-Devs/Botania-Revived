@@ -9,11 +9,8 @@
   "category": "misc",
   "cookingtime": 200,
   "experience": 0.15,
-  "ingredient": {
-    "item": "botania:bifrost_log"
-  },
+  "ingredient": "botania:bifrost_log",
   "result": {
-    "count": 1,
     "id": "minecraft:charcoal"
   }
 }

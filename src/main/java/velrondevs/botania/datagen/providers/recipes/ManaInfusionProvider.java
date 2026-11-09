@@ -4,7 +4,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.Item;
@@ -50,7 +50,7 @@ public class ManaInfusionProvider extends BotaniaRecipeProvider {
 
 		Ingredient dust = Ingredient.of(Items.GUNPOWDER, Items.REDSTONE, Items.GLOWSTONE_DUST, Items.SUGAR);
 		infuse(consumer, id("mana_powder_dust"), new ItemStack(BotaniaItems.manaPowder), dust, 500);
-		Ingredient dyeIngredient = Ingredient.of(ColorHelper.supportedColors().map(DyeItem::byColor).toArray(Item[]::new));
+		Ingredient dyeIngredient = Ingredient.of(ColorHelper.supportedColors().map(BotaniaRecipeProvider::dyeItem).toArray(Item[]::new));
 		infuse(consumer, id("mana_powder_dye"), new ItemStack(BotaniaItems.manaPowder), dyeIngredient, 400);
 
 		infuse(consumer, id("piston_relay"), new ItemStack(BotaniaBlocks.pistonRelay), ingr(Blocks.PISTON), 15000);
@@ -101,7 +101,7 @@ public class ManaInfusionProvider extends BotaniaRecipeProvider {
 
 		alchemy(consumer, id("book_to_name_tag"), new ItemStack(Items.NAME_TAG), ingr(Items.WRITABLE_BOOK), 6000);
 
-		alchemy(consumer, id("wool_deconstruct"), new ItemStack(Items.STRING, 3), Ingredient.of(ItemTags.WOOL), 100);
+		alchemy(consumer, id("wool_deconstruct"), new ItemStack(Items.STRING, 3), tag(ItemTags.WOOL), 100);
 
 		final String cactusSlimeGroup = "botania:cactus_and_slime_cycle";
 		alchemy(consumer, id("cactus_to_slime"), new ItemStack(Items.SLIME_BALL), ingr(Blocks.CACTUS), 1200, cactusSlimeGroup);
@@ -189,7 +189,7 @@ public class ManaInfusionProvider extends BotaniaRecipeProvider {
 		alchemy(consumer, id(id), new ItemStack(items, 4), ingr(block), 25, "botania:block_deconstruction");
 	}
 
-	protected ResourceLocation id(String s) {
+	protected Identifier id(String s) {
 		return prefix("mana_infusion/" + s);
 	}
 
@@ -200,23 +200,23 @@ public class ManaInfusionProvider extends BotaniaRecipeProvider {
 	private static final StateIngredient CONJURATION = StateIngredientHelper.of(BotaniaBlocks.conjurationCatalyst);
 	private static final StateIngredient ALCHEMY = StateIngredientHelper.of(BotaniaBlocks.alchemyCatalyst);
 
-	protected static void conjuration(RecipeOutput consumer, ResourceLocation id, ItemStack output, Ingredient input, int mana) {
+	protected static void conjuration(RecipeOutput consumer, Identifier id, ItemStack output, Ingredient input, int mana) {
 		infuse(consumer, id, output, input, mana, "", CONJURATION);
 	}
 
-	protected static void alchemy(RecipeOutput consumer, ResourceLocation id, ItemStack output, Ingredient input, int mana) {
+	protected static void alchemy(RecipeOutput consumer, Identifier id, ItemStack output, Ingredient input, int mana) {
 		alchemy(consumer, id, output, input, mana, "");
 	}
 
-	protected static void alchemy(RecipeOutput consumer, ResourceLocation id, ItemStack output, Ingredient input, int mana, String group) {
+	protected static void alchemy(RecipeOutput consumer, Identifier id, ItemStack output, Ingredient input, int mana, String group) {
 		infuse(consumer, id, output, input, mana, group, ALCHEMY);
 	}
 
-	protected static void infuse(RecipeOutput consumer, ResourceLocation id, ItemStack output, Ingredient input, int mana) {
+	protected static void infuse(RecipeOutput consumer, Identifier id, ItemStack output, Ingredient input, int mana) {
 		infuse(consumer, id, output, input, mana, "", null);
 	}
 
-	protected static void infuse(RecipeOutput consumer, ResourceLocation id, ItemStack output, Ingredient input, int mana, String group, @Nullable StateIngredient catalyst) {
-		consumer.accept(id, new ManaInfusionRecipe(output, input, mana, group.isEmpty() ? null : group, catalyst), null);
+	protected static void infuse(RecipeOutput consumer, Identifier id, ItemStack output, Ingredient input, int mana, String group, @Nullable StateIngredient catalyst) {
+		consumer.accept(key(id), new ManaInfusionRecipe(output, input, mana, group.isEmpty() ? null : group, catalyst), null);
 	}
 }

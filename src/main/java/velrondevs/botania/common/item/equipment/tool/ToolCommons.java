@@ -1,5 +1,15 @@
 package velrondevs.botania.common.item.equipment.tool;
 
+import velrondevs.botania.common.item.equipment.tool.manasteel.ManasteelAxeItem;
+import velrondevs.botania.common.item.equipment.tool.manasteel.ManasteelHoeItem;
+import velrondevs.botania.common.item.equipment.tool.manasteel.ManasteelPickaxeItem;
+import velrondevs.botania.common.item.equipment.tool.manasteel.ManasteelShovelItem;
+import net.minecraft.core.HolderGetter;
+import net.minecraft.core.HolderSet;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.item.enchantment.Repairable;
+import velrondevs.botania.common.lib.ResourceLocationHelper;
+import java.util.Arrays;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Vec3i;
@@ -11,10 +21,9 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.DiggerItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.ToolMaterial;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
@@ -87,7 +96,7 @@ public final class ToolCommons {
 		BlockState blockstate = world.getBlockState(pos);
 		boolean unminable = blockstate.getDestroyProgress(player, world, pos) == 0;
 
-		if (!world.isClientSide && !unminable && filter.test(blockstate) && !blockstate.isAir()) {
+		if (!world.isClientSide() && !unminable && filter.test(blockstate) && !blockstate.isAir()) {
 			ItemStack save = player.getMainHandItem();
 			player.setItemInHand(InteractionHand.MAIN_HAND, stack);
 			((ServerPlayer) player).connection.send(
@@ -103,11 +112,16 @@ public final class ToolCommons {
 		}
 
 		Item item = stack.getItem();
-		if (!(item instanceof DiggerItem tool)) {
+		ToolMaterial material = switch (item) {
+			case ManasteelPickaxeItem tool -> tool.getTier();
+			case ManasteelAxeItem tool -> tool.getTier();
+			case ManasteelShovelItem tool -> tool.getTier();
+			case ManasteelHoeItem tool -> tool.getTier();
+			default -> null;
+		};
+		if (material == null && !stack.has(DataComponents.TOOL)) {
 			return 0;
 		}
-
-		Tier material = tool.getTier();
 		int materialLevel = 0;
 		if (material == BotaniaAPI.instance().getManasteelItemTier()) {
 			materialLevel = 10;
@@ -137,6 +151,15 @@ public final class ToolCommons {
 				.flatMap(lookup -> lookup.get(key))
 				.map(holder -> EnchantmentHelper.getItemEnchantmentLevel(holder, stack))
 				.orElse(0);
+	}
+
+	public static Item.Properties repairableBy(Item.Properties props, String... itemNames) {
+		return props.delayedComponent(DataComponents.REPAIRABLE, ctx -> {
+			HolderGetter<Item> items = ctx.lookupOrThrow(Registries.ITEM);
+			return new Repairable(HolderSet.direct(Arrays.stream(itemNames)
+					.map(name -> items.getOrThrow(ResourceKey.create(Registries.ITEM, ResourceLocationHelper.prefix(name))))
+					.toList()));
+		});
 	}
 
 	public static BlockHitResult raytraceFromEntity(Entity e, double distance, boolean fluids) {

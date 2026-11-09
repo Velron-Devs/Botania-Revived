@@ -3,7 +3,7 @@ package velrondevs.botania.module;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -42,7 +42,7 @@ public final class ModuleContext {
 		return Collections.unmodifiableList(items);
 	}
 
-	public <T> void bind(ResourceKey<? extends Registry<T>> registry, Consumer<BiConsumer<T, ResourceLocation>> source) {
+	public <T> void bind(ResourceKey<? extends Registry<T>> registry, Consumer<BiConsumer<T, Identifier>> source) {
 		modBus.addListener((RegisterEvent event) -> {
 			if (registry.equals(event.getRegistryKey())) {
 				source.accept((t, rl) -> {
@@ -53,14 +53,14 @@ public final class ModuleContext {
 		});
 	}
 
-	public void bindItems(Consumer<BiConsumer<Item, ResourceLocation>> source) {
+	public void bindItems(Consumer<BiConsumer<Item, Identifier>> source) {
 		bind(Registries.ITEM, consumer -> source.accept((item, rl) -> {
 			items.add(item);
 			consumer.accept(item, rl);
 		}));
 	}
 
-	public void bindBlocks(Consumer<BiConsumer<Block, ResourceLocation>> source) {
+	public void bindBlocks(Consumer<BiConsumer<Block, Identifier>> source) {
 		bind(Registries.BLOCK, source);
 	}
 

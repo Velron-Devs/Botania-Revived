@@ -18,9 +18,7 @@
             },
             {
               "components": {
-                "minecraft:dyed_color": {
-                  "rgb": 4673362
-                }
+                "minecraft:dyed_color": 4673362
               },
               "function": "minecraft:set_components"
             }
@@ -38,9 +36,7 @@
           "functions": [
             {
               "components": {
-                "minecraft:dyed_color": {
-                  "rgb": 1477772
-                }
+                "minecraft:dyed_color": 1477772
               },
               "function": "minecraft:set_components"
             }
@@ -58,9 +54,7 @@
           "functions": [
             {
               "components": {
-                "minecraft:dyed_color": {
-                  "rgb": 3290681
-                }
+                "minecraft:dyed_color": 3290681
               },
               "function": "minecraft:set_components"
             }

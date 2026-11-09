@@ -1,8 +1,10 @@
 package velrondevs.botania.compat.sophisticated;
 
+import net.minecraft.world.item.Item;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.level.Level;
 import net.p3pp3rf1y.sophisticatedcore.api.IStorageWrapper;
 import net.p3pp3rf1y.sophisticatedcore.upgrades.IUpgradeItem;
@@ -24,7 +26,7 @@ public class BreweryUpgradeItem extends UpgradeItemBase<BreweryUpgradeItem.Wrapp
 	public static final UpgradeType<Wrapper> TYPE = new UpgradeType<>(Wrapper::new);
 
 	public BreweryUpgradeItem() {
-		super(UpgradeLimits.of(SophisticatedConfig::breweryMaxPerStorage));
+		super(UpgradeLimits.of(SophisticatedConfig::breweryMaxPerStorage), new Item.Properties());
 	}
 
 	@Override
@@ -84,7 +86,7 @@ public class BreweryUpgradeItem extends UpgradeItemBase<BreweryUpgradeItem.Wrapp
 			if (count == 1) {
 				return null;
 			}
-			Optional<RecipeHolder<BotanicalBreweryRecipe>> holder = level.getRecipeManager().getRecipeFor(BotaniaRecipeTypes.BREW_TYPE, new ContainerRecipeInput(container), level);
+			Optional<RecipeHolder<BotanicalBreweryRecipe>> holder = BotaniaRecipeTypes.getRecipeFor(level, BotaniaRecipeTypes.BREW_TYPE, (RecipeInput) new ContainerRecipeInput(container));
 			if (holder.isEmpty()) {
 				return null;
 			}

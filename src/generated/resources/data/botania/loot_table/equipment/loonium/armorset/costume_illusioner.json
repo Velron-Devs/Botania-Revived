@@ -18,9 +18,7 @@
             },
             {
               "components": {
-                "minecraft:dyed_color": {
-                  "rgb": 3898306
-                }
+                "minecraft:dyed_color": 3898306
               },
               "function": "minecraft:set_components"
             }
@@ -47,9 +45,7 @@
             },
             {
               "components": {
-                "minecraft:dyed_color": {
-                  "rgb": 3898306
-                }
+                "minecraft:dyed_color": 3898306
               },
               "function": "minecraft:set_components"
             }
@@ -76,9 +72,7 @@
             },
             {
               "components": {
-                "minecraft:dyed_color": {
-                  "rgb": 3898306
-                }
+                "minecraft:dyed_color": 3898306
               },
               "function": "minecraft:set_components"
             }
@@ -143,10 +137,6 @@
                     {
                       "duration": 100,
                       "id": "minecraft:blindness",
-                      "neoforge:cures": [
-                        "milk",
-                        "protected_by_totem"
-                      ],
                       "show_icon": true
                     }
                   ]

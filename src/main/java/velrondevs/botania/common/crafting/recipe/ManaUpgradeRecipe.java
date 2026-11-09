@@ -14,7 +14,7 @@ import velrondevs.botania.xplat.XplatAbstractions;
 
 public class ManaUpgradeRecipe extends ShapedRecipe {
 	public ManaUpgradeRecipe(ShapedRecipe compose) {
-		super(compose.getGroup(), compose.category(), compose.pattern, compose.getResultItem(RegistryAccess.EMPTY), compose.showNotification());
+		super(RecipeUtils.commonInfo(compose), RecipeUtils.bookInfo(compose), compose.pattern, RecipeUtils.result(compose));
 	}
 
 	public static ItemStack output(ItemStack output, RecipeInput inv) {
@@ -35,14 +35,15 @@ public class ManaUpgradeRecipe extends ShapedRecipe {
 
 	@NotNull
 	@Override
-	public ItemStack assemble(@NotNull CraftingInput inv, @NotNull HolderLookup.Provider registries) {
-		return output(super.assemble(inv, registries), inv);
+	public ItemStack assemble(@NotNull CraftingInput inv) {
+		return output(super.assemble(inv), inv);
 	}
 
 	@NotNull
 	@Override
-	public RecipeSerializer<?> getSerializer() {
-		return SERIALIZER;
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public RecipeSerializer<ShapedRecipe> getSerializer() {
+		return (RecipeSerializer) SERIALIZER;
 	}
 
 	public static final RecipeSerializer<ManaUpgradeRecipe> SERIALIZER = RecipeUtils.shapedWrapper(ManaUpgradeRecipe::new);

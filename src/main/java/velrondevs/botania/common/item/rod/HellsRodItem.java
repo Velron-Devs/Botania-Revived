@@ -1,7 +1,8 @@
 package velrondevs.botania.common.item.rod;
 
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -26,7 +27,7 @@ import velrondevs.botania.xplat.XplatAbstractions;
 
 public class HellsRodItem extends Item {
 
-	private static final ResourceLocation avatarOverlay = ResourceLocation.parse(ResourcesLib.MODEL_AVATAR_FIRE);
+	private static final Identifier avatarOverlay = Identifier.parse(ResourcesLib.MODEL_AVATAR_FIRE);
 
 	private static final int COST = 900;
 	private static final int COOLDOWN = 1200;
@@ -45,12 +46,12 @@ public class HellsRodItem extends Item {
 
 		if (player != null && ManaItemHandler.instance().requestManaExactForTool(stack, player, COST, false)) {
 			if (!world.isClientSide()) {
-				FlameRingEntity entity = BotaniaEntities.FLAME_RING.create(world);
+				FlameRingEntity entity = BotaniaEntities.FLAME_RING.create(world, EntitySpawnReason.TRIGGERED);
 				entity.setPos(pos.getX() + 0.5, pos.getY() + 1, pos.getZ() + 0.5);
 				world.addFreshEntity(entity);
 
 				if (!player.isCreative()) {
-					player.getCooldowns().addCooldown(this, ManaItemHandler.instance().hasProficiency(player, stack) ? COOLDOWN / 2 : COOLDOWN);
+					player.getCooldowns().addCooldown(stack, ManaItemHandler.instance().hasProficiency(player, stack) ? COOLDOWN / 2 : COOLDOWN);
 				}
 				ManaItemHandler.instance().requestManaExactForTool(stack, player, COST, true);
 
@@ -59,7 +60,7 @@ public class HellsRodItem extends Item {
 			}
 		}
 
-		return InteractionResult.sidedSuccess(world.isClientSide());
+		return InteractionResult.SUCCESS;
 	}
 
 	public static class AvatarBehavior implements AvatarWieldable {
@@ -70,8 +71,8 @@ public class HellsRodItem extends Item {
 			BlockPos pos = te.getBlockPos();
 			ManaReceiver receiver = XplatAbstractions.INSTANCE.findManaReceiver(world, pos, te.getBlockState(), te, null);
 
-			if (!world.isClientSide && receiver.getCurrentMana() >= COST && tile.getElapsedFunctionalTicks() % 300 == 0 && tile.isEnabled()) {
-				FlameRingEntity entity = BotaniaEntities.FLAME_RING.create(world);
+			if (!world.isClientSide() && receiver.getCurrentMana() >= COST && tile.getElapsedFunctionalTicks() % 300 == 0 && tile.isEnabled()) {
+				FlameRingEntity entity = BotaniaEntities.FLAME_RING.create(world, EntitySpawnReason.TRIGGERED);
 				entity.setPos(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5);
 				world.addFreshEntity(entity);
 				receiver.receiveMana(-COST);
@@ -80,7 +81,7 @@ public class HellsRodItem extends Item {
 		}
 
 		@Override
-		public ResourceLocation getOverlayResource(Avatar tile) {
+		public Identifier getOverlayResource(Avatar tile) {
 			return avatarOverlay;
 		}
 	}

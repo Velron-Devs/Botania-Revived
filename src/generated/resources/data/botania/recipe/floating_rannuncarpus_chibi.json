@@ -3,15 +3,10 @@
   "category": "misc",
   "group": "botania:floating_flower",
   "ingredients": [
-    {
-      "tag": "botania:floating_flowers"
-    },
-    {
-      "item": "botania:rannuncarpus_chibi"
-    }
+    "#botania:floating_flowers",
+    "botania:rannuncarpus_chibi"
   ],
   "result": {
-    "count": 1,
     "id": "botania:floating_rannuncarpus_chibi"
   }
 }

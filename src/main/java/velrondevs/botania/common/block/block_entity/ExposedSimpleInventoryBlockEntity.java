@@ -66,12 +66,12 @@ public abstract class ExposedSimpleInventoryBlockEntity extends SimpleInventoryB
 	}
 
 	@Override
-	public void startOpen(Player player) {
+	public void startOpen(net.minecraft.world.entity.ContainerUser player) {
 		getItemHandler().startOpen(player);
 	}
 
 	@Override
-	public void stopOpen(Player player) {
+	public void stopOpen(net.minecraft.world.entity.ContainerUser player) {
 		getItemHandler().stopOpen(player);
 	}
 

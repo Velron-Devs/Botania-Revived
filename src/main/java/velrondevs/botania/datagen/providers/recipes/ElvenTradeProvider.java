@@ -3,7 +3,7 @@ package velrondevs.botania.datagen.providers.recipes;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -29,8 +29,8 @@ public class ElvenTradeProvider extends BotaniaRecipeProvider {
 		elven(consumer, id("dreamwood_log"), new ItemStack(BotaniaBlocks.dreamwoodLog), Ingredient.of(BotaniaBlocks.livingwoodLog));
 		elven(consumer, id("dreamwood"), new ItemStack(BotaniaBlocks.dreamwood), Ingredient.of(BotaniaBlocks.livingwood));
 
-		Ingredient manaDiamond = Ingredient.of(BotaniaTags.Items.GEMS_MANA_DIAMOND);
-		Ingredient manaSteel = Ingredient.of(BotaniaTags.Items.INGOTS_MANASTEEL);
+		Ingredient manaDiamond = tag(BotaniaTags.Items.GEMS_MANA_DIAMOND);
+		Ingredient manaSteel = tag(BotaniaTags.Items.INGOTS_MANASTEEL);
 		elven(consumer, id("elementium"), new ItemStack(BotaniaItems.elementium), manaSteel, manaSteel);
 		elven(consumer, id("elementium_block"), new ItemStack(BotaniaBlocks.elementiumBlock), Ingredient.of(BotaniaBlocks.manasteelBlock), Ingredient.of(BotaniaBlocks.manasteelBlock));
 
@@ -47,10 +47,10 @@ public class ElvenTradeProvider extends BotaniaRecipeProvider {
 		elven(consumer, id("diamond_return"), new ItemStack(Items.DIAMOND), Ingredient.of(Items.DIAMOND));
 		elven(consumer, id("diamond_block_return"), new ItemStack(Blocks.DIAMOND_BLOCK), Ingredient.of(Blocks.DIAMOND_BLOCK));
 
-		consumer.accept(id("lexicon_elven"), new LexiconElvenTradeRecipe(), null);
+		consumer.accept(key(id("lexicon_elven")), new LexiconElvenTradeRecipe(), null);
 	}
 
-	private static ResourceLocation id(String path) {
+	private static Identifier id(String path) {
 		return prefix("elven_trade/" + path);
 	}
 
@@ -59,7 +59,7 @@ public class ElvenTradeProvider extends BotaniaRecipeProvider {
 		return "Botania elven trade recipes";
 	}
 
-	private static void elven(RecipeOutput consumer, ResourceLocation id, ItemStack output, Ingredient... inputs) {
-		consumer.accept(id, new ElvenTradeRecipe(new ItemStack[] { output }, inputs), null);
+	private static void elven(RecipeOutput consumer, Identifier id, ItemStack output, Ingredient... inputs) {
+		consumer.accept(key(id), new ElvenTradeRecipe(new ItemStack[] { output }, inputs), null);
 	}
 }

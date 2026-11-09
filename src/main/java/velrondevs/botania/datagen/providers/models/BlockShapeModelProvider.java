@@ -3,17 +3,13 @@ package velrondevs.botania.datagen.providers.models;
 import net.minecraft.core.Direction;
 import net.minecraft.data.PackOutput;
 import net.minecraft.world.item.ItemDisplayContext;
-import net.neoforged.neoforge.client.model.generators.BlockModelBuilder;
-import net.neoforged.neoforge.client.model.generators.BlockModelProvider;
-import net.neoforged.neoforge.client.model.generators.ModelBuilder;
-import net.neoforged.neoforge.client.model.generators.ModelFile;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
-
 import velrondevs.botania.common.lib.LibMisc;
+import velrondevs.botania.datagen.util.JsonModelBuilder;
+import velrondevs.botania.datagen.util.JsonModelProvider;
 
-public class BlockShapeModelProvider extends BlockModelProvider {
-	public BlockShapeModelProvider(PackOutput output, ExistingFileHelper existingFileHelper) {
-		super(output, LibMisc.MOD_ID, existingFileHelper);
+public class BlockShapeModelProvider extends JsonModelProvider {
+	public BlockShapeModelProvider(PackOutput output) {
+		super(output, LibMisc.MOD_ID);
 	}
 
 	@Override
@@ -141,10 +137,10 @@ public class BlockShapeModelProvider extends BlockModelProvider {
 		tinyPotatoWiretater();
 	}
 
-	private BlockModelBuilder model(String path, String parent, String... textures) {
-		BlockModelBuilder builder = getBuilder(path);
+	private JsonModelBuilder model(String path, String parent, String... textures) {
+		JsonModelBuilder builder = getBuilder(path);
 		if (parent != null) {
-			builder.parent(new ModelFile.UncheckedModelFile(parent));
+			builder.parent(parent);
 		}
 		for (int i = 0; i < textures.length; i += 2) {
 			builder.texture(textures[i], textures[i + 1]);
@@ -153,7 +149,7 @@ public class BlockShapeModelProvider extends BlockModelProvider {
 	}
 
 	private void blockCocoon() {
-		BlockModelBuilder b = model("block/cocoon", "minecraft:block/block", "bottom", "botania:block/cocoon_bottom", "top", "botania:block/cocoon_top", "north", "botania:block/cocoon_north", "south", "botania:block/cocoon_south", "west", "botania:block/cocoon_west", "east", "botania:block/cocoon_east", "particle", "botania:block/cocoon_east");
+		JsonModelBuilder b = model("block/cocoon", "minecraft:block/block", "bottom", "botania:block/cocoon_bottom", "top", "botania:block/cocoon_top", "north", "botania:block/cocoon_north", "south", "botania:block/cocoon_south", "west", "botania:block/cocoon_west", "east", "botania:block/cocoon_east", "particle", "botania:block/cocoon_east");
 		b.element().from(3, 0, 3).to(13, 14, 13)
 				.face(Direction.WEST).texture("#west").uvs(3, 1, 13, 15).end()
 				.face(Direction.NORTH).texture("#north").uvs(3, 1, 13, 15).end()
@@ -165,7 +161,7 @@ public class BlockShapeModelProvider extends BlockModelProvider {
 	}
 
 	private void blockCorporeaCrystalCube() {
-		BlockModelBuilder b = model("block/corporea_crystal_cube", null, "cloth", "botania:block/corporea_crystal_cube_cloth", "base", "botania:block/corporea_crystal_cube_base", "particle", "botania:block/corporea_crystal_cube_cloth");
+		JsonModelBuilder b = model("block/corporea_crystal_cube", null, "cloth", "botania:block/corporea_crystal_cube_cloth", "base", "botania:block/corporea_crystal_cube_base", "particle", "botania:block/corporea_crystal_cube_cloth");
 		b.element().from(5, 0, 5).to(11, 2, 11)
 				.face(Direction.DOWN).texture("#base").uvs(10, 0, 16, 6).end()
 				.face(Direction.NORTH).texture("#base").uvs(10, 6, 16, 8).end()
@@ -262,7 +258,7 @@ public class BlockShapeModelProvider extends BlockModelProvider {
 	}
 
 	private void blockCorporeaCrystalCubeGlass() {
-		BlockModelBuilder b = model("block/corporea_crystal_cube_glass", null, "glass", "botania:block/corporea_crystal_cube_glass", "particle", "botania:block/corporea_crystal_cube_glass");
+		JsonModelBuilder b = model("block/corporea_crystal_cube_glass", null, "glass", "botania:block/corporea_crystal_cube_glass", "particle", "botania:block/corporea_crystal_cube_glass");
 		b.element().from(4, 4, 4).to(12, 12, 12)
 				.face(Direction.DOWN).texture("#glass").uvs(4, 4, 12, 12).end()
 				.face(Direction.UP).texture("#glass").uvs(4, 4, 12, 12).end()
@@ -274,7 +270,7 @@ public class BlockShapeModelProvider extends BlockModelProvider {
 	}
 
 	private void blockIncensePlate() {
-		BlockModelBuilder b = model("block/incense_plate", "minecraft:block/block", "all", "botania:block/incense_plate", "particle", "botania:block/livingwood_log");
+		JsonModelBuilder b = model("block/incense_plate", "minecraft:block/block", "all", "botania:block/incense_plate", "particle", "botania:block/livingwood_log");
 		b.element().from(2, 0, 6).to(14, 1, 10)
 				.face(Direction.WEST).texture("#all").end()
 				.face(Direction.NORTH).texture("#all").end()
@@ -334,7 +330,7 @@ public class BlockShapeModelProvider extends BlockModelProvider {
 	}
 
 	private void blockManaDistributor() {
-		BlockModelBuilder b = model("block/mana_distributor", "minecraft:block/block", "texture", "botania:block/mana_distributor", "particle", "botania:block/mana_distributor");
+		JsonModelBuilder b = model("block/mana_distributor", "minecraft:block/block", "texture", "botania:block/mana_distributor", "particle", "botania:block/mana_distributor");
 		b.element().from(4, 0, 4).to(12, 16, 12)
 				.face(Direction.DOWN).texture("#texture").uvs(8, 0, 16, 8).end()
 				.face(Direction.UP).texture("#texture").uvs(8, 0, 16, 8).end()
@@ -344,18 +340,18 @@ public class BlockShapeModelProvider extends BlockModelProvider {
 				.face(Direction.EAST).texture("#texture").uvs(0, 0, 8, 16).end()
 				.end();
 		b.element().from(0, 0, 4).to(4, 8, 12)
-				.face(Direction.DOWN).texture("#texture").uvs(16, 8, 8, 12).rotation(ModelBuilder.FaceRotation.CLOCKWISE_90).end()
-				.face(Direction.UP).texture("#texture").uvs(8, 12, 16, 16).rotation(ModelBuilder.FaceRotation.CLOCKWISE_90).end()
-				.face(Direction.NORTH).texture("#texture").uvs(8, 12, 16, 8).rotation(ModelBuilder.FaceRotation.CLOCKWISE_90).end()
-				.face(Direction.SOUTH).texture("#texture").uvs(8, 8, 16, 12).rotation(ModelBuilder.FaceRotation.CLOCKWISE_90).end()
+				.face(Direction.DOWN).texture("#texture").uvs(16, 8, 8, 12).rotation(JsonModelBuilder.FaceRotation.CLOCKWISE_90).end()
+				.face(Direction.UP).texture("#texture").uvs(8, 12, 16, 16).rotation(JsonModelBuilder.FaceRotation.CLOCKWISE_90).end()
+				.face(Direction.NORTH).texture("#texture").uvs(8, 12, 16, 8).rotation(JsonModelBuilder.FaceRotation.CLOCKWISE_90).end()
+				.face(Direction.SOUTH).texture("#texture").uvs(8, 8, 16, 12).rotation(JsonModelBuilder.FaceRotation.CLOCKWISE_90).end()
 				.face(Direction.WEST).texture("#texture").uvs(0, 8, 8, 16).end()
 				.face(Direction.EAST).texture("#texture").uvs(0, 8, 8, 16).end()
 				.end();
 		b.element().from(12, 0, 4).to(16, 8, 12)
-				.face(Direction.DOWN).texture("#texture").uvs(8, 12, 16, 8).rotation(ModelBuilder.FaceRotation.CLOCKWISE_90).end()
-				.face(Direction.UP).texture("#texture").uvs(16, 16, 8, 12).rotation(ModelBuilder.FaceRotation.CLOCKWISE_90).end()
-				.face(Direction.NORTH).texture("#texture").uvs(8, 8, 16, 12).rotation(ModelBuilder.FaceRotation.CLOCKWISE_90).end()
-				.face(Direction.SOUTH).texture("#texture").uvs(8, 12, 16, 8).rotation(ModelBuilder.FaceRotation.CLOCKWISE_90).end()
+				.face(Direction.DOWN).texture("#texture").uvs(8, 12, 16, 8).rotation(JsonModelBuilder.FaceRotation.CLOCKWISE_90).end()
+				.face(Direction.UP).texture("#texture").uvs(16, 16, 8, 12).rotation(JsonModelBuilder.FaceRotation.CLOCKWISE_90).end()
+				.face(Direction.NORTH).texture("#texture").uvs(8, 8, 16, 12).rotation(JsonModelBuilder.FaceRotation.CLOCKWISE_90).end()
+				.face(Direction.SOUTH).texture("#texture").uvs(8, 12, 16, 8).rotation(JsonModelBuilder.FaceRotation.CLOCKWISE_90).end()
 				.face(Direction.WEST).texture("#texture").uvs(0, 8, 8, 16).end()
 				.face(Direction.EAST).texture("#texture").uvs(0, 8, 8, 16).end()
 				.end();
@@ -364,21 +360,21 @@ public class BlockShapeModelProvider extends BlockModelProvider {
 				.face(Direction.UP).texture("#texture").uvs(8, 12, 16, 16).end()
 				.face(Direction.NORTH).texture("#texture").uvs(0, 8, 8, 16).end()
 				.face(Direction.SOUTH).texture("#texture").uvs(0, 8, 8, 16).end()
-				.face(Direction.WEST).texture("#texture").uvs(8, 12, 16, 8).rotation(ModelBuilder.FaceRotation.CLOCKWISE_90).end()
-				.face(Direction.EAST).texture("#texture").uvs(8, 8, 16, 12).rotation(ModelBuilder.FaceRotation.CLOCKWISE_90).end()
+				.face(Direction.WEST).texture("#texture").uvs(8, 12, 16, 8).rotation(JsonModelBuilder.FaceRotation.CLOCKWISE_90).end()
+				.face(Direction.EAST).texture("#texture").uvs(8, 8, 16, 12).rotation(JsonModelBuilder.FaceRotation.CLOCKWISE_90).end()
 				.end();
 		b.element().from(4, 0, 0).to(12, 8, 4)
 				.face(Direction.DOWN).texture("#texture").uvs(16, 8, 8, 12).end()
-				.face(Direction.UP).texture("#texture").uvs(8, 12, 16, 16).rotation(ModelBuilder.FaceRotation.UPSIDE_DOWN).end()
+				.face(Direction.UP).texture("#texture").uvs(8, 12, 16, 16).rotation(JsonModelBuilder.FaceRotation.UPSIDE_DOWN).end()
 				.face(Direction.NORTH).texture("#texture").uvs(0, 8, 8, 16).end()
 				.face(Direction.SOUTH).texture("#texture").uvs(0, 8, 8, 16).end()
-				.face(Direction.WEST).texture("#texture").uvs(8, 8, 16, 12).rotation(ModelBuilder.FaceRotation.CLOCKWISE_90).end()
-				.face(Direction.EAST).texture("#texture").uvs(8, 12, 16, 8).rotation(ModelBuilder.FaceRotation.CLOCKWISE_90).end()
+				.face(Direction.WEST).texture("#texture").uvs(8, 8, 16, 12).rotation(JsonModelBuilder.FaceRotation.CLOCKWISE_90).end()
+				.face(Direction.EAST).texture("#texture").uvs(8, 12, 16, 8).rotation(JsonModelBuilder.FaceRotation.CLOCKWISE_90).end()
 				.end();
 	}
 
 	private void blockPrism() {
-		BlockModelBuilder b = model("block/prism", "minecraft:block/block", "bottom", "botania:block/prism_top_bottom", "top", "botania:block/prism_top_bottom", "side", "botania:block/prism_side", "particle", "botania:block/prism_side");
+		JsonModelBuilder b = model("block/prism", "minecraft:block/block", "bottom", "botania:block/prism_top_bottom", "top", "botania:block/prism_top_bottom", "side", "botania:block/prism_side", "particle", "botania:block/prism_side");
 		b.element().from(4, 0, 4).to(12, 16, 12)
 				.face(Direction.DOWN).texture("#bottom").uvs(4, 4, 12, 12).cullface(Direction.DOWN).end()
 				.face(Direction.UP).texture("#top").uvs(4, 4, 12, 12).cullface(Direction.UP).end()
@@ -390,22 +386,22 @@ public class BlockShapeModelProvider extends BlockModelProvider {
 	}
 
 	private void blockPump() {
-		BlockModelBuilder b = model("block/pump", "minecraft:block/block", "structure", "botania:block/pump_structure", "head_sheet", "botania:block/pump_head_sheet", "particle", "botania:block/livingrock");
+		JsonModelBuilder b = model("block/pump", "minecraft:block/block", "structure", "botania:block/pump_structure", "head_sheet", "botania:block/pump_head_sheet", "particle", "botania:block/livingrock");
 		b.element().from(4, 0, 14).to(12, 8, 16)
 				.face(Direction.DOWN).texture("#structure").uvs(8, 2, 16, 4).end()
 				.face(Direction.UP).texture("#structure").uvs(8, 2, 16, 4).end()
 				.face(Direction.NORTH).texture("#structure").uvs(0, 8, 8, 16).end()
 				.face(Direction.SOUTH).texture("#structure").uvs(0, 0, 8, 8).end()
-				.face(Direction.WEST).texture("#structure").uvs(8, 2, 16, 0).rotation(ModelBuilder.FaceRotation.CLOCKWISE_90).end()
-				.face(Direction.EAST).texture("#structure").uvs(8, 0, 16, 2).rotation(ModelBuilder.FaceRotation.CLOCKWISE_90).end()
+				.face(Direction.WEST).texture("#structure").uvs(8, 2, 16, 0).rotation(JsonModelBuilder.FaceRotation.CLOCKWISE_90).end()
+				.face(Direction.EAST).texture("#structure").uvs(8, 0, 16, 2).rotation(JsonModelBuilder.FaceRotation.CLOCKWISE_90).end()
 				.end();
 		b.element().from(4, 0, 0).to(12, 8, 2)
 				.face(Direction.DOWN).texture("#structure").uvs(8, 2, 16, 4).end()
 				.face(Direction.UP).texture("#structure").uvs(8, 2, 16, 4).end()
 				.face(Direction.NORTH).texture("#structure").uvs(0, 0, 8, 8).end()
 				.face(Direction.SOUTH).texture("#structure").uvs(0, 8, 8, 16).end()
-				.face(Direction.WEST).texture("#structure").uvs(8, 4, 16, 2).rotation(ModelBuilder.FaceRotation.CLOCKWISE_90).end()
-				.face(Direction.EAST).texture("#structure").uvs(8, 2, 16, 4).rotation(ModelBuilder.FaceRotation.CLOCKWISE_90).end()
+				.face(Direction.WEST).texture("#structure").uvs(8, 4, 16, 2).rotation(JsonModelBuilder.FaceRotation.CLOCKWISE_90).end()
+				.face(Direction.EAST).texture("#structure").uvs(8, 2, 16, 4).rotation(JsonModelBuilder.FaceRotation.CLOCKWISE_90).end()
 				.end();
 		b.element().from(6, 2, 2).to(10, 6, 10)
 				.face(Direction.DOWN).texture("#structure").uvs(12, 8, 16, 16).end()
@@ -420,25 +416,25 @@ public class BlockShapeModelProvider extends BlockModelProvider {
 				.face(Direction.UP).texture("#head_sheet").uvs(8, 0, 16, 4).end()
 				.face(Direction.NORTH).texture("#head_sheet").uvs(0, 0, 8, 8).end()
 				.face(Direction.SOUTH).texture("#head_sheet").uvs(0, 0, 8, 8).end()
-				.face(Direction.WEST).texture("#head_sheet").uvs(8, 8, 16, 4).rotation(ModelBuilder.FaceRotation.CLOCKWISE_90).end()
-				.face(Direction.EAST).texture("#head_sheet").uvs(8, 4, 16, 8).rotation(ModelBuilder.FaceRotation.CLOCKWISE_90).end()
+				.face(Direction.WEST).texture("#head_sheet").uvs(8, 8, 16, 4).rotation(JsonModelBuilder.FaceRotation.CLOCKWISE_90).end()
+				.face(Direction.EAST).texture("#head_sheet").uvs(8, 4, 16, 8).rotation(JsonModelBuilder.FaceRotation.CLOCKWISE_90).end()
 				.end();
 	}
 
 	private void blockPumpHead() {
-		BlockModelBuilder b = model("block/pump_head", "minecraft:block/block", "head_sheet", "botania:block/pump_head_sheet", "particle", "botania:block/livingrock");
+		JsonModelBuilder b = model("block/pump_head", "minecraft:block/block", "head_sheet", "botania:block/pump_head_sheet", "particle", "botania:block/livingrock");
 		b.element().from(5, 1, 2).to(11, 7, 6)
 				.face(Direction.DOWN).texture("#head_sheet").uvs(6, 8, 12, 12).end()
 				.face(Direction.UP).texture("#head_sheet").uvs(6, 8, 12, 12).end()
 				.face(Direction.NORTH).texture("#head_sheet").uvs(0, 8, 6, 14).end()
 				.face(Direction.SOUTH).texture("#head_sheet").uvs(0, 8, 6, 14).end()
-				.face(Direction.WEST).texture("#head_sheet").uvs(6, 12, 12, 8).rotation(ModelBuilder.FaceRotation.CLOCKWISE_90).end()
-				.face(Direction.EAST).texture("#head_sheet").uvs(6, 8, 12, 12).rotation(ModelBuilder.FaceRotation.CLOCKWISE_90).end()
+				.face(Direction.WEST).texture("#head_sheet").uvs(6, 12, 12, 8).rotation(JsonModelBuilder.FaceRotation.CLOCKWISE_90).end()
+				.face(Direction.EAST).texture("#head_sheet").uvs(6, 8, 12, 12).rotation(JsonModelBuilder.FaceRotation.CLOCKWISE_90).end()
 				.end();
 	}
 
 	private void blockRunicAltar() {
-		BlockModelBuilder b = model("block/runic_altar", "minecraft:block/block", "bottom", "botania:block/runic_altar_bottom", "up", "botania:block/runic_altar_top", "side", "botania:block/runic_altar_side", "particle", "botania:block/livingrock");
+		JsonModelBuilder b = model("block/runic_altar", "minecraft:block/block", "bottom", "botania:block/runic_altar_bottom", "up", "botania:block/runic_altar_top", "side", "botania:block/runic_altar_side", "particle", "botania:block/livingrock");
 		b.element().from(0, 6, 0).to(16, 12, 16)
 				.face(Direction.DOWN).texture("#bottom").uvs(0, 0, 16, 16).end()
 				.face(Direction.UP).texture("#up").uvs(0, 0, 16, 16).end()
@@ -468,7 +464,7 @@ public class BlockShapeModelProvider extends BlockModelProvider {
 	}
 
 	private void blockShapesCreativeManaPool() {
-		BlockModelBuilder b = model("block/shapes/creative_mana_pool", "minecraft:block/block", "particle", "#top");
+		JsonModelBuilder b = model("block/shapes/creative_mana_pool", "minecraft:block/block", "particle", "#top");
 		b.element().from(0, 0, 0).to(16, 2, 16)
 				.face(Direction.DOWN).texture("#bottom").cullface(Direction.DOWN).tintindex(0).end()
 				.face(Direction.UP).texture("#top").tintindex(0).end()
@@ -504,7 +500,7 @@ public class BlockShapeModelProvider extends BlockModelProvider {
 	}
 
 	private void blockShapesCreativeManaPoolFull() {
-		BlockModelBuilder b = model("block/shapes/creative_mana_pool_full", "minecraft:block/block", "particle", "#top");
+		JsonModelBuilder b = model("block/shapes/creative_mana_pool_full", "minecraft:block/block", "particle", "#top");
 		b.element().from(0, 0, 0).to(16, 2, 16)
 				.face(Direction.DOWN).texture("#bottom").cullface(Direction.DOWN).tintindex(0).end()
 				.face(Direction.UP).texture("#top").tintindex(0).end()
@@ -543,7 +539,7 @@ public class BlockShapeModelProvider extends BlockModelProvider {
 	}
 
 	private void blockShapesCross() {
-		BlockModelBuilder b = model("block/shapes/cross", "minecraft:block/block", "particle", "#cross");
+		JsonModelBuilder b = model("block/shapes/cross", "minecraft:block/block", "particle", "#cross");
 		b.ao(false);
 		b.element().from(0.8F, 0, 8).to(15.2F, 16, 8)
 				.rotation().origin(8, 8, 8).axis(Direction.Axis.Y).angle(45).rescale(true).end()
@@ -560,7 +556,7 @@ public class BlockShapeModelProvider extends BlockModelProvider {
 	}
 
 	private void blockShapesCubeAllTinted() {
-		BlockModelBuilder b = model("block/shapes/cube_all_tinted", "minecraft:block/block", "particle", "#all");
+		JsonModelBuilder b = model("block/shapes/cube_all_tinted", "minecraft:block/block", "particle", "#all");
 		b.element().from(0, 0, 0).to(16, 16, 16)
 				.face(Direction.DOWN).texture("#all").cullface(Direction.DOWN).tintindex(0).end()
 				.face(Direction.UP).texture("#all").cullface(Direction.UP).tintindex(0).end()
@@ -572,7 +568,7 @@ public class BlockShapeModelProvider extends BlockModelProvider {
 	}
 
 	private void blockShapesCubeCheckered() {
-		BlockModelBuilder b = model("block/shapes/cube_checkered", "minecraft:block/block", "particle", "#side");
+		JsonModelBuilder b = model("block/shapes/cube_checkered", "minecraft:block/block", "particle", "#side");
 		b.element().from(0, 0, 0).to(16, 16, 16)
 				.face(Direction.DOWN).texture("#side").cullface(Direction.DOWN).end()
 				.face(Direction.UP).texture("#side").cullface(Direction.UP).end()
@@ -588,43 +584,43 @@ public class BlockShapeModelProvider extends BlockModelProvider {
 	}
 
 	private void blockShapesCubeColumnDirectionalHorizontal() {
-		BlockModelBuilder b = model("block/shapes/cube_column_directional_horizontal", "minecraft:block/block", "particle", "#side");
+		JsonModelBuilder b = model("block/shapes/cube_column_directional_horizontal", "minecraft:block/block", "particle", "#side");
 		b.element().from(0, 0, 0).to(16, 16, 16)
-				.face(Direction.DOWN).texture("#side").cullface(Direction.DOWN).rotation(ModelBuilder.FaceRotation.UPSIDE_DOWN).end()
+				.face(Direction.DOWN).texture("#side").cullface(Direction.DOWN).rotation(JsonModelBuilder.FaceRotation.UPSIDE_DOWN).end()
 				.face(Direction.UP).texture("#side").cullface(Direction.UP).end()
 				.face(Direction.NORTH).texture("#top").cullface(Direction.NORTH).end()
 				.face(Direction.SOUTH).texture("#bottom").cullface(Direction.SOUTH).end()
-				.face(Direction.WEST).texture("#side").cullface(Direction.WEST).rotation(ModelBuilder.FaceRotation.COUNTERCLOCKWISE_90).end()
-				.face(Direction.EAST).texture("#side").cullface(Direction.EAST).rotation(ModelBuilder.FaceRotation.CLOCKWISE_90).end()
+				.face(Direction.WEST).texture("#side").cullface(Direction.WEST).rotation(JsonModelBuilder.FaceRotation.COUNTERCLOCKWISE_90).end()
+				.face(Direction.EAST).texture("#side").cullface(Direction.EAST).rotation(JsonModelBuilder.FaceRotation.CLOCKWISE_90).end()
 				.end();
 	}
 
 	private void blockShapesCubeColumnHorizontalX() {
-		BlockModelBuilder b = model("block/shapes/cube_column_horizontal_x", "minecraft:block/block", "particle", "#side");
+		JsonModelBuilder b = model("block/shapes/cube_column_horizontal_x", "minecraft:block/block", "particle", "#side");
 		b.element().from(0, 0, 0).to(16, 16, 16)
-				.face(Direction.DOWN).texture("#side").uvs(0, 16, 16, 0).cullface(Direction.DOWN).rotation(ModelBuilder.FaceRotation.CLOCKWISE_90).end()
-				.face(Direction.UP).texture("#side").uvs(0, 16, 16, 0).cullface(Direction.UP).rotation(ModelBuilder.FaceRotation.CLOCKWISE_90).end()
-				.face(Direction.NORTH).texture("#side").uvs(0, 16, 16, 0).cullface(Direction.NORTH).rotation(ModelBuilder.FaceRotation.CLOCKWISE_90).end()
-				.face(Direction.SOUTH).texture("#side").uvs(0, 16, 16, 0).cullface(Direction.SOUTH).rotation(ModelBuilder.FaceRotation.CLOCKWISE_90).end()
+				.face(Direction.DOWN).texture("#side").uvs(0, 16, 16, 0).cullface(Direction.DOWN).rotation(JsonModelBuilder.FaceRotation.CLOCKWISE_90).end()
+				.face(Direction.UP).texture("#side").uvs(0, 16, 16, 0).cullface(Direction.UP).rotation(JsonModelBuilder.FaceRotation.CLOCKWISE_90).end()
+				.face(Direction.NORTH).texture("#side").uvs(0, 16, 16, 0).cullface(Direction.NORTH).rotation(JsonModelBuilder.FaceRotation.CLOCKWISE_90).end()
+				.face(Direction.SOUTH).texture("#side").uvs(0, 16, 16, 0).cullface(Direction.SOUTH).rotation(JsonModelBuilder.FaceRotation.CLOCKWISE_90).end()
 				.face(Direction.WEST).texture("#end").cullface(Direction.WEST).end()
 				.face(Direction.EAST).texture("#end").cullface(Direction.EAST).end()
 				.end();
 	}
 
 	private void blockShapesCubeColumnHorizontalZ() {
-		BlockModelBuilder b = model("block/shapes/cube_column_horizontal_z", "minecraft:block/block", "particle", "#side");
+		JsonModelBuilder b = model("block/shapes/cube_column_horizontal_z", "minecraft:block/block", "particle", "#side");
 		b.element().from(0, 0, 0).to(16, 16, 16)
 				.face(Direction.DOWN).texture("#side").cullface(Direction.DOWN).end()
 				.face(Direction.UP).texture("#side").cullface(Direction.UP).end()
 				.face(Direction.NORTH).texture("#end").cullface(Direction.NORTH).end()
 				.face(Direction.SOUTH).texture("#end").cullface(Direction.SOUTH).end()
-				.face(Direction.WEST).texture("#side").uvs(0, 16, 16, 0).cullface(Direction.WEST).rotation(ModelBuilder.FaceRotation.CLOCKWISE_90).end()
-				.face(Direction.EAST).texture("#side").uvs(0, 16, 16, 0).cullface(Direction.EAST).rotation(ModelBuilder.FaceRotation.CLOCKWISE_90).end()
+				.face(Direction.WEST).texture("#side").uvs(0, 16, 16, 0).cullface(Direction.WEST).rotation(JsonModelBuilder.FaceRotation.CLOCKWISE_90).end()
+				.face(Direction.EAST).texture("#side").uvs(0, 16, 16, 0).cullface(Direction.EAST).rotation(JsonModelBuilder.FaceRotation.CLOCKWISE_90).end()
 				.end();
 	}
 
 	private void blockShapesDilutedManaPool() {
-		BlockModelBuilder b = model("block/shapes/diluted_mana_pool", "minecraft:block/block", "particle", "#top");
+		JsonModelBuilder b = model("block/shapes/diluted_mana_pool", "minecraft:block/block", "particle", "#top");
 		b.element().from(0, 0, 0).to(16, 1, 16)
 				.face(Direction.DOWN).texture("#bottom").cullface(Direction.DOWN).tintindex(0).end()
 				.face(Direction.UP).texture("#top").tintindex(0).end()
@@ -660,7 +656,7 @@ public class BlockShapeModelProvider extends BlockModelProvider {
 	}
 
 	private void blockShapesDilutedManaPoolFull() {
-		BlockModelBuilder b = model("block/shapes/diluted_mana_pool_full", "minecraft:block/block", "particle", "#top");
+		JsonModelBuilder b = model("block/shapes/diluted_mana_pool_full", "minecraft:block/block", "particle", "#top");
 		b.element().from(0, 0, 0).to(16, 1, 16)
 				.face(Direction.DOWN).texture("#bottom").cullface(Direction.DOWN).tintindex(0).end()
 				.face(Direction.UP).texture("#top").tintindex(0).end()
@@ -699,7 +695,7 @@ public class BlockShapeModelProvider extends BlockModelProvider {
 	}
 
 	private void blockShapesDrum() {
-		BlockModelBuilder b = model("block/shapes/drum", "minecraft:block/block", "particle", "#side");
+		JsonModelBuilder b = model("block/shapes/drum", "minecraft:block/block", "particle", "#side");
 		b.element().from(3, 1, 3).to(13, 15, 13)
 				.face(Direction.DOWN).texture("#top").uvs(3, 3, 13, 13).end()
 				.face(Direction.UP).texture("#top").uvs(3, 3, 13, 13).end()
@@ -711,7 +707,7 @@ public class BlockShapeModelProvider extends BlockModelProvider {
 	}
 
 	private void blockShapesEightbyeight() {
-		BlockModelBuilder b = model("block/shapes/eightbyeight", "minecraft:block/block", "particle", "#top");
+		JsonModelBuilder b = model("block/shapes/eightbyeight", "minecraft:block/block", "particle", "#top");
 		b.element().from(4, 4, 4).to(12, 12, 12)
 				.face(Direction.DOWN).texture("#top").uvs(4, 4, 12, 12).end()
 				.face(Direction.UP).texture("#bottom").uvs(4, 4, 12, 12).end()
@@ -723,7 +719,7 @@ public class BlockShapeModelProvider extends BlockModelProvider {
 	}
 
 	private void blockShapesFifteenHighAll() {
-		BlockModelBuilder b = model("block/shapes/fifteen_high_all", "minecraft:block/block", "particle", "#all");
+		JsonModelBuilder b = model("block/shapes/fifteen_high_all", "minecraft:block/block", "particle", "#all");
 		b.element().from(0, 0, 0).to(16, 15, 16)
 				.face(Direction.DOWN).texture("#all").uvs(0, 0, 16, 16).cullface(Direction.DOWN).end()
 				.face(Direction.UP).texture("#all").uvs(0, 0, 16, 16).end()
@@ -735,7 +731,7 @@ public class BlockShapeModelProvider extends BlockModelProvider {
 	}
 
 	private void blockShapesFourHighBottomTop() {
-		BlockModelBuilder b = model("block/shapes/four_high_bottom_top", "minecraft:block/block", "particle", "#side");
+		JsonModelBuilder b = model("block/shapes/four_high_bottom_top", "minecraft:block/block", "particle", "#side");
 		b.element().from(0, 0, 0).to(16, 4, 16)
 				.face(Direction.DOWN).texture("#bottom").uvs(0, 0, 16, 16).cullface(Direction.DOWN).end()
 				.face(Direction.UP).texture("#top").uvs(0, 0, 16, 16).end()
@@ -747,7 +743,7 @@ public class BlockShapeModelProvider extends BlockModelProvider {
 	}
 
 	private void blockShapesManaPool() {
-		BlockModelBuilder b = model("block/shapes/mana_pool", "minecraft:block/block", "particle", "#top");
+		JsonModelBuilder b = model("block/shapes/mana_pool", "minecraft:block/block", "particle", "#top");
 		b.element().from(0, 0, 0).to(16, 2, 16)
 				.face(Direction.DOWN).texture("#bottom").cullface(Direction.DOWN).tintindex(0).end()
 				.face(Direction.UP).texture("#top").tintindex(0).end()
@@ -783,7 +779,7 @@ public class BlockShapeModelProvider extends BlockModelProvider {
 	}
 
 	private void blockShapesManaPoolFull() {
-		BlockModelBuilder b = model("block/shapes/mana_pool_full", "minecraft:block/block", "particle", "#top");
+		JsonModelBuilder b = model("block/shapes/mana_pool_full", "minecraft:block/block", "particle", "#top");
 		b.element().from(0, 0, 0).to(16, 2, 16)
 				.face(Direction.DOWN).texture("#bottom").cullface(Direction.DOWN).tintindex(0).end()
 				.face(Direction.UP).texture("#top").tintindex(0).end()
@@ -822,7 +818,7 @@ public class BlockShapeModelProvider extends BlockModelProvider {
 	}
 
 	private void blockShapesMiniisland() {
-		BlockModelBuilder b = model("block/shapes/miniisland", "minecraft:block/block", "bottom", "minecraft:block/dirt");
+		JsonModelBuilder b = model("block/shapes/miniisland", "minecraft:block/block", "bottom", "minecraft:block/dirt", "particle", "#side");
 		b.transforms()
 				.transform(ItemDisplayContext.GUI).rotation(30, 225, 0).translation(0, 0, 0).scale(0.75F, 0.75F, 0.75F).end();
 		b.element().from(4, 6, 4).to(12, 9, 12)
@@ -864,7 +860,7 @@ public class BlockShapeModelProvider extends BlockModelProvider {
 	}
 
 	private void blockShapesPetalApothecary() {
-		BlockModelBuilder b = model("block/shapes/petal_apothecary", "minecraft:block/block", "particle", "#side");
+		JsonModelBuilder b = model("block/shapes/petal_apothecary", "minecraft:block/block", "particle", "#side");
 		b.element().from(2, 0, 2).to(14, 2, 14)
 				.face(Direction.DOWN).texture("#bottom").cullface(Direction.DOWN).end()
 				.face(Direction.UP).texture("#bottom").end()
@@ -918,7 +914,7 @@ public class BlockShapeModelProvider extends BlockModelProvider {
 	}
 
 	private void blockShapesSlabCheckered() {
-		BlockModelBuilder b = model("block/shapes/slab_checkered", "minecraft:block/block", "particle", "#side");
+		JsonModelBuilder b = model("block/shapes/slab_checkered", "minecraft:block/block", "particle", "#side");
 		b.element().from(0, 0, 0).to(16, 8, 16)
 				.face(Direction.DOWN).texture("#side").uvs(0, 0, 16, 16).cullface(Direction.DOWN).end()
 				.face(Direction.UP).texture("#north").uvs(0, 0, 16, 16).end()
@@ -930,7 +926,7 @@ public class BlockShapeModelProvider extends BlockModelProvider {
 	}
 
 	private void blockShapesSlabTopCheckered() {
-		BlockModelBuilder b = model("block/shapes/slab_top_checkered", null, "particle", "#side");
+		JsonModelBuilder b = model("block/shapes/slab_top_checkered", null, "particle", "#side");
 		b.element().from(0, 8, 0).to(16, 16, 16)
 				.face(Direction.DOWN).texture("#north").uvs(0, 0, 16, 16).end()
 				.face(Direction.UP).texture("#side").uvs(0, 0, 16, 16).cullface(Direction.UP).end()
@@ -942,7 +938,7 @@ public class BlockShapeModelProvider extends BlockModelProvider {
 	}
 
 	private void blockShapesSpreader() {
-		BlockModelBuilder b = model("block/shapes/spreader", "minecraft:block/block", "particle", "#outside");
+		JsonModelBuilder b = model("block/shapes/spreader", "minecraft:block/block", "particle", "#outside");
 		b.element().from(2, 2, 2).to(3, 14, 14)
 				.face(Direction.NORTH).texture("#outside").tintindex(0).end()
 				.face(Direction.EAST).texture("#inside").tintindex(0).end()
@@ -998,7 +994,7 @@ public class BlockShapeModelProvider extends BlockModelProvider {
 	}
 
 	private void blockShapesSpreaderCore() {
-		BlockModelBuilder b = model("block/shapes/spreader_core", "minecraft:block/block", "particle", "#core");
+		JsonModelBuilder b = model("block/shapes/spreader_core", "minecraft:block/block", "particle", "#core");
 		b.element().from(5, 5, 5).to(11, 11, 11)
 				.face(Direction.NORTH).texture("#core").end()
 				.face(Direction.EAST).texture("#core").end()
@@ -1010,7 +1006,7 @@ public class BlockShapeModelProvider extends BlockModelProvider {
 	}
 
 	private void blockShapesSpreaderItem() {
-		BlockModelBuilder b = model("block/shapes/spreader_item", "minecraft:block/block", "particle", "#outside");
+		JsonModelBuilder b = model("block/shapes/spreader_item", "minecraft:block/block", "particle", "#outside");
 		b.transforms()
 				.transform(ItemDisplayContext.GUI).rotation(30, 225, 0).translation(0, 0, 0).scale(0.75F, 0.75F, 0.75F).end()
 				.transform(ItemDisplayContext.GROUND).rotation(0, 0, 0).translation(0, 3, 0).scale(0.3F, 0.3F, 0.3F).end()
@@ -1082,7 +1078,7 @@ public class BlockShapeModelProvider extends BlockModelProvider {
 	}
 
 	private void blockShapesSpreaderPadding() {
-		BlockModelBuilder b = model("block/shapes/spreader_padding", "minecraft:block/block", "particle", "#side");
+		JsonModelBuilder b = model("block/shapes/spreader_padding", "minecraft:block/block", "particle", "#side");
 		b.element().from(1, 1, 1).to(2, 15, 15)
 				.face(Direction.NORTH).texture("#side").end()
 				.face(Direction.EAST).texture("#side").end()
@@ -1108,12 +1104,12 @@ public class BlockShapeModelProvider extends BlockModelProvider {
 				.face(Direction.UP).texture("#front").end()
 				.end();
 		b.element().from(1, 1, 1).to(15, 2, 15)
-				.face(Direction.DOWN).texture("#back").rotation(ModelBuilder.FaceRotation.UPSIDE_DOWN).end()
+				.face(Direction.DOWN).texture("#back").rotation(JsonModelBuilder.FaceRotation.UPSIDE_DOWN).end()
 				.end();
 	}
 
 	private void blockShapesSpreaderScaffolding() {
-		BlockModelBuilder b = model("block/shapes/spreader_scaffolding", "minecraft:block/block", "particle", "#top");
+		JsonModelBuilder b = model("block/shapes/spreader_scaffolding", "minecraft:block/block", "particle", "#top");
 		b.element().from(0, 15.99F, 0).to(16, 16, 16)
 				.face(Direction.UP).texture("#top").cullface(Direction.UP).tintindex(0).end()
 				.face(Direction.DOWN).texture("#top").uvs(0, 16, 16, 0).tintindex(0).end()
@@ -1193,7 +1189,7 @@ public class BlockShapeModelProvider extends BlockModelProvider {
 	}
 
 	private void blockShapesStairsCheckered() {
-		BlockModelBuilder b = model("block/shapes/stairs_checkered", "minecraft:block/block", "particle", "#side");
+		JsonModelBuilder b = model("block/shapes/stairs_checkered", "minecraft:block/block", "particle", "#side");
 		b.transforms()
 				.transform(ItemDisplayContext.GUI).rotation(30, 135, 0).translation(0, 0, 0).scale(0.625F, 0.625F, 0.625F).end()
 				.transform(ItemDisplayContext.HEAD).rotation(0, -90, 0).translation(0, 0, 0).scale(1, 1, 1).end()
@@ -1216,7 +1212,7 @@ public class BlockShapeModelProvider extends BlockModelProvider {
 	}
 
 	private void blockShapesStairsCheckered90deg() {
-		BlockModelBuilder b = model("block/shapes/stairs_checkered_90deg", "minecraft:block/block", "particle", "#side");
+		JsonModelBuilder b = model("block/shapes/stairs_checkered_90deg", "minecraft:block/block", "particle", "#side");
 		b.transforms()
 				.transform(ItemDisplayContext.GUI).rotation(30, 135, 0).translation(0, 0, 0).scale(0.625F, 0.625F, 0.625F).end()
 				.transform(ItemDisplayContext.HEAD).rotation(0, -90, 0).translation(0, 0, 0).scale(1, 1, 1).end()
@@ -1239,7 +1235,7 @@ public class BlockShapeModelProvider extends BlockModelProvider {
 	}
 
 	private void blockShapesStairsInnerCheckered() {
-		BlockModelBuilder b = model("block/shapes/stairs_inner_checkered", null, "particle", "#side");
+		JsonModelBuilder b = model("block/shapes/stairs_inner_checkered", null, "particle", "#side");
 		b.element().from(0, 0, 0).to(16, 8, 16)
 				.face(Direction.DOWN).texture("#side").uvs(0, 0, 16, 16).cullface(Direction.DOWN).end()
 				.face(Direction.UP).texture("#north").uvs(0, 0, 16, 16).end()
@@ -1264,7 +1260,7 @@ public class BlockShapeModelProvider extends BlockModelProvider {
 	}
 
 	private void blockShapesStairsInnerCheckered90deg() {
-		BlockModelBuilder b = model("block/shapes/stairs_inner_checkered_90deg", null, "particle", "#side");
+		JsonModelBuilder b = model("block/shapes/stairs_inner_checkered_90deg", null, "particle", "#side");
 		b.element().from(0, 0, 0).to(16, 8, 16)
 				.face(Direction.DOWN).texture("#side").uvs(0, 0, 16, 16).cullface(Direction.DOWN).end()
 				.face(Direction.UP).texture("#north").uvs(0, 0, 16, 16).end()
@@ -1289,7 +1285,7 @@ public class BlockShapeModelProvider extends BlockModelProvider {
 	}
 
 	private void blockShapesStairsOuterCheckered() {
-		BlockModelBuilder b = model("block/shapes/stairs_outer_checkered", null, "particle", "#side");
+		JsonModelBuilder b = model("block/shapes/stairs_outer_checkered", null, "particle", "#side");
 		b.element().from(0, 0, 0).to(16, 8, 16)
 				.face(Direction.DOWN).texture("#side").uvs(0, 0, 16, 16).cullface(Direction.DOWN).end()
 				.face(Direction.UP).texture("#north").uvs(0, 0, 16, 16).end()
@@ -1308,7 +1304,7 @@ public class BlockShapeModelProvider extends BlockModelProvider {
 	}
 
 	private void blockShapesStairsOuterCheckered90deg() {
-		BlockModelBuilder b = model("block/shapes/stairs_outer_checkered_90deg", null, "particle", "#side");
+		JsonModelBuilder b = model("block/shapes/stairs_outer_checkered_90deg", null, "particle", "#side");
 		b.element().from(0, 0, 0).to(16, 8, 16)
 				.face(Direction.DOWN).texture("#side").uvs(0, 0, 16, 16).cullface(Direction.DOWN).end()
 				.face(Direction.UP).texture("#north").uvs(0, 0, 16, 16).end()
@@ -1327,7 +1323,7 @@ public class BlockShapeModelProvider extends BlockModelProvider {
 	}
 
 	private void blockShapesTenbytenAll() {
-		BlockModelBuilder b = model("block/shapes/tenbyten_all", "minecraft:block/block", "particle", "#all");
+		JsonModelBuilder b = model("block/shapes/tenbyten_all", "minecraft:block/block", "particle", "#all");
 		b.element().from(3, 3, 3).to(13, 13, 13)
 				.face(Direction.DOWN).texture("#all").uvs(3, 3, 13, 13).end()
 				.face(Direction.UP).texture("#all").uvs(3, 3, 13, 13).end()
@@ -1339,7 +1335,7 @@ public class BlockShapeModelProvider extends BlockModelProvider {
 	}
 
 	private void blockShapesThreeHighBottomTop() {
-		BlockModelBuilder b = model("block/shapes/three_high_bottom_top", "minecraft:block/block", "particle", "#side");
+		JsonModelBuilder b = model("block/shapes/three_high_bottom_top", "minecraft:block/block", "particle", "#side");
 		b.element().from(0, 0, 0).to(16, 3, 16)
 				.face(Direction.DOWN).texture("#bottom").uvs(0, 0, 16, 16).end()
 				.face(Direction.UP).texture("#top").uvs(0, 0, 16, 16).end()
@@ -1351,7 +1347,7 @@ public class BlockShapeModelProvider extends BlockModelProvider {
 	}
 
 	private void blockShapesWallInventory() {
-		BlockModelBuilder b = model("block/shapes/wall_inventory", "minecraft:block/block", "particle", "#wall");
+		JsonModelBuilder b = model("block/shapes/wall_inventory", "minecraft:block/block", "particle", "#wall");
 		b.ao(false);
 		b.transforms()
 				.transform(ItemDisplayContext.GUI).rotation(30, 135, 0).translation(0, 0, 0).scale(0.625F, 0.625F, 0.625F).end()
@@ -1375,7 +1371,7 @@ public class BlockShapeModelProvider extends BlockModelProvider {
 	}
 
 	private void blockShapesWallInventoryCheckered() {
-		BlockModelBuilder b = model("block/shapes/wall_inventory_checkered", "minecraft:block/block", "particle", "#side");
+		JsonModelBuilder b = model("block/shapes/wall_inventory_checkered", "minecraft:block/block", "particle", "#side");
 		b.ao(false);
 		b.transforms()
 				.transform(ItemDisplayContext.GUI).rotation(30, 135, 0).translation(0, 0, 0).scale(0.625F, 0.625F, 0.625F).end()
@@ -1399,7 +1395,7 @@ public class BlockShapeModelProvider extends BlockModelProvider {
 	}
 
 	private void blockShapesWallPost() {
-		BlockModelBuilder b = model("block/shapes/wall_post", null, "particle", "#wall");
+		JsonModelBuilder b = model("block/shapes/wall_post", null, "particle", "#wall");
 		b.element().from(4, 0, 4).to(12, 16, 12)
 				.face(Direction.DOWN).texture("#bottom").cullface(Direction.DOWN).end()
 				.face(Direction.UP).texture("#top").cullface(Direction.UP).end()
@@ -1411,7 +1407,7 @@ public class BlockShapeModelProvider extends BlockModelProvider {
 	}
 
 	private void blockShapesWallPostCheckered() {
-		BlockModelBuilder b = model("block/shapes/wall_post_checkered", null, "particle", "#side");
+		JsonModelBuilder b = model("block/shapes/wall_post_checkered", null, "particle", "#side");
 		b.element().from(4, 0, 4).to(12, 16, 12)
 				.face(Direction.DOWN).texture("#side").cullface(Direction.DOWN).end()
 				.face(Direction.UP).texture("#side").cullface(Direction.UP).end()
@@ -1423,7 +1419,7 @@ public class BlockShapeModelProvider extends BlockModelProvider {
 	}
 
 	private void blockShapesWallSide() {
-		BlockModelBuilder b = model("block/shapes/wall_side", null, "particle", "#wall");
+		JsonModelBuilder b = model("block/shapes/wall_side", null, "particle", "#wall");
 		b.element().from(5, 0, 0).to(11, 14, 8)
 				.face(Direction.DOWN).texture("#bottom").cullface(Direction.DOWN).end()
 				.face(Direction.UP).texture("#top").end()
@@ -1434,7 +1430,7 @@ public class BlockShapeModelProvider extends BlockModelProvider {
 	}
 
 	private void blockShapesWallSideCheckered() {
-		BlockModelBuilder b = model("block/shapes/wall_side_checkered", null, "particle", "#side");
+		JsonModelBuilder b = model("block/shapes/wall_side_checkered", null, "particle", "#side");
 		b.element().from(5, 0, 0).to(11, 14, 8)
 				.face(Direction.DOWN).texture("#side").cullface(Direction.DOWN).end()
 				.face(Direction.UP).texture("#side").end()
@@ -1445,7 +1441,7 @@ public class BlockShapeModelProvider extends BlockModelProvider {
 	}
 
 	private void blockShapesWallSideCheckered90deg() {
-		BlockModelBuilder b = model("block/shapes/wall_side_checkered_90deg", null, "particle", "#side");
+		JsonModelBuilder b = model("block/shapes/wall_side_checkered_90deg", null, "particle", "#side");
 		b.element().from(5, 0, 0).to(11, 14, 8)
 				.face(Direction.DOWN).texture("#side").cullface(Direction.DOWN).end()
 				.face(Direction.UP).texture("#side").end()
@@ -1456,7 +1452,7 @@ public class BlockShapeModelProvider extends BlockModelProvider {
 	}
 
 	private void blockShapesWallSideTall() {
-		BlockModelBuilder b = model("block/shapes/wall_side_tall", null, "particle", "#wall");
+		JsonModelBuilder b = model("block/shapes/wall_side_tall", null, "particle", "#wall");
 		b.element().from(5, 0, 0).to(11, 16, 8)
 				.face(Direction.DOWN).texture("#bottom").cullface(Direction.DOWN).end()
 				.face(Direction.UP).texture("#top").cullface(Direction.UP).end()
@@ -1467,7 +1463,7 @@ public class BlockShapeModelProvider extends BlockModelProvider {
 	}
 
 	private void blockShapesWallSideTallCheckered() {
-		BlockModelBuilder b = model("block/shapes/wall_side_tall_checkered", null, "particle", "#side");
+		JsonModelBuilder b = model("block/shapes/wall_side_tall_checkered", null, "particle", "#side");
 		b.element().from(5, 0, 0).to(11, 16, 8)
 				.face(Direction.DOWN).texture("#side").cullface(Direction.DOWN).end()
 				.face(Direction.UP).texture("#side").cullface(Direction.UP).end()
@@ -1478,7 +1474,7 @@ public class BlockShapeModelProvider extends BlockModelProvider {
 	}
 
 	private void blockShapesWallSideTallCheckered90deg() {
-		BlockModelBuilder b = model("block/shapes/wall_side_tall_checkered_90deg", null, "particle", "#side");
+		JsonModelBuilder b = model("block/shapes/wall_side_tall_checkered_90deg", null, "particle", "#side");
 		b.element().from(5, 0, 0).to(11, 16, 8)
 				.face(Direction.DOWN).texture("#side").cullface(Direction.DOWN).end()
 				.face(Direction.UP).texture("#side").cullface(Direction.UP).end()
@@ -1489,7 +1485,7 @@ public class BlockShapeModelProvider extends BlockModelProvider {
 	}
 
 	private void blockSpawnerClaw() {
-		BlockModelBuilder b = model("block/spawner_claw", "minecraft:block/block", "texture", "botania:block/life_imbuer", "particle", "botania:block/life_imbuer");
+		JsonModelBuilder b = model("block/spawner_claw", "minecraft:block/block", "texture", "botania:block/life_imbuer", "particle", "botania:block/life_imbuer");
 		b.transforms()
 				.transform(ItemDisplayContext.GUI).rotation(30, 225, 0).translation(0, 4, 0).scale(0.625F, 0.625F, 0.625F).end();
 		b.element().from(2, 0, 2).to(14, 2, 14)
@@ -1623,7 +1619,7 @@ public class BlockShapeModelProvider extends BlockModelProvider {
 	}
 
 	private void tinyPotatoBase() {
-		BlockModelBuilder b = model("tiny_potato/base", "minecraft:block/cube_all", "all", "botania:block/tiny_potato/default");
+		JsonModelBuilder b = model("tiny_potato/base", "minecraft:block/cube_all", "all", "botania:block/tiny_potato/default");
 		b.transforms()
 				.transform(ItemDisplayContext.FIRST_PERSON_RIGHT_HAND).rotation(-36, 137, 20).translation(1, 3, 0).scale(0.4F, 0.4F, 0.4F).end()
 				.transform(ItemDisplayContext.THIRD_PERSON_RIGHT_HAND).rotation(0, 162, 0).translation(0, 3.2F, 1).scale(0.4F, 0.4F, 0.4F).end()
@@ -1667,7 +1663,7 @@ public class BlockShapeModelProvider extends BlockModelProvider {
 	}
 
 	private void tinyPotatoDefault() {
-		BlockModelBuilder b = model("tiny_potato/default", "botania:tiny_potato/base");
+		JsonModelBuilder b = model("tiny_potato/default", "botania:tiny_potato/base");
 		b.element().from(6, 0, 6).to(10, 6, 10)
 				.face(Direction.DOWN).texture("#all").uvs(12, 4, 8, 0).end()
 				.face(Direction.UP).texture("#all").uvs(8, 4, 4, 0).end()
@@ -1679,7 +1675,7 @@ public class BlockShapeModelProvider extends BlockModelProvider {
 	}
 
 	private void tinyPotatoDinnerbone() {
-		BlockModelBuilder b = model("tiny_potato/dinnerbone", "botania:tiny_potato/base");
+		JsonModelBuilder b = model("tiny_potato/dinnerbone", "botania:tiny_potato/base");
 		b.element().from(10, 6, 6).to(6, 0, 10)
 				.face(Direction.DOWN).texture("#all").uvs(12, 4, 8, 0).end()
 				.face(Direction.UP).texture("#all").uvs(8, 4, 4, 0).end()
@@ -1727,7 +1723,7 @@ public class BlockShapeModelProvider extends BlockModelProvider {
 	}
 
 	private void tinyPotatoKingdaddydmac() {
-		BlockModelBuilder b = model("tiny_potato/kingdaddydmac", "botania:tiny_potato/base");
+		JsonModelBuilder b = model("tiny_potato/kingdaddydmac", "botania:tiny_potato/base");
 		b.transforms()
 				.transform(ItemDisplayContext.FIRST_PERSON_RIGHT_HAND).rotation(-38, 146, 6).translation(-2.5F, 3.5F, 0).scale(0.4F, 0.4F, 0.4F).end()
 				.transform(ItemDisplayContext.FIRST_PERSON_LEFT_HAND).rotation(-38, 146, 6).translation(2, 3.5F, 0).scale(0.4F, 0.4F, 0.4F).end()
@@ -1795,7 +1791,7 @@ public class BlockShapeModelProvider extends BlockModelProvider {
 	}
 
 	private void tinyPotatoPahimar() {
-		BlockModelBuilder b = model("tiny_potato/pahimar", "botania:tiny_potato/base");
+		JsonModelBuilder b = model("tiny_potato/pahimar", "botania:tiny_potato/base");
 		b.transforms()
 				.transform(ItemDisplayContext.FIRST_PERSON_RIGHT_HAND).rotation(-36, 137, 0).translation(1, 3.75F, 0).scale(0.4F, 0.4F, 0.4F).end();
 		b.element().from(6, 0, 6).to(10, 1.8F, 10)
@@ -1825,7 +1821,7 @@ public class BlockShapeModelProvider extends BlockModelProvider {
 	}
 
 	private void tinyPotatoSnorps() {
-		BlockModelBuilder b = model("tiny_potato/snorps", "botania:tiny_potato/base");
+		JsonModelBuilder b = model("tiny_potato/snorps", "botania:tiny_potato/base");
 		b.element().from(6, 0, 6).to(10, 6, 10)
 				.face(Direction.DOWN).texture("#all").uvs(12, 4, 8, 0).end()
 				.face(Direction.UP).texture("#all").uvs(8, 4, 4, 0).end()
@@ -1889,7 +1885,7 @@ public class BlockShapeModelProvider extends BlockModelProvider {
 	}
 
 	private void tinyPotatoTomater() {
-		BlockModelBuilder b = model("tiny_potato/tomater", "botania:tiny_potato/base", "all", "botania:block/tiny_potato/tomato");
+		JsonModelBuilder b = model("tiny_potato/tomater", "botania:tiny_potato/base", "all", "botania:block/tiny_potato/tomato");
 		b.transforms()
 				.transform(ItemDisplayContext.FIRST_PERSON_RIGHT_HAND).rotation(-36, 137, 20).translation(1, 3.325F, 0).scale(0.4F, 0.4F, 0.4F).end();
 		b.element().from(5.5F, 0, 5.5F).to(10.5F, 5, 10.5F)

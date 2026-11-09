@@ -1,15 +1,18 @@
 package velrondevs.botania.common.crafting;
 
+import velrondevs.botania.api.recipe.BotaniaRecipe;
 import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 
@@ -25,10 +28,14 @@ import java.util.List;
 import java.util.Optional;
 
 public class ElvenTradeRecipe implements velrondevs.botania.api.recipe.ElvenTradeRecipe {
-	private final ImmutableList<ItemStack> outputs;
+	private final ImmutableList<ItemStackTemplate> outputs;
 	private final NonNullList<Ingredient> inputs;
 
 	public ElvenTradeRecipe(ItemStack[] outputs, Ingredient... inputs) {
+		this(java.util.Arrays.stream(outputs).map(ItemStackTemplate::fromNonEmptyStack).toList(), inputs);
+	}
+
+	public ElvenTradeRecipe(List<ItemStackTemplate> outputs, Ingredient... inputs) {
 		this.outputs = ImmutableList.copyOf(outputs);
 		this.inputs = NonNullList.create();
 		this.inputs.addAll(Arrays.asList(inputs));
@@ -80,7 +87,7 @@ public class ElvenTradeRecipe implements velrondevs.botania.api.recipe.ElvenTrad
 
 	@NotNull
 	@Override
-	public RecipeSerializer<?> getSerializer() {
+	public RecipeSerializer<? extends BotaniaRecipe> getSerializer() {
 		return BotaniaRecipeTypes.ELVEN_TRADE_SERIALIZER;
 	}
 
@@ -98,7 +105,7 @@ public class ElvenTradeRecipe implements velrondevs.botania.api.recipe.ElvenTrad
 
 	@Override
 	public List<ItemStack> getOutputs() {
-		return outputs;
+		return outputs.stream().map(ItemStackTemplate::create).toList();
 	}
 
 	@Override
@@ -106,21 +113,21 @@ public class ElvenTradeRecipe implements velrondevs.botania.api.recipe.ElvenTrad
 		return getOutputs();
 	}
 
-	public static class Serializer implements RecipeSerializer<ElvenTradeRecipe> {
-		private static final Codec<List<ItemStack>> OUTPUTS_CODEC = Codec.either(ItemStack.STRICT_CODEC.listOf(), ItemStack.STRICT_CODEC)
+	public static class Serializer implements BotaniaRecipeSerializer<ElvenTradeRecipe> {
+		private static final Codec<List<ItemStackTemplate>> OUTPUTS_CODEC = Codec.either(ItemStackTemplate.CODEC.listOf(), ItemStackTemplate.CODEC)
 				.xmap(either -> either.map(list -> list, List::of), Either::left);
 		public static final MapCodec<ElvenTradeRecipe> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-				OUTPUTS_CODEC.fieldOf("output").forGetter(ElvenTradeRecipe::getOutputs),
+				OUTPUTS_CODEC.fieldOf("output").forGetter(recipe -> recipe.outputs),
 				Ingredient.CODEC.listOf().fieldOf("ingredients").forGetter(ElvenTradeRecipe::getIngredients)
 		).apply(instance, Serializer::create));
 		public static final StreamCodec<RegistryFriendlyByteBuf, ElvenTradeRecipe> STREAM_CODEC = StreamCodec.composite(
 				RecipeUtils.INGREDIENTS_STREAM_CODEC, ElvenTradeRecipe::getIngredients,
-				ItemStack.LIST_STREAM_CODEC, ElvenTradeRecipe::getOutputs,
-				(inputs, outputs) -> new ElvenTradeRecipe(outputs.toArray(new ItemStack[0]), inputs.toArray(new Ingredient[0])));
+				ItemStackTemplate.STREAM_CODEC.apply(ByteBufCodecs.list()), recipe -> recipe.outputs,
+				(inputs, outputs) -> new ElvenTradeRecipe(outputs, inputs.toArray(new Ingredient[0])));
 
-		private static ElvenTradeRecipe create(List<ItemStack> outputs, List<Ingredient> inputs) {
-			return new ElvenTradeRecipe(outputs.toArray(new ItemStack[0]),
-					inputs.stream().filter(ing -> !ing.isEmpty()).toArray(Ingredient[]::new));
+		private static ElvenTradeRecipe create(List<ItemStackTemplate> outputs, List<Ingredient> inputs) {
+			return new ElvenTradeRecipe(outputs,
+					inputs.toArray(new Ingredient[0]));
 		}
 
 		@Override

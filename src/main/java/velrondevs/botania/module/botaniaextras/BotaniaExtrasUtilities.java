@@ -2,7 +2,7 @@ package velrondevs.botania.module.botaniaextras;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.EntityType;
@@ -25,7 +25,6 @@ import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 import net.neoforged.neoforge.event.entity.RegisterSpawnPlacementsEvent;
-import net.neoforged.neoforge.items.wrapper.SidedInvWrapper;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.handling.IPayloadHandler;
 import net.neoforged.neoforge.network.registration.HandlerThread;
@@ -53,9 +52,9 @@ import java.util.function.BiConsumer;
 import static velrondevs.botania.common.lib.ResourceLocationHelper.prefix;
 
 public final class BotaniaExtrasUtilities {
-	public static final ResourceLocation FUNNEL_ID = prefix("livingwood_funnel");
-	public static final ResourceLocation MANASEAL_CREEPER_ID = prefix("manaseal_creeper");
-	public static final ResourceLocation MANATIDE_STORM_ID = prefix("manatide_storm");
+	public static final Identifier FUNNEL_ID = prefix("livingwood_funnel");
+	public static final Identifier MANASEAL_CREEPER_ID = prefix("manaseal_creeper");
+	public static final Identifier MANATIDE_STORM_ID = prefix("manatide_storm");
 
 	public static final Holder<MobEffect> MANATIDE_STORM = DeferredHolder.create(Registries.MOB_EFFECT, MANATIDE_STORM_ID);
 
@@ -64,13 +63,13 @@ public final class BotaniaExtrasUtilities {
 	public static final BlockEntityType<LivingwoodFunnelBlockEntity> FUNNEL = XplatAbstractions.INSTANCE.createBlockEntityType(LivingwoodFunnelBlockEntity::new, livingwoodFunnel);
 
 	public static final EntityType<ManasealCreeperEntity> MANASEAL_CREEPER = EntityType.Builder.<ManasealCreeperEntity>of(ManasealCreeperEntity::new, MobCategory.MONSTER)
-			.sized(0.6F, 1.7F).clientTrackingRange(8).build(MANASEAL_CREEPER_ID.toString());
+			.sized(0.6F, 1.7F).clientTrackingRange(8).build(net.minecraft.resources.ResourceKey.create(Registries.ENTITY_TYPE, MANASEAL_CREEPER_ID));
 
 	public static final Item toolbelt = new ToolbeltItem(BotaniaItems.defaultBuilder().stacksTo(1));
 	public static final Item clericalColorizer = new ClericalColorizerItem(BotaniaItems.defaultBuilder().stacksTo(1));
 	public static final Item wiltedLotus = new LotusRemnantItem(false, BotaniaItems.defaultBuilder());
 	public static final Item deathlyLotus = new LotusRemnantItem(true, BotaniaItems.defaultBuilder().rarity(Rarity.RARE));
-	public static final Item manasealCreeperSpawnEgg = new SpawnEggItem(MANASEAL_CREEPER, 0xCC11D3, 0xFB9BFF, BotaniaItems.defaultBuilder());
+	public static final Item manasealCreeperSpawnEgg = new SpawnEggItem(BotaniaItems.defaultBuilder().spawnEgg(MANASEAL_CREEPER));
 
 	private static final List<Item> COATS = new ArrayList<>();
 
@@ -86,23 +85,23 @@ public final class BotaniaExtrasUtilities {
 		return Collections.unmodifiableList(COATS);
 	}
 
-	public static void registerBlocks(BiConsumer<Block, ResourceLocation> r) {
+	public static void registerBlocks(BiConsumer<Block, Identifier> r) {
 		r.accept(livingwoodFunnel, FUNNEL_ID);
 	}
 
-	public static void registerBlockEntities(BiConsumer<BlockEntityType<?>, ResourceLocation> r) {
+	public static void registerBlockEntities(BiConsumer<BlockEntityType<?>, Identifier> r) {
 		r.accept(FUNNEL, FUNNEL_ID);
 	}
 
-	public static void registerEntities(BiConsumer<EntityType<?>, ResourceLocation> r) {
+	public static void registerEntities(BiConsumer<EntityType<?>, Identifier> r) {
 		r.accept(MANASEAL_CREEPER, MANASEAL_CREEPER_ID);
 	}
 
-	public static void registerEffects(BiConsumer<MobEffect, ResourceLocation> r) {
+	public static void registerEffects(BiConsumer<MobEffect, Identifier> r) {
 		r.accept(new ManatideStormEffect(), MANATIDE_STORM_ID);
 	}
 
-	public static void registerSerializers(BiConsumer<RecipeSerializer<?>, ResourceLocation> r) {
+	public static void registerSerializers(BiConsumer<RecipeSerializer<?>, Identifier> r) {
 		r.accept(ColorizerDyeRecipe.SERIALIZER, prefix("clerical_colorizer_dye"));
 	}
 
@@ -115,7 +114,7 @@ public final class BotaniaExtrasUtilities {
 				Monster::checkMonsterSpawnRules, RegisterSpawnPlacementsEvent.Operation.OR);
 	}
 
-	public static void registerItems(BiConsumer<Item, ResourceLocation> r) {
+	public static void registerItems(BiConsumer<Item, Identifier> r) {
 		r.accept(new BlockItem(livingwoodFunnel, BotaniaItems.defaultBuilder()), FUNNEL_ID);
 		r.accept(toolbelt, prefix("toolbelt"));
 		r.accept(clericalColorizer, prefix("clerical_colorizer"));
@@ -129,14 +128,14 @@ public final class BotaniaExtrasUtilities {
 
 	public static void registerCapabilities(RegisterCapabilitiesEvent e) {
 		e.registerItem(BotaniaCapabilities.BLOCK_PROVIDER, (stack, ctx) -> new ToolbeltItem.BlockProviderImpl(stack), toolbelt);
-		e.registerBlockEntity(Capabilities.ItemHandler.BLOCK, FUNNEL, (be, side) -> new SidedInvWrapper(be, side));
+		e.registerBlockEntity(Capabilities.Item.BLOCK, FUNNEL, (be, side) -> new net.neoforged.neoforge.transfer.item.WorldlyContainerWrapper(be, side));
 	}
 
 	public static void registerPayloads(RegisterPayloadHandlersEvent e) {
 		e.registrar("1").executesOn(HandlerThread.NETWORK).playToServer(ToolbeltClickPacket.TYPE, ToolbeltClickPacket.STREAM_CODEC,
 				(IPayloadHandler<ToolbeltClickPacket>) (packet, ctx) -> {
 					ServerPlayer player = (ServerPlayer) ctx.player();
-					packet.handle(player.getServer(), player);
+					packet.handle(player.level().getServer(), player);
 				});
 	}
 }

@@ -1,19 +1,24 @@
 package velrondevs.botania.client.core.handler;
 
+import velrondevs.botania.client.core.helper.DeferredBufferSource;
+
+import net.minecraft.client.renderer.SubmitNodeCollector;
+
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.language.I18n;
-import net.minecraft.client.resources.model.Material;
+import net.minecraft.client.resources.model.sprite.SpriteId;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
-import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 
@@ -36,8 +41,8 @@ import static velrondevs.botania.common.lib.ResourceLocationHelper.prefix;
 public class RenderLexicon {
 	private static BotaniaBookModel model = null;
 	private static final boolean SHOULD_MISSPELL = Math.random() < 0.004;
-	public static final Material TEXTURE = new Material(InventoryMenu.BLOCK_ATLAS, prefix("item/lexicon_3d"));
-	public static final Material ELVEN_TEXTURE = new Material(InventoryMenu.BLOCK_ATLAS, prefix("item/lexicon_elven_3d"));
+	public static final SpriteId TEXTURE = new SpriteId(TextureAtlas.LOCATION_ITEMS, prefix("item/lexicon_3d"));
+	public static final SpriteId ELVEN_TEXTURE = new SpriteId(TextureAtlas.LOCATION_ITEMS, prefix("item/lexicon_elven_3d"));
 
 	private static final String[] QUOTES = new String[] {
 			"\"Neat!\" - Direwolf20",
@@ -65,7 +70,7 @@ public class RenderLexicon {
 	}
 
 	public static boolean renderHand(ItemStack stack, ItemDisplayContext type,
-			boolean leftHanded, PoseStack ms, MultiBufferSource buffers, int light) {
+			boolean leftHanded, PoseStack ms, SubmitNodeCollector collector, int light) {
 		if (!BotaniaConfig.client().lexicon3dModel()
 				|| !type.firstPerson()
 				|| stack.isEmpty()
@@ -73,7 +78,7 @@ public class RenderLexicon {
 			return false;
 		}
 		try {
-			doRender(stack, leftHanded, ms, buffers, light, ClientTickHandler.partialTicks);
+			doRender(stack, leftHanded, ms, new DeferredBufferSource(collector), light, ClientTickHandler.partialTicks);
 			return true;
 		} catch (Throwable throwable) {
 			BotaniaAPI.LOGGER.warn("Failed to render lexicon", throwable);
@@ -117,8 +122,8 @@ public class RenderLexicon {
 		var model = getModel();
 		model.setupAnim(ClientTickHandler.total(), Mth.clamp(leftPageAngle, 0.0F, 1.0F), Mth.clamp(rightPageAngle, 0.0F, 1.0F), opening);
 
-		Material mat = LexicaBotaniaItem.isElven(stack) ? ELVEN_TEXTURE : TEXTURE;
-		VertexConsumer buffer = mat.buffer(buffers, RenderType::entitySolid);
+		SpriteId mat = LexicaBotaniaItem.isElven(stack) ? ELVEN_TEXTURE : TEXTURE;
+		VertexConsumer buffer = mat.buffer(Minecraft.getInstance().getAtlasManager(), buffers, RenderTypes::entitySolid);
 		model.renderToBuffer(ms, buffer, light, OverlayTexture.NO_OVERLAY, -1);
 
 		if (ticks < 3) {
@@ -128,7 +133,7 @@ public class RenderLexicon {
 			ms.scale(0.0030F, 0.0030F, -0.0030F);
 
 			if (misspelling == -1 && mc.level != null) {
-				misspelling = mc.level.random.nextInt(MISSPELLINGS.length);
+				misspelling = mc.level.getRandom().nextInt(MISSPELLINGS.length);
 			}
 
 			String title = LexicaBotaniaItem.getTitle(stack).getString();
@@ -143,7 +148,7 @@ public class RenderLexicon {
 			font.drawInBatch(edition, 0, 0, 0xA07100, false, ms.last().pose(), buffers, Font.DisplayMode.NORMAL, 0, light);
 
 			if (quote == -1 && mc.level != null) {
-				quote = mc.level.random.nextInt(QUOTES.length);
+				quote = mc.level.getRandom().nextInt(QUOTES.length);
 			}
 
 			String quoteStr = QUOTES[quote];

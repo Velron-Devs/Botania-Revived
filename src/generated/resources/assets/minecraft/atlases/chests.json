@@ -1,0 +1,10 @@
+{
+  "sources": [
+    {
+      "type": "neoforge:namespaced_directory",
+      "namespace": "botania",
+      "prefix": "entity/chest/",
+      "source": "entity/chest"
+    }
+  ]
+}

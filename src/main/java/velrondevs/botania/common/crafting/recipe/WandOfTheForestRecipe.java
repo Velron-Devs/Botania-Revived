@@ -19,12 +19,12 @@ public class WandOfTheForestRecipe extends ShapedRecipe {
 	public static final RecipeSerializer<WandOfTheForestRecipe> SERIALIZER = RecipeUtils.shapedWrapper(WandOfTheForestRecipe::new);
 
 	public WandOfTheForestRecipe(ShapedRecipe compose) {
-		super(compose.getGroup(), compose.category(), compose.pattern, compose.getResultItem(RegistryAccess.EMPTY), compose.showNotification());
+		super(RecipeUtils.commonInfo(compose), RecipeUtils.bookInfo(compose), compose.pattern, RecipeUtils.result(compose));
 	}
 
 	@NotNull
 	@Override
-	public ItemStack assemble(CraftingInput inv, @NotNull HolderLookup.Provider registries) {
+	public ItemStack assemble(CraftingInput inv) {
 		int first = -1;
 		for (int i = 0; i < inv.size(); i++) {
 			ItemStack stack = inv.getItem(i);
@@ -41,15 +41,16 @@ public class WandOfTheForestRecipe extends ShapedRecipe {
 			if (first == -1) {
 				first = colorId;
 			} else {
-				return WandOfTheForestItem.setColors(getResultItem(registries).copy(), first, colorId);
+				return WandOfTheForestItem.setColors(RecipeUtils.resultItem(this), first, colorId);
 			}
 		}
-		return WandOfTheForestItem.setColors(getResultItem(registries).copy(), first != -1 ? first : 0, 0);
+		return WandOfTheForestItem.setColors(RecipeUtils.resultItem(this), first != -1 ? first : 0, 0);
 	}
 
 	@NotNull
 	@Override
-	public RecipeSerializer<?> getSerializer() {
-		return SERIALIZER;
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public RecipeSerializer<ShapedRecipe> getSerializer() {
+		return (RecipeSerializer) SERIALIZER;
 	}
 }

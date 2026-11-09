@@ -9,9 +9,7 @@
   "category": "misc",
   "group": "botania:mystical_bifrost_petal",
   "ingredients": [
-    {
-      "item": "botania:tall_mystical_bifrost_flower"
-    }
+    "botania:tall_mystical_bifrost_flower"
   ],
   "result": {
     "count": 4,

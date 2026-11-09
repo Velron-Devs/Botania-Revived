@@ -10,6 +10,9 @@ import mezz.jei.api.recipe.category.extensions.vanilla.crafting.ICraftingCategor
 
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.display.SlotDisplay;
+
+import velrondevs.botania.client.integration.jei.JeiSlotDisplays;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -28,6 +31,11 @@ public class TerraShattererTippingRecipeWrapper implements ICraftingCategoryExte
 		inputs = ImmutableList.of(ImmutableList.of(new ItemStack(BotaniaItems.terraPick)), ImmutableList.of(new ItemStack(BotaniaItems.elementiumPick)));
 		output = new ItemStack(BotaniaItems.terraPick);
 		TerraShattererItem.setTipped(output);
+	}
+
+	@Override
+	public List<SlotDisplay> getIngredients(@NotNull RecipeHolder<TerraShattererTippingRecipe> recipeHolder) {
+		return JeiSlotDisplays.ofAll(inputs);
 	}
 
 	@Override

@@ -5,11 +5,10 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.Vec2;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -18,10 +17,10 @@ import snownee.jade.api.ITooltip;
 import snownee.jade.api.config.IPluginConfig;
 import snownee.jade.api.theme.IThemeHelper;
 import snownee.jade.api.ui.BoxStyle;
+import snownee.jade.api.ui.Element;
 import snownee.jade.api.ui.IDisplayHelper;
-import snownee.jade.api.ui.IElement;
-import snownee.jade.api.ui.IElementHelper;
-import snownee.jade.api.ui.ProgressStyle;
+import snownee.jade.api.ui.JadeUI;
+import snownee.jade.api.view.ProgressView;
 
 import java.util.List;
 import java.util.Locale;
@@ -70,7 +69,7 @@ public final class JadeManaHelper {
 		}
 	}
 
-	private static int configColor(IPluginConfig config, ResourceLocation key, int fallback) {
+	private static int configColor(IPluginConfig config, Identifier key, int fallback) {
 		Integer color = parseColor(config.getString(key));
 		return color == null ? fallback : color;
 	}
@@ -118,23 +117,17 @@ public final class JadeManaHelper {
 	}
 
 	public static void addBar(ITooltip tooltip, float ratio, Component text, int color) {
-		IElementHelper elements = IElementHelper.get();
-		ProgressStyle style = elements.progressStyle().color(color, darker(color));
-		tooltip.add(elements.progress(Mth.clamp(ratio, 0F, 1F), text, style, BoxStyle.getNestedBox(), true));
-	}
-
-	private static int darker(int color) {
-		return (color & 0xFF000000) | ((color & 0xFEFEFE) >> 1);
+		ProgressView.Part part = new ProgressView.PartBuilder().progress(Mth.clamp(ratio, 0F, 1F)).color(color).build();
+		tooltip.add(JadeUI.progress(new ProgressView(part, text, JadeUI.progressStyle(), BoxStyle.nestedBox())));
 	}
 
 	public static void addRecipeRow(ITooltip tooltip, List<ItemStack> inputs, float progress, ItemStack output) {
-		IElementHelper elements = IElementHelper.get();
 		boolean first = true;
 		for (ItemStack input : inputs) {
 			if (input.isEmpty()) {
 				continue;
 			}
-			IElement element = elements.item(input);
+			Element element = JadeUI.item(input);
 			if (first) {
 				tooltip.add(element);
 			} else {
@@ -142,25 +135,24 @@ public final class JadeManaHelper {
 			}
 			first = false;
 		}
-		IElement arrow = elements.progress(Mth.clamp(progress, 0F, 1F));
+		Element arrow = JadeUI.progressArrow(Mth.clamp(progress, 0F, 1F));
 		if (first) {
 			tooltip.add(arrow);
 		} else {
-			tooltip.append(elements.spacer(4, 0));
-			tooltip.append(arrow.translate(new Vec2(-2, 0)));
+			tooltip.append(JadeUI.spacer(4, 0));
+			tooltip.append(arrow.offset(-2, 0));
 		}
 		if (!output.isEmpty()) {
-			tooltip.append(elements.item(output));
+			tooltip.append(JadeUI.item(output));
 		}
 	}
 
 	public static void addItemLine(ITooltip tooltip, ItemStack stack, Component text) {
-		IElementHelper elements = IElementHelper.get();
 		if (stack.isEmpty()) {
 			tooltip.add(text);
 		} else {
-			tooltip.add(elements.smallItem(stack));
-			tooltip.append(elements.text(text));
+			tooltip.add(JadeUI.smallItem(stack));
+			tooltip.append(JadeUI.text(text));
 		}
 	}
 
@@ -168,7 +160,7 @@ public final class JadeManaHelper {
 		if (!config.get(BotaniaJadeIds.SHOW_BINDING) || !data.contains(BOUND)) {
 			return;
 		}
-		if (data.getBoolean(BOUND)) {
+		if (data.getBooleanOr(BOUND, false)) {
 			ItemStack target = getStack(data, TARGET, accessor);
 			addItemLine(tooltip, target, Component.translatable(boundKey, target.isEmpty() ? Component.literal("?") : target.getHoverName()));
 		} else {
@@ -197,7 +189,7 @@ public final class JadeManaHelper {
 	}
 
 	public static int getInt(CompoundTag data, String key, int fallback) {
-		return data.contains(key) ? data.getInt(key) : fallback;
+		return data.getIntOr(key, fallback);
 	}
 
 	public static MutableComponent gray(Component component) {

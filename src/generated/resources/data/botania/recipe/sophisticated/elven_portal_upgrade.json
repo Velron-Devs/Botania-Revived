@@ -30,23 +30,16 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "B": {
-      "tag": "botania:sophisticated_upgrade_bases"
-    },
-    "D": {
-      "tag": "botania:dragonstone_gems"
-    },
-    "E": {
-      "tag": "botania:elementium_ingots"
-    },
-    "W": {
-      "tag": "botania:dreamwood_logs"
-    }
+    "A": "botania:alfheim_portal",
+    "B": "#botania:sophisticated_upgrade_bases",
+    "D": "#botania:dragonstone_gems",
+    "E": "#botania:elementium_ingots",
+    "G": "botania:glimmering_livingwood_log"
   },
   "pattern": [
-    "DWD",
+    "DGD",
     "EBE",
-    "DWD"
+    "DAD"
   ],
   "result": {
     "count": 1,

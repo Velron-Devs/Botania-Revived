@@ -19,12 +19,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "I": {
-      "item": "botania:gaia_ingot"
-    },
-    "L": {
-      "item": "minecraft:lever"
-    }
+    "I": "botania:gaia_ingot",
+    "L": "minecraft:lever"
   },
   "pattern": [
     "III",

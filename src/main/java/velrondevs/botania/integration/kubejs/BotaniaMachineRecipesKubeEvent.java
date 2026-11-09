@@ -5,7 +5,7 @@ import dev.latvian.mods.kubejs.util.ID;
 import dev.latvian.mods.rhino.Context;
 import dev.latvian.mods.rhino.util.HideFromJS;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import velrondevs.botania.event.BotaniaEvents;
 
@@ -77,7 +77,7 @@ public class BotaniaMachineRecipesKubeEvent implements KubeEvent {
 		recipes.clear();
 	}
 
-	private void register(BotaniaKubeRecipe<?> recipe, ResourceLocation id) {
+	private void register(BotaniaKubeRecipe<?> recipe, Identifier id) {
 		try {
 			event.add(id, recipe.build());
 			added++;
@@ -86,11 +86,11 @@ public class BotaniaMachineRecipesKubeEvent implements KubeEvent {
 		}
 	}
 
-	private ResourceLocation autoId(BotaniaKubeRecipe<?> recipe) {
+	private Identifier autoId(BotaniaKubeRecipe<?> recipe) {
 		String base = "botania_" + recipe.getType() + "/" + recipe.autoIdPath();
-		ResourceLocation id = ResourceLocation.fromNamespaceAndPath("kubejs", base);
+		Identifier id = Identifier.fromNamespaceAndPath("kubejs", base);
 		for (int i = 2; event.exists(id); i++) {
-			id = ResourceLocation.fromNamespaceAndPath("kubejs", base + "_" + i);
+			id = Identifier.fromNamespaceAndPath("kubejs", base + "_" + i);
 		}
 		return id;
 	}

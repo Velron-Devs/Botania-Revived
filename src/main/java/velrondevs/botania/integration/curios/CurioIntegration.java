@@ -1,20 +1,15 @@
 package velrondevs.botania.integration.curios;
 
 import com.google.common.collect.Multimap;
-import com.mojang.blaze3d.vertex.PoseStack;
 
-import net.minecraft.client.model.EntityModel;
-import net.minecraft.client.model.HumanoidModel;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.entity.RenderLayerParent;
+import net.minecraft.core.Holder;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.core.Holder;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.common.NeoForge;
@@ -27,14 +22,11 @@ import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.CuriosCapability;
 import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.SlotResult;
-import top.theillusivec4.curios.api.client.CuriosRendererRegistry;
-import top.theillusivec4.curios.api.client.ICurioRenderer;
+import top.theillusivec4.curios.api.common.DropRule;
 import top.theillusivec4.curios.api.event.DropRulesEvent;
 import top.theillusivec4.curios.api.type.capability.ICurio;
-import top.theillusivec4.curios.api.type.capability.ICurio.DropRule;
 import top.theillusivec4.curios.api.type.capability.ICuriosItemHandler;
 
-import velrondevs.botania.client.render.AccessoryRenderRegistry;
 import velrondevs.botania.common.handler.EquipmentHandler;
 import velrondevs.botania.common.helper.ItemNBTHelper;
 import velrondevs.botania.common.item.ResoluteIvyItem;
@@ -82,12 +74,14 @@ public class CurioIntegration extends EquipmentHandler {
 	}
 
 	public static void registerCapabilities(RegisterCapabilitiesEvent event, Item... baubles) {
-		event.registerItem(CuriosCapability.ITEM, (stack, ctx) -> new Wrapper(stack), baubles);
+		if (baubles.length > 0) {
+			event.registerItem(CuriosCapability.ITEM, (stack, ctx) -> new Wrapper(stack), baubles);
+		}
 	}
 
 	@Override
 	public void onInit(Item item) {
-		Proxy.INSTANCE.runOnClient(() -> () -> CuriosRendererRegistry.register(item, () -> Renderer.INSTANCE));
+		Proxy.INSTANCE.runOnClient(() -> () -> CurioRenderer.register(item));
 	}
 
 	@Override
@@ -134,7 +128,7 @@ public class CurioIntegration extends EquipmentHandler {
 		}
 
 		@Override
-		public Multimap<Holder<Attribute>, AttributeModifier> getAttributeModifiers(SlotContext slotContext, ResourceLocation id) {
+		public Multimap<Holder<Attribute>, AttributeModifier> getAttributeModifiers(SlotContext slotContext, Identifier id) {
 			return getItem().getEquippedAttributeModifiers(stack);
 		}
 
@@ -209,45 +203,4 @@ public class CurioIntegration extends EquipmentHandler {
 			}
 		}
 	}
-
-	private static class Renderer implements ICurioRenderer {
-		private static final Renderer INSTANCE = new Renderer();
-
-		@Override
-		public <T extends LivingEntity, M extends EntityModel<T>>
-				void render(ItemStack stack, SlotContext slotContext, PoseStack matrixStack,
-						RenderLayerParent<T, M> renderLayerParent, MultiBufferSource renderTypeBuffer,
-						int light, float limbSwing, float limbSwingAmount, float partialTicks,
-						float ageInTicks, float netHeadYaw, float headPitch) {
-			LivingEntity livingEntity = slotContext.entity();
-			M contextModel = renderLayerParent.getModel();
-			BaubleItem item = (BaubleItem) stack.getItem();
-
-			if (!item.hasRender(stack, livingEntity)) {
-				return;
-			}
-
-			if (!(contextModel instanceof HumanoidModel<?>)) {
-				return;
-			}
-
-			matrixStack.pushPose();
-			ItemStack cosmetic = item.getCosmeticItem(stack);
-			if (!cosmetic.isEmpty()) {
-				CuriosRendererRegistry.getRenderer(item)
-						.ifPresent(curio -> curio.render(cosmetic, slotContext, matrixStack, renderLayerParent,
-								renderTypeBuffer, light, limbSwing, limbSwingAmount,
-								partialTicks, ageInTicks, netHeadYaw, headPitch));
-			} else {
-				var renderer = AccessoryRenderRegistry.get(stack);
-				if (renderer != null) {
-					renderer.doRender((HumanoidModel<?>) contextModel, stack, livingEntity, matrixStack,
-							renderTypeBuffer, light, limbSwing, limbSwingAmount,
-							partialTicks, ageInTicks, netHeadYaw, headPitch);
-				}
-			}
-			matrixStack.popPose();
-		}
-	}
-
 }

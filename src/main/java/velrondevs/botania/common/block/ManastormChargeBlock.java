@@ -1,5 +1,7 @@
 package velrondevs.botania.common.block;
 
+import net.minecraft.world.entity.EntitySpawnReason;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.projectile.Projectile;
@@ -36,11 +38,12 @@ public class ManastormChargeBlock extends BotaniaBlock {
 					&& (!(entity.getOwner() instanceof ServerPlayer player)
 							|| !player.blockActionRestricted(world, pos, player.gameMode.getGameModeForPlayer()))
 					&& world.destroyBlock(pos, false, entity)) {
-				ManaStormEntity storm = BotaniaEntities.MANA_STORM.create(world);
+				ManaStormEntity storm = BotaniaEntities.MANA_STORM.create(world, EntitySpawnReason.EVENT);
 				if (storm == null) {
 					return;
 				}
-				storm.setOwner(entity.getOwner(), ((ProjectileAccessor) entity).botania_getOwnerUUID());
+				var ownerRef = ((ProjectileAccessor) entity).botania_getOwnerReference();
+				storm.setOwner(entity.getOwner(), ownerRef == null ? null : ownerRef.getUUID());
 				storm.burstColor = burst.getColor();
 				storm.setPos(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
 				world.addFreshEntity(storm);

@@ -3,21 +3,12 @@
   "category": "misc",
   "group": "botania:red_string",
   "ingredients": [
-    {
-      "item": "minecraft:string"
-    },
-    {
-      "item": "minecraft:redstone_block"
-    },
-    {
-      "item": "botania:pixie_dust"
-    },
-    {
-      "item": "botania:ender_air_bottle"
-    }
+    "minecraft:string",
+    "minecraft:redstone_block",
+    "botania:pixie_dust",
+    "botania:ender_air_bottle"
   ],
   "result": {
-    "count": 1,
     "id": "botania:red_string"
   }
 }

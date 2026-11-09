@@ -1,5 +1,9 @@
 package velrondevs.botania.module.botaniaextras.item;
 
+import java.util.function.Consumer;
+
+import net.minecraft.world.item.component.TooltipDisplay;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -57,7 +61,7 @@ public class IridescentSeedsItem extends Item {
 		if (!isConvertible(state)) {
 			return InteractionResult.PASS;
 		}
-		if (!level.isClientSide) {
+		if (!level.isClientSide()) {
 			BlockState dirt = BotaniaExtrasBlocks.getDirt(color).defaultBlockState();
 			level.setBlockAndUpdate(pos, dirt);
 			convertPlantAbove(level, pos, color);
@@ -66,12 +70,12 @@ public class IridescentSeedsItem extends Item {
 		} else {
 			spawnParticles(level, pos);
 		}
-		return InteractionResult.sidedSuccess(level.isClientSide);
+		return InteractionResult.SUCCESS;
 	}
 
 	private void spawnParticles(Level level, BlockPos pos) {
 		for (int i = 0; i < 50; i++) {
-			int rgb = color == null ? Mth.hsvToRgb(level.random.nextFloat(), 1F, 1F) : IridescentColors.rgb(color);
+			int rgb = color == null ? Mth.hsvToRgb(level.getRandom().nextFloat(), 1F, 1F) : IridescentColors.rgb(color);
 			float r = ((rgb >> 16) & 0xFF) / 255F;
 			float g = ((rgb >> 8) & 0xFF) / 255F;
 			float b = (rgb & 0xFF) / 255F;
@@ -86,8 +90,8 @@ public class IridescentSeedsItem extends Item {
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
-		tooltip.add(IridescentColors.displayName(color).copy().withStyle(ChatFormatting.GRAY));
+	public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltip, TooltipFlag flag) {
+		tooltip.accept(IridescentColors.displayName(color).copy().withStyle(ChatFormatting.GRAY));
 	}
 
 	private static boolean isConvertible(BlockState state) {
@@ -173,7 +177,7 @@ public class IridescentSeedsItem extends Item {
 		private boolean isValidSwapPosition(BlockPos pos) {
 			BlockState state = level.getBlockState(pos);
 			BlockPos above = pos.above();
-			return isConvertible(state) && level.getBlockState(above).getLightBlock(level, above) <= 1;
+			return isConvertible(state) && level.getBlockState(above).getLightDampening() <= 1;
 		}
 	}
 }

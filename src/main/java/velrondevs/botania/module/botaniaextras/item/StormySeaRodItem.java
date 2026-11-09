@@ -1,18 +1,18 @@
 package velrondevs.botania.module.botaniaextras.item;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.UseAnim;
+import net.minecraft.world.item.ItemUseAnimation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.AABB;
@@ -35,7 +35,7 @@ import java.util.function.Predicate;
 import static velrondevs.botania.common.lib.ResourceLocationHelper.prefix;
 
 public class StormySeaRodItem extends Item {
-	private static final ResourceLocation AVATAR_OVERLAY = prefix("textures/model/botania_extras/avatar_stormy_sea.png");
+	private static final Identifier AVATAR_OVERLAY = prefix("textures/model/botania_extras/avatar_stormy_sea.png");
 
 	private static final int COST = 5;
 	private static final int PROWESS_COST = -1;
@@ -59,8 +59,8 @@ public class StormySeaRodItem extends Item {
 
 	@NotNull
 	@Override
-	public UseAnim getUseAnimation(@NotNull ItemStack stack) {
-		return UseAnim.BOW;
+	public ItemUseAnimation getUseAnimation(@NotNull ItemStack stack) {
+		return ItemUseAnimation.BOW;
 	}
 
 	@Override
@@ -70,10 +70,10 @@ public class StormySeaRodItem extends Item {
 
 	@NotNull
 	@Override
-	public InteractionResultHolder<ItemStack> use(@NotNull Level level, Player player, @NotNull InteractionHand hand) {
+	public InteractionResult use(@NotNull Level level, Player player, @NotNull InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
 		player.startUsingItem(hand);
-		return InteractionResultHolder.consume(stack);
+		return InteractionResult.CONSUME;
 	}
 
 	public static int getCost(boolean prowess, boolean priest) {
@@ -100,7 +100,7 @@ public class StormySeaRodItem extends Item {
 		if (!ManaItemHandler.instance().requestManaExactForTool(stack, player, cost, false)) {
 			return;
 		}
-		if (level.isClientSide) {
+		if (level.isClientSide()) {
 			if (remaining % 5 == 0) {
 				int color = ClericalColors.get(player, 0x0000FF);
 				particleRing(level, player.getX(), player.getY(), player.getZ(), range, ClericalColors.red(color), ClericalColors.green(color), ClericalColors.blue(color));
@@ -159,7 +159,7 @@ public class StormySeaRodItem extends Item {
 				return;
 			}
 			BlockPos pos = te.getBlockPos();
-			if (level.isClientSide) {
+			if (level.isClientSide()) {
 				if (tile.getElapsedFunctionalTicks() % 5 == 0) {
 					particleRing(level, pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, RANGE, 0F, 0F, 1F);
 				}
@@ -175,7 +175,7 @@ public class StormySeaRodItem extends Item {
 		}
 
 		@Override
-		public ResourceLocation getOverlayResource(Avatar tile) {
+		public Identifier getOverlayResource(Avatar tile) {
 			return AVATAR_OVERLAY;
 		}
 	}

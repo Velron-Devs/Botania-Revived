@@ -2,18 +2,10 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "A": {
-      "item": "botania:rune_fire"
-    },
-    "E": {
-      "item": "botania:rune_earth"
-    },
-    "L": {
-      "item": "minecraft:leather"
-    },
-    "S": {
-      "tag": "botania:manasteel_ingots"
-    }
+    "A": "botania:rune_fire",
+    "E": "botania:rune_earth",
+    "L": "minecraft:leather",
+    "S": "#botania:manasteel_ingots"
   },
   "pattern": [
     "AL ",
@@ -21,7 +13,6 @@
     "SLE"
   ],
   "result": {
-    "count": 1,
     "id": "botania:knockback_belt"
   }
 }

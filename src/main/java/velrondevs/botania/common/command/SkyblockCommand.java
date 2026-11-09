@@ -8,7 +8,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.SharedSuggestionProvider;
@@ -36,7 +36,7 @@ public class SkyblockCommand {
 	public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
 
 		LiteralArgumentBuilder<CommandSourceStack> commandBuilder = Commands.literal("botania-skyblock")
-				.requires(s -> s.hasPermission(2))
+				.requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
 				.then(Commands.literal("help")
 						.executes(SkyblockCommand::printHelp))
 				.then(Commands.literal("island")
@@ -95,7 +95,7 @@ public class SkyblockCommand {
 		BlockPos blockPos = pos.getCenter();
 
 		player.teleportTo(world, blockPos.getX() + 0.5, blockPos.getY(),
-				blockPos.getZ() + 0.5, player.getYRot(), player.getXRot());
+				blockPos.getZ() + 0.5, java.util.Set.of(), player.getYRot(), player.getXRot(), true);
 		ctx.getSource().sendSuccess(() -> feedback, true);
 		return Command.SINGLE_SUCCESS;
 	}

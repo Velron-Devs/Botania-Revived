@@ -3,9 +3,7 @@
   "category": "building",
   "group": "botania:metamorphic_brick_stairs",
   "key": {
-    "Q": {
-      "item": "botania:metamorphic_mountain_bricks"
-    }
+    "Q": "botania:metamorphic_mountain_bricks"
   },
   "pattern": [
     "Q  ",

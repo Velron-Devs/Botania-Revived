@@ -19,7 +19,7 @@ public class ItemBackedInventory extends SimpleContainer {
 		ListTag lst = ItemNBTHelper.getList(stack, TAG_ITEMS, Tag.TAG_COMPOUND, false);
 		int i = 0;
 		for (; i < expectedSize && i < lst.size(); i++) {
-			setItem(i, ItemStackSerialization.read(lst.getCompound(i)));
+			setItem(i, ItemStackSerialization.read(lst.getCompoundOrEmpty(i)));
 		}
 	}
 

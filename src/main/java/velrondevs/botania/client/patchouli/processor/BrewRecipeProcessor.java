@@ -1,7 +1,7 @@
 package velrondevs.botania.client.patchouli.processor;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
@@ -21,7 +21,7 @@ public class BrewRecipeProcessor implements IComponentProcessor {
 
 	@Override
 	public void setup(Level level, IVariableProvider variables) {
-		ResourceLocation id = ResourceLocation.parse(variables.get("recipe", level.registryAccess()).asString());
+		Identifier id = Identifier.parse(variables.get("recipe", level.registryAccess()).asString());
 		this.recipe = PatchouliUtils.getRecipe(level, BotaniaRecipeTypes.BREW_TYPE, id);
 	}
 
@@ -44,7 +44,7 @@ public class BrewRecipeProcessor implements IComponentProcessor {
 			int index = requestedIndex - indexOffset;
 
 			if (index < recipe.getIngredients().size() && index >= 0) {
-				return IVariable.wrapList(Arrays.stream(recipe.getIngredients().get(index).getItems()).map(v -> IVariable.from(v, level.registryAccess())).collect(Collectors.toList()), level.registryAccess());
+				return IVariable.wrapList(Arrays.stream(PatchouliUtils.getItems(recipe.getIngredients().get(index))).map(v -> IVariable.from(v, level.registryAccess())).collect(Collectors.toList()), level.registryAccess());
 			} else {
 				return null;
 			}

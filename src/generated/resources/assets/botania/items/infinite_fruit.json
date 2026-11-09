@@ -1,0 +1,15 @@
+{
+  "model": {
+    "type": "minecraft:condition",
+    "kind": "boot",
+    "on_false": {
+      "type": "minecraft:model",
+      "model": "botania:item/infinite_fruit"
+    },
+    "on_true": {
+      "type": "minecraft:model",
+      "model": "botania:item/dasboot"
+    },
+    "property": "botania:flag"
+  }
+}

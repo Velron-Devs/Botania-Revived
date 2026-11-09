@@ -1,39 +1,22 @@
 {
   "neoforge:conditions": [
     {
-      "type": "neoforge:and",
-      "values": [
-        {
-          "type": "neoforge:mod_loaded",
-          "modid": "avaritia"
-        },
-        {
-          "type": "botania:module_enabled",
-          "module": "creative"
-        }
-      ]
+      "type": "neoforge:mod_loaded",
+      "modid": "avaritia"
+    },
+    {
+      "type": "botania:module_enabled",
+      "module": "creative"
     }
   ],
   "type": "avaritia:shaped_table",
   "key": {
-    "C": {
-      "item": "botania:mana_pool"
-    },
-    "E": {
-      "item": "botania:dragonstone_block"
-    },
-    "F": {
-      "item": "botania:mana_tablet"
-    },
-    "N": {
-      "item": "botania:terrasteel_block"
-    },
-    "X": {
-      "item": "botania:life_essence"
-    },
-    "Y": {
-      "item": "botania:fabulous_pool"
-    }
+    "C": "botania:mana_pool",
+    "E": "botania:dragonstone_block",
+    "F": "botania:mana_tablet",
+    "N": "botania:terrasteel_block",
+    "X": "botania:life_essence",
+    "Y": "botania:fabulous_pool"
   },
   "pattern": [
     "NNNNNNNNN",
@@ -47,7 +30,6 @@
     "NNNNNNNNN"
   ],
   "result": {
-    "count": 1,
     "id": "botania:creative_pool"
   },
   "tier": 4

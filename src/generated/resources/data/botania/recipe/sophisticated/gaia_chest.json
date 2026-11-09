@@ -19,12 +19,8 @@
   "type": "sophisticatedstorage:storage_tier_upgrade",
   "category": "misc",
   "key": {
-    "I": {
-      "item": "botania:gaia_ingot"
-    },
-    "S": {
-      "item": "botania:terrasteel_chest"
-    }
+    "I": "botania:gaia_ingot",
+    "S": "botania:terrasteel_chest"
   },
   "pattern": [
     "III",

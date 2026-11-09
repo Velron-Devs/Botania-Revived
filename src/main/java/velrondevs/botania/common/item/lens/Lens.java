@@ -1,5 +1,8 @@
 package velrondevs.botania.common.item.lens;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.HitResult;
 
@@ -9,6 +12,10 @@ import velrondevs.botania.api.mana.ManaReceiver;
 import velrondevs.botania.api.mana.ManaSpreader;
 
 public class Lens {
+
+	public static boolean mayInteract(Entity entity, BlockPos pos) {
+		return !(entity.level() instanceof ServerLevel level) || entity.mayInteract(level, pos);
+	}
 
 	public void apply(ItemStack stack, BurstProperties props) {}
 

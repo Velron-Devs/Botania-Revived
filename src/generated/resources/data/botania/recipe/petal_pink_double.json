@@ -3,9 +3,7 @@
   "category": "misc",
   "group": "botania:petal_double",
   "ingredients": [
-    {
-      "item": "botania:pink_double_flower"
-    }
+    "botania:pink_double_flower"
   ],
   "result": {
     "count": 4,

@@ -89,8 +89,8 @@ public class WitherManaRoseBlockEntity extends GeneratingFlowerBlockEntity {
 	public void tickFlower() {
 		super.tickFlower();
 
-		if (getLevel().isClientSide) {
-			if (starMana > 0 && getLevel().random.nextInt(6) == 0) {
+		if (getLevel().isClientSide()) {
+			if (starMana > 0 && getLevel().getRandom().nextInt(6) == 0) {
 				emitParticle(ParticleTypes.SMOKE, 0.4 + Math.random() * 0.2, 0.7, 0.4 + Math.random() * 0.2, 0.0D, 0.0D, 0.0D);
 			}
 			return;
@@ -208,7 +208,7 @@ public class WitherManaRoseBlockEntity extends GeneratingFlowerBlockEntity {
 	public void readFromPacketNBT(CompoundTag cmp, HolderLookup.Provider registries) {
 		super.readFromPacketNBT(cmp, registries);
 
-		starMana = cmp.getInt(TAG_STAR_MANA);
-		cooldown = cmp.getInt(TAG_COOLDOWN);
+		starMana = cmp.getIntOr(TAG_STAR_MANA, 0);
+		cooldown = cmp.getIntOr(TAG_COOLDOWN, 0);
 	}
 }

@@ -3,12 +3,8 @@
   "category": "equipment",
   "group": "botania:flight_tiara_wings",
   "ingredients": [
-    {
-      "item": "botania:flight_tiara"
-    },
-    {
-      "item": "botania:quartz_sunny"
-    }
+    "botania:flight_tiara",
+    "botania:quartz_sunny"
   ],
   "result": {
     "components": {
@@ -16,7 +12,6 @@
         "variant": 8
       }
     },
-    "count": 1,
     "id": "botania:flight_tiara"
   }
 }

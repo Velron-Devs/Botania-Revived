@@ -19,12 +19,8 @@
   "type": "sophisticatedbackpacks:backpack_upgrade",
   "category": "misc",
   "key": {
-    "B": {
-      "item": "botania:manasteel_backpack"
-    },
-    "I": {
-      "tag": "botania:elementium_ingots"
-    }
+    "B": "botania:manasteel_backpack",
+    "I": "#botania:elementium_ingots"
   },
   "pattern": [
     " I ",

@@ -1,10 +1,13 @@
 package velrondevs.botania.compat.sophisticated.storage;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
@@ -31,20 +34,31 @@ public final class BotaniaStorageData {
 		ATM
 	}
 
-	public static void addAssets(Map<ResourceLocation, JsonObject> files) {
+	public static void addAssets(Map<Identifier, JsonObject> files) {
 		for (BotaniaStorageTier tier : BotaniaStorageTier.values()) {
 			String barrel = tier.barrelName();
-			files.put(id("models/block/" + barrel), barrelModel(tier, "sophisticatedstorage:block/barrel", botania("block/flat/" + barrel)));
-			files.put(id("models/block/flat/" + barrel), barrelModel(tier, "sophisticatedstorage:block/flat/barrel", null));
-			files.put(id("models/item/" + barrel), parent(botania("block/" + barrel)));
+			files.put(id("models/block/" + barrel), barrelModel(tier, "sophisticatedstorage:block/barrel"));
+			files.put(id("models/block/flat/" + barrel), barrelModel(tier, "sophisticatedstorage:block/flat/barrel"));
+			files.put(id("items/" + barrel), barrelItem(barrel));
 			files.put(id("blockstates/" + barrel), barrelState(barrel));
-			files.put(id("models/item/" + tier.chestName()), parent("sophisticatedstorage:item/chest"));
+			files.put(id("items/" + tier.chestName()), chestItem());
 			files.put(id("blockstates/" + tier.chestName()), chestState());
 			files.put(id("models/item/" + tier.upgradeName()), generated("item/" + tier.upgradeName()));
+			files.put(id("items/" + tier.upgradeName()), itemModel(botania("item/" + tier.upgradeName())));
 		}
+		JsonObject source = new JsonObject();
+		source.addProperty("type", "neoforge:namespaced_directory");
+		source.addProperty("namespace", LibMisc.MOD_ID);
+		source.addProperty("source", "entity/chest");
+		source.addProperty("prefix", "entity/chest/");
+		JsonArray sources = new JsonArray();
+		sources.add(source);
+		JsonObject atlas = new JsonObject();
+		atlas.add("sources", sources);
+		files.put(Identifier.withDefaultNamespace("atlases/chests"), atlas);
 	}
 
-	public static void addData(Map<ResourceLocation, JsonObject> files) {
+	public static void addData(Map<Identifier, JsonObject> files) {
 		for (BotaniaStorageTier tier : BotaniaStorageTier.values()) {
 			String barrel = tier.barrelName();
 			String chest = tier.chestName();
@@ -61,7 +75,7 @@ public final class BotaniaStorageData {
 		}
 	}
 
-	private static void addUpgrades(Map<ResourceLocation, JsonObject> files, BotaniaStorageTier tier, String previousBarrel, String previousChest,
+	private static void addUpgrades(Map<Identifier, JsonObject> files, BotaniaStorageTier tier, String previousBarrel, String previousChest,
 			String folder, Source source) {
 		String barrel = tier.barrelName();
 		String chest = tier.chestName();
@@ -76,35 +90,32 @@ public final class BotaniaStorageData {
 
 	public static void addBlockTags(ModuleTagSink<Block> sink) {
 		var axe = sink.tag(BlockTags.MINEABLE_WITH_AXE);
-		var barrels = sink.tag(TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath("c", "barrels")));
-		var chests = sink.tag(TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath("c", "chests")));
+		var barrels = sink.tag(TagKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath("c", "barrels")));
+		var chests = sink.tag(TagKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath("c", "chests")));
 		for (BotaniaStorageTier tier : BotaniaStorageTier.values()) {
-			axe.addOptional(id(tier.barrelName()));
-			axe.addOptional(id(tier.chestName()));
-			barrels.addOptional(id(tier.barrelName()));
-			chests.addOptional(id(tier.chestName()));
+			BuiltInRegistries.BLOCK.getOptional(id(tier.barrelName())).ifPresent(axe::addOptional);
+			BuiltInRegistries.BLOCK.getOptional(id(tier.chestName())).ifPresent(axe::addOptional);
+			BuiltInRegistries.BLOCK.getOptional(id(tier.barrelName())).ifPresent(barrels::addOptional);
+			BuiltInRegistries.BLOCK.getOptional(id(tier.chestName())).ifPresent(chests::addOptional);
 		}
 	}
 
 	public static void addItemTags(ModuleTagSink<Item> sink) {
-		var barrels = sink.tag(ItemTags.create(ResourceLocation.fromNamespaceAndPath("c", "barrels")));
-		var chests = sink.tag(ItemTags.create(ResourceLocation.fromNamespaceAndPath("c", "chests")));
-		var all = sink.tag(ItemTags.create(ResourceLocation.fromNamespaceAndPath(SophisticatedModule.STORAGE, "all_storage")));
+		var barrels = sink.tag(ItemTags.create(Identifier.fromNamespaceAndPath("c", "barrels")));
+		var chests = sink.tag(ItemTags.create(Identifier.fromNamespaceAndPath("c", "chests")));
+		var all = sink.tag(ItemTags.create(Identifier.fromNamespaceAndPath(SophisticatedModule.STORAGE, "all_storage")));
 		for (BotaniaStorageTier tier : BotaniaStorageTier.values()) {
-			barrels.addOptional(id(tier.barrelName()));
-			chests.addOptional(id(tier.chestName()));
-			all.addOptional(id(tier.barrelName()));
-			all.addOptional(id(tier.chestName()));
+			BuiltInRegistries.ITEM.getOptional(id(tier.barrelName())).ifPresent(barrels::addOptional);
+			BuiltInRegistries.ITEM.getOptional(id(tier.chestName())).ifPresent(chests::addOptional);
+			BuiltInRegistries.ITEM.getOptional(id(tier.barrelName())).ifPresent(all::addOptional);
+			BuiltInRegistries.ITEM.getOptional(id(tier.chestName())).ifPresent(all::addOptional);
 		}
 	}
 
-	private static JsonObject barrelModel(BotaniaStorageTier tier, String parent, String flatTop) {
+	private static JsonObject barrelModel(BotaniaStorageTier tier, String parent) {
 		JsonObject model = new JsonObject();
 		model.addProperty("loader", "sophisticatedstorage:barrel");
 		model.addProperty("parent", parent);
-		if (flatTop != null) {
-			model.addProperty("flat_top_model", flatTop);
-		}
 		JsonObject textures = new JsonObject();
 		textures.addProperty("top", botania("block/" + tier.barrelName() + "_top"));
 		textures.addProperty("side", botania("block/" + tier.barrelName() + "_side"));
@@ -129,6 +140,7 @@ public final class BotaniaStorageData {
 				if (Y_ROTATIONS[i] != 0) {
 					variant.addProperty("y", Y_ROTATIONS[i]);
 				}
+				variant.addProperty("type", "sophisticatedstorage:barrel_blockstate_model_loader");
 				variant.addProperty("model", botania((flat ? "block/flat/" : "block/") + barrel));
 				variants.add("facing=" + FACINGS[i] + ",flat_top=" + flat, variant);
 			}
@@ -140,12 +152,54 @@ public final class BotaniaStorageData {
 
 	private static JsonObject chestState() {
 		JsonObject variant = new JsonObject();
-		variant.addProperty("model", "sophisticatedstorage:block/chest");
+		variant.addProperty("type", "sophisticatedstorage:chest_model_loader");
 		JsonObject variants = new JsonObject();
 		variants.add("", variant);
 		JsonObject state = new JsonObject();
 		state.add("variants", variants);
 		return state;
+	}
+
+	private static JsonObject barrelItem(String barrel) {
+		JsonObject model = new JsonObject();
+		model.addProperty("type", "sophisticatedstorage:barrel");
+		model.addProperty("flat_top_model", botania("block/flat/" + barrel));
+		model.addProperty("model", botania("block/" + barrel));
+		JsonArray tints = new JsonArray();
+		tints.add(tint("sophisticatedstorage:main"));
+		tints.add(tint("sophisticatedstorage:accent"));
+		model.add("tints", tints);
+		JsonObject json = new JsonObject();
+		json.add("model", model);
+		return json;
+	}
+
+	private static JsonObject tint(String type) {
+		JsonObject json = new JsonObject();
+		json.addProperty("type", type);
+		json.addProperty("default", -1);
+		return json;
+	}
+
+	private static JsonObject chestItem() {
+		JsonObject special = new JsonObject();
+		special.addProperty("type", "sophisticatedstorage:chest");
+		JsonObject model = new JsonObject();
+		model.addProperty("type", "minecraft:special");
+		model.addProperty("base", "sophisticatedstorage:item/chest");
+		model.add("model", special);
+		JsonObject json = new JsonObject();
+		json.add("model", model);
+		return json;
+	}
+
+	private static JsonObject itemModel(String model) {
+		JsonObject reference = new JsonObject();
+		reference.addProperty("type", "minecraft:model");
+		reference.addProperty("model", model);
+		JsonObject json = new JsonObject();
+		json.add("model", reference);
+		return json;
 	}
 
 	private static JsonObject generated(String texture) {
@@ -166,7 +220,10 @@ public final class BotaniaStorageData {
 		JsonObject json = conditioned(tier, Source.ANY);
 		json.addProperty("type", "minecraft:block");
 		JsonObject copyName = new JsonObject();
-		copyName.addProperty("function", "minecraft:copy_name");
+		copyName.addProperty("function", "minecraft:copy_components");
+		JsonArray include = new JsonArray();
+		include.add("minecraft:custom_name");
+		copyName.add("include", include);
 		copyName.addProperty("source", "block_entity");
 		JsonObject copyData = new JsonObject();
 		copyData.addProperty("function", "sophisticatedstorage:copy_storage_data");
@@ -245,7 +302,7 @@ public final class BotaniaStorageData {
 		return output;
 	}
 
-	private static JsonObject ingot(BotaniaStorageTier tier) {
+	private static JsonElement ingot(BotaniaStorageTier tier) {
 		return tier.ingotIsTag() ? tag(tier.ingot()) : item(tier.ingot());
 	}
 
@@ -310,23 +367,19 @@ public final class BotaniaStorageData {
 		return json;
 	}
 
-	private static JsonObject item(String id) {
-		JsonObject json = new JsonObject();
-		json.addProperty("item", id);
-		return json;
+	private static JsonElement item(String id) {
+		return new JsonPrimitive(id);
 	}
 
-	private static JsonObject tag(String id) {
-		JsonObject json = new JsonObject();
-		json.addProperty("tag", id);
-		return json;
+	private static JsonElement tag(String id) {
+		return new JsonPrimitive("#" + id);
 	}
 
 	private static String botania(String path) {
 		return LibMisc.MOD_ID + ":" + path;
 	}
 
-	private static ResourceLocation id(String path) {
-		return ResourceLocation.fromNamespaceAndPath(LibMisc.MOD_ID, path);
+	private static Identifier id(String path) {
+		return Identifier.fromNamespaceAndPath(LibMisc.MOD_ID, path);
 	}
 }

@@ -1,5 +1,6 @@
 package velrondevs.botania.common.crafting;
 
+import velrondevs.botania.api.recipe.BotaniaRecipe;
 import com.google.common.base.Preconditions;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -9,6 +10,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -25,15 +27,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PetalsRecipe implements PetalApothecaryRecipe {
-	private final ItemStack output;
+	private final ItemStackTemplate output;
 	private final Ingredient reagent;
 	private final NonNullList<Ingredient> inputs;
 
 	public PetalsRecipe(ItemStack output, Ingredient reagent, Ingredient... inputs) {
+		this(ItemStackTemplate.fromNonEmptyStack(output), reagent, inputs);
+	}
+
+	public PetalsRecipe(ItemStackTemplate output, Ingredient reagent, Ingredient... inputs) {
 		Preconditions.checkArgument(inputs.length <= 16, "Cannot have more than 16 ingredients");
 		this.output = output;
 		this.reagent = reagent;
-		this.inputs = NonNullList.of(Ingredient.EMPTY, inputs);
+		this.inputs = RecipeUtils.ingredientList(inputs);
 	}
 
 	@Override
@@ -74,7 +80,7 @@ public class PetalsRecipe implements PetalApothecaryRecipe {
 	@NotNull
 	@Override
 	public final ItemStack getResultItem(@NotNull HolderLookup.Provider registries) {
-		return output;
+		return output.create();
 	}
 
 	@NotNull
@@ -97,13 +103,13 @@ public class PetalsRecipe implements PetalApothecaryRecipe {
 
 	@NotNull
 	@Override
-	public RecipeSerializer<?> getSerializer() {
+	public RecipeSerializer<? extends BotaniaRecipe> getSerializer() {
 		return BotaniaRecipeTypes.PETAL_SERIALIZER;
 	}
 
-	public static class Serializer implements RecipeSerializer<PetalsRecipe> {
+	public static class Serializer implements BotaniaRecipeSerializer<PetalsRecipe> {
 		public static final MapCodec<PetalsRecipe> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-				ItemStack.STRICT_CODEC.fieldOf("output").forGetter(recipe -> recipe.output),
+				net.minecraft.world.item.ItemStackTemplate.CODEC.fieldOf("output").forGetter(recipe -> recipe.output),
 				Ingredient.CODEC.fieldOf("reagent").forGetter(recipe -> recipe.reagent),
 				RecipeUtils.INGREDIENTS_CODEC.fieldOf("ingredients").forGetter(recipe -> recipe.inputs)
 		).apply(instance, (output, reagent, inputs) -> new PetalsRecipe(output, reagent, inputs.toArray(new Ingredient[0]))));
@@ -123,14 +129,14 @@ public class PetalsRecipe implements PetalApothecaryRecipe {
 		private static PetalsRecipe fromNetwork(RegistryFriendlyByteBuf buf) {
 			Ingredient[] inputs = RecipeUtils.INGREDIENTS_STREAM_CODEC.decode(buf).toArray(new Ingredient[0]);
 			Ingredient reagent = Ingredient.CONTENTS_STREAM_CODEC.decode(buf);
-			ItemStack output = ItemStack.STREAM_CODEC.decode(buf);
+			ItemStackTemplate output = ItemStackTemplate.STREAM_CODEC.decode(buf);
 			return new PetalsRecipe(output, reagent, inputs);
 		}
 
 		private static void toNetwork(RegistryFriendlyByteBuf buf, PetalsRecipe recipe) {
 			RecipeUtils.INGREDIENTS_STREAM_CODEC.encode(buf, recipe.getIngredients());
 			Ingredient.CONTENTS_STREAM_CODEC.encode(buf, recipe.reagent);
-			ItemStack.STREAM_CODEC.encode(buf, recipe.output);
+			ItemStackTemplate.STREAM_CODEC.encode(buf, recipe.output);
 		}
 	}
 

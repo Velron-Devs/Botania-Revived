@@ -23,12 +23,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "I": {
-      "item": "masterfulbotany:alfsteel_ingot"
-    },
-    "L": {
-      "item": "minecraft:lever"
-    }
+    "I": "masterfulbotany:alfsteel_ingot",
+    "L": "minecraft:lever"
   },
   "pattern": [
     "III",

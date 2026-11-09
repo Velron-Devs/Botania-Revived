@@ -1,5 +1,6 @@
 package velrondevs.botania.common.crafting;
 
+import velrondevs.botania.api.recipe.BotaniaRecipe;
 import com.google.common.base.Preconditions;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
@@ -10,6 +11,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -22,14 +24,18 @@ import velrondevs.botania.registry.BotaniaBlocks;
 import velrondevs.botania.registry.BotaniaRecipeTypes;
 
 public class RunicAltarRecipe implements velrondevs.botania.api.recipe.RunicAltarRecipe {
-	private final ItemStack output;
+	private final ItemStackTemplate output;
 	private final NonNullList<Ingredient> inputs;
 	private final int mana;
 
 	public RunicAltarRecipe(ItemStack output, int mana, Ingredient... inputs) {
+		this(ItemStackTemplate.fromNonEmptyStack(output), mana, inputs);
+	}
+
+	public RunicAltarRecipe(ItemStackTemplate output, int mana, Ingredient... inputs) {
 		Preconditions.checkArgument(inputs.length <= 16, "Cannot have more than 16 ingredients");
 		this.output = output;
-		this.inputs = NonNullList.of(Ingredient.EMPTY, inputs);
+		this.inputs = RecipeUtils.ingredientList(inputs);
 		this.mana = mana;
 	}
 
@@ -41,7 +47,7 @@ public class RunicAltarRecipe implements velrondevs.botania.api.recipe.RunicAlta
 	@NotNull
 	@Override
 	public final ItemStack getResultItem(@NotNull HolderLookup.Provider registries) {
-		return output;
+		return output.create();
 	}
 
 	@NotNull
@@ -64,7 +70,7 @@ public class RunicAltarRecipe implements velrondevs.botania.api.recipe.RunicAlta
 
 	@NotNull
 	@Override
-	public RecipeSerializer<?> getSerializer() {
+	public RecipeSerializer<? extends BotaniaRecipe> getSerializer() {
 		return BotaniaRecipeTypes.RUNE_SERIALIZER;
 	}
 
@@ -75,28 +81,28 @@ public class RunicAltarRecipe implements velrondevs.botania.api.recipe.RunicAlta
 
 	@FunctionalInterface
 	public interface Factory<T extends RunicAltarRecipe> {
-		T create(ItemStack output, int mana, Ingredient... inputs);
+		T create(ItemStackTemplate output, int mana, Ingredient... inputs);
 	}
 
-	public static class Serializer<T extends RunicAltarRecipe> implements RecipeSerializer<T> {
+	public static class Serializer<T extends RunicAltarRecipe> implements BotaniaRecipeSerializer<T> {
 		private final MapCodec<T> codec;
 		private final StreamCodec<RegistryFriendlyByteBuf, T> streamCodec;
 
 		public Serializer(Factory<T> factory) {
 			this.codec = RecordCodecBuilder.mapCodec(instance -> instance.group(
-					ItemStack.STRICT_CODEC.fieldOf("output").forGetter(recipe -> ((RunicAltarRecipe) recipe).output),
+					net.minecraft.world.item.ItemStackTemplate.CODEC.fieldOf("output").forGetter(recipe -> ((RunicAltarRecipe) recipe).output),
 					Codec.INT.fieldOf("mana").forGetter(recipe -> ((RunicAltarRecipe) recipe).mana),
 					RecipeUtils.INGREDIENTS_CODEC.fieldOf("ingredients").forGetter(recipe -> ((RunicAltarRecipe) recipe).inputs)
 			).apply(instance, (output, mana, inputs) -> factory.create(output, mana, inputs.toArray(new Ingredient[0]))));
 			this.streamCodec = StreamCodec.of(
 					(buf, recipe) -> {
 						RecipeUtils.INGREDIENTS_STREAM_CODEC.encode(buf, recipe.getIngredients());
-						ItemStack.STREAM_CODEC.encode(buf, ((RunicAltarRecipe) recipe).output);
+						ItemStackTemplate.STREAM_CODEC.encode(buf, ((RunicAltarRecipe) recipe).output);
 						buf.writeVarInt(recipe.getManaUsage());
 					},
 					buf -> {
 						Ingredient[] inputs = RecipeUtils.INGREDIENTS_STREAM_CODEC.decode(buf).toArray(new Ingredient[0]);
-						ItemStack output = ItemStack.STREAM_CODEC.decode(buf);
+						ItemStackTemplate output = ItemStackTemplate.STREAM_CODEC.decode(buf);
 						int mana = buf.readVarInt();
 						return factory.create(output, mana, inputs);
 					});

@@ -9,9 +9,7 @@
   "category": "building",
   "group": "botania:bifrost_planks",
   "ingredients": [
-    {
-      "item": "botania:bifrost_log"
-    }
+    "botania:bifrost_log"
   ],
   "result": {
     "count": 4,

@@ -53,7 +53,7 @@ public abstract class RedStringBlockEntity extends BotaniaBlockEntity implements
 		}
 		if (!Objects.equals(currBinding, self.binding)) {
 			level.invalidateCapabilities(self.getBlockPos());
-			if (!level.isClientSide) {
+			if (!level.isClientSide()) {
 				self.onBound(self.binding);
 			}
 		}

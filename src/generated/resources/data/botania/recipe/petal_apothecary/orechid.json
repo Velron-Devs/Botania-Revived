@@ -3,76 +3,36 @@
   "base": {
     "type": "botania:petal_apothecary",
     "ingredients": [
-      {
-        "tag": "botania:petals/gray"
-      },
-      {
-        "tag": "botania:petals/gray"
-      },
-      {
-        "tag": "botania:petals/yellow"
-      },
-      {
-        "tag": "botania:petals/green"
-      },
-      {
-        "tag": "botania:petals/red"
-      },
-      {
-        "item": "botania:rune_pride"
-      },
-      {
-        "item": "botania:rune_greed"
-      },
-      {
-        "item": "botania:redstone_root"
-      },
-      {
-        "item": "botania:pixie_dust"
-      }
+      "#botania:petals/gray",
+      "#botania:petals/gray",
+      "#botania:petals/yellow",
+      "#botania:petals/green",
+      "#botania:petals/red",
+      "botania:rune_pride",
+      "botania:rune_greed",
+      "botania:redstone_root",
+      "botania:pixie_dust"
     ],
     "output": {
-      "count": 1,
       "id": "botania:orechid"
     },
-    "reagent": {
-      "tag": "botania:seed_apothecary_reagent"
-    }
+    "reagent": "#botania:seed_apothecary_reagent"
   },
   "gog": {
     "type": "botania:petal_apothecary",
     "ingredients": [
-      {
-        "tag": "botania:petals/gray"
-      },
-      {
-        "tag": "botania:petals/gray"
-      },
-      {
-        "tag": "botania:petals/yellow"
-      },
-      {
-        "tag": "botania:petals/yellow"
-      },
-      {
-        "tag": "botania:petals/green"
-      },
-      {
-        "tag": "botania:petals/green"
-      },
-      {
-        "tag": "botania:petals/red"
-      },
-      {
-        "tag": "botania:petals/red"
-      }
+      "#botania:petals/gray",
+      "#botania:petals/gray",
+      "#botania:petals/yellow",
+      "#botania:petals/yellow",
+      "#botania:petals/green",
+      "#botania:petals/green",
+      "#botania:petals/red",
+      "#botania:petals/red"
     ],
     "output": {
-      "count": 1,
       "id": "botania:orechid"
     },
-    "reagent": {
-      "tag": "botania:seed_apothecary_reagent"
-    }
+    "reagent": "#botania:seed_apothecary_reagent"
   }
 }

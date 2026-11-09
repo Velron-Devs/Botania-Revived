@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "building",
   "key": {
-    "Q": {
-      "item": "botania:corporea_brick"
-    }
+    "Q": "botania:corporea_brick"
   },
   "pattern": [
     "Q  ",

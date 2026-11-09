@@ -35,7 +35,7 @@ public class BubbellBlockEntity extends FunctionalFlowerBlockEntity {
 	public void tickFlower() {
 		super.tickFlower();
 
-		if (getLevel().isClientSide) {
+		if (getLevel().isClientSide()) {
 			return;
 		}
 
@@ -81,7 +81,7 @@ public class BubbellBlockEntity extends FunctionalFlowerBlockEntity {
 	@Override
 	public void readFromPacketNBT(CompoundTag cmp, HolderLookup.Provider registries) {
 		super.readFromPacketNBT(cmp, registries);
-		range = cmp.getInt(TAG_RANGE);
+		range = cmp.getIntOr(TAG_RANGE, 0);
 	}
 
 	@Override

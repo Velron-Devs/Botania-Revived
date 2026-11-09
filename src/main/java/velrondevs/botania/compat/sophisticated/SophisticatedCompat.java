@@ -29,6 +29,9 @@ public final class SophisticatedCompat {
 		ctx.bind(Registries.DATA_COMPONENT_TYPE, consumer -> {
 			consumer.accept(SophisticatedComponents.MANA, SophisticatedItems.id("upgrade_mana"));
 			consumer.accept(SophisticatedComponents.STATION, SophisticatedItems.id("station_state"));
+			consumer.accept(SophisticatedComponents.PILE_DISCHARGE, SophisticatedItems.id("pile_discharge"));
+			consumer.accept(SophisticatedComponents.PILE_INFUSION, SophisticatedItems.id("pile_infusion"));
+			consumer.accept(SophisticatedComponents.PILE_INFUSED, SophisticatedItems.id("pile_infused"));
 		});
 		ctx.bindItems(SophisticatedItems::register);
 		ctx.modBus().addListener((RegisterEvent event) -> {
@@ -54,6 +57,7 @@ public final class SophisticatedCompat {
 		});
 		if (SophisticatedModule.INSTANCE.hasBackpacks()) {
 			PlayerManaSources.register(new SophisticatedManaSource());
+			PileChargeHandler.register();
 			if (BackpackSwitch.enabled()) {
 				BotaniaBackpackRegistry.register(ctx);
 			}

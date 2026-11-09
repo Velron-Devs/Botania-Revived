@@ -10,10 +10,13 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.component.CustomData;
+import net.minecraft.world.item.component.TypedEntityData;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
+import velrondevs.botania.api.internal.ValueIOHelper;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -40,7 +43,7 @@ public abstract class SpecialFlowerBlockEntity extends BlockEntity implements Fl
 	private final FloatingFlower floatingData = new FloatingFlowerImpl() {
 		@Override
 		public ItemStack getDisplayStack() {
-			ResourceLocation id = BuiltInRegistries.BLOCK_ENTITY_TYPE.getKey(getType());
+			Identifier id = BuiltInRegistries.BLOCK_ENTITY_TYPE.getKey(getType());
 			return BuiltInRegistries.ITEM.getOptional(id).map(ItemStack::new).orElse(super.getDisplayStack());
 		}
 	};
@@ -127,10 +130,12 @@ public abstract class SpecialFlowerBlockEntity extends BlockEntity implements Fl
 	}
 
 	@Override
-	public final void loadAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
-		super.loadAdditional(cmp, registries);
+	protected final void loadAdditional(ValueInput input) {
+		super.loadAdditional(input);
+		CompoundTag cmp = ValueIOHelper.readAll(input);
+		HolderLookup.Provider registries = input.lookup();
 		if (cmp.contains(TAG_TICKS_EXISTED)) {
-			ticksExisted = cmp.getInt(TAG_TICKS_EXISTED);
+			ticksExisted = cmp.getIntOr(TAG_TICKS_EXISTED, 0);
 		}
 		if (getBlockState().getBlock() instanceof FloatingFlowerBlock) {
 			setFloating(true);
@@ -144,10 +149,12 @@ public abstract class SpecialFlowerBlockEntity extends BlockEntity implements Fl
 	}
 
 	@Override
-	public final void saveAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
-		super.saveAdditional(cmp, registries);
+	protected final void saveAdditional(ValueOutput output) {
+		super.saveAdditional(output);
+		CompoundTag cmp = new CompoundTag();
 		cmp.putInt(TAG_TICKS_EXISTED, ticksExisted);
-		writeToPacketNBT(cmp, registries);
+		writeToPacketNBT(cmp, ValueIOHelper.registries(level));
+		ValueIOHelper.writeAll(output, cmp);
 	}
 
 	@NotNull
@@ -166,7 +173,7 @@ public abstract class SpecialFlowerBlockEntity extends BlockEntity implements Fl
 
 	public void readFromPacketNBT(CompoundTag cmp, HolderLookup.Provider registries) {
 		if (cmp.contains(TAG_FLOATING_DATA)) {
-			floatingData.readNBT(cmp.getCompound(TAG_FLOATING_DATA));
+			floatingData.readNBT(cmp.getCompoundOrEmpty(TAG_FLOATING_DATA));
 		}
 	}
 
@@ -229,10 +236,10 @@ public abstract class SpecialFlowerBlockEntity extends BlockEntity implements Fl
 	}
 
 	public void emitParticle(ParticleOptions options, double xOffset, double yOffset, double zOffset, double xSpeed, double ySpeed, double zSpeed) {
-		if (!level.isClientSide) {
+		if (!level.isClientSide()) {
 			return;
 		}
-		Vec3 offset = level.getBlockState(getEffectivePos()).getOffset(level, getEffectivePos());
+		Vec3 offset = level.getBlockState(getEffectivePos()).getOffset(getEffectivePos());
 		level.addParticle(options,
 				getEffectivePos().getX() + offset.x + xOffset,
 				getEffectivePos().getY() + offset.y + yOffset,
@@ -261,8 +268,8 @@ public abstract class SpecialFlowerBlockEntity extends BlockEntity implements Fl
 			}
 		}
 		if (!data.isEmpty()) {
-			BlockEntity.addEntityType(data, getType());
-			components.set(DataComponents.BLOCK_ENTITY_DATA, CustomData.of(data));
+
+			components.set(DataComponents.BLOCK_ENTITY_DATA, TypedEntityData.of(getType(), data));
 		}
 	}
 }

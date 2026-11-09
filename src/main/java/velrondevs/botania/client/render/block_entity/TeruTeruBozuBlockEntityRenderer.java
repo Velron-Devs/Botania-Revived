@@ -4,9 +4,9 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -20,10 +20,10 @@ import velrondevs.botania.common.helper.VecHelper;
 
 import java.util.Random;
 
-public class TeruTeruBozuBlockEntityRenderer implements BlockEntityRenderer<TeruTeruBozuBlockEntity> {
+public class TeruTeruBozuBlockEntityRenderer extends BotaniaBlockEntityRenderer<TeruTeruBozuBlockEntity> {
 
-	private static final ResourceLocation texture = ResourceLocation.parse(ResourcesLib.MODEL_TERU_TERU_BOZU);
-	private static final ResourceLocation textureHalloween = ResourceLocation.parse(ResourcesLib.MODEL_TERU_TERU_BOZU_HALLOWEEN);
+	private static final Identifier texture = Identifier.parse(ResourcesLib.MODEL_TERU_TERU_BOZU);
+	private static final Identifier textureHalloween = Identifier.parse(ResourcesLib.MODEL_TERU_TERU_BOZU_HALLOWEEN);
 	private final TeruTeruBozuModel model;
 
 	public TeruTeruBozuBlockEntityRenderer(BlockEntityRendererProvider.Context ctx) {
@@ -31,7 +31,7 @@ public class TeruTeruBozuBlockEntityRenderer implements BlockEntityRenderer<Teru
 	}
 
 	@Override
-	public void render(@Nullable TeruTeruBozuBlockEntity tileentity, float partialTicks, PoseStack ms, MultiBufferSource buffers, int light, int overlay) {
+	protected void render(@Nullable TeruTeruBozuBlockEntity tileentity, float partialTicks, PoseStack ms, MultiBufferSource buffers, SubmitNodeCollector collector, int light, int overlay) {
 		ms.pushPose();
 		ms.mulPose(VecHelper.rotateX(180));
 		double time = ClientTickHandler.ticksInGame + partialTicks;

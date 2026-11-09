@@ -1,27 +1,12 @@
 package velrondevs.botania.client.fx;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.particle.ParticleRenderType;
+import net.minecraft.client.particle.SingleQuadParticle;
 import net.minecraft.client.particle.SpriteSet;
-import net.minecraft.client.particle.TextureSheetParticle;
-import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.renderer.texture.AbstractTexture;
-import net.minecraft.client.renderer.texture.TextureAtlas;
-import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.phys.Vec3;
-
-import org.jetbrains.annotations.NotNull;
-import org.lwjgl.opengl.GL11;
-
-import velrondevs.botania.client.core.helper.CoreShaders;
-import velrondevs.botania.xplat.ClientXplatAbstractions;
-
-public class FXSparkle extends TextureSheetParticle {
+public class FXSparkle extends SingleQuadParticle {
 	private final boolean corrupt;
 	public final boolean fake;
 	public final int particle = 16;
@@ -31,7 +16,7 @@ public class FXSparkle extends TextureSheetParticle {
 	public FXSparkle(ClientLevel world, double x, double y, double z, float size,
 			float red, float green, float blue, int m,
 			boolean fake, boolean noClip, boolean corrupt, SpriteSet sprite) {
-		super(world, x, y, z, 0.0D, 0.0D, 0.0D);
+		super(world, x, y, z, 0.0D, 0.0D, 0.0D, sprite.first());
 		rCol = red;
 		gCol = green;
 		bCol = blue;
@@ -91,10 +76,9 @@ public class FXSparkle extends TextureSheetParticle {
 		}
 	}
 
-	@NotNull
 	@Override
-	public ParticleRenderType getRenderType() {
-		return corrupt ? CORRUPT_RENDER : NORMAL_RENDER;
+	protected Layer getLayer() {
+		return corrupt ? BotaniaParticleRenderType.CORRUPT : BotaniaParticleRenderType.ADDITIVE;
 	}
 
 	public void setGravity(float value) {
@@ -140,57 +124,4 @@ public class FXSparkle extends TextureSheetParticle {
 		}
 	}
 
-	private static void beginRenderCommon(TextureManager textureManager) {
-		Minecraft.getInstance().gameRenderer.lightTexture().turnOnLightLayer();
-		RenderSystem.enableDepthTest();
-		RenderSystem.depthMask(false);
-		RenderSystem.enableBlend();
-		RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
-		RenderSystem.setShader(GameRenderer::getParticleShader);
-		RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_PARTICLES);
-		AbstractTexture tex = textureManager.getTexture(TextureAtlas.LOCATION_PARTICLES);
-		ClientXplatAbstractions.INSTANCE.setFilterSave(tex, true, false);
-	}
-
-	private static void endRenderCommon() {
-		AbstractTexture tex = Minecraft.getInstance().getTextureManager().getTexture(TextureAtlas.LOCATION_PARTICLES);
-		ClientXplatAbstractions.INSTANCE.restoreLastFilter(tex);
-		RenderSystem.disableBlend();
-		RenderSystem.depthMask(true);
-	}
-
-	public static final ParticleRenderType NORMAL_RENDER = new BotaniaParticleRenderType() {
-		@Override
-		protected void setup(TextureManager textureManager) {
-			beginRenderCommon(textureManager);
-		}
-
-		@Override
-		protected void end() {
-			endRenderCommon();
-		}
-
-		@Override
-		public String toString() {
-			return "botania:sparkle";
-		}
-	};
-
-	public static final ParticleRenderType CORRUPT_RENDER = new BotaniaParticleRenderType() {
-		@Override
-		protected void setup(TextureManager textureManager) {
-			beginRenderCommon(textureManager);
-			RenderSystem.setShader(CoreShaders::filmGrainParticle);
-		}
-
-		@Override
-		protected void end() {
-			endRenderCommon();
-		}
-
-		@Override
-		public String toString() {
-			return "botania:corrupt_sparkle";
-		}
-	};
 }

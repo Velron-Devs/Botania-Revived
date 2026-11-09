@@ -3,15 +3,10 @@
   "category": "misc",
   "group": "botania:floating_flower",
   "ingredients": [
-    {
-      "tag": "botania:floating_flowers"
-    },
-    {
-      "item": "botania:agricarnation_chibi"
-    }
+    "#botania:floating_flowers",
+    "botania:agricarnation_chibi"
   ],
   "result": {
-    "count": 1,
     "id": "botania:floating_agricarnation_chibi"
   }
 }

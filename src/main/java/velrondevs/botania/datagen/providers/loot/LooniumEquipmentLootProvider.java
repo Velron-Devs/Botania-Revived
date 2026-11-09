@@ -1,6 +1,6 @@
 package velrondevs.botania.datagen.providers.loot;
 
-import net.minecraft.advancements.critereon.*;
+import net.minecraft.advancements.criterion.*;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponents;
@@ -14,10 +14,12 @@ import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.npc.VillagerProfession;
+import net.minecraft.world.entity.npc.villager.VillagerProfession;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.alchemy.PotionContents;
-import net.minecraft.world.item.armortrim.*;
+import net.minecraft.world.item.equipment.ArmorMaterial;
+import net.minecraft.world.item.equipment.ArmorMaterials;
+import net.minecraft.world.item.equipment.trim.*;
 import net.minecraft.world.item.component.DyedItemColor;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.LootPool;
@@ -78,11 +80,11 @@ public class LooniumEquipmentLootProvider implements LootTableSubProvider {
 				(trim, color, armorItems) -> createArmorSet(addTrim(trim)
 						.andThen(addDyedColor(color)), false, armorItems);
 
-		Map<Holder<ArmorMaterial>, Item[]> armorItems = Map.of(
+		Map<ArmorMaterial, Item[]> armorItems = Map.of(
 				ArmorMaterials.LEATHER, new Item[] {
 						Items.LEATHER_HELMET, Items.LEATHER_CHESTPLATE, Items.LEATHER_LEGGINGS, Items.LEATHER_BOOTS
 				},
-				ArmorMaterials.CHAIN, new Item[] {
+				ArmorMaterials.CHAINMAIL, new Item[] {
 						Items.CHAINMAIL_HELMET, Items.CHAINMAIL_CHESTPLATE, Items.CHAINMAIL_LEGGINGS, Items.CHAINMAIL_BOOTS
 				},
 				ArmorMaterials.IRON, new Item[] {
@@ -214,17 +216,16 @@ public class LooniumEquipmentLootProvider implements LootTableSubProvider {
 		);
 	}
 
-	private CompoundTag getProfessionNbt(VillagerProfession profession) {
+	private CompoundTag getProfessionNbt(ResourceKey<VillagerProfession> profession) {
 		var villagerDataTag = new CompoundTag();
-		BuiltInRegistries.VILLAGER_PROFESSION.byNameCodec().encodeStart(NbtOps.INSTANCE, profession).resultOrPartial(
-				BotaniaAPI.LOGGER::error).ifPresent(data -> villagerDataTag.put("profession", data));
+		villagerDataTag.putString("profession", profession.identifier().toString());
 		var tag = new CompoundTag();
 		tag.put("VillagerData", villagerDataTag);
 		return tag;
 	}
 
 	private void defineAncientCityEquipmentTables(Map<ResourceKey<LootTable>, LootTable.Builder> tables,
-			Map<Holder<ArmorMaterial>, Item[]> armorItems,
+			Map<ArmorMaterial, Item[]> armorItems,
 			BiFunction<ResourceKey<TrimPattern>, ResourceKey<TrimMaterial>, ArmorTrim> trimFactory,
 			BiFunction<ArmorTrim, Item[], LootTable.Builder> randomizedSetFactory) {
 
@@ -250,7 +251,7 @@ public class LooniumEquipmentLootProvider implements LootTableSubProvider {
 
 						.when(LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS,
 								EntityPredicate.Builder.entity().equipment(EntityEquipmentPredicate.Builder.equipment()
-										.mainhand(ItemPredicate.Builder.item().of(Items.BOW)).build())))
+										.mainhand(ItemPredicate.Builder.item().of(registries.lookupOrThrow(Registries.ITEM), Items.BOW)).build())))
 						.when(LootItemRandomChanceCondition.randomChance(0.9f))
 						.add(LootItem.lootTableItem(Items.TIPPED_ARROW).apply(darknessEffectFunction))
 				)
@@ -273,7 +274,7 @@ public class LooniumEquipmentLootProvider implements LootTableSubProvider {
 	}
 
 	private void defineBastionRemnantEquipmentTables(Map<ResourceKey<LootTable>, LootTable.Builder> tables,
-			Map<Holder<ArmorMaterial>, Item[]> armorItems,
+			Map<ArmorMaterial, Item[]> armorItems,
 			BiFunction<ResourceKey<TrimPattern>, ResourceKey<TrimMaterial>, ArmorTrim> trimFactory,
 			BiFunction<ArmorTrim, Item[], LootTable.Builder> randomizedSetFactory) {
 
@@ -298,7 +299,7 @@ public class LooniumEquipmentLootProvider implements LootTableSubProvider {
 	}
 
 	private void defineDesertPyramidEquipmentTables(Map<ResourceKey<LootTable>, LootTable.Builder> tables,
-			Map<Holder<ArmorMaterial>, Item[]> armorItems,
+			Map<ArmorMaterial, Item[]> armorItems,
 			BiFunction<ResourceKey<TrimPattern>, ResourceKey<TrimMaterial>, ArmorTrim> trimFactory,
 			BiFunction<ArmorTrim, Item[], LootTable.Builder> randomizedSetFactory) {
 
@@ -330,7 +331,7 @@ public class LooniumEquipmentLootProvider implements LootTableSubProvider {
 	}
 
 	private void defineEndCityEquipmentTables(Map<ResourceKey<LootTable>, LootTable.Builder> tables,
-			Map<Holder<ArmorMaterial>, Item[]> armorItems,
+			Map<ArmorMaterial, Item[]> armorItems,
 			BiFunction<ResourceKey<TrimPattern>, ResourceKey<TrimMaterial>, ArmorTrim> trimFactory,
 			BiFunction<ArmorTrim, Item[], LootTable.Builder> randomizedSetFactory) {
 
@@ -353,7 +354,7 @@ public class LooniumEquipmentLootProvider implements LootTableSubProvider {
 				).withPool(LootPool.lootPool()
 						.when(LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS,
 								EntityPredicate.Builder.entity()
-										.entityType(EntityTypePredicate.of(EntityType.SKELETON))))
+										.entityType(EntityTypePredicate.of(registries.lookupOrThrow(Registries.ENTITY_TYPE), EntityType.SKELETON))))
 						.when(LootItemRandomChanceCondition.randomChance(0.9f))
 						.add(LootItem.lootTableItem(Items.TIPPED_ARROW)
 								.apply(levitationEffectFunction))
@@ -375,11 +376,11 @@ public class LooniumEquipmentLootProvider implements LootTableSubProvider {
 
 		return SetComponentsFunction.setComponent(DataComponents.POTION_CONTENTS,
 				new PotionContents(Optional.empty(), Optional.of(mobEffect.value().getColor()),
-						List.of(new MobEffectInstance(mobEffect, duration))));
+						List.of(new MobEffectInstance(mobEffect, duration)), Optional.empty()));
 	}
 
 	private void defineFortressEquipmentTables(Map<ResourceKey<LootTable>, LootTable.Builder> tables,
-			Map<Holder<ArmorMaterial>, Item[]> armorItems,
+			Map<ArmorMaterial, Item[]> armorItems,
 			BiFunction<ResourceKey<TrimPattern>, ResourceKey<TrimMaterial>, ArmorTrim> trimFactory,
 			BiFunction<ArmorTrim, Item[], LootTable.Builder> randomizedSetFactory) {
 
@@ -411,13 +412,13 @@ public class LooniumEquipmentLootProvider implements LootTableSubProvider {
 	}
 
 	private void defineJungleTempleEquipmentTables(Map<ResourceKey<LootTable>, LootTable.Builder> tables,
-			Map<Holder<ArmorMaterial>, Item[]> armorItems,
+			Map<ArmorMaterial, Item[]> armorItems,
 			BiFunction<ResourceKey<TrimPattern>, ResourceKey<TrimMaterial>, ArmorTrim> trimFactory,
 			BiFunction<ArmorTrim, Item[], LootTable.Builder> randomizedSetFactory) {
 
 		ArmorTrim trimWildEmerald = trimFactory.apply(TrimPatterns.WILD, TrimMaterials.EMERALD);
 		tables.put(BotaniaLootTables.LOONIUM_ARMORSET_WILD_CHAIN,
-				randomizedSetFactory.apply(trimWildEmerald, armorItems.get(ArmorMaterials.CHAIN)));
+				randomizedSetFactory.apply(trimWildEmerald, armorItems.get(ArmorMaterials.CHAINMAIL)));
 		tables.put(BotaniaLootTables.LOONIUM_ARMORSET_WILD_GOLD,
 				randomizedSetFactory.apply(trimWildEmerald, armorItems.get(ArmorMaterials.GOLD)));
 		tables.put(BotaniaLootTables.LOONIUM_ARMORSET_WILD_DIAMOND,
@@ -448,7 +449,7 @@ public class LooniumEquipmentLootProvider implements LootTableSubProvider {
 	}
 
 	private void defineOceanMonumentEquipmentTables(Map<ResourceKey<LootTable>, LootTable.Builder> tables,
-			Map<Holder<ArmorMaterial>, Item[]> armorItems,
+			Map<ArmorMaterial, Item[]> armorItems,
 			BiFunction<ResourceKey<TrimPattern>, ResourceKey<TrimMaterial>, ArmorTrim> trimFactory,
 			BiFunction<ArmorTrim, Item[], LootTable.Builder> randomizedSetFactory,
 			TriFunction<ArmorTrim, Integer, Item[], LootTable.Builder> randomizedDyedSetFactory) {
@@ -485,13 +486,13 @@ public class LooniumEquipmentLootProvider implements LootTableSubProvider {
 	}
 
 	private void definePillagerOutpostEquipmentTables(Map<ResourceKey<LootTable>, LootTable.Builder> tables,
-			Map<Holder<ArmorMaterial>, Item[]> armorItems,
+			Map<ArmorMaterial, Item[]> armorItems,
 			BiFunction<ResourceKey<TrimPattern>, ResourceKey<TrimMaterial>, ArmorTrim> trimFactory,
 			BiFunction<ArmorTrim, Item[], LootTable.Builder> randomizedSetFactory) {
 
 		ArmorTrim trimSentryEmerald = trimFactory.apply(TrimPatterns.SENTRY, TrimMaterials.EMERALD);
 		tables.put(BotaniaLootTables.LOONIUM_ARMORSET_SENTRY_CHAIN,
-				randomizedSetFactory.apply(trimSentryEmerald, armorItems.get(ArmorMaterials.CHAIN)));
+				randomizedSetFactory.apply(trimSentryEmerald, armorItems.get(ArmorMaterials.CHAINMAIL)));
 		tables.put(BotaniaLootTables.LOONIUM_ARMORSET_SENTRY_IRON,
 				randomizedSetFactory.apply(trimSentryEmerald, armorItems.get(ArmorMaterials.IRON)));
 		tables.put(BotaniaLootTables.LOONIUM_ARMORSET_SENTRY_DIAMOND,
@@ -561,13 +562,13 @@ public class LooniumEquipmentLootProvider implements LootTableSubProvider {
 	}
 
 	private void defineShipwreckEquipmentTables(Map<ResourceKey<LootTable>, LootTable.Builder> tables,
-			Map<Holder<ArmorMaterial>, Item[]> armorItems,
+			Map<ArmorMaterial, Item[]> armorItems,
 			BiFunction<ResourceKey<TrimPattern>, ResourceKey<TrimMaterial>, ArmorTrim> trimFactory,
 			BiFunction<ArmorTrim, Item[], LootTable.Builder> randomizedSetFactory) {
 
 		ArmorTrim trimCoastEmerald = trimFactory.apply(TrimPatterns.COAST, TrimMaterials.EMERALD);
 		tables.put(BotaniaLootTables.LOONIUM_ARMORSET_COAST_CHAIN,
-				randomizedSetFactory.apply(trimCoastEmerald, armorItems.get(ArmorMaterials.CHAIN)));
+				randomizedSetFactory.apply(trimCoastEmerald, armorItems.get(ArmorMaterials.CHAINMAIL)));
 		tables.put(BotaniaLootTables.LOONIUM_ARMORSET_COAST_IRON,
 				randomizedSetFactory.apply(trimCoastEmerald, armorItems.get(ArmorMaterials.IRON)));
 		tables.put(BotaniaLootTables.LOONIUM_ARMORSET_COAST_DIAMOND,
@@ -598,7 +599,7 @@ public class LooniumEquipmentLootProvider implements LootTableSubProvider {
 	}
 
 	private void defineStrongholdEquipmentTables(Map<ResourceKey<LootTable>, LootTable.Builder> tables,
-			Map<Holder<ArmorMaterial>, Item[]> armorItems,
+			Map<ArmorMaterial, Item[]> armorItems,
 			BiFunction<ResourceKey<TrimPattern>, ResourceKey<TrimMaterial>, ArmorTrim> trimFactory,
 			BiFunction<ArmorTrim, Item[], LootTable.Builder> randomizedSetFactory) {
 
@@ -647,13 +648,13 @@ public class LooniumEquipmentLootProvider implements LootTableSubProvider {
 	}
 
 	private void defineTrailRuinsEquipmentTables(Map<ResourceKey<LootTable>, LootTable.Builder> tables,
-			Map<Holder<ArmorMaterial>, Item[]> armorItems,
+			Map<ArmorMaterial, Item[]> armorItems,
 			BiFunction<ResourceKey<TrimPattern>, ResourceKey<TrimMaterial>, ArmorTrim> trimFactory,
 			BiFunction<ArmorTrim, Item[], LootTable.Builder> randomizedSetFactory) {
 
 		ArmorTrim trimHostEmerald = trimFactory.apply(TrimPatterns.HOST, TrimMaterials.EMERALD);
 		tables.put(BotaniaLootTables.LOONIUM_ARMORSET_HOST_CHAIN,
-				randomizedSetFactory.apply(trimHostEmerald, armorItems.get(ArmorMaterials.CHAIN)));
+				randomizedSetFactory.apply(trimHostEmerald, armorItems.get(ArmorMaterials.CHAINMAIL)));
 		tables.put(BotaniaLootTables.LOONIUM_ARMORSET_HOST_IRON,
 				randomizedSetFactory.apply(trimHostEmerald, armorItems.get(ArmorMaterials.IRON)));
 
@@ -671,7 +672,7 @@ public class LooniumEquipmentLootProvider implements LootTableSubProvider {
 
 		ArmorTrim trimWayfinderRedstone = trimFactory.apply(TrimPatterns.WAYFINDER, TrimMaterials.REDSTONE);
 		tables.put(BotaniaLootTables.LOONIUM_ARMORSET_WAYFINDER_CHAIN,
-				randomizedSetFactory.apply(trimWayfinderRedstone, armorItems.get(ArmorMaterials.CHAIN)));
+				randomizedSetFactory.apply(trimWayfinderRedstone, armorItems.get(ArmorMaterials.CHAINMAIL)));
 		tables.put(BotaniaLootTables.LOONIUM_ARMORSET_WAYFINDER_DIAMOND,
 				randomizedSetFactory.apply(trimWayfinderRedstone, armorItems.get(ArmorMaterials.DIAMOND)));
 
@@ -744,7 +745,7 @@ public class LooniumEquipmentLootProvider implements LootTableSubProvider {
 				.withPool(LootPool.lootPool()
 						.when(LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS,
 								EntityPredicate.Builder.entity()
-										.entityType(EntityTypePredicate.of(EntityType.SKELETON))))
+										.entityType(EntityTypePredicate.of(registries.lookupOrThrow(Registries.ENTITY_TYPE), EntityType.SKELETON))))
 						.when(LootItemRandomChanceCondition.randomChance(0.9f))
 						.add(LootItem.lootTableItem(Items.TIPPED_ARROW)
 								.apply(blindnessEffectFunction)))
@@ -796,7 +797,7 @@ public class LooniumEquipmentLootProvider implements LootTableSubProvider {
 	}
 
 	private static Consumer<LootPoolSingletonContainer.Builder<?>> addDyedColor(int color) {
-		return entry -> entry.apply(SetComponentsFunction.setComponent(DataComponents.DYED_COLOR, new DyedItemColor(color, true)));
+		return entry -> entry.apply(SetComponentsFunction.setComponent(DataComponents.DYED_COLOR, new DyedItemColor(color)));
 	}
 
 	private static LootPoolSingletonContainer.Builder<?> modifiedItem(Item item, Consumer<LootPoolSingletonContainer.Builder<?>> modifier) {

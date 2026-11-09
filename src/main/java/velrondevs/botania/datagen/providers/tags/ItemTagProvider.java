@@ -1,13 +1,15 @@
 package velrondevs.botania.datagen.providers.tags;
 
+import net.minecraft.data.tags.TagAppender;
+import net.minecraft.tags.TagEntry;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.tags.ItemTagsProvider;
+import net.neoforged.neoforge.common.data.BlockTagCopyingItemTagProvider;
 import net.minecraft.data.tags.TagsProvider;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Item;
@@ -26,9 +28,9 @@ import java.util.concurrent.CompletableFuture;
 
 import static velrondevs.botania.registry.BotaniaItems.*;
 
-public class ItemTagProvider extends ItemTagsProvider {
+public class ItemTagProvider extends BlockTagCopyingItemTagProvider {
 	public ItemTagProvider(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> lookupProvider, CompletableFuture<TagsProvider.TagLookup<Block>> blockTagProvider) {
-		super(packOutput, lookupProvider, blockTagProvider);
+		super(packOutput, lookupProvider, blockTagProvider, LibMisc.MOD_ID);
 	}
 
 	@Override
@@ -43,7 +45,8 @@ public class ItemTagProvider extends ItemTagsProvider {
 		this.tag(ItemTags.LEG_ARMOR).add(manasteelLegs, manaweaveLegs, elementiumLegs, terrasteelLegs);
 		this.tag(ItemTags.FOOT_ARMOR).add(manasteelBoots, manaweaveBoots, elementiumBoots, terrasteelBoots);
 		this.tag(ItemTags.SKULLS).add(BotaniaBlocks.gaiaHead.asItem());
-		this.tag(ItemTags.SWORD_ENCHANTABLE).add(enderDagger);
+		this.tag(ItemTags.MELEE_WEAPON_ENCHANTABLE).add(enderDagger);
+		this.tag(ItemTags.SWEEPING_ENCHANTABLE).add(enderDagger);
 		this.tag(ItemTags.SHARP_WEAPON_ENCHANTABLE).add(enderDagger);
 		this.tag(ItemTags.BOW_ENCHANTABLE).add(livingwoodBow, crystalBow);
 		this.tag(ItemTags.MINING_ENCHANTABLE).add(manasteelShears, elementiumShears);
@@ -78,17 +81,17 @@ public class ItemTagProvider extends ItemTagsProvider {
 				.addTag(BotaniaTags.Items.SPECIAL_FLOWERS)
 				.add(BotaniaBlocks.motifDaybloom.asItem(), BotaniaBlocks.motifNightshade.asItem());
 
-		this.tag(ItemTags.TALL_FLOWERS).addTag(BotaniaTags.Items.DOUBLE_MYSTICAL_FLOWERS);
+		this.tag(ItemTags.FLOWERS).addTag(BotaniaTags.Items.DOUBLE_MYSTICAL_FLOWERS);
 		this.tag(ItemTags.SMALL_FLOWERS).addTag(BotaniaTags.Items.MYSTICAL_FLOWERS).addTag(BotaniaTags.Items.SPECIAL_FLOWERS)
 				.add(BotaniaBlocks.motifDaybloom.asItem(), BotaniaBlocks.motifNightshade.asItem(), BotaniaBlocks.motifHydroangeas.asItem());
 
 		this.tag(BotaniaTags.Items.BURST_VIEWERS).add(monocle);
 		this.tag(BotaniaTags.Items.TERRA_PICK_BLACKLIST).add(auraRing, auraRingGreater, terrasteelHelm, spark);
-		TagsProvider.TagAppender<Item> builder = this.tag(BotaniaTags.Items.LENS);
+		TagAppender<Item, Item> builder = this.tag(BotaniaTags.Items.LENS);
 		BuiltInRegistries.ITEM.stream().filter(i -> i instanceof LensItem && !BotaniaModules.isModuleItem(i) && BuiltInRegistries.ITEM.getKey(i).getNamespace().equals(LibMisc.MOD_ID))
 				.map(BuiltInRegistries.ITEM::getKey)
 				.sorted()
-				.forEach(item -> builder.add(ResourceKey.create(Registries.ITEM, item)));
+				.forEach(item -> builder.add(TagEntry.element(item)));
 
 		this.tag(ItemTags.PIGLIN_LOVED).add(BotaniaBlocks.alchemyCatalyst.asItem(), divaCharm,
 				BotaniaBlocks.hourglass.asItem(), BotaniaBlocks.manaPylon.asItem(), monocle);
@@ -128,10 +131,10 @@ public class ItemTagProvider extends ItemTagsProvider {
 				Items.TUFF, Items.CALCITE, Items.STONE, Items.BASALT, Items.BLACKSTONE,
 				Items.DEEPSLATE, Items.DRIPSTONE_BLOCK, Items.POINTED_DRIPSTONE, Items.MOSS_BLOCK,
 				Items.SANDSTONE, Items.RED_SANDSTONE)
-				.addOptional(ResourceLocation.fromNamespaceAndPath("quark", "jasper"))
-				.addOptional(ResourceLocation.fromNamespaceAndPath("quark", "limestone"))
-				.addOptional(ResourceLocation.fromNamespaceAndPath("quark", "marble"))
-				.addOptional(ResourceLocation.fromNamespaceAndPath("quark", "slate"));
+				.add(TagEntry.optionalElement(Identifier.fromNamespaceAndPath("quark", "jasper")))
+				.add(TagEntry.optionalElement(Identifier.fromNamespaceAndPath("quark", "limestone")))
+				.add(TagEntry.optionalElement(Identifier.fromNamespaceAndPath("quark", "marble")))
+				.add(TagEntry.optionalElement(Identifier.fromNamespaceAndPath("quark", "slate")));
 
 		this.tag(BotaniaTags.Items.RUNES).add(
 				runeWater, runeFire, runeEarth, runeAir,
@@ -141,7 +144,7 @@ public class ItemTagProvider extends ItemTagsProvider {
 				runeDeception
 		);
 
-		TagAppender<Item> allPetals = this.tag(BotaniaTags.Items.PETALS);
+		TagAppender<Item, Item> allPetals = this.tag(BotaniaTags.Items.PETALS);
 		ColorHelper.supportedColors().forEach(color -> {
 			var petalTag = BotaniaTags.Items.getPetalTag(color);
 			this.tag(petalTag).add(getPetal(color), BotaniaBlocks.getMushroom(color).asItem());
@@ -240,12 +243,12 @@ public class ItemTagProvider extends ItemTagsProvider {
 				manaweaveHelm, manaweaveChest, manaweaveLegs, manaweaveBoots);
 
 		for (String tier : new String[] {"manasteel", "elementium", "terrasteel"}) {
-			ResourceLocation helm = ResourceLocation.fromNamespaceAndPath(LibMisc.MOD_ID, tier + "_helmet_revealing");
-			this.tag(ItemTags.HEAD_ARMOR).addOptional(helm);
-			this.tag(BotaniaTags.Items.MANA_USING_ITEMS).addOptional(helm);
+			Identifier helm = Identifier.fromNamespaceAndPath(LibMisc.MOD_ID, tier + "_helmet_revealing");
+			this.tag(ItemTags.HEAD_ARMOR).add(TagEntry.optionalElement(helm));
+			this.tag(BotaniaTags.Items.MANA_USING_ITEMS).add(TagEntry.optionalElement(helm));
 		}
 		this.tag(BotaniaTags.Items.TERRA_PICK_BLACKLIST)
-				.addOptional(ResourceLocation.fromNamespaceAndPath(LibMisc.MOD_ID, "terrasteel_helmet_revealing"));
+				.add(TagEntry.optionalElement(Identifier.fromNamespaceAndPath(LibMisc.MOD_ID, "terrasteel_helmet_revealing")));
 
 		this.tag(BotaniaTags.Items.SEED_APOTHECARY_REAGENT)
 				.add(Items.WHEAT_SEEDS, Items.BEETROOT_SEEDS, Items.MELON_SEEDS, Items.PUMPKIN_SEEDS)

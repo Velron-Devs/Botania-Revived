@@ -1,9 +1,11 @@
 package velrondevs.botania.client.render.block_entity;
 
+import velrondevs.botania.client.core.helper.RenderHelper;
+
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
@@ -13,16 +15,15 @@ import velrondevs.botania.client.core.handler.ClientTickHandler;
 import velrondevs.botania.common.block.block_entity.FloatingFlowerBlockEntity;
 import velrondevs.botania.common.helper.VecHelper;
 import velrondevs.botania.xplat.BotaniaConfig;
-import velrondevs.botania.xplat.ClientXplatAbstractions;
 
 import java.util.Random;
 
-public class FloatingFlowerBlockEntityRenderer implements BlockEntityRenderer<FloatingFlowerBlockEntity> {
+public class FloatingFlowerBlockEntityRenderer extends BotaniaBlockEntityRenderer<FloatingFlowerBlockEntity> {
 
 	public FloatingFlowerBlockEntityRenderer(BlockEntityRendererProvider.Context ctx) {}
 
 	@Override
-	public void render(@NotNull FloatingFlowerBlockEntity tile, float t, PoseStack ms, MultiBufferSource buffers, int light, int overlay) {
+	protected void render(@NotNull FloatingFlowerBlockEntity tile, float t, PoseStack ms, MultiBufferSource buffers, SubmitNodeCollector collector, int light, int overlay) {
 		renderFloatingIsland(tile, t, ms, buffers, overlay);
 	}
 
@@ -45,8 +46,7 @@ public class FloatingFlowerBlockEntityRenderer implements BlockEntityRenderer<Fl
 		ms.mulPose(VecHelper.rotateX(4F * (float) Math.sin(worldTime * 0.04F)));
 		ms.mulPose(VecHelper.rotateY(90.0F));
 
-		ClientXplatAbstractions.INSTANCE.tessellateBlock(tile.getLevel(), tile.getBlockState(),
-				tile.getBlockPos(), ms, buffers, overlay);
+		RenderHelper.renderBlockInLevel(tile.getLevel(), tile.getBlockState(), tile.getBlockPos(), ms, buffers, overlay);
 
 		ms.popPose();
 	}

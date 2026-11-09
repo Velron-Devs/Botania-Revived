@@ -1,0 +1,41 @@
+{
+  "model": {
+    "type": "botania:mana_gun",
+    "gun": {
+      "type": "minecraft:model",
+      "model": "botania:item/mana_gun_noclip",
+      "tints": [
+        {
+          "type": "botania:tint",
+          "kind": "blaster_lens"
+        },
+        {
+          "type": "minecraft:constant",
+          "value": -1
+        },
+        {
+          "type": "botania:tint",
+          "kind": "blaster_burst"
+        }
+      ]
+    },
+    "gun_clip": {
+      "type": "minecraft:model",
+      "model": "botania:item/mana_gun_clip",
+      "tints": [
+        {
+          "type": "botania:tint",
+          "kind": "blaster_lens"
+        },
+        {
+          "type": "minecraft:constant",
+          "value": -1
+        },
+        {
+          "type": "botania:tint",
+          "kind": "blaster_burst"
+        }
+      ]
+    }
+  }
+}

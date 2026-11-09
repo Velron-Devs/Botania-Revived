@@ -1,6 +1,7 @@
 {
   "pack": {
     "description": "Botania aspects for Thaumaturge",
-    "pack_format": 48
+    "max_format": 101,
+    "min_format": 101
   }
 }

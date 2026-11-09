@@ -18,22 +18,8 @@ import org.jetbrains.annotations.NotNull;
 public class WaterBottleMatchingRecipe extends ShapedRecipe {
 	public static final RecipeSerializer<WaterBottleMatchingRecipe> SERIALIZER = RecipeUtils.shapedWrapper(WaterBottleMatchingRecipe::new);
 
-	private final NonNullList<Ingredient> displayIngredients;
-
 	public WaterBottleMatchingRecipe(ShapedRecipe recipe) {
-		super(recipe.getGroup(), recipe.category(), recipe.pattern, recipe.getResultItem(RegistryAccess.EMPTY), recipe.showNotification());
-		this.displayIngredients = NonNullList.of(Ingredient.EMPTY, recipe.getIngredients().stream().map(i -> {
-			if (i.test(new ItemStack(Items.POTION))) {
-				return Ingredient.of(PotionContents.createItemStack(Items.POTION, Potions.WATER));
-			}
-			return i;
-		}).toArray(Ingredient[]::new));
-	}
-
-	@NotNull
-	@Override
-	public NonNullList<Ingredient> getIngredients() {
-		return displayIngredients;
+		super(RecipeUtils.commonInfo(recipe), RecipeUtils.bookInfo(recipe), recipe.pattern, RecipeUtils.result(recipe));
 	}
 
 	@Override
@@ -51,7 +37,8 @@ public class WaterBottleMatchingRecipe extends ShapedRecipe {
 	}
 
 	@Override
-	public RecipeSerializer<?> getSerializer() {
-		return SERIALIZER;
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public RecipeSerializer<ShapedRecipe> getSerializer() {
+		return (RecipeSerializer) SERIALIZER;
 	}
 }

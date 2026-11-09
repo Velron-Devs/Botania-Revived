@@ -1,8 +1,10 @@
 package velrondevs.botania.client.patchouli.component;
 
+import velrondevs.botania.client.core.helper.RenderHelper;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
 
@@ -27,10 +29,10 @@ public class ManaComponent implements ICustomComponent {
 	}
 
 	@Override
-	public void render(GuiGraphics gui, IComponentRenderContext context, float pticks, int mouseX, int mouseY) {
+	public void extractRenderState(GuiGraphicsExtractor gui, IComponentRenderContext context, float pticks, int mouseX, int mouseY) {
 		Font font = Minecraft.getInstance().font;
-		Component manaUsage = Component.translatable("botaniamisc.manaUsage").setStyle(context.getFont());
-		gui.drawString(font, manaUsage, x + 102 / 2 - font.width(manaUsage) / 2, y, 0x66000000, false);
+		Component manaUsage = Component.translatable("botaniamisc.manaUsage").setStyle(context.getFontStyle());
+		RenderHelper.drawString(gui, font, manaUsage, x + 102 / 2 - font.width(manaUsage) / 2, y, 0x66000000, false);
 
 		int ratio = 10;
 		if (context.isAreaHovered(mouseX, mouseY, x, y - 2, 102, 5 + 20)) {
@@ -39,8 +41,8 @@ public class ManaComponent implements ICustomComponent {
 		HUDHandler.renderManaBar(gui, x, y + 10, 0x0000FF, 0.75F,
 				manaValues[(context.getTicksInBook() / 20) % manaValues.length], ManaPoolBlockEntity.MAX_MANA / ratio);
 
-		Component ratioString = Component.translatable("botaniamisc.ratio", ratio).setStyle(context.getFont());
-		gui.drawString(font, ratioString, x + 102 / 2 - font.width(ratioString) / 2, y + 15, 0x99000000, false);
+		Component ratioString = Component.translatable("botaniamisc.ratio", ratio).setStyle(context.getFontStyle());
+		RenderHelper.drawString(gui, font, ratioString, x + 102 / 2 - font.width(ratioString) / 2, y + 15, 0x99000000, false);
 	}
 
 	@Override

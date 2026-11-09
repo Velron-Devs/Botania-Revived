@@ -6,6 +6,8 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.goal.GoalSelector;
 import net.minecraft.world.level.storage.loot.LootTable;
 
+import java.util.Optional;
+
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
@@ -17,8 +19,8 @@ public interface MobAccessor {
 	@Invoker("getAmbientSound")
 	SoundEvent botania_getAmbientSound();
 
-	@Accessor
-	void setLootTable(ResourceKey<LootTable> lootTable);
+	@Accessor("lootTable")
+	void setLootTable(Optional<ResourceKey<LootTable>> lootTable);
 
 	@Accessor
 	GoalSelector getGoalSelector();

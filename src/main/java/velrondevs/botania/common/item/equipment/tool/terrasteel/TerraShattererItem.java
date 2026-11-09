@@ -1,5 +1,10 @@
 package velrondevs.botania.common.item.equipment.tool.terrasteel;
 
+import java.util.function.Consumer;
+import net.minecraft.world.item.component.TooltipDisplay;
+import org.jetbrains.annotations.Nullable;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -11,7 +16,6 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
@@ -88,36 +92,36 @@ public class TerraShattererItem extends ManasteelPickaxeItem implements Sequenti
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext world, List<Component> stacks, TooltipFlag flags) {
+	public void appendHoverText(ItemStack stack, TooltipContext world, TooltipDisplay tooltipDisplay, Consumer<Component> stacks, TooltipFlag flags) {
 		Component rank = Component.translatable("botania.rank" + getLevel(stack));
 		Component rankFormat = Component.translatable("botaniamisc.toolRank", rank);
-		stacks.add(rankFormat);
+		stacks.accept(rankFormat);
 		var manaItem = XplatAbstractions.INSTANCE.findManaItem(stack);
 		if (manaItem != null && manaItem.getMana() == Integer.MAX_VALUE) {
-			stacks.add(Component.translatable("botaniamisc.getALife").withStyle(ChatFormatting.RED));
+			stacks.accept(Component.translatable("botaniamisc.getALife").withStyle(ChatFormatting.RED));
 		}
 	}
 
 	@NotNull
 	@Override
-	public InteractionResultHolder<ItemStack> use(@NotNull Level level, Player player, @NotNull InteractionHand hand) {
+	public InteractionResult use(@NotNull Level level, Player player, @NotNull InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
 		int tier = getLevel(stack);
 		if (!player.isSecondaryUseActive() || tier == 0) {
-			return InteractionResultHolder.pass(stack);
+			return InteractionResult.PASS;
 		}
 		if (hand == InteractionHand.MAIN_HAND && !player.getOffhandItem().isEmpty()) {
 			BlockHitResult blockhitresult = getPlayerPOVHitResult(level, player, ClipContext.Fluid.NONE);
 
 			if (blockhitresult.getType() == HitResult.Type.BLOCK) {
-				return InteractionResultHolder.pass(stack);
+				return InteractionResult.PASS;
 			}
 		}
 		setEnabled(stack, !isEnabled(stack));
-		if (!level.isClientSide) {
+		if (!level.isClientSide()) {
 			level.playSound(null, player.getX(), player.getY(), player.getZ(), BotaniaSounds.terraPickMode, SoundSource.PLAYERS, 1F, 1F);
 		}
-		return InteractionResultHolder.sidedSuccess(stack, level.isClientSide());
+		return InteractionResult.SUCCESS;
 	}
 
 	@NotNull
@@ -135,8 +139,8 @@ public class TerraShattererItem extends ManasteelPickaxeItem implements Sequenti
 	}
 
 	@Override
-	public void inventoryTick(ItemStack stack, Level world, Entity entity, int slot, boolean selected) {
-		super.inventoryTick(stack, world, entity, slot, selected);
+	public void inventoryTick(ItemStack stack, ServerLevel world, Entity entity, @Nullable EquipmentSlot eqSlot) {
+		super.inventoryTick(stack, world, entity, eqSlot);
 		if (isEnabled(stack)) {
 			int level = getLevel(stack);
 
@@ -162,7 +166,7 @@ public class TerraShattererItem extends ManasteelPickaxeItem implements Sequenti
 	@Override
 	public boolean onBlockStartBreak(ItemStack stack, BlockPos pos, Player player) {
 		BlockHitResult raycast = ToolCommons.raytraceFromEntity(player, 10, false);
-		if (!player.level().isClientSide && raycast.getType() == HitResult.Type.BLOCK) {
+		if (!player.level().isClientSide() && raycast.getType() == HitResult.Type.BLOCK) {
 			Direction face = raycast.getDirection();
 			breakOtherBlock(player, stack, pos, pos, face);
 			if (player.isSecondaryUseActive()) {

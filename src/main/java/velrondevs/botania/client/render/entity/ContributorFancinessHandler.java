@@ -1,14 +1,17 @@
 package velrondevs.botania.client.render.entity;
 
+import velrondevs.botania.client.core.helper.RenderHelper;
+
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.PlayerModel;
+import net.minecraft.client.model.player.PlayerModel;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
-import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.PlayerModelPart;
@@ -22,21 +25,21 @@ import velrondevs.botania.common.handler.ContributorList;
 
 import java.util.*;
 
-public final class ContributorFancinessHandler extends RenderLayer<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>> {
+public final class ContributorFancinessHandler extends BotaniaPlayerLayer {
 
-	public ContributorFancinessHandler(RenderLayerParent<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>> renderer) {
+	public ContributorFancinessHandler(RenderLayerParent<AvatarRenderState, PlayerModel> renderer) {
 		super(renderer);
 	}
 
 	@Override
-	public void render(PoseStack ms, MultiBufferSource buffers, int light, @NotNull AbstractClientPlayer player, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+	protected void render(PoseStack ms, MultiBufferSource buffers, SubmitNodeCollector collector, int light, AbstractClientPlayer player, float partialTicks) {
 		ContributorList.firstStart();
 
 		if (player.isInvisible()) {
 			return;
 		}
 
-		String name = player.getGameProfile().getName();
+		String name = player.getGameProfile().name();
 
 		if (name.equals("haighyorkie")) {
 			renderGoldfish(ms, buffers);
@@ -45,7 +48,7 @@ public final class ContributorFancinessHandler extends RenderLayer<AbstractClien
 		if (player.isModelPartShown(PlayerModelPart.CAPE)) {
 			ItemStack flower = ContributorList.getFlower(name.toLowerCase(Locale.ROOT));
 			if (!flower.isEmpty()) {
-				renderFlower(ms, buffers, player, flower);
+				renderFlower(ms, collector, player, flower);
 			}
 		}
 
@@ -56,17 +59,16 @@ public final class ContributorFancinessHandler extends RenderLayer<AbstractClien
 		getParentModel().head.translateAndRotate(ms);
 		ms.translate(-0.15F, -0.60F, 0F);
 		ms.scale(0.4F, -0.4F, -0.4F);
-		Minecraft.getInstance().getBlockRenderer().getModelRenderer().renderModel(ms.last(), buffers.getBuffer(Sheets.translucentCullBlockSheet()), null, MiscellaneousModels.INSTANCE.goldfishModel, 1, 1, 1, 0xF000F0, OverlayTexture.NO_OVERLAY);
+		RenderHelper.renderModelPart(MiscellaneousModels.INSTANCE.goldfishModel, ms, buffers, 0xF000F0, OverlayTexture.NO_OVERLAY);
 		ms.popPose();
 	}
 
-	private void renderFlower(PoseStack ms, MultiBufferSource buffers, Player player, ItemStack flower) {
+	private void renderFlower(PoseStack ms, SubmitNodeCollector collector, Player player, ItemStack flower) {
 		ms.pushPose();
 		getParentModel().head.translateAndRotate(ms);
 		ms.translate(0, -0.75, 0);
 		ms.scale(0.5F, -0.5F, -0.5F);
-		Minecraft.getInstance().getItemRenderer().renderStatic(player, flower, ItemDisplayContext.NONE, false,
-				ms, buffers, player.level(), 0xF000F0, OverlayTexture.NO_OVERLAY, player.getId());
+		RenderHelper.renderItem(player, flower, ItemDisplayContext.NONE, ms, collector, 0xF000F0, OverlayTexture.NO_OVERLAY);
 		ms.popPose();
 	}
 }

@@ -6,7 +6,6 @@ import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.SimpleCraftingRecipeSerializer;
 import net.minecraft.world.level.Level;
 
 import org.jetbrains.annotations.NotNull;
@@ -15,11 +14,9 @@ import velrondevs.botania.api.item.AncientWillContainer;
 import velrondevs.botania.common.item.AncientWillItem;
 
 public class AncientWillRecipe extends CustomRecipe {
-	public static final RecipeSerializer<AncientWillRecipe> SERIALIZER = new SimpleCraftingRecipeSerializer<>(AncientWillRecipe::new);
+	public static final RecipeSerializer<AncientWillRecipe> SERIALIZER = RecipeUtils.simpleSerializer(AncientWillRecipe::new);
 
-	public AncientWillRecipe(CraftingBookCategory category) {
-		super(category);
-	}
+	public AncientWillRecipe() {}
 
 	@Override
 	public boolean matches(@NotNull CraftingInput inv, @NotNull Level world) {
@@ -50,7 +47,7 @@ public class AncientWillRecipe extends CustomRecipe {
 
 	@NotNull
 	@Override
-	public ItemStack assemble(@NotNull CraftingInput inv, @NotNull HolderLookup.Provider registries) {
+	public ItemStack assemble(@NotNull CraftingInput inv) {
 		ItemStack item = ItemStack.EMPTY;
 		AncientWillContainer.AncientWillType will = null;
 
@@ -75,14 +72,9 @@ public class AncientWillRecipe extends CustomRecipe {
 		return copy;
 	}
 
-	@Override
-	public boolean canCraftInDimensions(int width, int height) {
-		return width > 1 || height > 1;
-	}
-
 	@NotNull
 	@Override
-	public RecipeSerializer<?> getSerializer() {
+	public RecipeSerializer<? extends CustomRecipe> getSerializer() {
 		return SERIALIZER;
 	}
 }

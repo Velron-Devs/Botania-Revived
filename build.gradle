@@ -3,7 +3,7 @@ plugins {
     id 'eclipse'
     id 'idea'
     id 'maven-publish'
-    id 'net.neoforged.moddev' version '2.0.143'
+    id 'net.neoforged.moddev' version '2.0.148'
 }
 
 version = "${minecraft_version}-${mod_version}-${tag_lanzador}"
@@ -14,37 +14,28 @@ base {
 }
 
 java {
-    toolchain.languageVersion = JavaLanguageVersion.of(21)
+    toolchain.languageVersion = JavaLanguageVersion.of(25)
     withSourcesJar()
 }
 
 neoForge {
-    version = project.findProperty('dev_neo_version') ?: neo_version
+    version = neo_version
 
     accessTransformers {
         file('src/main/resources/META-INF/accesstransformer.cfg')
-    }
-
-    parchment {
-        minecraftVersion = project.property('neogradle.subsystems.parchment.minecraftVersion')
-        mappingsVersion = project.property('neogradle.subsystems.parchment.mappingsVersion')
     }
 
     runs {
         configureEach {
             gameDirectory = file('run/')
             systemProperty 'fml.earlyprogresswindow', 'false'
-            systemProperty 'neoforge.logging.console.level', 'debug'
             logLevel = org.slf4j.event.Level.DEBUG
         }
 
         client {
             client()
-            if (findProperty('vm_server')) {
-                programArguments.addAll '--quickPlayMultiplayer', findProperty('vm_server').toString()
-            }
             def world = findProperty('vm_world') ?: 'world'
-            if (!findProperty('vm_server') && world && file("run/saves/${world}").isDirectory()) {
+            if (world && file("run/saves/${world}").isDirectory()) {
                 programArguments.addAll '--quickPlaySingleplayer', world.toString()
             }
         }
@@ -52,17 +43,18 @@ neoForge {
         server {
             server()
             programArgument '--nogui'
-            systemProperty 'neoforge.enabledGameTestNamespaces', mod_id
         }
 
-        gameTestServer {
-            type = 'gameTestServer'
-            systemProperty 'neoforge.enabledGameTestNamespaces', mod_id
+        clientData {
+            clientData()
+            programArguments.addAll '--mod', mod_id, '--all', '--uncached',
+                    '--output', file('src/generated/resources/').getAbsolutePath(),
+                    '--existing', file('src/main/resources/').getAbsolutePath()
         }
 
-        data {
-            data()
-            programArguments.addAll '--mod', mod_id, '--all',
+        serverData {
+            serverData()
+            programArguments.addAll '--mod', mod_id, '--all', '--uncached',
                     '--output', file('src/generated/resources/').getAbsolutePath(),
                     '--existing', file('src/main/resources/').getAbsolutePath()
         }
@@ -86,61 +78,10 @@ repositories {
     maven {
         name = 'Jared'
         url = 'https://maven.blamejared.com/'
-    }
-    maven {
-        name = 'C4'
-        url = 'https://maven.theillusivec4.top/'
-    }
-    maven {
-        name = 'TerraformersMC'
-        url = 'https://maven.terraformersmc.com/'
         content {
-            includeGroup 'dev.emi'
-        }
-    }
-    maven {
-        name = 'Shedaniel'
-        url = 'https://maven.shedaniel.me'
-        content {
-            includeGroup 'me.shedaniel'
-            includeGroup 'me.shedaniel.cloth'
-            includeGroup 'dev.architectury'
-        }
-    }
-    maven {
-        name = 'CaffeineMC'
-        url = 'https://maven.caffeinemc.net/releases'
-        content {
-            includeGroup 'net.caffeinemc'
-        }
-    }
-    maven {
-        name = 'LatvianDev'
-        url = 'https://maven.latvian.dev/releases'
-        content {
-            includeGroup 'dev.latvian.mods'
-        }
-    }
-    maven {
-        name = 'Sleeping Town'
-        url = 'https://repo.sleeping.town/'
-        content {
-            includeGroup 'com.unascribed'
-        }
-    }
-    maven {
-        name = 'Modrinth'
-        url = 'https://api.modrinth.com/maven'
-        content {
-            includeGroup 'maven.modrinth'
-        }
-    }
-    maven {
-        name = 'Bai'
-        url = 'https://maven.bai.lol'
-        content {
-            includeGroup 'mcp.mobius.waila'
-            includeGroup 'lol.bai'
+            includeGroup 'vazkii.patchouli'
+            includeGroup 'mezz.jei'
+            includeGroup 'net.mezzdev.config'
         }
     }
     maven {
@@ -148,157 +89,100 @@ repositories {
         url = 'https://maven.createmod.net'
         content {
             includeGroup 'net.createmod.ponder'
+            includeGroup 'net.createmod.catnip'
             includeGroup 'dev.engine-room.flywheel'
             includeGroup 'dev.engine-room.vanillin'
         }
     }
-    maven {
-        name = 'GeckoLib'
-        url = 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/'
-        content {
-            includeGroup 'software.bernie.geckolib'
+    exclusiveContent {
+        forRepository {
+            maven {
+                name = 'Curse Maven'
+                url = 'https://cursemaven.com'
+            }
+        }
+        filter {
+            includeGroup 'curse.maven'
+        }
+    }
+    exclusiveContent {
+        forRepository {
+            maven {
+                name = 'Modrinth'
+                url = 'https://api.modrinth.com/maven'
+            }
+        }
+        filter {
+            includeGroup 'maven.modrinth'
         }
     }
 }
 
-configurations {
-    fractalJarJar {
-        canBeConsumed = false
-        canBeResolved = true
-    }
-}
-
-def devMod = { String name ->
-    project.hasProperty("with_${name}") || (!project.hasProperty("minimal") && !project.hasProperty("no_${name}"))
-}
-
 dependencies {
-    // Patchouli
-    implementation "vazkii.patchouli:Patchouli:${patchouli_version}"
-
-    // Just Enough Items (JEI)
-    compileOnly "mezz.jei:jei-${minecraft_version}-common-api:${jei_version}"
-    compileOnly "mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}"
-
-   // Emi
-    compileOnly "dev.emi:emi-neoforge:${emi_version}:api"
-
-    // Roughly Enough Items (REI)
-    compileOnly "me.shedaniel:RoughlyEnoughItems-api-neoforge:${rei_version}"
-    compileOnly "me.shedaniel:RoughlyEnoughItems-default-plugin-neoforge:${rei_version}"
-
-     // Curios
-    compileOnly "top.theillusivec4.curios:curios-neoforge:${curios_version}:api"
-    if (!project.hasProperty('no_curios')) {
-        runtimeOnly "top.theillusivec4.curios:curios-neoforge:${curios_version}"
-    }
-
-    // Ears API
-    compileOnly 'com.unascribed:ears-api:1.4.5'
-
-    compileOnly "net.caffeinemc:sodium-neoforge-api:${sodium_version}"
-
-    compileOnly "dev.latvian.mods:kubejs-neoforge:${kubejs_version}"
-    compileOnly "dev.latvian.mods:rhino:${rhino_version}"
-    if (devMod('kubejs')) {
-        runtimeOnly("dev.latvian.mods:kubejs-neoforge:${kubejs_version}") { transitive = false }
-        runtimeOnly("dev.latvian.mods:rhino:${rhino_version}") { transitive = false }
-    }
-
-    compileOnly "maven.modrinth:jade:${jade_version}"
-
-    compileOnly "mcp.mobius.waila:wthit-api:neo-${wthit_version}"
-
-    compileOnly "net.darkhax.botanypots:botanypots-neoforge-1.21.1:${botanypots_version}"
-    compileOnly "net.darkhax.bookshelf:bookshelf-neoforge-1.21.1:${bookshelf_version}"
-    compileOnly "net.darkhax.pricklemc:prickle-neoforge-1.21.1:${prickle_version}"
-    if (devMod('botanypots')) {
-        runtimeOnly("net.darkhax.botanypots:botanypots-neoforge-1.21.1:${botanypots_version}") { transitive = false }
-        runtimeOnly("net.darkhax.bookshelf:bookshelf-neoforge-1.21.1:${bookshelf_version}") { transitive = false }
-        runtimeOnly("net.darkhax.pricklemc:prickle-neoforge-1.21.1:${prickle_version}") { transitive = false }
-    }
-
-    compileOnly "net.createmod.ponder:ponder-neoforge:${ponder_version}+mc${minecraft_version}"
-    if (devMod('ponder')) {
-        runtimeOnly("net.createmod.ponder:ponder-neoforge:${ponder_version}+mc${minecraft_version}") { transitive = false }
-        runtimeOnly("dev.engine-room.flywheel:flywheel-neoforge-${minecraft_version}:${flywheel_version}") { transitive = false }
-    }
-
-    compileOnly("com.hollingsworth.ars_nouveau:ars_nouveau-1.21.1:${ars_nouveau_version}") { transitive = false }
-    compileOnly("software.bernie.geckolib:geckolib-neoforge-1.21.1:${geckolib_version}") { transitive = false }
-    compileOnly("com.hollingsworth.nuggets:nuggets-neoforge-1.21.1:${ars_nuggets_version}") { transitive = false }
-    if (project.hasProperty('with_ars_nouveau') || (devMod('ars_nouveau') && !project.hasProperty('no_curios'))) {
-        runtimeOnly("com.hollingsworth.ars_nouveau:ars_nouveau-1.21.1:${ars_nouveau_version}") { transitive = false }
-        runtimeOnly("software.bernie.geckolib:geckolib-neoforge-1.21.1:${geckolib_version}") { transitive = false }
-    }
+    implementation "vazkii.patchouli:patchouli-neoforge:${patchouli_version}"
 
     compileOnly "maven.modrinth:sophisticated-core:${sophisticated_core_version}"
     compileOnly "maven.modrinth:sophisticated-storage:${sophisticated_storage_version}"
     compileOnly "maven.modrinth:sophisticated-backpacks:${sophisticated_backpacks_version}"
-    if (devMod('sophisticated')) {
-        runtimeOnly("maven.modrinth:sophisticated-core:${sophisticated_core_version}") { transitive = false }
-        runtimeOnly("maven.modrinth:sophisticated-storage:${sophisticated_storage_version}") { transitive = false }
-        runtimeOnly("maven.modrinth:sophisticated-backpacks:${sophisticated_backpacks_version}") { transitive = false }
+    runtimeOnly("maven.modrinth:sophisticated-core:${sophisticated_core_version}") { transitive = false }
+    runtimeOnly("maven.modrinth:sophisticated-storage:${sophisticated_storage_version}") { transitive = false }
+    runtimeOnly("maven.modrinth:sophisticated-backpacks:${sophisticated_backpacks_version}") { transitive = false }
+
+    compileOnly "mezz.jei:jei-${minecraft_version}-common-api:${jei_version}"
+    compileOnly "mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}"
+    runtimeOnly "mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}"
+
+    compileOnly "maven.modrinth:jade:${jade_version}"
+    runtimeOnly "maven.modrinth:jade:${jade_version}"
+    compileOnly "maven.modrinth:wthit:${wthit_version}"
+
+    compileOnly "maven.modrinth:kubejs:${kubejs_version}"
+    compileOnly "maven.modrinth:rhino:${rhino_version}"
+    if (project.hasProperty("with_kubejs")) {
+        runtimeOnly("maven.modrinth:kubejs:${kubejs_version}") { transitive = false }
+        runtimeOnly("maven.modrinth:rhino:${rhino_version}") { transitive = false }
     }
 
-    if (devMod('spectrum') && !project.hasProperty('no_curios')) {
-        runtimeOnly "maven.modrinth:spectrum:${spectrum_version}"
-        runtimeOnly "maven.modrinth:revelationary:${revelationary_version}"
-        runtimeOnly "maven.modrinth:modonomicon:${modonomicon_version}"
+    compileOnly "maven.modrinth:curios:${curios_version}"
+    runtimeOnly "maven.modrinth:curios:${curios_version}"
+
+    compileOnly "maven.modrinth:sodium:${sodium_version}"
+
+    compileOnly "maven.modrinth:rei:${rei_version}"
+    compileOnly "maven.modrinth:rrv:${rrv_version}"
+    compileOnly("net.createmod.ponder:ponder-neoforge:${ponder_version}") { transitive = false }
+    compileOnly("net.createmod.catnip:catnip-neoforge:${ponder_version}") { transitive = false }
+    compileOnly "maven.modrinth:cloth-config:26.1.154+neoforge"
+    compileOnly "maven.modrinth:architectury-api:20.1.17+neoforge"
+    compileOnly("net.createmod.catnip:catnip-neoforge:${ponder_version}") { transitive = false }
+    runtimeOnly("net.createmod.ponder:ponder-neoforge:${ponder_version}") { transitive = false }
+    runtimeOnly("net.createmod.catnip:catnip-neoforge:${ponder_version}") { transitive = false }
+    runtimeOnly("dev.engine-room.flywheel:flywheel-neoforge:${flywheel_version}") { transitive = false }
+    jarJar("net.createmod.ponder:ponder-neoforge") {
+        version { strictly "[${ponder_version},)"; prefer ponder_version }
+        transitive = false
     }
+    jarJar("net.createmod.catnip:catnip-neoforge") {
+        version { strictly "[${ponder_version},)"; prefer ponder_version }
+        transitive = false
+    }
+    jarJar("dev.engine-room.flywheel:flywheel-neoforge") {
+        version { strictly "[${flywheel_version},)"; prefer flywheel_version }
+        transitive = false
+    }
+
+    compileOnly "curse.maven:thaumaturge-1628024:${thaumaturge_file_id}"
+    compileOnly "maven.modrinth:lithostitched:${lithostitched_version}"
 
     compileOnly "maven.modrinth:fractal-lib:${fractal_version}"
-    if (!(devMod('spectrum') && !project.hasProperty('no_curios'))) {
-        runtimeOnly "maven.modrinth:fractal-lib:${fractal_version}"
-    }
-    fractalJarJar("maven.modrinth:fractal-lib:${fractal_version}") { transitive = false }
+    runtimeOnly "maven.modrinth:fractal-lib:${fractal_version}"
 
-    if (project.hasProperty('extra_mod_jars')) {
-        project.property('extra_mod_jars').toString().split(';').each { jar ->
-            if (jar.trim()) {
-                runtimeOnly files(jar.trim())
-            }
-        }
-    }
-
-    if (project.hasProperty('with_thaumaturge') || project.hasProperty('thaumaturge_jar')) {
-        runtimeOnly "maven.modrinth:lithostitched:${lithostitched_version}"
-        if (project.hasProperty('thaumaturge_jar')) {
-            runtimeOnly files(project.property('thaumaturge_jar'))
-        }
-    }
-
-
-    switch (project.findProperty('runtime_itemlist_mod') ?: 'jei') {
-        case 'emi':
-            runtimeOnly "dev.emi:emi-neoforge:${emi_version}"
-            break
-        case 'rei':
-            runtimeOnly "me.shedaniel:RoughlyEnoughItems-neoforge:${rei_version}"
-            break
-        case 'jei':
-            runtimeOnly "mezz.jei:jei-${minecraft_version}-neoforge:${devMod('sophisticated') ? dev_jei_version : jei_version}"
-            break
-    }
-
-    if (!project.hasProperty('minimal')) {
-        switch (project.findProperty('runtime_tooltip_mod') ?: 'jade') {
-            case 'jade':
-                runtimeOnly "maven.modrinth:jade:${jade_version}"
-                break
-            case 'wthit':
-                runtimeOnly "mcp.mobius.waila:wthit:neo-${wthit_version}"
-                break
-        }
-    }
-
-   // Annotations
     compileOnly 'org.jetbrains:annotations:24.0.1'
 }
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
-    options.release = 21
+    options.release = 25
     options.compilerArgs << '-Xmaxerrs' << '100000'
 }
 
@@ -319,29 +203,25 @@ tasks.withType(ProcessResources).configureEach {
             mod_license           : mod_license,
             patchouli_version     : patchouli_version,
             jei_version           : jei_version,
-            emi_version           : emi_version,
-            rei_version           : rei_version,
-            curios_version        : curios_version,
-            sodium_version        : sodium_version,
-            kubejs_version        : kubejs_version,
-            rhino_version         : rhino_version,
-            jade_version          : jade_version,
-            wthit_version         : wthit_version,
-            ears_version          : ears_version,
-            botanypots_version    : botanypots_version,
-            ponder_version        : ponder_version,
-            arsnouveau_version: arsnouveau_version,
+            jade_version          : jade_version.tokenize('+')[0],
+            wthit_version         : wthit_version.tokenize('-').last(),
+            sc_version            : sophisticated_core_version.tokenize('-')[1].tokenize('.').take(3).join('.'),
+            ss_version            : sophisticated_storage_version.tokenize('-')[1].tokenize('.').take(3).join('.'),
+            sb_version            : sophisticated_backpacks_version.tokenize('-')[1].tokenize('.').take(3).join('.'),
+            kubejs_version        : kubejs_version.tokenize('+')[0],
+            rhino_version         : rhino_version.tokenize('+')[0],
+            rei_version           : rei_version.tokenize('+')[0],
+            rrv_version           : rrv_version.tokenize('+')[0],
+            ponder_version        : ponder_version.tokenize('+')[0],
+            curios_version        : curios_version.tokenize('+')[0],
+            sodium_version        : sodium_version.tokenize('-')[1],
             thaumaturge_version   : thaumaturge_version,
-            sc_version            : sc_version,
-            ss_version            : ss_version,
-            sb_version            : sb_version,
     ]
     inputs.properties replaceProperties
 
     filesMatching(['META-INF/neoforge.mods.toml']) {
         expand replaceProperties
     }
-
 }
 
 jar {
@@ -357,91 +237,9 @@ jar {
     }
 }
 
-sourceSets {
-    coremod
-}
-
-sourceSets.coremod.compileClasspath = sourceSets.main.compileClasspath
-
-def coremodArtifact = 'botania-spectrum-coremod'
-def coremodFile = "${coremodArtifact}-${mod_version}.jar"
-
-tasks.register('coremodJar', Jar) {
-    dependsOn tasks.named('coremodClasses')
-    from sourceSets.coremod.output
-    archiveBaseName = coremodArtifact
-    archiveVersion = mod_version
-    destinationDirectory = layout.buildDirectory.dir('coremod')
-    manifest {
-        attributes([
-                'FMLModType'            : 'LIBRARY',
-                'Automatic-Module-Name' : 'botania_spectrum_coremod',
-                'Implementation-Version': mod_version,
-        ])
-    }
-}
-
-tasks.register('coremodMetadata') {
-    def out = layout.buildDirectory.file('coremod/jarjar/metadata.json')
-    def version = mod_version
-    def artifact = coremodArtifact
-    def file = coremodFile
-    def fractalVersion = fractal_version
-    inputs.property('version', version)
-    inputs.property('fractalVersion', fractalVersion)
-    outputs.file(out)
-    doLast {
-        def target = out.get().asFile
-        target.parentFile.mkdirs()
-        def coremodEntry = "{\"identifier\":{\"group\":\"velrondevs.botania\",\"artifact\":\"${artifact}\"},\"version\":{\"range\":\"[${version},)\",\"artifactVersion\":\"${version}\"},\"path\":\"META-INF/jarjar/${file}\",\"isObfuscated\":false}"
-        def fractalEntry = "{\"identifier\":{\"group\":\"de.dafuqs\",\"artifact\":\"Fractal\"},\"version\":{\"range\":\"[${fractalVersion},)\",\"artifactVersion\":\"${fractalVersion}\"},\"path\":\"META-INF/jarjar/Fractal-${fractalVersion}.jar\",\"isObfuscated\":false}"
-        target.text = "{\"jars\":[${coremodEntry},${fractalEntry}]}"
-    }
-}
-
-tasks.named('jar') {
-    dependsOn tasks.named('coremodJar'), tasks.named('coremodMetadata')
-    from(tasks.named('coremodJar').flatMap { it.archiveFile }) {
-        into 'META-INF/jarjar'
-    }
-    from(configurations.fractalJarJar) {
-        into 'META-INF/jarjar'
-        rename { "Fractal-${fractal_version}.jar" }
-    }
-    from(layout.buildDirectory.file('coremod/jarjar/metadata.json')) {
-        into 'META-INF/jarjar'
-    }
-}
-
-tasks.register('prepareCoremodDev', Copy) {
-    dependsOn tasks.named('coremodJar')
-    from tasks.named('coremodJar').flatMap { it.archiveFile }
-    into file('run/mods')
-    rename { 'botania-spectrum-coremod-dev.jar' }
-}
-
-tasks.matching { it.name in ['runClient', 'runServer', 'runData', 'runGameTestServer'] }.configureEach {
-    dependsOn tasks.named('prepareCoremodDev')
-}
-
-tasks.register('apiJar', Jar) {
-    dependsOn classes
-    from sourceSets.main.allJava
-    from sourceSets.main.output
-    include 'velrondevs/botania/api/**'
-    archiveClassifier = 'api'
-}
-
-idea {
-    module {
-        downloadSources = true
-        downloadJavadoc = true
-    }
-}
-
 tasks.register('printCompileClasspath') {
     def cp = sourceSets.main.compileClasspath
     doLast {
-        new File(project.layout.buildDirectory.get().asFile, 'compile-classpath.txt').text = cp.asPath
+        file('build/cp.txt').text = cp.files.join(File.pathSeparator)
     }
 }

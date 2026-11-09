@@ -5,7 +5,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -21,7 +21,7 @@ import velrondevs.botania.common.item.WandOfTheForestItem;
 
 import java.util.Random;
 
-public class RedStringBlockEntityRenderer<T extends RedStringBlockEntity> implements BlockEntityRenderer<T> {
+public class RedStringBlockEntityRenderer<T extends RedStringBlockEntity> extends BotaniaBlockEntityRenderer<T> {
 
 	private static int transparency = 0;
 
@@ -38,7 +38,7 @@ public class RedStringBlockEntityRenderer<T extends RedStringBlockEntity> implem
 	public RedStringBlockEntityRenderer(BlockEntityRendererProvider.Context ctx) {}
 
 	@Override
-	public void render(RedStringBlockEntity tile, float partialTicks, PoseStack ms, MultiBufferSource buffers, int light, int overlay) {
+	protected void render(T tile, float partialTicks, PoseStack ms, MultiBufferSource buffers, SubmitNodeCollector collector, int light, int overlay) {
 		if (transparency <= 0) {
 			return;
 		}

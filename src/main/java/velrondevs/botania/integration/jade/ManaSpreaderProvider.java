@@ -2,7 +2,7 @@ package velrondevs.botania.integration.jade;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 
 import snownee.jade.api.BlockAccessor;
@@ -13,7 +13,7 @@ import snownee.jade.api.config.IPluginConfig;
 
 import velrondevs.botania.common.block.block_entity.mana.ManaSpreaderBlockEntity;
 
-public enum ManaSpreaderProvider implements IBlockComponentProvider, IServerDataProvider<BlockAccessor> {
+public enum ManaSpreaderProvider implements IBlockComponentProvider {
 	INSTANCE;
 
 	private static final String LENS = "lens";
@@ -37,17 +37,7 @@ public enum ManaSpreaderProvider implements IBlockComponentProvider, IServerData
 	}
 
 	@Override
-	public void appendServerData(CompoundTag data, BlockAccessor accessor) {
-		if (accessor.getBlockEntity() instanceof ManaSpreaderBlockEntity spreader) {
-			data.putInt(JadeManaHelper.MANA, spreader.getCurrentMana());
-			data.putInt(JadeManaHelper.MAX, spreader.getMaxMana());
-			JadeManaHelper.putBinding(data, accessor, accessor.getLevel(), spreader.getBinding());
-			JadeManaHelper.putStack(data, LENS, accessor, spreader.getItemHandler().getItem(0));
-		}
-	}
-
-	@Override
-	public ResourceLocation getUid() {
+	public Identifier getUid() {
 		return BotaniaJadeIds.MANA_SPREADER;
 	}
 }

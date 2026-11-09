@@ -1,5 +1,10 @@
 package velrondevs.botania.common.item.equipment.bauble;
 
+import velrondevs.botania.client.core.handler.ClientTickHandler;
+import velrondevs.botania.client.core.helper.RenderHelper;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import java.util.function.Consumer;
+import net.minecraft.world.item.component.TooltipDisplay;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
@@ -10,10 +15,10 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.language.I18n;
-import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -61,16 +66,16 @@ public class TaintedBloodPendantItem extends BaubleItem implements BrewContainer
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext world, List<Component> tooltip, TooltipFlag adv) {
-		super.appendHoverText(stack, world, tooltip, adv);
+	public void appendHoverText(ItemStack stack, TooltipContext world, TooltipDisplay tooltipDisplay, Consumer<Component> tooltip, TooltipFlag adv) {
+		super.appendHoverText(stack, world, tooltipDisplay, tooltip, adv);
 
 		Brew brew = getBrew(stack);
 		if (brew == BotaniaBrews.fallbackBrew) {
-			tooltip.add(Component.translatable("botaniamisc.notInfused").withStyle(ChatFormatting.LIGHT_PURPLE));
+			tooltip.accept(Component.translatable("botaniamisc.notInfused").withStyle(ChatFormatting.LIGHT_PURPLE));
 			return;
 		}
 
-		tooltip.add(Component.translatable("botaniamisc.brewOf", I18n.get(brew.getTranslationKey(stack))).withStyle(ChatFormatting.LIGHT_PURPLE));
+		tooltip.accept(Component.translatable("botaniamisc.brewOf", I18n.get(brew.getTranslationKey(stack))).withStyle(ChatFormatting.LIGHT_PURPLE));
 		for (MobEffectInstance effect : brew.getPotionEffects(stack)) {
 			ChatFormatting format = effect.getEffect().value().getCategory().getTooltipFormatting();
 			MutableComponent cmp = Component.translatable(effect.getDescriptionId());
@@ -78,14 +83,14 @@ public class TaintedBloodPendantItem extends BaubleItem implements BrewContainer
 				cmp.append(" ");
 				cmp.append(Component.translatable("botania.roman" + (effect.getAmplifier() + 1)));
 			}
-			tooltip.add(cmp.withStyle(format));
+			tooltip.accept(cmp.withStyle(format));
 		}
 	}
 
 	@Override
 	public void onWornTick(ItemStack stack, LivingEntity living) {
 		Brew brew = ((BrewItem) stack.getItem()).getBrew(stack);
-		if (brew != BotaniaBrews.fallbackBrew && living instanceof Player player && !living.level().isClientSide) {
+		if (brew != BotaniaBrews.fallbackBrew && living instanceof Player player && !living.level().isClientSide()) {
 			MobEffectInstance effect = brew.getPotionEffects(stack).get(0);
 			float cost = (float) brew.getManaCost(stack) / effect.getDuration() / (1 + effect.getAmplifier()) * 2.5F;
 			boolean doRand = cost < 1;
@@ -106,38 +111,45 @@ public class TaintedBloodPendantItem extends BaubleItem implements BrewContainer
 
 	public static class Renderer implements AccessoryRenderer {
 		@Override
-		public void doRender(HumanoidModel<?> bipedModel, ItemStack stack, LivingEntity living, PoseStack ms, MultiBufferSource buffers, int light, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+		public void doRender(HumanoidModel<?> bipedModel, ItemStack stack, LivingEntity living, PoseStack ms, SubmitNodeCollector collector, int light, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+			MultiBufferSource buffers = RenderHelper.buffers(collector);
 			boolean armor = !living.getItemBySlot(EquipmentSlot.CHEST).isEmpty();
 			bipedModel.body.translateAndRotate(ms);
 			ms.translate(-0.25, 0.4, armor ? 0.05 : 0.12);
 			ms.scale(0.5F, -0.5F, -0.5F);
 
-			BakedModel model = MiscellaneousModels.INSTANCE.bloodPendantChain;
-			VertexConsumer buffer = buffers.getBuffer(Sheets.cutoutBlockSheet());
-			Minecraft.getInstance().getBlockRenderer().getModelRenderer()
-					.renderModel(ms.last(), buffer, null, model, 1, 1, 1, light, OverlayTexture.NO_OVERLAY);
+			BlockStateModelPart model = MiscellaneousModels.INSTANCE.bloodPendantChain;
+			RenderHelper.renderModelPart(model, ms, buffers, light, OverlayTexture.NO_OVERLAY);
 
 			model = MiscellaneousModels.INSTANCE.bloodPendantGem;
-			int color = Minecraft.getInstance().getItemColors().getColor(stack, 1);
-			float r = (color >> 16 & 0xFF) / 255F;
-			float g = (color >> 8 & 0xFF) / 255F;
-			float b = (color & 0xFF) / 255F;
-			Minecraft.getInstance().getBlockRenderer().getModelRenderer()
-					.renderModel(ms.last(), buffer, null, model, r, g, b, 0xF000F0, OverlayTexture.NO_OVERLAY);
+			RenderHelper.renderModelPart(model, 0xFF000000 | getGemColor(stack), ms, buffers, 0xF000F0, OverlayTexture.NO_OVERLAY);
+		}
+
+		private static int getGemColor(ItemStack stack) {
+			Brew brew = ((BrewItem) stack.getItem()).getBrew(stack);
+			if (brew == BotaniaBrews.fallbackBrew) {
+				return 0xC6000E;
+			}
+			int color = brew.getColor(stack);
+			int add = (int) (Math.sin(ClientTickHandler.ticksInGame * 0.2) * 24);
+			int r = Math.max(0, Math.min(255, (color >> 16 & 0xFF) + add));
+			int g = Math.max(0, Math.min(255, (color >> 8 & 0xFF) + add));
+			int b = Math.max(0, Math.min(255, (color & 0xFF) + add));
+			return r << 16 | g << 8 | b;
 		}
 	}
 
 	@Override
 	public Brew getBrew(ItemStack stack) {
 		String key = ItemNBTHelper.getString(stack, TAG_BREW_KEY, "");
-		return BotaniaAPI.instance().getBrewRegistry().get(ResourceLocation.tryParse(key));
+		return BotaniaAPI.instance().getBrewRegistry().getValue(Identifier.tryParse(key));
 	}
 
 	public static void setBrew(ItemStack stack, Brew brew) {
 		setBrew(stack, BotaniaAPI.instance().getBrewRegistry().getKey(brew));
 	}
 
-	public static void setBrew(ItemStack stack, ResourceLocation brew) {
+	public static void setBrew(ItemStack stack, Identifier brew) {
 		ItemNBTHelper.setString(stack, TAG_BREW_KEY, brew.toString());
 	}
 

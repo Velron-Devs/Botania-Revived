@@ -4,7 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import velrondevs.botania.datagen.providers.integration.JsonFileProvider;
 import velrondevs.botania.module.magicskies.MagicSkiesModule;
@@ -33,7 +33,7 @@ public class MagicSkiesDimensionProvider extends JsonFileProvider {
 	}
 
 	@Override
-	protected void addFiles(Map<ResourceLocation, JsonObject> files) {
+	protected void addFiles(Map<Identifier, JsonObject> files) {
 		JsonObject json = kind == Kind.DIMENSION ? dimension() : dimensionType();
 		files.put(MagicSkiesModule.DIMENSION_ID, json);
 	}
@@ -66,23 +66,21 @@ public class MagicSkiesDimensionProvider extends JsonFileProvider {
 
 	private static JsonObject dimensionType() {
 		JsonObject json = withCondition();
-		json.addProperty("ultrawarm", false);
-		json.addProperty("natural", false);
-		json.addProperty("piglin_safe", false);
-		json.addProperty("respawn_anchor_works", false);
-		json.addProperty("bed_works", false);
-		json.addProperty("has_raids", false);
 		json.addProperty("has_skylight", true);
 		json.addProperty("has_ceiling", false);
+		json.addProperty("has_ender_dragon_fight", false);
 		json.addProperty("coordinate_scale", 1.0);
 		json.addProperty("ambient_light", 0.5);
-		json.addProperty("effects", "minecraft:overworld");
+		json.addProperty("skybox", "overworld");
 		json.addProperty("min_y", 0);
 		json.addProperty("height", 384);
 		json.addProperty("logical_height", 384);
 		json.addProperty("infiniburn", "#minecraft:infiniburn_overworld");
 		json.addProperty("monster_spawn_light_level", 0);
 		json.addProperty("monster_spawn_block_light_limit", 0);
+		JsonObject attributes = new JsonObject();
+		attributes.addProperty("minecraft:gameplay/can_start_raid", false);
+		json.add("attributes", attributes);
 		return json;
 	}
 }

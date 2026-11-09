@@ -1,18 +1,23 @@
 package velrondevs.botania.common.item.equipment.bauble;
 
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import java.util.function.Consumer;
+import net.minecraft.world.item.component.TooltipDisplay;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.util.ARGB;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.FluidTags;
@@ -53,8 +58,8 @@ import java.util.List;
 
 public class FlugelTiaraItem extends BaubleItem implements CustomCreativeTabContents {
 
-	private static final ResourceLocation textureHud = ResourceLocation.parse(ResourcesLib.GUI_HUD_ICONS);
-	public static final ResourceLocation textureHalo = ResourceLocation.parse(ResourcesLib.MISC_HALO);
+	private static final Identifier textureHud = Identifier.parse(ResourcesLib.GUI_HUD_ICONS);
+	public static final Identifier textureHalo = Identifier.parse(ResourcesLib.MISC_HALO);
 
 	private static final String TAG_VARIANT = "variant";
 	private static final String TAG_FLYING = "flying";
@@ -91,9 +96,9 @@ public class FlugelTiaraItem extends BaubleItem implements CustomCreativeTabCont
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext world, List<Component> tooltip, TooltipFlag flags) {
-		super.appendHoverText(stack, world, tooltip, flags);
-		tooltip.add(Component.translatable("botania.wings" + getVariant(stack)));
+	public void appendHoverText(ItemStack stack, TooltipContext world, TooltipDisplay tooltipDisplay, Consumer<Component> tooltip, TooltipFlag flags) {
+		super.appendHoverText(stack, world, tooltipDisplay, tooltip, flags);
+		tooltip.accept(Component.translatable("botania.wings" + getVariant(stack)));
 	}
 
 	public static void updatePlayerFlyStatus(Player player) {
@@ -104,7 +109,7 @@ public class FlugelTiaraItem extends BaubleItem implements CustomCreativeTabCont
 			if (shouldPlayerHaveFlight(player)) {
 				player.getAbilities().mayfly = true;
 				if (player.getAbilities().flying) {
-					if (!player.level().isClientSide) {
+					if (!player.level().isClientSide()) {
 						if (!player.isCreative() && !player.isSpectator()) {
 							ManaItemHandler.instance().requestManaExact(tiara, player, getCost(tiara, left), true);
 						}
@@ -179,13 +184,13 @@ public class FlugelTiaraItem extends BaubleItem implements CustomCreativeTabCont
 	}
 
 	public static void playerLoggedOut(ServerPlayer player) {
-		String username = player.getGameProfile().getName();
+		String username = player.getGameProfile().name();
 		playersWithFlight.remove(username + ":false");
 		playersWithFlight.remove(username + ":true");
 	}
 
 	private static String playerStr(Player player) {
-		return player.getGameProfile().getName() + ":" + player.level().isClientSide;
+		return player.getGameProfile().name() + ":" + player.level().isClientSide();
 	}
 
 	private static boolean shouldPlayerHaveFlight(Player player) {
@@ -276,7 +281,7 @@ public class FlugelTiaraItem extends BaubleItem implements CustomCreativeTabCont
 
 	public static class Renderer implements AccessoryRenderer {
 
-		private static void renderBasic(HumanoidModel<?> bipedModel, BakedModel model, ItemStack stack, PoseStack ms, MultiBufferSource buffers, int light, float flap) {
+		private static void renderBasic(HumanoidModel<?> bipedModel, BlockStateModelPart model, ItemStack stack, PoseStack ms, MultiBufferSource buffers, int light, float flap) {
 			ms.pushPose();
 
 			bipedModel.body.translateAndRotate(ms);
@@ -291,14 +296,15 @@ public class FlugelTiaraItem extends BaubleItem implements CustomCreativeTabCont
 
 				ms.mulPose(VecHelper.rotateZ(-60));
 				ms.scale(1.5F, -1.5F, -1.5F);
-				Minecraft.getInstance().getItemRenderer().render(stack, ItemDisplayContext.NONE, false, ms, buffers, light, OverlayTexture.NO_OVERLAY, model);
+				ms.translate(-0.5D, -0.5D, -0.5D);
+				RenderHelper.renderModelPart(model, ms, buffers, light, OverlayTexture.NO_OVERLAY);
 				ms.popPose();
 			}
 
 			ms.popPose();
 		}
 
-		private static void renderSephiroth(HumanoidModel<?> bipedModel, BakedModel model, ItemStack stack, PoseStack ms, MultiBufferSource buffers, int light, float flap) {
+		private static void renderSephiroth(HumanoidModel<?> bipedModel, BlockStateModelPart model, ItemStack stack, PoseStack ms, MultiBufferSource buffers, int light, float flap) {
 			ms.pushPose();
 			bipedModel.body.translateAndRotate(ms);
 			ms.translate(0, 0.5, 0.2);
@@ -308,11 +314,12 @@ public class FlugelTiaraItem extends BaubleItem implements CustomCreativeTabCont
 
 			ms.mulPose(VecHelper.rotateZ(-60));
 			ms.scale(1.6F, -1.6F, -1.6F);
-			Minecraft.getInstance().getItemRenderer().render(stack, ItemDisplayContext.NONE, false, ms, buffers, light, OverlayTexture.NO_OVERLAY, model);
+			ms.translate(-0.5D, -0.5D, -0.5D);
+				RenderHelper.renderModelPart(model, ms, buffers, light, OverlayTexture.NO_OVERLAY);
 			ms.popPose();
 		}
 
-		private static void renderCirno(HumanoidModel<?> bipedModel, BakedModel model, ItemStack stack, PoseStack ms, MultiBufferSource buffers, int light) {
+		private static void renderCirno(HumanoidModel<?> bipedModel, BlockStateModelPart model, ItemStack stack, PoseStack ms, MultiBufferSource buffers, int light) {
 			ms.pushPose();
 			bipedModel.body.translateAndRotate(ms);
 			ms.translate(-0.8, 0.15, 0.25);
@@ -326,14 +333,15 @@ public class FlugelTiaraItem extends BaubleItem implements CustomCreativeTabCont
 				}
 
 				ms.scale(1.6F, -1.6F, -1.6F);
-				Minecraft.getInstance().getItemRenderer().render(stack, ItemDisplayContext.NONE, false, ms, buffers, light, OverlayTexture.NO_OVERLAY, model);
+				ms.translate(-0.5D, -0.5D, -0.5D);
+				RenderHelper.renderModelPart(model, ms, buffers, light, OverlayTexture.NO_OVERLAY);
 				ms.popPose();
 			}
 
 			ms.popPose();
 		}
 
-		private static void renderPhoenix(HumanoidModel<?> bipedModel, BakedModel model, ItemStack stack, PoseStack ms, MultiBufferSource buffers, float flap) {
+		private static void renderPhoenix(HumanoidModel<?> bipedModel, BlockStateModelPart model, ItemStack stack, PoseStack ms, MultiBufferSource buffers, float flap) {
 			ms.pushPose();
 			bipedModel.body.translateAndRotate(ms);
 			ms.translate(0, -0.2, 0.2);
@@ -345,14 +353,15 @@ public class FlugelTiaraItem extends BaubleItem implements CustomCreativeTabCont
 				ms.translate(-0.9, 0, 0);
 
 				ms.scale(1.7F, -1.7F, -1.7F);
-				Minecraft.getInstance().getItemRenderer().render(stack, ItemDisplayContext.NONE, false, ms, buffers, 0xF000F0, OverlayTexture.NO_OVERLAY, model);
+				ms.translate(-0.5D, -0.5D, -0.5D);
+				RenderHelper.renderModelPart(model, ms, buffers, 0xF000F0, OverlayTexture.NO_OVERLAY);
 				ms.popPose();
 			}
 
 			ms.popPose();
 		}
 
-		private static void renderKuroyukihime(HumanoidModel<?> bipedModel, BakedModel model, ItemStack stack, PoseStack ms, MultiBufferSource buffers, float flap) {
+		private static void renderKuroyukihime(HumanoidModel<?> bipedModel, BlockStateModelPart model, ItemStack stack, PoseStack ms, MultiBufferSource buffers, float flap) {
 			ms.pushPose();
 			bipedModel.body.translateAndRotate(ms);
 			ms.translate(0, -0.4, 0.2);
@@ -364,14 +373,15 @@ public class FlugelTiaraItem extends BaubleItem implements CustomCreativeTabCont
 				ms.translate(-1.3, 0, 0);
 
 				ms.scale(2.5F, -2.5F, -2.5F);
-				Minecraft.getInstance().getItemRenderer().render(stack, ItemDisplayContext.NONE, false, ms, buffers, 0xF000F0, OverlayTexture.NO_OVERLAY, model);
+				ms.translate(-0.5D, -0.5D, -0.5D);
+				RenderHelper.renderModelPart(model, ms, buffers, 0xF000F0, OverlayTexture.NO_OVERLAY);
 				ms.popPose();
 			}
 
 			ms.popPose();
 		}
 
-		private static void renderCustomColor(HumanoidModel<?> bipedModel, BakedModel model, LivingEntity living, ItemStack stack, PoseStack ms, MultiBufferSource buffers, float flap, int color) {
+		private static void renderCustomColor(HumanoidModel<?> bipedModel, BlockStateModelPart model, LivingEntity living, ItemStack stack, PoseStack ms, SubmitNodeCollector collector, float flap, int color) {
 			ms.pushPose();
 			bipedModel.body.translateAndRotate(ms);
 			ms.translate(0, 0, 0.2);
@@ -383,7 +393,7 @@ public class FlugelTiaraItem extends BaubleItem implements CustomCreativeTabCont
 
 				ms.scale(1.5F, -1.5F, -1.5F);
 
-				RenderHelper.renderItemCustomColor(living, stack, color, ms, buffers, 0xF000F0, OverlayTexture.NO_OVERLAY, model);
+				RenderHelper.renderItemCustomColor(living, stack, color, ms, collector, 0xF000F0, OverlayTexture.NO_OVERLAY, model);
 				ms.popPose();
 			}
 
@@ -391,14 +401,15 @@ public class FlugelTiaraItem extends BaubleItem implements CustomCreativeTabCont
 		}
 
 		@Override
-		public void doRender(HumanoidModel<?> bipedModel, ItemStack stack, LivingEntity living, PoseStack ms, MultiBufferSource buffers, int light, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+		public void doRender(HumanoidModel<?> bipedModel, ItemStack stack, LivingEntity living, PoseStack ms, SubmitNodeCollector collector, int light, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+			MultiBufferSource buffers = RenderHelper.buffers(collector);
 			int meta = getVariant(stack);
 			if (meta <= 0 || meta >= MiscellaneousModels.INSTANCE.tiaraWingIcons.length + 1) {
 				return;
 			}
 
-			BakedModel model = MiscellaneousModels.INSTANCE.tiaraWingIcons[meta - 1];
-			ClientXplatAbstractions.instance().markSpriteActive(model.getParticleIcon());
+			BlockStateModelPart model = MiscellaneousModels.INSTANCE.tiaraWingIcons[meta - 1];
+			ClientXplatAbstractions.instance().markSpriteActive(model.particleMaterial().sprite());
 			boolean flying = living instanceof Player player && player.getAbilities().flying;
 			float flap = 20F + (float) ((Math.sin((double) (living.tickCount + partialTicks) * (flying ? 0.4F : 0.2F)) + 0.5F) * (flying ? 30F : 5F));
 
@@ -428,13 +439,13 @@ public class FlugelTiaraItem extends BaubleItem implements CustomCreativeTabCont
 				case 7:
 					float alpha = 0.5F + (float) Math.cos((double) (living.tickCount + partialTicks) * 0.3F) * 0.2F;
 					int color = 0xFFFFFF | ((int) (alpha * 255F)) << 24;
-					renderCustomColor(bipedModel, model, living, stack, ms, buffers, flap, color);
+					renderCustomColor(bipedModel, model, living, stack, ms, collector, flap, color);
 					break;
 				case 9:
 					flap = -(float) ((Math.sin((double) (living.tickCount + partialTicks) * 0.2F) + 0.6F) * (flying ? 12F : 5F));
 					alpha = 0.5F + (flying ? (float) Math.cos((double) (living.tickCount + partialTicks) * 0.3F) * 0.25F + 0.25F : 0F);
 					color = 0xFFFFFF | ((int) (alpha * 255F)) << 24;
-					renderCustomColor(bipedModel, model, living, stack, ms, buffers, flap, color);
+					renderCustomColor(bipedModel, model, living, stack, ms, collector, flap, color);
 					break;
 			}
 		}
@@ -479,7 +490,7 @@ public class FlugelTiaraItem extends BaubleItem implements CustomCreativeTabCont
 			return 0;
 		}
 
-		public static void renderHUD(GuiGraphics gui, Player player, ItemStack stack) {
+		public static void renderHUD(GuiGraphicsExtractor gui, Player player, ItemStack stack) {
 			int u = Math.max(1, getVariant(stack)) * 9 - 9;
 			int v = 0;
 
@@ -497,24 +508,18 @@ public class FlugelTiaraItem extends BaubleItem implements CustomCreativeTabCont
 				float trans = 1F;
 				if (i == segs - 1) {
 					trans = (float) last / (float) segTime;
-					RenderSystem.enableBlend();
-					RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 				}
 
-				RenderSystem.setShaderColor(1F, 1F, 1F, trans);
-				RenderHelper.drawTexturedModalRect(gui, textureHud, xo + 8 * i, y, u, v, 9, 9);
+				gui.blit(RenderPipelines.GUI_TEXTURED, textureHud, xo + 8 * i, y, u, v, 9, 9, 256, 256, ARGB.white(trans));
 			}
 
 			if (player.getAbilities().flying) {
 				int width = ItemNBTHelper.getInt(stack, TAG_DASH_COOLDOWN, 0);
-				RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
 				if (width > 0) {
 					gui.fill(xo, y - 2, xo + 80, y - 1, 0x88000000);
 				}
 				gui.fill(xo, y - 2, xo + width, y - 1, 0xFFFFFFFF);
 			}
-
-			RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
 		}
 	}
 

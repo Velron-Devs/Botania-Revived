@@ -1,5 +1,7 @@
 package velrondevs.botania.common.item;
 
+import java.util.function.Consumer;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
@@ -46,9 +48,9 @@ public class ManaTabletItem extends Item implements CustomCreativeTabContents {
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext world, List<Component> stacks, TooltipFlag flags) {
+	public void appendHoverText(ItemStack stack, TooltipContext world, TooltipDisplay tooltipDisplay, Consumer<Component> stacks, TooltipFlag flags) {
 		if (isStackCreative(stack)) {
-			stacks.add(Component.translatable("botaniamisc.creative").withStyle(ChatFormatting.GRAY));
+			stacks.accept(Component.translatable("botaniamisc.creative").withStyle(ChatFormatting.GRAY));
 		}
 	}
 

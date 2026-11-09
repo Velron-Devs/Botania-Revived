@@ -1,0 +1,11 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "botania:item/frozen_star",
+    "tints": [
+      {
+        "type": "botania:extras_frozen_star"
+      }
+    ]
+  }
+}

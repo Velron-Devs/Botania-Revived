@@ -1,5 +1,8 @@
 package velrondevs.botania.common.item.equipment.tool.manasteel;
 
+import org.jetbrains.annotations.Nullable;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
@@ -9,7 +12,7 @@ import net.minecraft.world.item.AxeItem;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.ToolMaterial;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -29,6 +32,8 @@ import java.util.regex.Pattern;
 
 public class ManasteelAxeItem extends AxeItem implements CustomDamageItem, SortableTool {
 
+	private final ToolMaterial material;
+
 	private static final Pattern SAPLING_PATTERN = Pattern.compile("(?:(?:(?:[A-Z-_.:]|^)sapling)|(?:(?:[a-z-_.:]|^)Sapling))(?:[A-Z-_.:]|$)");
 
 	private static final int MANA_PER_DAMAGE = 60;
@@ -37,14 +42,19 @@ public class ManasteelAxeItem extends AxeItem implements CustomDamageItem, Sorta
 		this(BotaniaAPI.instance().getManasteelItemTier(), 6F, -3.1F, props);
 	}
 
-	public ManasteelAxeItem(Tier mat, float attackDamage, float attackSpeed, Properties props) {
-		super(mat, props.attributes(createAttributes(mat, attackDamage, attackSpeed)));
+	public ManasteelAxeItem(ToolMaterial mat, float attackDamage, float attackSpeed, Properties props) {
+		super(mat, attackDamage, attackSpeed, props);
+		this.material = mat;
 	}
 
 	@Override
 	public <T extends LivingEntity> int damageItem(ItemStack stack, int amount, T entity, Consumer<Item> onBroken) {
 		int manaPerDamage = ((ManasteelAxeItem) stack.getItem()).getManaPerDamage();
 		return ToolCommons.damageItemIfPossible(stack, amount, entity, manaPerDamage);
+	}
+
+	public ToolMaterial getTier() {
+		return material;
 	}
 
 	public int getManaPerDamage() {
@@ -66,7 +76,7 @@ public class ManasteelAxeItem extends AxeItem implements CustomDamageItem, Sorta
 					ItemStack displayStack = stackAt.copy();
 					var result = PlayerHelper.substituteUse(ctx, stackAt);
 					if (result.consumesAction()) {
-						if (!ctx.getLevel().isClientSide) {
+						if (!ctx.getLevel().isClientSide()) {
 							ItemsRemainingRenderHandler.send(player, displayStack, SAPLING_PATTERN);
 						}
 						return result;
@@ -79,8 +89,8 @@ public class ManasteelAxeItem extends AxeItem implements CustomDamageItem, Sorta
 	}
 
 	@Override
-	public void inventoryTick(ItemStack stack, Level world, Entity entity, int slot, boolean selected) {
-		if (!world.isClientSide && entity instanceof Player player && stack.getDamageValue() > 0 && ManaItemHandler.instance().requestManaExactForTool(stack, player, getManaPerDamage() * 2, true)) {
+	public void inventoryTick(ItemStack stack, ServerLevel world, Entity entity, @Nullable EquipmentSlot eqSlot) {
+		if (!world.isClientSide() && entity instanceof Player player && stack.getDamageValue() > 0 && ManaItemHandler.instance().requestManaExactForTool(stack, player, getManaPerDamage() * 2, true)) {
 			stack.setDamageValue(stack.getDamageValue() - 1);
 		}
 	}

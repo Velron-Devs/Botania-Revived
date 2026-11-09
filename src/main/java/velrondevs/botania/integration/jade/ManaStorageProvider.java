@@ -1,7 +1,7 @@
 package velrondevs.botania.integration.jade;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import snownee.jade.api.BlockAccessor;
@@ -14,7 +14,7 @@ import velrondevs.botania.api.mana.ManaReceiver;
 import velrondevs.botania.common.block.block_entity.AvatarBlockEntity;
 import velrondevs.botania.common.block.block_entity.LifeImbuerBlockEntity;
 
-public enum ManaStorageProvider implements IBlockComponentProvider, IServerDataProvider<BlockAccessor> {
+public enum ManaStorageProvider implements IBlockComponentProvider {
 	INSTANCE;
 
 	private static int maxMana(BlockEntity be) {
@@ -42,14 +42,7 @@ public enum ManaStorageProvider implements IBlockComponentProvider, IServerDataP
 	}
 
 	@Override
-	public void appendServerData(CompoundTag data, BlockAccessor accessor) {
-		if (accessor.getBlockEntity() instanceof ManaReceiver receiver) {
-			data.putInt(JadeManaHelper.MANA, receiver.getCurrentMana());
-		}
-	}
-
-	@Override
-	public ResourceLocation getUid() {
+	public Identifier getUid() {
 		return BotaniaJadeIds.MANA_STORAGE;
 	}
 }

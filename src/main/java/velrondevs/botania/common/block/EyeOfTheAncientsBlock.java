@@ -1,5 +1,7 @@
 package velrondevs.botania.common.block;
 
+import net.minecraft.core.Direction;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -37,7 +39,7 @@ public class EyeOfTheAncientsBlock extends BotaniaWaterloggedBlock implements En
 	}
 
 	@Override
-	public int getAnalogOutputSignal(BlockState state, Level world, BlockPos pos) {
+	public int getAnalogOutputSignal(BlockState state, Level world, BlockPos pos, Direction direction) {
 		return world.getBlockEntity(pos) instanceof EyeOfTheAncientsBlockEntity eye
 				? Math.min(15, Math.max(0, eye.entities - 1))
 				: 0;
@@ -52,7 +54,7 @@ public class EyeOfTheAncientsBlock extends BotaniaWaterloggedBlock implements En
 	@Nullable
 	@Override
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-		if (!level.isClientSide) {
+		if (!level.isClientSide()) {
 			return createTickerHelper(type, BotaniaBlockEntities.FOREST_EYE, EyeOfTheAncientsBlockEntity::serverTick);
 		}
 		return null;

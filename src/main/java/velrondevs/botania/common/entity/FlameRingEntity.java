@@ -1,5 +1,10 @@
 package velrondevs.botania.common.entity;
 
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
@@ -43,7 +48,7 @@ public class FlameRingEntity extends Entity {
 				a = 45 + a;
 			}
 
-			if (level().random.nextInt(tickCount < 90 ? 8 : 20) == 0) {
+			if (level().getRandom().nextInt(tickCount < 90 ? 8 : 20) == 0) {
 				float rad = (float) (a * 4 * Math.PI / 180F);
 				double x = Math.cos(rad) * renderRadius;
 				double z = Math.sin(rad) * renderRadius;
@@ -60,11 +65,11 @@ public class FlameRingEntity extends Entity {
 			}
 		}
 
-		if (level().random.nextInt(20) == 0) {
+		if (level().getRandom().nextInt(20) == 0) {
 			level().playLocalSound(getX(), getY(), getZ(), SoundEvents.FIRE_AMBIENT, SoundSource.BLOCKS, 1F, 1F, false);
 		}
 
-		if (level().isClientSide) {
+		if (level().isClientSide()) {
 			return;
 		}
 
@@ -92,15 +97,15 @@ public class FlameRingEntity extends Entity {
 	}
 
 	@Override
-	public boolean hurt(@NotNull DamageSource source, float amount) {
+	public boolean hurtServer(ServerLevel level, @NotNull DamageSource source, float amount) {
 		return false;
 	}
 
 	@Override
-	protected void readAdditionalSaveData(@NotNull CompoundTag var1) {}
+	protected void readAdditionalSaveData(ValueInput var1) {}
 
 	@Override
-	protected void addAdditionalSaveData(@NotNull CompoundTag var1) {}
+	protected void addAdditionalSaveData(ValueOutput var1) {}
 
 	@Override
 	public Packet<ClientGamePacketListener> getAddEntityPacket(ServerEntity serverEntity) {

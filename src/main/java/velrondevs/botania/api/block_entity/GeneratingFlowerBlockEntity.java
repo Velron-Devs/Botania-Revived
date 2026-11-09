@@ -4,7 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -17,7 +17,7 @@ import velrondevs.botania.api.internal.ManaNetwork;
 import velrondevs.botania.api.mana.ManaCollector;
 
 public abstract class GeneratingFlowerBlockEntity extends BindableSpecialFlowerBlockEntity<ManaCollector> {
-	private static final ResourceLocation SPREADER_ID = ResourceLocation.fromNamespaceAndPath(BotaniaAPI.MODID, "mana_spreader");
+	private static final Identifier SPREADER_ID = Identifier.fromNamespaceAndPath(BotaniaAPI.MODID, "mana_spreader");
 
 	public static final int LINK_RANGE = 6;
 	private static final String TAG_MANA = "mana";
@@ -32,7 +32,7 @@ public abstract class GeneratingFlowerBlockEntity extends BindableSpecialFlowerB
 	public void tickFlower() {
 		super.tickFlower();
 
-		if (getLevel().isClientSide) {
+		if (getLevel().isClientSide()) {
 			double particleChance = 1F - (double) getMana() / (double) getMaxMana() / 3.5F;
 			int color = getColor();
 			float red = (color >> 16 & 0xFF) / 255F;
@@ -40,7 +40,7 @@ public abstract class GeneratingFlowerBlockEntity extends BindableSpecialFlowerB
 			float blue = (color & 0xFF) / 255F;
 
 			if (Math.random() > particleChance) {
-				Vec3 offset = getLevel().getBlockState(getBlockPos()).getOffset(getLevel(), getBlockPos());
+				Vec3 offset = getLevel().getBlockState(getBlockPos()).getOffset(getBlockPos());
 				double x = getBlockPos().getX() + offset.x;
 				double y = getBlockPos().getY() + offset.y;
 				double z = getBlockPos().getZ() + offset.z;
@@ -92,7 +92,7 @@ public abstract class GeneratingFlowerBlockEntity extends BindableSpecialFlowerB
 	@Override
 	public void readFromPacketNBT(CompoundTag cmp, HolderLookup.Provider registries) {
 		super.readFromPacketNBT(cmp, registries);
-		mana = cmp.getInt(TAG_MANA);
+		mana = cmp.getIntOr(TAG_MANA, 0);
 	}
 
 	@Override

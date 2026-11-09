@@ -12,8 +12,8 @@ public class TerrasteelArmorModel {
 		var deformation = new CubeDeformation(0.01F);
 		var mesh = new MeshDefinition();
 		var root = mesh.getRoot();
-		root.addOrReplaceChild("head", CubeListBuilder.create(), PartPose.ZERO);
-		root.addOrReplaceChild("hat", CubeListBuilder.create(), PartPose.ZERO);
+		var head = root.addOrReplaceChild("head", CubeListBuilder.create(), PartPose.ZERO);
+		head.addOrReplaceChild("hat", CubeListBuilder.create(), PartPose.ZERO);
 		root.addOrReplaceChild("left_arm", CubeListBuilder.create(), PartPose.ZERO);
 		root.addOrReplaceChild("right_arm", CubeListBuilder.create(), PartPose.ZERO);
 
@@ -150,7 +150,7 @@ public class TerrasteelArmorModel {
 				.addBox(-1.0F, -1.0F, 0.0F, 2, 2, 5, deformation),
 				PartPose.offsetAndRotation(-2.5F, 9.0F, 0.5F, Mth.PI / 36, -Mth.PI / 4, 0.0F));
 
-		root.addOrReplaceChild("hat", CubeListBuilder.create(), PartPose.ZERO);
+		head.addOrReplaceChild("hat", CubeListBuilder.create(), PartPose.ZERO);
 		return mesh;
 	}
 }

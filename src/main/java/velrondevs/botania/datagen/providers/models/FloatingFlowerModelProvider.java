@@ -7,7 +7,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.level.block.Block;
 
@@ -35,7 +35,7 @@ public class FloatingFlowerModelProvider implements DataProvider {
 	public CompletableFuture<?> run(CachedOutput cache) {
 		List<Tuple<String, JsonElement>> jsons = new ArrayList<>();
 		for (Block b : BuiltInRegistries.BLOCK) {
-			ResourceLocation id = BuiltInRegistries.BLOCK.getKey(b);
+			Identifier id = BuiltInRegistries.BLOCK.getKey(b);
 			if (LibMisc.MOD_ID.equals(id.getNamespace()) && b instanceof FloatingFlowerBlock) {
 				String name = id.getPath();
 				String nonFloat;
@@ -51,15 +51,16 @@ public class FloatingFlowerModelProvider implements DataProvider {
 				JsonObject flower = new JsonObject();
 				flower.addProperty("parent", ResourcesLib.PREFIX_MOD + "block/" + nonFloat);
 				obj.add("flower", flower);
+				JsonObject textures = new JsonObject();
+				textures.addProperty("particle", ResourcesLib.PREFIX_MOD + "block/" + nonFloat);
+				obj.add("textures", textures);
 				jsons.add(new Tuple<>(name, obj));
 			}
 		}
 		List<CompletableFuture<?>> output = new ArrayList<>();
 		PackOutput.PathProvider blocks = packOutput.createPathProvider(PackOutput.Target.RESOURCE_PACK, "models/block");
-		PackOutput.PathProvider items = packOutput.createPathProvider(PackOutput.Target.RESOURCE_PACK, "models/item");
 		for (Tuple<String, JsonElement> pair : jsons) {
 			output.add(DataProvider.saveStable(cache, pair.getB(), blocks.json(prefix(pair.getA()))));
-			output.add(DataProvider.saveStable(cache, pair.getB(), items.json(prefix(pair.getA()))));
 		}
 
 		return CompletableFuture.allOf(output.toArray(CompletableFuture[]::new));

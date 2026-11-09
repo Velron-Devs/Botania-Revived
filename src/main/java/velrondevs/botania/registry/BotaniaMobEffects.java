@@ -2,7 +2,7 @@ package velrondevs.botania.registry;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.effect.MobEffect;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
@@ -22,7 +22,7 @@ public class BotaniaMobEffects {
 	public static final Holder<MobEffect> allure = DeferredHolder.create(Registries.MOB_EFFECT, prefix(LibPotionNames.ALLURE));
 	public static final Holder<MobEffect> clear = DeferredHolder.create(Registries.MOB_EFFECT, prefix(LibPotionNames.CLEAR));
 
-	public static void registerPotions(BiConsumer<MobEffect, ResourceLocation> r) {
+	public static void registerPotions(BiConsumer<MobEffect, Identifier> r) {
 		r.accept(new SoulCrossMobEffect(), prefix(LibPotionNames.SOUL_CROSS));
 		r.accept(new FeatherfeetMobEffect(), prefix(LibPotionNames.FEATHER_FEET));
 		r.accept(new EmptinessMobEffect(), prefix(LibPotionNames.EMPTINESS));

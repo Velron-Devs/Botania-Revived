@@ -8,12 +8,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "C": {
-      "item": "botania:flame_laced_charcoal"
-    },
-    "S": {
-      "item": "minecraft:stick"
-    }
+    "C": "botania:flame_laced_charcoal",
+    "S": "minecraft:stick"
   },
   "pattern": [
     "C",

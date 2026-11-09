@@ -18,18 +18,18 @@ public interface AbstractFurnaceBlockEntityAccessor {
 	@Accessor("quickCheck")
 	RecipeManager.CachedCheck<SingleRecipeInput, ? extends AbstractCookingRecipe> getQuickCheck();
 
-	@Accessor
+	@Accessor("litTimeRemaining")
 	int getLitTime();
 
-	@Accessor
+	@Accessor("litTimeRemaining")
 	void setLitTime(int burnTime);
 
-	@Accessor
+	@Accessor("cookingTimer")
 	int getCookingProgress();
 
 	@Accessor
 	int getCookingTotalTime();
 
-	@Accessor
+	@Accessor("cookingTimer")
 	void setCookingProgress(int cookTime);
 }

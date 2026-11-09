@@ -1,0 +1,11 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "botania:item/floral_bifrost_powder",
+    "tints": [
+      {
+        "type": "botania:extras_rainbow"
+      }
+    ]
+  }
+}

@@ -9,7 +9,6 @@ import me.shedaniel.rei.api.client.registry.screen.ScreenRegistry;
 import me.shedaniel.rei.api.client.registry.transfer.TransferHandlerRegistry;
 import me.shedaniel.rei.api.common.entry.EntryIngredient;
 import me.shedaniel.rei.api.common.entry.EntryStack;
-import me.shedaniel.rei.api.common.entry.comparison.ItemComparatorRegistry;
 import me.shedaniel.rei.api.common.util.EntryIngredients;
 import me.shedaniel.rei.api.common.util.EntryStacks;
 import me.shedaniel.rei.forge.REIPluginClient;
@@ -19,12 +18,12 @@ import me.shedaniel.rei.plugin.common.displays.crafting.DefaultCustomDisplay;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.item.crafting.RecipeManager;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 
 import velrondevs.botania.api.item.AncientWillContainer;
@@ -93,15 +92,6 @@ public class BotaniaReiPlugin implements REIClientPlugin {
 	}
 
 	@Override
-	public void registerItemComparators(ItemComparatorRegistry registry) {
-		registry.registerComponents(BotaniaItems.lexicon, BotaniaItems.brewFlask, BotaniaItems.brewVial,
-				BotaniaItems.bloodPendant, BotaniaItems.incenseStick, BotaniaItems.flightTiara, BotaniaItems.laputaShard);
-		if (SophisticatedModule.INSTANCE.isAvailable()) {
-			SophisticatedRei.registerComparators(registry);
-		}
-	}
-
-	@Override
 	public void registerCategories(CategoryRegistry registry) {
 		for (BotaniaReiCategory category : BotaniaReiCategories.all()) {
 			registry.add(category);
@@ -122,6 +112,9 @@ public class BotaniaReiPlugin implements REIClientPlugin {
 		registry.addWorkstations(BotaniaReiCategories.TERRESTRIAL_AGGLOMERATION, EntryStacks.of(BotaniaBlocks.terraPlate));
 		registry.addWorkstations(BotaniaReiCategories.ELVEN_TRADE, EntryStacks.of(BotaniaBlocks.alfPortal));
 		registry.addWorkstations(BotaniaReiCategories.BOTANICAL_BREWERY, EntryStacks.of(BotaniaBlocks.brewery));
+		if (SophisticatedModule.INSTANCE.isAvailable()) {
+			SophisticatedRei.registerWorkstations(registry);
+		}
 		registry.addWorkstations(BotaniaReiCategories.PURE_DAISY,
 				EntryStacks.of(BotaniaFlowerBlocks.pureDaisy),
 				EntryStacks.of(BotaniaFlowerBlocks.pureDaisyFloating));
@@ -138,11 +131,11 @@ public class BotaniaReiPlugin implements REIClientPlugin {
 				EntryStacks.of(BotaniaFlowerBlocks.marimorphosisChibiFloating));
 	}
 
-	private static final Comparator<RecipeHolder<?>> BY_ID = Comparator.comparing(RecipeHolder::id);
+	private static final Comparator<RecipeHolder<?>> BY_ID = Comparator.<RecipeHolder<?>, Identifier>comparing(holder -> holder.id().identifier());
 
 	private static <T extends net.minecraft.world.item.crafting.Recipe<net.minecraft.world.item.crafting.RecipeInput>> List<RecipeHolder<T>> sorted(
-			RecipeManager manager, net.minecraft.world.item.crafting.RecipeType<T> type, Comparator<? super RecipeHolder<T>> comparator) {
-		List<RecipeHolder<T>> list = new ArrayList<>(manager.getAllRecipesFor(type));
+			Level manager, net.minecraft.world.item.crafting.RecipeType<T> type, Comparator<? super RecipeHolder<T>> comparator) {
+		List<RecipeHolder<T>> list = new ArrayList<>(BotaniaRecipeTypes.getAllRecipesFor(null, type));
 		list.sort(comparator);
 		return list;
 	}
@@ -154,10 +147,13 @@ public class BotaniaReiPlugin implements REIClientPlugin {
 
 	@Override
 	public void registerDisplays(DisplayRegistry registry) {
-		RecipeManager manager = registry.getRecipeManager();
+		Level manager = Minecraft.getInstance().level;
+		if (manager == null) {
+			return;
+		}
 
 		for (RecipeHolder<PetalApothecaryRecipe> holder : sorted(manager, BotaniaRecipeTypes.PETAL_TYPE, BY_ID)) {
-			ResourceLocation id = holder.id();
+			Identifier id = holder.id().identifier();
 			if (id.equals(prefix("petal_apothecary/daybloom_motif")) || id.equals(prefix("petal_apothecary/nightshade_motif"))) {
 				continue;
 			}
@@ -165,7 +161,7 @@ public class BotaniaReiPlugin implements REIClientPlugin {
 		}
 		for (RecipeHolder<ManaInfusionRecipe> holder : sorted(manager, BotaniaRecipeTypes.MANA_INFUSION_TYPE,
 				Comparator.comparing(BotaniaReiPlugin::catalystKey)
-						.thenComparing(holder -> holder.value().getGroup())
+						.thenComparing(holder -> holder.value().group())
 						.thenComparing(BY_ID))) {
 			registry.add(BotaniaReiDisplays.manaInfusion(holder));
 		}
@@ -223,8 +219,8 @@ public class BotaniaReiPlugin implements REIClientPlugin {
 			ItemStack helm = new ItemStack(BotaniaItems.terrasteelHelm);
 			ItemStack result = helm.copy();
 			((AncientWillContainer) result.getItem()).addAncientWill(result, ((AncientWillItem) will).type);
-			ResourceLocation willId = BuiltInRegistries.ITEM.getKey(will);
-			registry.add(DefaultCustomDisplay.simple(
+			Identifier willId = BuiltInRegistries.ITEM.getKey(will);
+			registry.add(new DefaultCustomDisplay(
 					List.of(EntryIngredients.of(helm), EntryIngredients.of(will)),
 					List.of(EntryIngredients.of(result)),
 					Optional.of(prefix("crafting/ancient_will/" + willId.getPath()))));
@@ -232,7 +228,7 @@ public class BotaniaReiPlugin implements REIClientPlugin {
 
 		ItemStack tipped = new ItemStack(BotaniaItems.terraPick);
 		TerraShattererItem.setTipped(tipped);
-		registry.add(DefaultCustomDisplay.simple(
+		registry.add(new DefaultCustomDisplay(
 				List.of(EntryIngredients.of(BotaniaItems.terraPick), EntryIngredients.of(BotaniaItems.elementiumPick)),
 				List.of(EntryIngredients.of(tipped)),
 				Optional.of(prefix("crafting/terra_shatterer_tipping"))));
@@ -264,8 +260,8 @@ public class BotaniaReiPlugin implements REIClientPlugin {
 			if (firstIngredient.isEmpty()) {
 				continue;
 			}
-			ResourceLocation firstId = BuiltInRegistries.ITEM.getKey(first);
-			registry.add(DefaultCustomDisplay.simple(
+			Identifier firstId = BuiltInRegistries.ITEM.getKey(first);
+			registry.add(new DefaultCustomDisplay(
 					List.of(firstIngredient, EntryIngredients.of(Items.SLIME_BALL), secondBuilder.build()),
 					List.of(outputBuilder.build()),
 					Optional.of(prefix("crafting/composite_lens/" + firstId.getPath()))));

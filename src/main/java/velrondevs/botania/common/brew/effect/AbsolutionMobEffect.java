@@ -1,5 +1,6 @@
 package velrondevs.botania.common.brew.effect;
 
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.InstantenousMobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.Entity;
@@ -14,12 +15,12 @@ public class AbsolutionMobEffect extends InstantenousMobEffect {
 	}
 
 	@Override
-	public void applyInstantenousEffect(Entity e, Entity e1, @NotNull LivingEntity e2, int t, double d) {
+	public void applyInstantenousEffect(ServerLevel level, Entity e, Entity e1, @NotNull LivingEntity e2, int t, double d) {
 		e2.removeAllEffects();
 	}
 
 	@Override
-	public boolean applyEffectTick(LivingEntity livingEntity, int t) {
+	public boolean applyEffectTick(ServerLevel level, LivingEntity livingEntity, int t) {
 
 		livingEntity.removeAllEffects();
 		return true;

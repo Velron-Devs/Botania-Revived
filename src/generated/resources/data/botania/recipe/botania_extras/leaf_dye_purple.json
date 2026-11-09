@@ -9,12 +9,9 @@
   "category": "misc",
   "group": "botania:leaf_dye",
   "ingredients": [
-    {
-      "item": "botania:purple_iridescent_leaves"
-    }
+    "botania:purple_iridescent_leaves"
   ],
   "result": {
-    "count": 1,
     "id": "minecraft:purple_dye"
   }
 }

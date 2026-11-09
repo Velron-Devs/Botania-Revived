@@ -9,12 +9,9 @@
   "category": "misc",
   "group": "botania:leaf_dye",
   "ingredients": [
-    {
-      "item": "botania:bifrost_leaves"
-    }
+    "botania:bifrost_leaves"
   ],
   "result": {
-    "count": 1,
     "id": "botania:floral_bifrost_powder"
   }
 }

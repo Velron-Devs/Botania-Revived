@@ -65,7 +65,7 @@ public class AvatarBlockEntity extends SimpleInventoryBlockEntity implements Ava
 		ListTag boostCooldowns = new ListTag();
 		for (Map.Entry<UUID, Integer> e : this.boostCooldowns.entrySet()) {
 			CompoundTag cmp = new CompoundTag();
-			cmp.putUUID("id", e.getKey());
+			BlockEntityNbt.putUUID(cmp, "id", e.getKey());
 			cmp.putInt("cooldown", e.getValue());
 			boostCooldowns.add(cmp);
 		}
@@ -75,22 +75,22 @@ public class AvatarBlockEntity extends SimpleInventoryBlockEntity implements Ava
 	@Override
 	public void readPacketNBT(CompoundTag tag, HolderLookup.Provider registries) {
 		super.readPacketNBT(tag, registries);
-		enabled = tag.getBoolean(TAG_ENABLED);
-		ticksElapsed = tag.getInt(TAG_TICKS_ELAPSED);
-		mana = tag.getInt(TAG_MANA);
+		enabled = tag.getBooleanOr(TAG_ENABLED, false);
+		ticksElapsed = tag.getIntOr(TAG_TICKS_ELAPSED, 0);
+		mana = tag.getIntOr(TAG_MANA, 0);
 		boostCooldowns.clear();
-		ListTag boostCooldowns = tag.getList(TAG_COOLDOWNS, Tag.TAG_COMPOUND);
+		ListTag boostCooldowns = tag.getListOrEmpty(TAG_COOLDOWNS);
 		for (Tag nbt : boostCooldowns) {
 			CompoundTag cmp = ((CompoundTag) nbt);
-			UUID id = cmp.getUUID("id");
-			int cooldown = cmp.getInt("cooldown");
+			UUID id = BlockEntityNbt.getUUID(cmp, "id");
+			int cooldown = cmp.getIntOr("cooldown", 0);
 			this.boostCooldowns.put(id, cooldown);
 		}
 	}
 
 	@Override
 	protected SimpleContainer createItemHandler() {
-		return new SimpleContainer(1) {
+		return new Inventory(1) {
 			@Override
 			public int getMaxStackSize() {
 				return 1;
@@ -101,7 +101,7 @@ public class AvatarBlockEntity extends SimpleInventoryBlockEntity implements Ava
 	@Override
 	public void setChanged() {
 		super.setChanged();
-		if (level != null && !level.isClientSide) {
+		if (level != null && !level.isClientSide()) {
 			VanillaPacketDispatcher.dispatchTEToNearbyPlayers(this);
 		}
 	}

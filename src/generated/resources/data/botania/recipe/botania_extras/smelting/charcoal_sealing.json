@@ -9,11 +9,8 @@
   "category": "misc",
   "cookingtime": 200,
   "experience": 0.15,
-  "ingredient": {
-    "item": "botania:sealing_log"
-  },
+  "ingredient": "botania:sealing_log",
   "result": {
-    "count": 1,
     "id": "minecraft:charcoal"
   }
 }

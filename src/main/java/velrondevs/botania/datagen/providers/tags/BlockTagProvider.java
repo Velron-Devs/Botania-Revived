@@ -1,11 +1,12 @@
 package velrondevs.botania.datagen.providers.tags;
 
+import net.minecraft.tags.TagEntry;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.IntrinsicHolderTagsProvider;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -177,7 +178,7 @@ public class BlockTagProvider extends IntrinsicHolderTagsProvider<Block> {
 				.addTag(BotaniaTags.Blocks.POTTED_MYSTICAL_FLOWERS)
 				.addTag(BotaniaTags.Blocks.POTTED_SHINY_FLOWERS);
 
-		tag(BlockTags.TALL_FLOWERS).addTag(BotaniaTags.Blocks.DOUBLE_MYSTICAL_FLOWERS);
+		tag(BlockTags.FLOWERS).addTag(BotaniaTags.Blocks.DOUBLE_MYSTICAL_FLOWERS);
 		tag(BlockTags.SMALL_FLOWERS).addTag(BotaniaTags.Blocks.MYSTICAL_FLOWERS);
 
 		tag(BlockTags.IMPERMEABLE).add(BotaniaBlocks.elfGlass, BotaniaBlocks.manaGlass, BotaniaBlocks.bifrost, BotaniaBlocks.bifrostPerm);
@@ -236,7 +237,7 @@ public class BlockTagProvider extends IntrinsicHolderTagsProvider<Block> {
 
 		tag(BotaniaTags.Blocks.WEIGHT_LENS_WHITELIST);
 
-		tag(BlockTags.MUSHROOM_GROW_BLOCK).add(
+		tag(BlockTags.OVERRIDES_MUSHROOM_LIGHT_REQUIREMENT).add(
 				BotaniaBlocks.biomeStoneFungal, BotaniaBlocks.biomeStoneFungalSlab, BotaniaBlocks.biomeStoneFungalStairs, BotaniaBlocks.biomeStoneFungalWall,
 				BotaniaBlocks.biomeBrickFungal, BotaniaBlocks.biomeBrickFungalSlab, BotaniaBlocks.biomeBrickFungalStairs, BotaniaBlocks.biomeBrickFungalWall,
 				BotaniaBlocks.biomeCobblestoneFungal, BotaniaBlocks.biomeCobblestoneFungalSlab, BotaniaBlocks.biomeCobblestoneFungalStairs, BotaniaBlocks.biomeCobblestoneFungalWall,
@@ -244,8 +245,8 @@ public class BlockTagProvider extends IntrinsicHolderTagsProvider<Block> {
 
 		tag(BotaniaTags.Blocks.HORN_OF_THE_WILD_BREAKABLE)
 				.add(Blocks.MOSS_CARPET)
-				.addOptional(ResourceLocation.parse("biomesoplenty:high_grass"))
-				.addOptional(ResourceLocation.parse("biomesoplenty:high_grass_plant"));
+				.add(TagEntry.optionalElement(Identifier.parse("biomesoplenty:high_grass")))
+				.add(TagEntry.optionalElement(Identifier.parse("biomesoplenty:high_grass_plant")));
 
 		tag(BlockTags.LEAVES);
 		tag(BotaniaTags.Blocks.HORN_OF_THE_CANOPY_BREAKABLE).addTag(BlockTags.LEAVES);
@@ -258,9 +259,9 @@ public class BlockTagProvider extends IntrinsicHolderTagsProvider<Block> {
 
 		tag(BotaniaTags.Blocks.PASTURE_SEED_REPLACEABLE).add(Blocks.DIRT, Blocks.GRASS_BLOCK, Blocks.MYCELIUM);
 
-		tag(BotaniaTags.Blocks.UNETHICAL_TNT_CHECK).addOptional(ResourceLocation.parse("ae2:tiny_tnt"));
+		tag(BotaniaTags.Blocks.UNETHICAL_TNT_CHECK).add(TagEntry.optionalElement(Identifier.parse("ae2:tiny_tnt")));
 
-		tag(BotaniaTags.Blocks.SINGLE_ITEM_INSERT).addOptional(ResourceLocation.parse("quark:crafter"));
+		tag(BotaniaTags.Blocks.SINGLE_ITEM_INSERT).add(TagEntry.optionalElement(Identifier.parse("quark:crafter")));
 
 		tag(BotaniaTags.Blocks.UNSUPPORTED_PLATFORM_DISGUISE);
 

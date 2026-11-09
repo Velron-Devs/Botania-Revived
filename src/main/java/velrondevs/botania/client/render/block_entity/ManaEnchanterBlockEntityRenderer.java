@@ -3,13 +3,12 @@ package velrondevs.botania.client.render.block_entity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.inventory.InventoryMenu;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -17,26 +16,23 @@ import velrondevs.botania.client.core.handler.ClientTickHandler;
 import velrondevs.botania.client.core.helper.RenderHelper;
 import velrondevs.botania.common.block.block_entity.ManaEnchanterBlockEntity;
 import velrondevs.botania.common.helper.VecHelper;
-import velrondevs.botania.mixin.ItemEntityAccessor;
 
 import java.util.Objects;
 
 import static velrondevs.botania.common.lib.ResourceLocationHelper.prefix;
 
-public class ManaEnchanterBlockEntityRenderer implements BlockEntityRenderer<ManaEnchanterBlockEntity> {
+public class ManaEnchanterBlockEntityRenderer extends BotaniaBlockEntityRenderer<ManaEnchanterBlockEntity> {
 
 	private final TextureAtlasSprite overlaySprite;
-	private ItemEntity item;
 
 	public ManaEnchanterBlockEntityRenderer(BlockEntityRendererProvider.Context ctx) {
 		this.overlaySprite = Objects.requireNonNull(
-				Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
-						.apply(prefix("block/enchanter_overlay"))
+				RenderHelper.blockSprite(prefix("block/enchanter_overlay"))
 		);
 	}
 
 	@Override
-	public void render(@NotNull ManaEnchanterBlockEntity enchanter, float partTicks, PoseStack ms, MultiBufferSource buffers, int light, int overlay) {
+	protected void render(@NotNull ManaEnchanterBlockEntity enchanter, float partTicks, PoseStack ms, MultiBufferSource buffers, SubmitNodeCollector collector, int light, int overlay) {
 		float alphaMod = 0F;
 
 		if (enchanter.stage == ManaEnchanterBlockEntity.State.GATHER_MANA) {
@@ -49,15 +45,8 @@ public class ManaEnchanterBlockEntityRenderer implements BlockEntityRenderer<Man
 
 		ms.pushPose();
 		if (!enchanter.itemToEnchant.isEmpty()) {
-			if (item == null) {
-				item = new ItemEntity(enchanter.getLevel(), enchanter.getBlockPos().getX(), enchanter.getBlockPos().getY() + 1, enchanter.getBlockPos().getZ(), enchanter.itemToEnchant);
-			}
-
-			((ItemEntityAccessor) item).setAge(ClientTickHandler.ticksInGame);
-			item.setItem(enchanter.itemToEnchant);
-
 			ms.translate(0.5F, 1.25F, 0.5F);
-			Minecraft.getInstance().getEntityRenderDispatcher().render(item, 0, 0, 0, 0, partTicks, ms, buffers, light);
+			RenderHelper.renderItemLikeEntity(enchanter.itemToEnchant, ClientTickHandler.ticksInGame + partTicks, 0F, ms, collector, light, enchanter.getLevel());
 			ms.translate(-0.5F, -1.25F, -0.5F);
 		}
 

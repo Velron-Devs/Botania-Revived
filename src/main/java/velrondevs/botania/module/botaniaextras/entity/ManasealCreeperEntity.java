@@ -20,12 +20,12 @@ public class ManasealCreeperEntity extends Creeper {
 		super(type, level);
 		CompoundTag tag = new CompoundTag();
 		tag.putByte("ExplosionRadius", (byte) 1);
-		super.readAdditionalSaveData(tag);
+		super.readAdditionalSaveData(net.minecraft.world.level.storage.TagValueInput.create(net.minecraft.util.ProblemReporter.DISCARDING, level.registryAccess(), tag));
 	}
 
 	@Override
 	public void remove(RemovalReason reason) {
-		if (reason == RemovalReason.DISCARDED && dead && !level().isClientSide) {
+		if (reason == RemovalReason.DISCARDED && dead && !level().isClientSide()) {
 			stormNearbyPlayers();
 		}
 		super.remove(reason);

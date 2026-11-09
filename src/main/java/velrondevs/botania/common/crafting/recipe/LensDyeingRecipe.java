@@ -10,7 +10,6 @@ import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.SimpleCraftingRecipeSerializer;
 import net.minecraft.world.level.Level;
 
 import org.jetbrains.annotations.NotNull;
@@ -24,7 +23,7 @@ import java.util.List;
 import java.util.function.Supplier;
 
 public class LensDyeingRecipe extends CustomRecipe {
-	public static final RecipeSerializer<LensDyeingRecipe> SERIALIZER = new SimpleCraftingRecipeSerializer<>(LensDyeingRecipe::new);
+	public static final RecipeSerializer<LensDyeingRecipe> SERIALIZER = RecipeUtils.simpleSerializer(LensDyeingRecipe::new);
 
 	private final Supplier<List<Ingredient>> dyes = Suppliers.memoize(() -> Arrays.asList(
 			Ingredient.of(Items.WHITE_DYE), Ingredient.of(Items.ORANGE_DYE),
@@ -38,13 +37,11 @@ public class LensDyeingRecipe extends CustomRecipe {
 			Ingredient.of(BotaniaItems.manaPearl)
 	));
 
-	public LensDyeingRecipe(CraftingBookCategory category) {
-		super(category);
-	}
+	public LensDyeingRecipe() {}
 
 	@NotNull
 	@Override
-	public RecipeSerializer<?> getSerializer() {
+	public RecipeSerializer<? extends CustomRecipe> getSerializer() {
 		return SERIALIZER;
 	}
 
@@ -76,7 +73,7 @@ public class LensDyeingRecipe extends CustomRecipe {
 
 	@NotNull
 	@Override
-	public ItemStack assemble(@NotNull CraftingInput inv, @NotNull HolderLookup.Provider registries) {
+	public ItemStack assemble(@NotNull CraftingInput inv) {
 		ItemStack lens = ItemStack.EMPTY;
 		int color = -1;
 
@@ -99,11 +96,6 @@ public class LensDyeingRecipe extends CustomRecipe {
 		}
 
 		return ItemStack.EMPTY;
-	}
-
-	@Override
-	public boolean canCraftInDimensions(int width, int height) {
-		return width * height >= 2;
 	}
 
 	private int getStackColor(ItemStack stack) {

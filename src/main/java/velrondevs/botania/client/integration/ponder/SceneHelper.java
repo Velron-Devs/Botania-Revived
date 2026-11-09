@@ -1,9 +1,9 @@
 package velrondevs.botania.client.integration.ponder;
 
-import net.createmod.ponder.api.ParticleEmitter;
-import net.createmod.ponder.api.scene.SceneBuilder;
-import net.createmod.ponder.api.element.ElementLink;
-import net.createmod.ponder.api.element.EntityElement;
+import net.createmod.ponder.api.client.scene.ParticleEmitter;
+import net.createmod.ponder.api.client.scene.SceneBuilder;
+import net.createmod.ponder.api.client.element.ElementLink;
+import net.createmod.ponder.api.client.element.EntityElement;
 import net.minecraft.world.phys.Vec3;
 
 import velrondevs.botania.client.fx.SparkleParticleData;
@@ -65,7 +65,7 @@ final class SceneHelper {
 
 	static ElementLink<EntityElement> corporeaSpark(SceneBuilder scene, Vec3 at, boolean master) {
 		return scene.world().createEntity(level -> {
-			CorporeaSparkEntity spark = BotaniaEntities.CORPOREA_SPARK.create(level);
+			CorporeaSparkEntity spark = new CorporeaSparkEntity(BotaniaEntities.CORPOREA_SPARK, level);
 			spark.setPos(at.x, at.y, at.z);
 			spark.setMaster(master);
 			return spark;

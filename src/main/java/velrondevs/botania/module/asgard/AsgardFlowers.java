@@ -1,7 +1,7 @@
 package velrondevs.botania.module.asgard;
 
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.block.Block;
@@ -24,9 +24,9 @@ import java.util.function.BiConsumer;
 import static velrondevs.botania.common.lib.ResourceLocationHelper.prefix;
 
 public final class AsgardFlowers {
-	public static final ResourceLocation ASGARDANDELION_ID = prefix("asgardandelion");
-	public static final ResourceLocation ASGARDANDELION_FLOATING_ID = prefix("floating_asgardandelion");
-	public static final ResourceLocation ASGARDANDELION_POTTED_ID = prefix("potted_asgardandelion");
+	public static final Identifier ASGARDANDELION_ID = prefix("asgardandelion");
+	public static final Identifier ASGARDANDELION_FLOATING_ID = prefix("floating_asgardandelion");
+	public static final Identifier ASGARDANDELION_POTTED_ID = prefix("potted_asgardandelion");
 
 	public static final Block asgardandelion = XplatAbstractions.INSTANCE.createSpecialFlowerBlock(BotaniaMobEffects.clear, 1,
 			BlockBehaviour.Properties.ofFullCopy(Blocks.POPPY), () -> AsgardFlowers.ASGARDANDELION);
@@ -43,19 +43,19 @@ public final class AsgardFlowers {
 		return List.of(asgardandelion, asgardandelionFloating, asgardandelionPotted);
 	}
 
-	public static void registerBlocks(BiConsumer<Block, ResourceLocation> r) {
+	public static void registerBlocks(BiConsumer<Block, Identifier> r) {
 		r.accept(asgardandelion, ASGARDANDELION_ID);
 		r.accept(asgardandelionFloating, ASGARDANDELION_FLOATING_ID);
 		r.accept(asgardandelionPotted, ASGARDANDELION_POTTED_ID);
 	}
 
-	public static void registerItemBlocks(BiConsumer<Item, ResourceLocation> r) {
+	public static void registerItemBlocks(BiConsumer<Item, Identifier> r) {
 		Item.Properties props = BotaniaItems.defaultBuilder().rarity(Rarity.EPIC);
 		r.accept(new SpecialFlowerBlockItem(asgardandelion, props), BuiltInRegistries.BLOCK.getKey(asgardandelion));
 		r.accept(new SpecialFlowerBlockItem(asgardandelionFloating, props), BuiltInRegistries.BLOCK.getKey(asgardandelionFloating));
 	}
 
-	public static void registerBlockEntities(BiConsumer<BlockEntityType<?>, ResourceLocation> r) {
+	public static void registerBlockEntities(BiConsumer<BlockEntityType<?>, Identifier> r) {
 		r.accept(ASGARDANDELION, ASGARDANDELION_ID);
 	}
 

@@ -1,9 +1,9 @@
 package velrondevs.botania.client.integration.ponder;
 
-import net.createmod.ponder.api.registration.PonderSceneRegistrationHelper;
+import net.createmod.ponder.api.client.registration.PonderSceneRegistrationHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
@@ -28,7 +28,7 @@ import java.util.List;
 final class BotaniaPonderScenes {
 	private BotaniaPonderScenes() {}
 
-	static void register(PonderSceneRegistrationHelper<ResourceLocation> helper) {
+	static void register(PonderSceneRegistrationHelper<Identifier> helper) {
 		helper.forComponents(ids(BotaniaBlocks.manaSpreader, BotaniaBlocks.redstoneSpreader, BotaniaBlocks.elvenSpreader, BotaniaBlocks.gaiaSpreader))
 				.addStoryBoard("spreader_pool", ManaScenes::spreader, BotaniaPonderTags.MANA_NETWORK);
 		helper.forComponents(ids(BotaniaBlocks.manaPool, BotaniaBlocks.dilutedPool, BotaniaBlocks.fabulousPool, BotaniaBlocks.creativePool))
@@ -58,10 +58,16 @@ final class BotaniaPonderScenes {
 				.addStoryBoard("sparks", SparkScenes::sparks, BotaniaPonderTags.MANA_NETWORK);
 		helper.forComponents(itemIds(BotaniaItems.sparkUpgradeDispersive, BotaniaItems.sparkUpgradeDominant, BotaniaItems.sparkUpgradeRecessive, BotaniaItems.sparkUpgradeIsolated))
 				.addStoryBoard("spark_upgrades", SparkScenes::augments, BotaniaPonderTags.MANA_NETWORK);
-		helper.forComponents(flowerIds(true))
-				.addStoryBoard("generating_flowers", FlowerScenes::generating, BotaniaPonderTags.FLOWERS);
-		helper.forComponents(flowerIds(false))
-				.addStoryBoard("functional_flowers", FlowerScenes::functional, BotaniaPonderTags.FLOWERS);
+		for (Identifier flowerId : flowerIds(true)) {
+			Block flowerBlock = BuiltInRegistries.BLOCK.getValue(flowerId);
+			helper.forComponents(List.of(flowerId))
+					.addStoryBoard("generating_flowers", (scene, util) -> FlowerScenes.generating(scene, util, flowerBlock), BotaniaPonderTags.FLOWERS);
+		}
+		for (Identifier flowerId : flowerIds(false)) {
+			Block flowerBlock = BuiltInRegistries.BLOCK.getValue(flowerId);
+			helper.forComponents(List.of(flowerId))
+					.addStoryBoard("functional_flowers", (scene, util) -> FlowerScenes.functional(scene, util, flowerBlock), BotaniaPonderTags.FLOWERS);
+		}
 		helper.forComponents(ids(BotaniaBlocks.brewery))
 				.addStoryBoard("brewery", MachineScenes::brewery, BotaniaPonderTags.CRAFTING_DEVICES);
 		helper.forComponents(ids(BotaniaBlocks.alchemyCatalyst, BotaniaBlocks.conjurationCatalyst))
@@ -72,30 +78,30 @@ final class BotaniaPonderScenes {
 				.addStoryBoard("corporea_funnel", CorporeaScenes::funnel, BotaniaPonderTags.CORPOREA);
 	}
 
-	private static List<ResourceLocation> ids(Block... blocks) {
+	private static List<Identifier> ids(Block... blocks) {
 		return Arrays.stream(blocks).map(BuiltInRegistries.BLOCK::getKey).toList();
 	}
 
-	private static List<ResourceLocation> join(List<ResourceLocation> first, List<ResourceLocation> second) {
-		List<ResourceLocation> result = new ArrayList<>(first);
+	private static List<Identifier> join(List<Identifier> first, List<Identifier> second) {
+		List<Identifier> result = new ArrayList<>(first);
 		result.addAll(second);
 		return result;
 	}
 
-	private static List<ResourceLocation> itemIds(Item... items) {
+	private static List<Identifier> itemIds(Item... items) {
 		return Arrays.stream(items).map(BuiltInRegistries.ITEM::getKey).toList();
 	}
 
-	private static List<ResourceLocation> lensIds() {
+	private static List<Identifier> lensIds() {
 		return BuiltInRegistries.ITEM.keySet().stream()
 				.filter(id -> LibMisc.MOD_ID.equals(id.getNamespace()) && id.getPath().startsWith("lens_"))
 				.toList();
 	}
 
-	private static List<ResourceLocation> flowerIds(boolean generating) {
-		List<ResourceLocation> result = new ArrayList<>();
+	private static List<Identifier> flowerIds(boolean generating) {
+		List<Identifier> result = new ArrayList<>();
 		for (Block block : BuiltInRegistries.BLOCK) {
-			ResourceLocation id = BuiltInRegistries.BLOCK.getKey(block);
+			Identifier id = BuiltInRegistries.BLOCK.getKey(block);
 			if (!LibMisc.MOD_ID.equals(id.getNamespace())
 					|| !(block instanceof SpecialFlowerBlock || block instanceof FloatingSpecialFlowerBlock)
 					|| !(block instanceof EntityBlock entityBlock)) {
@@ -112,7 +118,7 @@ final class BotaniaPonderScenes {
 		return result;
 	}
 
-	private static List<ResourceLocation> apothecaryIds() {
+	private static List<Identifier> apothecaryIds() {
 		return BuiltInRegistries.BLOCK.keySet().stream()
 				.filter(id -> LibMisc.MOD_ID.equals(id.getNamespace()) && id.getPath().startsWith(LibBlockNames.APOTHECARY_PREFIX))
 				.toList();

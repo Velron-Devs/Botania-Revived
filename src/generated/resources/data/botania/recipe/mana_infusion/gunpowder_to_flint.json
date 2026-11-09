@@ -4,12 +4,9 @@
     "type": "block",
     "block": "botania:alchemy_catalyst"
   },
-  "input": {
-    "item": "minecraft:gunpowder"
-  },
+  "input": "minecraft:gunpowder",
   "mana": 200,
   "output": {
-    "count": 1,
     "id": "minecraft:flint"
   }
 }

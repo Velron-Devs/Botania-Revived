@@ -10,7 +10,7 @@ public class SpectralRailComponent extends SerializableComponent {
 
 	@Override
 	public void readFromNbt(CompoundTag tag, HolderLookup.Provider registries) {
-		floatTicks = tag.getInt(SpectralRailBlock.TAG_FLOAT_TICKS);
+		floatTicks = tag.getIntOr(SpectralRailBlock.TAG_FLOAT_TICKS, 0);
 	}
 
 	@Override

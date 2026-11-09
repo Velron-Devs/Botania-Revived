@@ -1,6 +1,10 @@
 package velrondevs.botania.common.block;
 
+import net.minecraft.core.Direction;
+
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.Containers;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
@@ -68,11 +72,11 @@ public class FloatingSpecialFlowerBlock extends FloatingFlowerBlock {
 	}
 
 	@Override
-	public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
-		if (hasComparatorOutput && !newState.hasAnalogOutputSignal()) {
-			level.updateNeighbourForOutputSignal(pos, newState.getBlock());
+	protected void affectNeighborsAfterRemoval(BlockState state, ServerLevel level, BlockPos pos, boolean movedByPiston) {
+		if (hasComparatorOutput) {
+			Containers.updateNeighboursAfterDestroy(state, level, pos);
 		}
-		super.onRemove(state, level, pos, newState, movedByPiston);
+		super.affectNeighborsAfterRemoval(state, level, pos, movedByPiston);
 	}
 
 	@NotNull
@@ -95,7 +99,7 @@ public class FloatingSpecialFlowerBlock extends FloatingFlowerBlock {
 	}
 
 	@Override
-	public int getAnalogOutputSignal(BlockState bs, Level level, BlockPos pos) {
+	public int getAnalogOutputSignal(BlockState bs, Level level, BlockPos pos, Direction direction) {
 		return level.getBlockEntity(pos) instanceof SpecialFlowerBlockEntity flower ? flower.getComparatorSignal() : 0;
 	}
 }

@@ -1,5 +1,7 @@
 package velrondevs.botania.common.block;
 
+import net.minecraft.world.level.redstone.Orientation;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
@@ -25,7 +27,7 @@ public class FakeAirBlock extends AirBlock implements EntityBlock, LiquidBlockCo
 	}
 
 	@Override
-	public void neighborChanged(BlockState state, Level world, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving) {
+	public void neighborChanged(BlockState state, Level world, BlockPos pos, Block block, Orientation fromPos, boolean isMoving) {
 		if (shouldRemove(world, pos)) {
 			world.scheduleTick(pos, this, 4);
 		}
@@ -49,7 +51,7 @@ public class FakeAirBlock extends AirBlock implements EntityBlock, LiquidBlockCo
 	}
 
 	@Override
-	public boolean canPlaceLiquid(@Nullable Player player, BlockGetter blockGetter, BlockPos pos, BlockState state, Fluid fluid) {
+	public boolean canPlaceLiquid(@Nullable net.minecraft.world.entity.LivingEntity player, BlockGetter blockGetter, BlockPos pos, BlockState state, Fluid fluid) {
 		return false;
 	}
 

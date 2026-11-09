@@ -1,12 +1,15 @@
 package velrondevs.botania.common.item.equipment.tool.manasteel;
 
+import org.jetbrains.annotations.Nullable;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ShovelItem;
-import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.ToolMaterial;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -20,14 +23,17 @@ import java.util.function.Consumer;
 
 public class ManasteelShovelItem extends ShovelItem implements CustomDamageItem, SortableTool {
 
+	private final ToolMaterial material;
+
 	private static final int MANA_PER_DAMAGE = 60;
 
 	public ManasteelShovelItem(Properties props) {
 		this(BotaniaAPI.instance().getManasteelItemTier(), props);
 	}
 
-	public ManasteelShovelItem(Tier mat, Properties props) {
-		super(mat, props.attributes(createAttributes(mat, 1.5F, -3.0F)));
+	public ManasteelShovelItem(ToolMaterial mat, Properties props) {
+		super(mat, 1.5F, -3.0F, props);
+		this.material = mat;
 	}
 
 	@Override
@@ -36,13 +42,17 @@ public class ManasteelShovelItem extends ShovelItem implements CustomDamageItem,
 		return ToolCommons.damageItemIfPossible(stack, amount, entity, manaPerDamage);
 	}
 
+	public ToolMaterial getTier() {
+		return material;
+	}
+
 	public int getManaPerDamage() {
 		return MANA_PER_DAMAGE;
 	}
 
 	@Override
-	public void inventoryTick(ItemStack stack, Level world, Entity entity, int slot, boolean selected) {
-		if (!world.isClientSide && entity instanceof Player player && stack.getDamageValue() > 0 && ManaItemHandler.instance().requestManaExactForTool(stack, player, getManaPerDamage() * 2, true)) {
+	public void inventoryTick(ItemStack stack, ServerLevel world, Entity entity, @Nullable EquipmentSlot eqSlot) {
+		if (!world.isClientSide() && entity instanceof Player player && stack.getDamageValue() > 0 && ManaItemHandler.instance().requestManaExactForTool(stack, player, getManaPerDamage() * 2, true)) {
 			stack.setDamageValue(stack.getDamageValue() - 1);
 		}
 	}

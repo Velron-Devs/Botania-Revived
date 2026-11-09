@@ -8,9 +8,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "building",
   "key": {
-    "Q": {
-      "item": "botania:light_blue_iridescent_planks"
-    }
+    "Q": "botania:light_blue_iridescent_planks"
   },
   "pattern": [
     "Q  ",

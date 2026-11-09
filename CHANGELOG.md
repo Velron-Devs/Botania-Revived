@@ -1,6 +1,17 @@
 # Changelog
 
-## 1.0.6 (2026-11-05)
+## 1.0.7 (2026-11-09)
+
+- Port of Botania Revived to Minecraft 26.1.2 and NeoForge 26.1.2 (Java 25).
+- Mana Pile Upgrade for Sophisticated Backpacks, Storage and chests: a Load/Unload mode button (Unload charges your Botania items from the pile when a Mana Support Upgrade is in the same backpack, wherever the backpack is carried), automatic mana infusion with its own input, output and optional catalyst slots (it refills the input from the storage and puts the results back in it; recipes without a catalyst work with the catalyst slot empty), a base capacity of 1,000,000 like a Mana Pool, and a tall mana bar in the right column of the window that reserves its own columns and no longer overlaps the Tank.
+- The Runic Altar, Elven Gateway and Botanical Brewery upgrades now craft automatically from the storage and put the results back in it. Their recipes now use a Glimmering Livingwood Log on top and an Elven Gateway Core at the bottom of the middle column.
+- The Mana Pile Upgrade shows up as a workstation of Mana Infusion in JEI and REI, and the "+" button transfers an infusion recipe to its input and catalyst slots.
+- Fractal creative sub tabs, Curios 15, Sodium, KubeJS 8, JEI, REI, Reliable Recipe Viewer (replaces EMI), Jade, WTHIT and Create Ponder (bundled) are supported again. Ponder has one scene per flower and shows the flower you pick.
+- Thaumaturge 1.1.0: revealing helmets and the new Botanurgist's Inkwell, a scribing tool that refills with mana. Re-Avaritia: the Asgardandelion and the creative items can be made in its Extreme Crafting Table.
+- Fixed the mana spreader and everything that depends on mana bursts (the Runic Altar and the Terrestrial Agglomeration Plate among them): the bursts got stuck inside the spreader because of a change in how projectiles move.
+- Not ported yet: Spectrum, Botany Pots, Ars Nouveau and Inventory Sorter (no 26.1 versions), the custom shaders (Gaia Guardian grain, halo, pylons, pool water, starfield) and the Garden of Glass and Magic Skies skies.
+
+## 1.0.6 (2026-11-05, Minecraft 1.21.1)
 
 - Botania backpacks, barrels and chests (Manasteel, Elementium, Terrasteel, Gaia and Alfsteel) now open a wide inventory screen with 18 slot columns instead of 12, so they need far fewer rows and much less scrolling (695 slots take 39 rows instead of 58); the upgrade tabs stay on the left, the search and sort buttons on top, the scroll bar on the right and your inventory is centered below. It is purely visual and only active when Sophisticated Core is installed; other storages keep the normal screen. The panel backgrounds are based on Sophisticated ATM Tiers by GrafKakashi (MIT).
 - Fixed the look of the Botania Barrel and Chest tiers (Manasteel, Elementium, Terrasteel, Gaia and Alfsteel): items and placed blocks now always carry an explicit wood type (also when obtained with `/give`, crafting or loot) instead of rendering with a stray pink body, the tier upgrade keeps the wood, paint and materials of the original, and the names of the barrels and chests no longer show broken text. The creative tab and the JEI/REI lists now show every variant (all wood types and the flat top barrel) of each tier like Sophisticated Storage does for its own tiers, instead of a single entry.

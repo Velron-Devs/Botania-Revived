@@ -4,9 +4,7 @@
     "type": "block",
     "block": "botania:conjuration_catalyst"
   },
-  "input": {
-    "item": "minecraft:coal"
-  },
+  "input": "minecraft:coal",
   "mana": 2100,
   "output": {
     "count": 2,

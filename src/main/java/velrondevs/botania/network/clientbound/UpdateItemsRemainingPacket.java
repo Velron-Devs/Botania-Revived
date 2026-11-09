@@ -5,7 +5,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 
 import org.jetbrains.annotations.Nullable;
@@ -17,7 +17,7 @@ import static velrondevs.botania.common.lib.ResourceLocationHelper.prefix;
 
 public record UpdateItemsRemainingPacket(ItemStack stack, int count, @Nullable Component tooltip) implements BotaniaPacket {
 
-	public static final ResourceLocation ID = prefix("rem");
+	public static final Identifier ID = prefix("rem");
 	public static final Type<UpdateItemsRemainingPacket> TYPE = new Type<>(ID);
 	public static final StreamCodec<RegistryFriendlyByteBuf, UpdateItemsRemainingPacket> STREAM_CODEC = StreamCodec.ofMember(UpdateItemsRemainingPacket::encode, UpdateItemsRemainingPacket::decode);
 

@@ -1,5 +1,7 @@
 package velrondevs.botania.common.item.equipment.bauble;
 
+import velrondevs.botania.client.core.helper.RenderHelper;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import com.google.common.base.Predicates;
 import com.mojang.blaze3d.vertex.PoseStack;
 
@@ -41,11 +43,12 @@ public class TinyPlanetItem extends BaubleItem {
 
 	public static class Renderer implements AccessoryRenderer {
 		@Override
-		public void doRender(HumanoidModel<?> bipedModel, ItemStack stack, LivingEntity living, PoseStack ms, MultiBufferSource buffers, int light, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+		public void doRender(HumanoidModel<?> bipedModel, ItemStack stack, LivingEntity living, PoseStack ms, SubmitNodeCollector collector, int light, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+			MultiBufferSource buffers = RenderHelper.buffers(collector);
 			bipedModel.head.translateAndRotate(ms);
 			ms.translate(-0.25, -0.4, 0);
 			ms.scale(0.5F, -0.5F, -0.5F);
-			Minecraft.getInstance().getBlockRenderer().renderSingleBlock(BotaniaBlocks.tinyPlanet.defaultBlockState(), ms, buffers, light, OverlayTexture.NO_OVERLAY);
+			RenderHelper.renderBlockState(BotaniaBlocks.tinyPlanet.defaultBlockState(), ms, buffers, null, 0xFFFFFFFF, light, OverlayTexture.NO_OVERLAY);
 		}
 	}
 

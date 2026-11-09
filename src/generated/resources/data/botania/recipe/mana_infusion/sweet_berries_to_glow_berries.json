@@ -5,12 +5,9 @@
     "block": "botania:alchemy_catalyst"
   },
   "group": "botania:berry_cycle",
-  "input": {
-    "item": "minecraft:sweet_berries"
-  },
+  "input": "minecraft:sweet_berries",
   "mana": 240,
   "output": {
-    "count": 1,
     "id": "minecraft:glow_berries"
   }
 }

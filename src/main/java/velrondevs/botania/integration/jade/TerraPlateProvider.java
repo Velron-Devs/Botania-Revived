@@ -1,7 +1,7 @@
 package velrondevs.botania.integration.jade;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 
 import snownee.jade.api.BlockAccessor;
@@ -14,7 +14,7 @@ import velrondevs.botania.common.block.block_entity.TerrestrialAgglomerationPlat
 
 import java.util.List;
 
-public enum TerraPlateProvider implements IBlockComponentProvider, IServerDataProvider<BlockAccessor> {
+public enum TerraPlateProvider implements IBlockComponentProvider {
 	INSTANCE;
 
 	@Override
@@ -23,11 +23,11 @@ public enum TerraPlateProvider implements IBlockComponentProvider, IServerDataPr
 			return;
 		}
 		CompoundTag data = accessor.getServerData();
-		int required = data.getInt(JadeManaHelper.MAX);
+		int required = data.getIntOr(JadeManaHelper.MAX, 0);
 		if (required <= 0) {
 			return;
 		}
-		int mana = data.getInt(JadeManaHelper.MANA);
+		int mana = data.getIntOr(JadeManaHelper.MANA, 0);
 		JadeManaHelper.addManaBar(tooltip, config, Math.min(mana, required), required, JadeManaHelper.manaColor(config, 0x2BD94C));
 		ItemStack output = JadeManaHelper.getStack(data, JadeManaHelper.OUTPUT, accessor);
 		if (!output.isEmpty()) {
@@ -36,16 +36,7 @@ public enum TerraPlateProvider implements IBlockComponentProvider, IServerDataPr
 	}
 
 	@Override
-	public void appendServerData(CompoundTag data, BlockAccessor accessor) {
-		if (accessor.getBlockEntity() instanceof TerrestrialAgglomerationPlateBlockEntity plate) {
-			data.putInt(JadeManaHelper.MANA, plate.getCurrentMana());
-			data.putInt(JadeManaHelper.MAX, plate.getManaRequired());
-			JadeManaHelper.putStack(data, JadeManaHelper.OUTPUT, accessor, plate.getCurrentRecipeOutput());
-		}
-	}
-
-	@Override
-	public ResourceLocation getUid() {
+	public Identifier getUid() {
 		return BotaniaJadeIds.TERRA_PLATE;
 	}
 }

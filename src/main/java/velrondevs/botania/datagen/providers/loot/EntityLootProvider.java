@@ -1,15 +1,17 @@
 package velrondevs.botania.datagen.providers.loot;
 
-import net.minecraft.advancements.critereon.EntityEquipmentPredicate;
-import net.minecraft.advancements.critereon.EntityPredicate;
-import net.minecraft.advancements.critereon.ItemPredicate;
+import net.minecraft.advancements.criterion.EntityEquipmentPredicate;
+import net.minecraft.advancements.criterion.EntityPredicate;
+import net.minecraft.advancements.criterion.ItemPredicate;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.loot.LootTableSubProvider;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
@@ -41,8 +43,12 @@ public class EntityLootProvider implements LootTableSubProvider {
 	public static final ResourceKey<LootTable> GHAST_ENDER_AIR_CRYING = ResourceKey.create(Registries.LOOT_TABLE, prefix("ghast_ender_air_crying"));
 
 	private final Holder<Enchantment> looting;
+	private final HolderGetter<EntityType<?>> entityTypes;
+	private final HolderGetter<Item> items;
 
 	public EntityLootProvider(HolderLookup.Provider registries) {
+		this.entityTypes = registries.lookupOrThrow(Registries.ENTITY_TYPE);
+		this.items = registries.lookupOrThrow(Registries.ITEM);
 		this.looting = registries.lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(Enchantments.LOOTING);
 	}
 
@@ -53,7 +59,7 @@ public class EntityLootProvider implements LootTableSubProvider {
 						isEntity(EntityType.WITHER_SKELETON)))
 				.withPool(headPool(Items.SKELETON_SKULL, 0.1154F, 0.1539F, 0.0385F,
 						LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS,
-								EntityPredicate.Builder.entity().of(EntityTypeTags.SKELETONS)),
+								EntityPredicate.Builder.entity().of(entityTypes, EntityTypeTags.SKELETONS)),
 						InvertedLootItemCondition.invert(isEntity(EntityType.WITHER_SKELETON))))
 				.withPool(headPool(Items.ZOMBIE_HEAD, 0.0769F, 0.1538F, 0.0769F,
 						AnyOfCondition.anyOf(isEntity(EntityType.ZOMBIE), isEntity(EntityType.ZOMBIE_VILLAGER),
@@ -78,7 +84,7 @@ public class EntityLootProvider implements LootTableSubProvider {
 		LootPool.Builder pool = LootPool.lootPool().setRolls(ConstantValue.exactly(1))
 				.when(LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.ATTACKING_PLAYER,
 						EntityPredicate.Builder.entity().equipment(EntityEquipmentPredicate.Builder.equipment()
-								.mainhand(ItemPredicate.Builder.item().of(BotaniaItems.elementiumAxe)))));
+								.mainhand(ItemPredicate.Builder.item().of(items, BotaniaItems.elementiumAxe)))));
 		for (LootItemCondition.Builder condition : conditions) {
 			pool.when(condition);
 		}
@@ -87,7 +93,7 @@ public class EntityLootProvider implements LootTableSubProvider {
 				.add(LootItem.lootTableItem(head));
 	}
 
-	private static LootItemCondition.Builder isEntity(EntityType<?> type) {
-		return LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS, EntityPredicate.Builder.entity().of(type));
+	private LootItemCondition.Builder isEntity(EntityType<?> type) {
+		return LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS, EntityPredicate.Builder.entity().of(entityTypes, type));
 	}
 }

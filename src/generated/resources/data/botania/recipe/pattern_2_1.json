@@ -3,12 +3,8 @@
   "category": "equipment",
   "group": "botania:craft_pattern",
   "key": {
-    "P": {
-      "item": "botania:placeholder"
-    },
-    "R": {
-      "item": "minecraft:redstone"
-    }
+    "P": "botania:placeholder",
+    "R": "minecraft:redstone"
   },
   "pattern": [
     "RRP",
@@ -16,7 +12,6 @@
     "PPP"
   ],
   "result": {
-    "count": 1,
     "id": "botania:pattern_2_1"
   }
 }

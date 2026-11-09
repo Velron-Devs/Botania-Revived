@@ -1,5 +1,6 @@
 package velrondevs.botania.common.item.block;
 
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.tags.TagKey;
@@ -49,8 +50,8 @@ public class TinyPotatoBlockItem extends BlockItem implements ItemWithBannerPatt
 	}
 
 	@Override
-	public void inventoryTick(ItemStack stack, Level world, Entity e, int t, boolean idunno) {
-		if (!world.isClientSide && e instanceof Player player && e.tickCount % 30 == 0
+	public void inventoryTick(ItemStack stack, ServerLevel world, Entity e, @Nullable EquipmentSlot eqSlot) {
+		if (!world.isClientSide() && e instanceof Player player && e.tickCount % 30 == 0
 				&& TYPOS.matcher(stack.getHoverName().getString()).matches()) {
 			int ticks = ItemNBTHelper.getInt(stack, TAG_TICKS, 0);
 			if (ticks < NOT_MY_NAME) {
@@ -100,6 +101,6 @@ public class TinyPotatoBlockItem extends BlockItem implements ItemWithBannerPatt
 	@SoftImplement("IForgeItem")
 	public boolean canEquip(ItemStack stack, EquipmentSlot armorType, LivingEntity entity) {
 		return armorType == getEquipmentSlot(stack) && entity instanceof Player player
-				&& ContributorList.hasFlower(player.getGameProfile().getName().toLowerCase(Locale.ROOT));
+				&& ContributorList.hasFlower(player.getGameProfile().name().toLowerCase(Locale.ROOT));
 	}
 }

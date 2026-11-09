@@ -1,5 +1,6 @@
 package velrondevs.botania.common.crafting;
 
+import velrondevs.botania.api.recipe.BotaniaRecipe;
 import com.google.common.base.Preconditions;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
@@ -47,7 +48,7 @@ public class PureDaisyRecipe implements velrondevs.botania.api.recipe.PureDaisyR
 
 	@Override
 	public boolean set(Level world, BlockPos pos, SpecialFlowerBlockEntity pureDaisy) {
-		if (!world.isClientSide) {
+		if (!world.isClientSide()) {
 			boolean success = world.setBlockAndUpdate(pos, outputState);
 			if (success) {
 				var serverLevel = (ServerLevel) world;
@@ -85,11 +86,11 @@ public class PureDaisyRecipe implements velrondevs.botania.api.recipe.PureDaisyR
 	}
 
 	@Override
-	public RecipeSerializer<?> getSerializer() {
+	public RecipeSerializer<? extends BotaniaRecipe> getSerializer() {
 		return BotaniaRecipeTypes.PURE_DAISY_SERIALIZER;
 	}
 
-	public static class Serializer implements RecipeSerializer<PureDaisyRecipe> {
+	public static class Serializer implements BotaniaRecipeSerializer<PureDaisyRecipe> {
 		public static final MapCodec<PureDaisyRecipe> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
 				StateIngredientHelper.CODEC.fieldOf("input").forGetter(PureDaisyRecipe::getInput),
 				StateIngredientHelper.BLOCK_STATE_CODEC.fieldOf("output").forGetter(PureDaisyRecipe::getOutputState),

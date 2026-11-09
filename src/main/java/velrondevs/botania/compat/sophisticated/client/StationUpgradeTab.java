@@ -1,7 +1,7 @@
 package velrondevs.botania.compat.sophisticated.client;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.Slot;
@@ -76,8 +76,8 @@ public class StationUpgradeTab<C extends StationUpgradeContainer<?, C>> extends 
 	}
 
 	@Override
-	protected void renderBg(GuiGraphics graphics, Minecraft minecraft, int mouseX, int mouseY) {
-		super.renderBg(graphics, minecraft, mouseX, mouseY);
+	protected void extractBg(GuiGraphicsExtractor graphics, Minecraft minecraft, int mouseX, int mouseY) {
+		super.extractBg(graphics, minecraft, mouseX, mouseY);
 		if (!getContainer().isOpen()) {
 			return;
 		}
@@ -97,15 +97,15 @@ public class StationUpgradeTab<C extends StationUpgradeContainer<?, C>> extends 
 		}
 		Component message = Component.translatable(messageKey(state.status()));
 		int color = state.status() == StationState.WORKING ? OK_COLOR : state.status() == StationState.IDLE ? TEXT_COLOR : WARNING_COLOR;
-		graphics.drawWordWrap(minecraft.font, message, x + 4, y + layout.textY(), layout.width() - 8, color);
+		graphics.textWithWordWrap(minecraft.font, message, x + 4, y + layout.textY(), layout.width() - 8, color);
 		if (state.cost() > 0 && state.status() != StationState.IDLE) {
-			graphics.drawString(minecraft.font, compact(state.mana()) + " / " + compact(state.cost()), x + 4, y + layout.textY() + 28, TEXT_COLOR, false);
+			graphics.text(minecraft.font, compact(state.mana()) + " / " + compact(state.cost()), x + 4, y + layout.textY() + 28, TEXT_COLOR, false);
 		}
 	}
 
 	@Override
-	public void renderTooltip(Screen screen, GuiGraphics graphics, int mouseX, int mouseY) {
-		super.renderTooltip(screen, graphics, mouseX, mouseY);
+	public void extractTooltip(Screen screen, GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
+		super.extractTooltip(screen, graphics, mouseX, mouseY);
 		if (!getContainer().isOpen()) {
 			return;
 		}
@@ -114,7 +114,7 @@ public class StationUpgradeTab<C extends StationUpgradeContainer<?, C>> extends 
 		StationState state = getContainer().getState();
 		if (state.cost() > 0 && mouseX >= left && mouseX < left + layout.barWidth() && mouseY >= top && mouseY < top + BAR_HEIGHT) {
 			String text = String.format("%,d / %,d", state.mana(), state.cost());
-			graphics.renderTooltip(Minecraft.getInstance().font, Component.literal(text), mouseX, mouseY);
+			graphics.setTooltipForNextFrame(Component.literal(text), mouseX, mouseY);
 		}
 	}
 

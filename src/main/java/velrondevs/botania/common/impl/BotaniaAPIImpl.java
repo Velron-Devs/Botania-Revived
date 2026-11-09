@@ -1,14 +1,14 @@
 package velrondevs.botania.common.impl;
 
 import net.minecraft.core.Holder;
-import net.minecraft.world.item.ArmorMaterial;
+import net.minecraft.world.item.equipment.ArmorMaterial;
 import velrondevs.botania.registry.BotaniaArmorMaterials;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.Entity;
@@ -55,41 +55,41 @@ public class BotaniaAPIImpl implements BotaniaAPI {
 	@Override
 	@SuppressWarnings("unchecked")
 	public Registry<Brew> getBrewRegistry() {
-		return (Registry<Brew>) BuiltInRegistries.REGISTRY.get(BotaniaRegistries.BREWS.location());
+		return (Registry<Brew>) BuiltInRegistries.REGISTRY.getValue(BotaniaRegistries.BREWS.identifier());
 	}
 
 	@Override
-	public Holder<ArmorMaterial> getManasteelArmorMaterial() {
+	public ArmorMaterial getManasteelArmorMaterial() {
 		return BotaniaArmorMaterials.MANASTEEL;
 	}
 
 	@Override
-	public Holder<ArmorMaterial> getElementiumArmorMaterial() {
+	public ArmorMaterial getElementiumArmorMaterial() {
 		return BotaniaArmorMaterials.ELEMENTIUM;
 	}
 
 	@Override
-	public Holder<ArmorMaterial> getManaweaveArmorMaterial() {
+	public ArmorMaterial getManaweaveArmorMaterial() {
 		return BotaniaArmorMaterials.MANAWEAVE;
 	}
 
 	@Override
-	public Holder<ArmorMaterial> getTerrasteelArmorMaterial() {
+	public ArmorMaterial getTerrasteelArmorMaterial() {
 		return BotaniaArmorMaterials.TERRASTEEL;
 	}
 
 	@Override
-	public Tier getManasteelItemTier() {
+	public ToolMaterial getManasteelItemTier() {
 		return BotaniaArmorMaterials.MANASTEEL_TIER;
 	}
 
 	@Override
-	public Tier getElementiumItemTier() {
+	public ToolMaterial getElementiumItemTier() {
 		return BotaniaArmorMaterials.ELEMENTIUM_TIER;
 	}
 
 	@Override
-	public Tier getTerrasteelItemTier() {
+	public ToolMaterial getTerrasteelItemTier() {
 		return BotaniaArmorMaterials.TERRASTEEL_TIER;
 	}
 
@@ -119,15 +119,15 @@ public class BotaniaAPIImpl implements BotaniaAPI {
 		world.addParticle(data, x, y, z, 0, 0, 0);
 	}
 
-	private final Map<ResourceLocation, Function<DyeColor, Block>> paintableBlocks = new ConcurrentHashMap<>();
+	private final Map<Identifier, Function<DyeColor, Block>> paintableBlocks = new ConcurrentHashMap<>();
 
 	@Override
-	public Map<ResourceLocation, Function<DyeColor, Block>> getPaintableBlocks() {
+	public Map<Identifier, Function<DyeColor, Block>> getPaintableBlocks() {
 		return Collections.unmodifiableMap(paintableBlocks);
 	}
 
 	@Override
-	public void registerPaintableBlock(ResourceLocation block, Function<DyeColor, Block> transformer) {
+	public void registerPaintableBlock(Identifier block, Function<DyeColor, Block> transformer) {
 		paintableBlocks.put(block, transformer);
 	}
 

@@ -1,7 +1,7 @@
 package velrondevs.botania.module.botaniaextras.block;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
@@ -125,7 +125,7 @@ public class CrysanthermumBlockEntity extends GeneratingFlowerBlockEntity {
 	public void tickFlower() {
 		super.tickFlower();
 
-		if (getLevel().isClientSide) {
+		if (getLevel().isClientSide()) {
 			return;
 		}
 
@@ -178,7 +178,7 @@ public class CrysanthermumBlockEntity extends GeneratingFlowerBlockEntity {
 			}
 
 			if (getLevel() instanceof ServerLevel serverLevel) {
-				serverLevel.sendParticles(new ItemParticleOption(ParticleTypes.ITEM, stack), item.getX(), item.getY(), item.getZ(), 10, 0.1D, 0.1D, 0.1D, 0.05D);
+				serverLevel.sendParticles(new ItemParticleOption(ParticleTypes.ITEM, stack.getItem()), item.getX(), item.getY(), item.getZ(), 10, 0.1D, 0.1D, 0.1D, 0.05D);
 			}
 			getLevel().playSound(null, pos, SoundEvents.STONE_BREAK, SoundSource.BLOCKS, 0.4F, 1.2F);
 			getLevel().gameEvent(null, GameEvent.BLOCK_ACTIVATE, pos);
@@ -219,9 +219,9 @@ public class CrysanthermumBlockEntity extends GeneratingFlowerBlockEntity {
 	@Override
 	public void readFromPacketNBT(CompoundTag cmp, HolderLookup.Provider registries) {
 		super.readFromPacketNBT(cmp, registries);
-		setTemperature(cmp.getInt(TAG_TEMPERATURE));
+		setTemperature(cmp.getIntOr(TAG_TEMPERATURE, 0));
 		recentStones.clear();
-		for (int type : cmp.getIntArray(TAG_RECENT_STONES)) {
+		for (int type : cmp.getIntArray(TAG_RECENT_STONES).orElse(new int[0])) {
 			recentStones.addLast(type);
 		}
 	}
@@ -232,13 +232,13 @@ public class CrysanthermumBlockEntity extends GeneratingFlowerBlockEntity {
 		}
 
 		@Override
-		public void renderHUD(GuiGraphics gui, Minecraft mc) {
+		public void renderHUD(GuiGraphicsExtractor gui, Minecraft mc) {
 			String name = I18n.get("botaniamisc.botania_extras.temperature." + (flower.getTemperature() + MAX_TEMPERATURE));
 			int half = mc.font.width(name) / 2 + 2;
 			super.renderHUD(gui, mc, half, half, 42);
 			int centerX = mc.getWindow().getGuiScaledWidth() / 2;
 			int centerY = mc.getWindow().getGuiScaledHeight() / 2;
-			gui.drawString(mc.font, name, centerX - mc.font.width(name) / 2, centerY + 31, flower.getColor(), true);
+			gui.text(mc.font, name, centerX - mc.font.width(name) / 2, centerY + 31, 0xFF000000 | flower.getColor(), true);
 		}
 	}
 }

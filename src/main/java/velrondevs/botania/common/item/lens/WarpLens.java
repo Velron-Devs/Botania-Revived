@@ -19,7 +19,7 @@ public class WarpLens extends Lens {
 		Entity entity = burst.entity();
 		Level world = entity.level();
 
-		if (world.isClientSide || pos.getType() != HitResult.Type.BLOCK) {
+		if (world.isClientSide() || pos.getType() != HitResult.Type.BLOCK) {
 
 			return shouldKill;
 		}

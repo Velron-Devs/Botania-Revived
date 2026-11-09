@@ -19,16 +19,16 @@ public class PhantomFlashLens extends Lens {
 	@Override
 	public boolean collideBurst(ManaBurst burst, HitResult pos, boolean isManaBlock, boolean shouldKill, ItemStack stack) {
 		Entity entity = burst.entity();
-		if (!entity.level().isClientSide && pos.getType() == HitResult.Type.BLOCK && !burst.isFake() && !isManaBlock) {
+		if (!entity.level().isClientSide() && pos.getType() == HitResult.Type.BLOCK && !burst.isFake() && !isManaBlock) {
 			BlockHitResult hit = (BlockHitResult) pos;
 			BlockPos blockPos = hit.getBlockPos();
 			BlockPos neighborPos = blockPos.relative(hit.getDirection());
 			BlockState stateAt = entity.level().getBlockState(blockPos);
 			BlockState neighbor = entity.level().getBlockState(neighborPos);
 
-			if ((stateAt.is(BotaniaBlocks.manaFlame) || stateAt.is(BotaniaExtrasBlocks.phantomManaFlash)) && entity.mayInteract(entity.level(), blockPos)) {
+			if ((stateAt.is(BotaniaBlocks.manaFlame) || stateAt.is(BotaniaExtrasBlocks.phantomManaFlash)) && entity.mayInteract((net.minecraft.server.level.ServerLevel) entity.level(), blockPos)) {
 				entity.level().destroyBlock(blockPos, false, entity);
-			} else if ((neighbor.isAir() || neighbor.canBeReplaced()) && entity.mayInteract(entity.level(), neighborPos)) {
+			} else if ((neighbor.isAir() || neighbor.canBeReplaced()) && entity.mayInteract((net.minecraft.server.level.ServerLevel) entity.level(), neighborPos)) {
 				var fluid = entity.level().getFluidState(neighborPos);
 				boolean water = fluid.isSource() && fluid.is(FluidTags.WATER);
 				entity.level().setBlockAndUpdate(neighborPos,

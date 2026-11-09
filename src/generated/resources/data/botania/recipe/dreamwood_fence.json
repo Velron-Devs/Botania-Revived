@@ -3,12 +3,8 @@
   "category": "misc",
   "group": "wooden_fence",
   "key": {
-    "B": {
-      "item": "botania:dreamwood_planks"
-    },
-    "S": {
-      "item": "minecraft:stick"
-    }
+    "B": "botania:dreamwood_planks",
+    "S": "minecraft:stick"
   },
   "pattern": [
     "BSB",

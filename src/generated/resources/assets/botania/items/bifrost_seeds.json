@@ -1,0 +1,11 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "botania:item/bifrost_seeds",
+    "tints": [
+      {
+        "type": "botania:extras_rainbow"
+      }
+    ]
+  }
+}

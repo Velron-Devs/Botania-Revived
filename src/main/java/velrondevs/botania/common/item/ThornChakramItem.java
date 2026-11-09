@@ -1,9 +1,9 @@
 package velrondevs.botania.common.item;
 
+import net.minecraft.world.InteractionResult;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -23,10 +23,10 @@ public class ThornChakramItem extends Item {
 
 	@NotNull
 	@Override
-	public InteractionResultHolder<ItemStack> use(Level world, Player player, @NotNull InteractionHand hand) {
+	public InteractionResult use(Level world, Player player, @NotNull InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
 
-		if (!world.isClientSide) {
+		if (!world.isClientSide()) {
 			ItemStack copy = stack.copy();
 			copy.setCount(1);
 			ThornChakramEntity c = new ThornChakramEntity(player, world, copy);
@@ -43,7 +43,7 @@ public class ThornChakramItem extends Item {
 			stack.shrink(1);
 		}
 
-		return InteractionResultHolder.sidedSuccess(stack, world.isClientSide());
+		return InteractionResult.SUCCESS;
 	}
 
 }

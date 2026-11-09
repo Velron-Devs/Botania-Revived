@@ -1,17 +1,18 @@
 package velrondevs.botania.datagen.providers.tags;
 
+import net.minecraft.data.tags.TagAppender;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.IntrinsicHolderTagsProvider;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.data.tags.TagsProvider;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.common.Tags;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 import velrondevs.botania.common.helper.ColorHelper;
 import velrondevs.botania.common.lib.BotaniaTags;
@@ -37,8 +38,8 @@ public class ConventionBlockTagProvider extends IntrinsicHolderTagsProvider<Bloc
 					+ BuiltInRegistries.BLOCK.getKey(BotaniaBlocks.getPetalBlock(color)).getPath())));
 
 	public ConventionBlockTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> provider,
-			ExistingFileHelper existingFileHelper) {
-		super(output, Registries.BLOCK, provider, (block) -> block.builtInRegistryHolder().key(), LibMisc.MOD_ID, existingFileHelper);
+			CompletableFuture<TagsProvider.TagLookup<Block>> parent) {
+		super(output, Registries.BLOCK, provider, parent, (block) -> block.builtInRegistryHolder().key(), LibMisc.MOD_ID);
 	}
 
 	@Override
@@ -53,7 +54,7 @@ public class ConventionBlockTagProvider extends IntrinsicHolderTagsProvider<Bloc
 				BotaniaBlocks.lavenderQuartz, BotaniaBlocks.redQuartz, BotaniaBlocks.elfQuartz, BotaniaBlocks.sunnyQuartz
 		);
 
-		IntrinsicTagAppender<Block> storageBlocks = tag(Tags.Blocks.STORAGE_BLOCKS);
+		TagAppender<Block, Block> storageBlocks = tag(Tags.Blocks.STORAGE_BLOCKS);
 		ColorHelper.supportedColors().forEach(color -> {
 			tag(MUSHROOMS).add(BotaniaBlocks.getMushroom(color));
 			TagKey<Block> petalStorageBlockTag = PETAL_BLOCKS.get(color);
@@ -61,7 +62,7 @@ public class ConventionBlockTagProvider extends IntrinsicHolderTagsProvider<Bloc
 			storageBlocks.addTag(petalStorageBlockTag);
 		});
 
-		tag(TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath("buzzier_bees", "flower_blacklist")))
+		tag(TagKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath("buzzier_bees", "flower_blacklist")))
 				.addTag(BotaniaTags.Blocks.MYSTICAL_FLOWERS)
 				.addTag(BotaniaTags.Blocks.SPECIAL_FLOWERS);
 
@@ -85,6 +86,6 @@ public class ConventionBlockTagProvider extends IntrinsicHolderTagsProvider<Bloc
 	}
 
 	private static TagKey<Block> c(String name) {
-		return TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath("c", name));
+		return TagKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath("c", name));
 	}
 }

@@ -1,5 +1,9 @@
 package velrondevs.botania.common.block.flower;
 
+import net.minecraft.util.profiling.Profiler;
+
+import velrondevs.botania.common.block.RecipeLookup;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -53,7 +57,7 @@ public class PureDaisyBlockEntity extends SpecialFlowerBlockEntity {
 	public void tickFlower() {
 		super.tickFlower();
 
-		if (getLevel().isClientSide) {
+		if (getLevel().isClientSide()) {
 			for (int i = 0; i < POSITIONS.length; i++) {
 				if (ticksRemaining[i] > 0) {
 					BlockPos coords = getEffectivePos().offset(POSITIONS[i]);
@@ -74,9 +78,9 @@ public class PureDaisyBlockEntity extends SpecialFlowerBlockEntity {
 		BlockPos coords = getEffectivePos().offset(acoords);
 		Level world = getLevel();
 		if (!world.isEmptyBlock(coords)) {
-			world.getProfiler().push("findRecipe");
+			Profiler.get().push("findRecipe");
 			PureDaisyRecipe recipe = findRecipe(coords);
-			world.getProfiler().pop();
+			Profiler.get().pop();
 
 			if (recipe != null) {
 				if (ticksRemaining[positionAt] == -1) {
@@ -115,7 +119,7 @@ public class PureDaisyBlockEntity extends SpecialFlowerBlockEntity {
 	private PureDaisyRecipe findRecipe(BlockPos coords) {
 		BlockState state = getLevel().getBlockState(coords);
 
-		for (RecipeHolder<PureDaisyRecipe> recipe : level.getRecipeManager().getAllRecipesFor(BotaniaRecipeTypes.PURE_DAISY_TYPE)) {
+		for (RecipeHolder<PureDaisyRecipe> recipe : RecipeLookup.getAllRecipesFor(level, BotaniaRecipeTypes.PURE_DAISY_TYPE)) {
 			PureDaisyRecipe daisyRecipe = recipe.value();
 			if (daisyRecipe.matches(getLevel(), coords, this, state)) {
 				return daisyRecipe;
@@ -129,7 +133,7 @@ public class PureDaisyBlockEntity extends SpecialFlowerBlockEntity {
 	public boolean triggerEvent(int type, int param) {
 		switch (type) {
 			case RECIPE_COMPLETE_EVENT: {
-				if (getLevel().isClientSide) {
+				if (getLevel().isClientSide()) {
 					BlockPos coords = getEffectivePos().offset(POSITIONS[param]);
 					for (int i = 0; i < 25; i++) {
 						double x = coords.getX() + Math.random();
@@ -156,10 +160,10 @@ public class PureDaisyBlockEntity extends SpecialFlowerBlockEntity {
 	@Override
 	public void readFromPacketNBT(CompoundTag cmp, HolderLookup.Provider registries) {
 		super.readFromPacketNBT(cmp, registries);
-		positionAt = cmp.getInt(TAG_POSITION);
+		positionAt = cmp.getIntOr(TAG_POSITION, 0);
 
 		for (int i = 0; i < ticksRemaining.length; i++) {
-			ticksRemaining[i] = cmp.getInt(TAG_TICKS_REMAINING + i);
+			ticksRemaining[i] = cmp.getIntOr(TAG_TICKS_REMAINING + i, 0);
 		}
 	}
 

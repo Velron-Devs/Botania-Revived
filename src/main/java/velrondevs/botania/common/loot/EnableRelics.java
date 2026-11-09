@@ -4,11 +4,9 @@ import com.mojang.serialization.MapCodec;
 
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
-import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType;
 
 import org.jetbrains.annotations.NotNull;
 
-import velrondevs.botania.registry.BotaniaLootModifiers;
 import velrondevs.botania.xplat.BotaniaConfig;
 
 public class EnableRelics implements LootItemCondition {
@@ -21,8 +19,8 @@ public class EnableRelics implements LootItemCondition {
 	}
 
 	@Override
-	public LootItemConditionType getType() {
-		return BotaniaLootModifiers.ENABLE_RELICS;
+	public MapCodec<? extends LootItemCondition> codec() {
+		return CODEC;
 	}
 
 }

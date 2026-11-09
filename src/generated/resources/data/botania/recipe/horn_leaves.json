@@ -2,15 +2,10 @@
   "type": "minecraft:crafting_shapeless",
   "category": "equipment",
   "ingredients": [
-    {
-      "item": "botania:horn_grass"
-    },
-    {
-      "tag": "minecraft:leaves"
-    }
+    "botania:horn_grass",
+    "#minecraft:leaves"
   ],
   "result": {
-    "count": 1,
     "id": "botania:horn_leaves"
   }
 }

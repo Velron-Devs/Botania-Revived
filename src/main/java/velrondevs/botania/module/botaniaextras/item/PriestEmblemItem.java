@@ -1,5 +1,13 @@
 package velrondevs.botania.module.botaniaextras.item;
 
+import velrondevs.botania.client.core.helper.RenderHelper;
+
+import net.minecraft.client.renderer.SubmitNodeCollector;
+
+import java.util.function.Consumer;
+
+import net.minecraft.world.item.component.TooltipDisplay;
+
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
@@ -9,9 +17,9 @@ import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -102,11 +110,11 @@ public class PriestEmblemItem extends BaubleItem {
 
 	public static void punishUnequip(ItemStack stack, LivingEntity entity) {
 		boolean exempt = entity instanceof Player player && player.isCreative();
-		if (!entity.level().isClientSide && isDangerous(stack) && !exempt) {
+		if (!entity.level().isClientSide() && isDangerous(stack) && !exempt) {
 			entity.hurt(BotaniaDamageTypes.Sources.lackOfFaith(entity.level().registryAccess()), 6F);
 			entity.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 150, 0));
-			entity.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 150, 2));
-			entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 300, 2));
+			entity.addEffect(new MobEffectInstance(MobEffects.NAUSEA, 150, 2));
+			entity.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 300, 2));
 			entity.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 300, 2));
 		}
 		setDangerous(stack, false);
@@ -123,15 +131,15 @@ public class PriestEmblemItem extends BaubleItem {
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flags) {
-		tooltip.add(Component.translatable("botaniamisc.botania_extras.lackOfFaith").withStyle(ChatFormatting.RED));
-		super.appendHoverText(stack, context, tooltip, flags);
+	public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltip, TooltipFlag flags) {
+		tooltip.accept(Component.translatable("botaniamisc.botania_extras.lackOfFaith").withStyle(ChatFormatting.RED));
+		super.appendHoverText(stack, context, tooltipDisplay, tooltip, flags);
 	}
 
 	@Override
 	public void onEquipped(ItemStack stack, LivingEntity entity) {
 		super.onEquipped(stack, entity);
-		if (!entity.level().isClientSide) {
+		if (!entity.level().isClientSide()) {
 			setDangerous(stack, false);
 		}
 	}
@@ -146,7 +154,7 @@ public class PriestEmblemItem extends BaubleItem {
 		if (entity.tickCount % 10 != 0) {
 			return;
 		}
-		if (!entity.level().isClientSide) {
+		if (!entity.level().isClientSide()) {
 			if (entity instanceof Player player) {
 				setActive(stack, ManaItemHandler.instance().requestManaExact(stack, player, COST, true));
 				setDangerous(stack, true);
@@ -186,15 +194,16 @@ public class PriestEmblemItem extends BaubleItem {
 	}
 
 	public static class Renderer implements AccessoryRenderer {
-		private final ResourceLocation modelId;
+		private final Identifier modelId;
 
-		public Renderer(ResourceLocation modelId) {
+		public Renderer(Identifier modelId) {
 			this.modelId = modelId;
 		}
 
 		@Override
-		public void doRender(HumanoidModel<?> bipedModel, ItemStack stack, LivingEntity living, PoseStack ms, MultiBufferSource buffers, int light, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
-			BakedModel model = EmblemModels.get(modelId);
+		public void doRender(HumanoidModel<?> bipedModel, ItemStack stack, LivingEntity living, PoseStack ms, SubmitNodeCollector collector, int light, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+			MultiBufferSource buffers = RenderHelper.buffers(collector);
+			BlockStateModelPart model = EmblemModels.get(modelId);
 			if (model == null) {
 				return;
 			}
@@ -202,9 +211,7 @@ public class PriestEmblemItem extends BaubleItem {
 			bipedModel.body.translateAndRotate(ms);
 			ms.translate(-0.25, 0.5, armor ? 0.05 : 0.12);
 			ms.scale(0.5F, -0.5F, -0.5F);
-			VertexConsumer buffer = buffers.getBuffer(Sheets.cutoutBlockSheet());
-			Minecraft.getInstance().getBlockRenderer().getModelRenderer()
-					.renderModel(ms.last(), buffer, null, model, 1, 1, 1, light, OverlayTexture.NO_OVERLAY);
+			velrondevs.botania.client.core.helper.RenderHelper.renderModelPart(model, ms, buffers, light, OverlayTexture.NO_OVERLAY);
 		}
 	}
 }

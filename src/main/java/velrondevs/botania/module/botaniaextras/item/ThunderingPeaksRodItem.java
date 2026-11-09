@@ -4,11 +4,11 @@ import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -18,7 +18,7 @@ import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.UseAnim;
+import net.minecraft.world.item.ItemUseAnimation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.AABB;
@@ -50,7 +50,7 @@ import java.util.function.Predicate;
 import static velrondevs.botania.common.lib.ResourceLocationHelper.prefix;
 
 public class ThunderingPeaksRodItem extends Item {
-	private static final ResourceLocation AVATAR_OVERLAY = prefix("textures/model/botania_extras/avatar_thundering_peaks.png");
+	private static final Identifier AVATAR_OVERLAY = prefix("textures/model/botania_extras/avatar_thundering_peaks.png");
 	private static final Map<UUID, Integer> TARGETS = new HashMap<>();
 
 	private static final int COST_AVATAR = 150;
@@ -85,8 +85,8 @@ public class ThunderingPeaksRodItem extends Item {
 
 	@NotNull
 	@Override
-	public UseAnim getUseAnimation(@NotNull ItemStack stack) {
-		return UseAnim.BOW;
+	public ItemUseAnimation getUseAnimation(@NotNull ItemStack stack) {
+		return ItemUseAnimation.BOW;
 	}
 
 	@Override
@@ -96,15 +96,16 @@ public class ThunderingPeaksRodItem extends Item {
 
 	@NotNull
 	@Override
-	public InteractionResultHolder<ItemStack> use(@NotNull Level level, Player player, @NotNull InteractionHand hand) {
+	public InteractionResult use(@NotNull Level level, Player player, @NotNull InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
 		player.startUsingItem(hand);
-		return InteractionResultHolder.consume(stack);
+		return InteractionResult.CONSUME;
 	}
 
 	@Override
-	public void releaseUsing(@NotNull ItemStack stack, @NotNull Level level, @NotNull LivingEntity living, int timeLeft) {
+	public boolean releaseUsing(@NotNull ItemStack stack, @NotNull Level level, @NotNull LivingEntity living, int timeLeft) {
 		TARGETS.remove(living.getUUID());
+		return true;
 	}
 
 	@Override
@@ -117,7 +118,7 @@ public class ThunderingPeaksRodItem extends Item {
 		boolean prowess = ManaItemHandler.instance().hasProficiency(player, stack);
 		int speed = getSpeed(thor, prowess, priest);
 
-		if (level.isClientSide) {
+		if (level.isClientSide()) {
 			int interval = Math.max(1, speed / 10);
 			if (remaining != getUseDuration(stack, player) && remaining % interval == 0
 					&& ManaItemHandler.instance().requestManaExactForTool(stack, player, getCost(thor, prowess, priest), false)) {
@@ -143,14 +144,14 @@ public class ThunderingPeaksRodItem extends Item {
 		if (remaining % speed == 0 && ManaItemHandler.instance().requestManaExactForTool(stack, player, cost, true)) {
 			float damage = getDamage(thor, prowess, priest);
 			if (thor) {
-				LightningBolt bolt = EntityType.LIGHTNING_BOLT.create(level);
+				LightningBolt bolt = EntityType.LIGHTNING_BOLT.create(level, net.minecraft.world.entity.EntitySpawnReason.TRIGGERED);
 				if (bolt != null) {
-					bolt.moveTo(target.getX(), target.getY(), target.getZ());
+					bolt.snapTo(target.getX(), target.getY(), target.getZ());
 					bolt.setVisualOnly(true);
 					level.addFreshEntity(bolt);
 				}
 			} else {
-				level.playSound(null, target.getX(), target.getY(), target.getZ(), SoundEvents.LIGHTNING_BOLT_THUNDER, SoundSource.PLAYERS, 2F, 0.8F + level.random.nextFloat() * 0.2F);
+				level.playSound(null, target.getX(), target.getY(), target.getZ(), SoundEvents.LIGHTNING_BOLT_THUNDER, SoundSource.PLAYERS, 2F, 0.8F + level.getRandom().nextFloat() * 0.2F);
 			}
 			target.hurt(player.damageSources().playerAttack(player), damage);
 			IntList hit = new IntArrayList();
@@ -171,7 +172,7 @@ public class ThunderingPeaksRodItem extends Item {
 			if (entities.isEmpty()) {
 				break;
 			}
-			LivingEntity next = (LivingEntity) entities.get(level.random.nextInt(entities.size()));
+			LivingEntity next = (LivingEntity) entities.get(level.getRandom().nextInt(entities.size()));
 			next.hurt(source, dmg);
 			hit.add(next.getId());
 			previous = next;
@@ -193,7 +194,7 @@ public class ThunderingPeaksRodItem extends Item {
 		if (potential.isEmpty()) {
 			return null;
 		}
-		return potential.get(level.random.nextInt(potential.size()));
+		return potential.get(level.getRandom().nextInt(potential.size()));
 	}
 
 	public static int getCost(boolean thor, boolean prowess, boolean priest) {
@@ -223,7 +224,7 @@ public class ThunderingPeaksRodItem extends Item {
 		public void onAvatarUpdate(Avatar tile) {
 			BlockEntity te = (BlockEntity) tile;
 			Level level = te.getLevel();
-			if (level == null || level.isClientSide || !tile.isEnabled() || tile.getElapsedFunctionalTicks() % 100 != 0) {
+			if (level == null || level.isClientSide() || !tile.isEnabled() || tile.getElapsedFunctionalTicks() % 100 != 0) {
 				return;
 			}
 			ManaReceiver receiver = XplatAbstractions.INSTANCE.findManaReceiver(level, te.getBlockPos(), te.getBlockState(), te, null);
@@ -236,10 +237,10 @@ public class ThunderingPeaksRodItem extends Item {
 			if (entities.isEmpty()) {
 				return;
 			}
-			LivingEntity target = entities.get(level.random.nextInt(entities.size()));
+			LivingEntity target = entities.get(level.getRandom().nextInt(entities.size()));
 			DamageSource source = level.damageSources().lightningBolt();
 			target.hurt(source, DAMAGE);
-			level.playSound(null, target.getX(), target.getY(), target.getZ(), SoundEvents.LIGHTNING_BOLT_THUNDER, SoundSource.BLOCKS, 2F, 0.8F + level.random.nextFloat() * 0.2F);
+			level.playSound(null, target.getX(), target.getY(), target.getZ(), SoundEvents.LIGHTNING_BOLT_THUNDER, SoundSource.BLOCKS, 2F, 0.8F + level.getRandom().nextFloat() * 0.2F);
 			IntList hit = new IntArrayList();
 			hit.add(target.getId());
 			chain(level, target, source, CHAIN_RANGE, TARGET_COUNT, DAMAGE, hit);
@@ -249,7 +250,7 @@ public class ThunderingPeaksRodItem extends Item {
 		}
 
 		@Override
-		public ResourceLocation getOverlayResource(Avatar tile) {
+		public Identifier getOverlayResource(Avatar tile) {
 			return AVATAR_OVERLAY;
 		}
 	}

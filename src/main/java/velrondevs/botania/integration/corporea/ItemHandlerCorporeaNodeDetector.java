@@ -25,10 +25,10 @@ public class ItemHandlerCorporeaNodeDetector implements CorporeaNodeDetector {
 
 	@Nullable
 	private static IItemHandler getInventory(Level level, BlockPos pos) {
-		IItemHandler ret = level.getCapability(Capabilities.ItemHandler.BLOCK, pos, Direction.UP);
+		var ret = level.getCapability(Capabilities.Item.BLOCK, pos, Direction.UP);
 		if (ret == null) {
-			ret = level.getCapability(Capabilities.ItemHandler.BLOCK, pos, null);
+			ret = level.getCapability(Capabilities.Item.BLOCK, pos, null);
 		}
-		return ret;
+		return ret == null ? null : IItemHandler.of(ret);
 	}
 }

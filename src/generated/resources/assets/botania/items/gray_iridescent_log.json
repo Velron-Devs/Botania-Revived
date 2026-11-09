@@ -1,0 +1,12 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "botania:item/gray_iridescent_log",
+    "tints": [
+      {
+        "type": "minecraft:constant",
+        "value": -12103854
+      }
+    ]
+  }
+}

@@ -7,8 +7,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BiomeColors;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
-import net.minecraft.client.renderer.block.BlockRenderDispatcher;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
+import net.minecraft.resources.Identifier;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.world.item.ItemDisplayContext;
@@ -19,20 +20,17 @@ import org.jetbrains.annotations.NotNull;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 
+import velrondevs.botania.client.core.helper.RenderHelper;
 import velrondevs.botania.api.block.PetalApothecary;
 import velrondevs.botania.client.core.handler.ClientTickHandler;
 import velrondevs.botania.common.block.block_entity.PetalApothecaryBlockEntity;
 import velrondevs.botania.common.helper.VecHelper;
 
-public class PetalApothecaryBlockEntityRenderer implements BlockEntityRenderer<PetalApothecaryBlockEntity> {
-	private final BlockRenderDispatcher blockRenderDispatcher;
-
-	public PetalApothecaryBlockEntityRenderer(BlockEntityRendererProvider.Context context) {
-		this.blockRenderDispatcher = context.getBlockRenderDispatcher();
-	}
+public class PetalApothecaryBlockEntityRenderer extends BotaniaBlockEntityRenderer<PetalApothecaryBlockEntity> {
+	public PetalApothecaryBlockEntityRenderer(BlockEntityRendererProvider.Context context) {}
 
 	@Override
-	public void render(@NotNull PetalApothecaryBlockEntity altar, float pticks, PoseStack ms, MultiBufferSource buffers, int light, int overlay) {
+	protected void render(@NotNull PetalApothecaryBlockEntity altar, float pticks, PoseStack ms, MultiBufferSource buffers, SubmitNodeCollector collector, int light, int overlay) {
 		ms.pushPose();
 		ms.translate(0.5, 1.25, 0.5);
 
@@ -87,8 +85,7 @@ public class PetalApothecaryBlockEntityRenderer implements BlockEntityRenderer<P
 						v *= 2F;
 
 						ItemStack stack = altar.getItemHandler().getItem(i);
-						Minecraft.getInstance().getItemRenderer().renderStatic(stack, ItemDisplayContext.GROUND,
-								light, overlay, ms, buffers, altar.getLevel(), 0);
+						RenderHelper.renderItem(stack, ItemDisplayContext.GROUND, ms, collector, light, overlay, altar.getLevel(), 0);
 						ms.popPose();
 					}
 
@@ -102,11 +99,11 @@ public class PetalApothecaryBlockEntityRenderer implements BlockEntityRenderer<P
 			ms.mulPose(VecHelper.rotateX(90));
 			ms.scale(1 / 16F, 1 / 16F, 1 / 16F);
 
-			TextureAtlasSprite sprite = lava ? this.blockRenderDispatcher.getBlockModel(Blocks.LAVA.defaultBlockState()).getParticleIcon()
-					: this.blockRenderDispatcher.getBlockModel(Blocks.WATER.defaultBlockState()).getParticleIcon();
+			TextureAtlasSprite sprite = lava ? RenderHelper.blockSprite(Identifier.withDefaultNamespace("block/lava_still"))
+					: RenderHelper.blockSprite(Identifier.withDefaultNamespace("block/water_still"));
 			int color = lava ? -1
-					: BiomeColors.getAverageWaterColor(altar.getLevel(), altar.getBlockPos());
-			VertexConsumer buffer = buffers.getBuffer(Sheets.translucentCullBlockSheet());
+					: (altar.getLevel() instanceof BlockAndTintGetter tintGetter ? BiomeColors.getAverageWaterColor(tintGetter, altar.getBlockPos()) : 0xFF3F76E4);
+			VertexConsumer buffer = buffers.getBuffer(Sheets.translucentBlockSheet());
 			renderIcon(ms, buffer, sprite, color, alpha, overlay, lava ? 0xF000F0 : light);
 			ms.popPose();
 		}

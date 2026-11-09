@@ -5,12 +5,9 @@
     "block": "botania:alchemy_catalyst"
   },
   "group": "botania:vine_and_lily_pad_cycle",
-  "input": {
-    "item": "minecraft:vine"
-  },
+  "input": "minecraft:vine",
   "mana": 320,
   "output": {
-    "count": 1,
     "id": "minecraft:lily_pad"
   }
 }

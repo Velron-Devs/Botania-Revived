@@ -1,7 +1,7 @@
 package velrondevs.botania.client.integration.ponder;
 
-import net.createmod.ponder.api.registration.PonderTagRegistrationHelper;
-import net.minecraft.resources.ResourceLocation;
+import net.createmod.ponder.api.client.registration.PonderTagRegistrationHelper;
+import net.minecraft.resources.Identifier;
 
 import velrondevs.botania.registry.BotaniaBlocks;
 import velrondevs.botania.registry.BotaniaFlowerBlocks;
@@ -9,15 +9,15 @@ import velrondevs.botania.registry.BotaniaFlowerBlocks;
 import static velrondevs.botania.common.lib.ResourceLocationHelper.prefix;
 
 final class BotaniaPonderTags {
-	static final ResourceLocation MANA_NETWORK = prefix(PonderStrings.MANA_NETWORK);
-	static final ResourceLocation CRAFTING_DEVICES = prefix(PonderStrings.CRAFTING_DEVICES);
-	static final ResourceLocation ALFHEIM = prefix(PonderStrings.ALFHEIM);
-	static final ResourceLocation FLOWERS = prefix(PonderStrings.FLOWERS);
-	static final ResourceLocation CORPOREA = prefix(PonderStrings.CORPOREA);
+	static final Identifier MANA_NETWORK = prefix(PonderStrings.MANA_NETWORK);
+	static final Identifier CRAFTING_DEVICES = prefix(PonderStrings.CRAFTING_DEVICES);
+	static final Identifier ALFHEIM = prefix(PonderStrings.ALFHEIM);
+	static final Identifier FLOWERS = prefix(PonderStrings.FLOWERS);
+	static final Identifier CORPOREA = prefix(PonderStrings.CORPOREA);
 
 	private BotaniaPonderTags() {}
 
-	static void register(PonderTagRegistrationHelper<ResourceLocation> helper) {
+	static void register(PonderTagRegistrationHelper<Identifier> helper) {
 		helper.registerTag(MANA_NETWORK)
 				.title(PonderStrings.tagTitle(PonderStrings.MANA_NETWORK))
 				.description(PonderStrings.tagDescription(PonderStrings.MANA_NETWORK))

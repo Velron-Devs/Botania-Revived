@@ -3,5 +3,8 @@
   "flower": {
     "parent": "botania:block/medumone"
   },
-  "loader": "botania:floating_flower"
+  "loader": "botania:floating_flower",
+  "textures": {
+    "particle": "botania:block/medumone"
+  }
 }

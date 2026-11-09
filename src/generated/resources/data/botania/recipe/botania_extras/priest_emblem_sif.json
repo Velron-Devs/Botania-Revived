@@ -8,21 +8,11 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "A": {
-      "item": "botania:holy_symbol"
-    },
-    "D": {
-      "tag": "botania:dragonstone_gems"
-    },
-    "G": {
-      "item": "botania:life_essence"
-    },
-    "N": {
-      "item": "minecraft:gold_nugget"
-    },
-    "P": {
-      "item": "botania:rune_earth"
-    }
+    "A": "botania:holy_symbol",
+    "D": "#botania:dragonstone_gems",
+    "G": "botania:life_essence",
+    "N": "minecraft:gold_nugget",
+    "P": "botania:rune_earth"
   },
   "pattern": [
     "DGD",
@@ -30,7 +20,6 @@
     " P "
   ],
   "result": {
-    "count": 1,
     "id": "botania:priest_emblem_sif"
   }
 }

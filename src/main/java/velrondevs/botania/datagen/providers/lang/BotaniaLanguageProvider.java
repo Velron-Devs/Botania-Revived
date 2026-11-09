@@ -9,12 +9,11 @@ import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import org.slf4j.Logger;
 
 import velrondevs.botania.common.lib.LibMisc;
-import velrondevs.botania.compat.sophisticated.storage.BotaniaStorageTier;
 
 import java.nio.file.Path;
 import java.util.Map;
@@ -101,8 +100,8 @@ public final class BotaniaLanguageProvider implements DataProvider {
 
 	private <T> void missingNames(Set<String> missing, Registry<T> registry, Function<T, String> keyGetter) {
 		for (Map.Entry<ResourceKey<T>, T> entry : registry.entrySet()) {
-			ResourceLocation id = entry.getKey().location();
-			if (!LibMisc.MOD_ID.equals(id.getNamespace()) || UNNAMED.contains(registry.key().location().getPath() + "/" + id.getPath())) {
+			Identifier id = entry.getKey().identifier();
+			if (!LibMisc.MOD_ID.equals(id.getNamespace()) || UNNAMED.contains(registry.key().identifier().getPath() + "/" + id.getPath())) {
 				continue;
 			}
 			String key = keyGetter.apply(entry.getValue());
@@ -184,6 +183,7 @@ public final class BotaniaLanguageProvider implements DataProvider {
 		same("itemGroup.botania.asgard", "Asgard");
 		same("itemGroup.botania.sophisticated", "Sophisticated");
 		both("key.botania_corporea_request", "Corporea Request", "Petici\u00f3n de corporea");
+		same("key.category.botania.botania", "Botania");
 	}
 
 	private void blocks1() {
@@ -1792,9 +1792,9 @@ public final class BotaniaLanguageProvider implements DataProvider {
 		both("item.botania.alfsteel_stack_upgrade", "Alfsteel Stack Upgrade", "Mejora de pila de alfsteel");
 		both("item.botania.alfsteel_stack_upgrade.tooltip", "Practically infinite: raises the limit of every slot to the maximum of 2,147,483,647 items (x2.1B)", "Prácticamente infinita: sube el límite de cada ranura al máximo de 2.147.483.647 objetos (x2.1B)");
 		both("item.botania.mana_pile_upgrade", "Mana Pile Upgrade", "Mejora de pila de maná");
-		both("item.botania.mana_pile_upgrade.tooltip", "Stores mana inside the storage. It is filled by the Mana Tablets and Mirrors kept in the storage, in its own slot or carried in your inventory, and holds more with each Stack Upgrade. Place the container next to a Mana Spreader or Spark to fill it", "Almacena man\u00e1 dentro del almacenamiento. Se llena con las tablillas y espejos de man\u00e1 guardados en el almacenamiento, en su propia ranura o llevados en tu inventario, y guarda m\u00e1s con cada mejora de pila. Coloca el contenedor junto a un esparcidor de man\u00e1 o una chispa para llenarlo");
+		both("item.botania.mana_pile_upgrade.tooltip", "Stores mana inside the storage and holds more with each Stack Upgrade. It has two modes, switched from its tab: Fill, where the Mana Tablets, Mirrors and other mana items in its slot, kept in the storage or carried in your inventory pour their mana into the pile; and Drain, where the pile recharges the mana item in its slot and, if the backpack also has a Mana Support Upgrade, the Botania mana items you carry. With Infusion turned on in its tab it also works like a Mana Pool: it automatically infuses the item in its Infusion Input slot with the ones stored in the storage and keeps the results inside, spending the mana of the pile, with an optional catalyst block in its Catalyst slot. Place the container next to a Mana Spreader or Spark to fill it", "Almacena maná dentro del almacenamiento y guarda más con cada mejora de pila. Tiene dos modos, que se cambian desde su pestaña: Cargar, en el que las tablillas, espejos y demás objetos de maná de su ranura, guardados en el almacenamiento o llevados en tu inventario vuelcan su maná en la pila; y Descargar, en el que la pila recarga el objeto de maná de su ranura y, si la mochila también tiene una mejora de soporte de maná, los objetos de maná de Botania que llevas. Con la infusión activada en su pestaña también funciona como una piscina de maná: infunde automáticamente el objeto de su hueco de entrada con los que haya en el almacenamiento y guarda los resultados dentro, gastando el maná de la pila, con un bloque catalizador opcional en su hueco de catalizador. Coloca el contenedor junto a un esparcidor de maná o una chispa para llenarlo");
 		both("item.botania.mana_link_upgrade", "Mana Support Upgrade", "Mejora de soporte de maná");
-		both("item.botania.mana_link_upgrade.tooltip", "In a backpack that also has a Mana Pile Upgrade, lets the Botania items you carry spend the mana stored in that pile", "En una mochila que también tenga una mejora de pila de maná, permite que los objetos de Botania que llevas gasten el maná guardado en esa pila");
+		both("item.botania.mana_link_upgrade.tooltip", "In a backpack that also has a Mana Pile Upgrade, lets the Botania items you carry spend the mana stored in that pile. With the pile in Drain mode, it also recharges the Botania mana items in your hotbar, inventory, offhand and accessories while you carry the backpack anywhere: in either hand, the hotbar, the inventory, worn or in an accessory slot", "En una mochila que también tenga una mejora de pila de maná, permite que los objetos de Botania que llevas gasten el maná guardado en esa pila. Con la pila en modo Descargar, además recarga los objetos de maná de Botania de tu barra rápida, inventario, mano secundaria y accesorios mientras llevas la mochila en cualquier sitio: en cualquier mano, en la barra rápida, en el inventario, puesta o en una ranura de accesorio");
 		both("item.botania.manasteel_backpack", "Manasteel Backpack", "Mochila de manacero");
 		both("block.botania.manasteel_backpack", "Manasteel Backpack", "Mochila de manacero");
 		both("item.botania.elementium_backpack", "Elementium Backpack", "Mochila de elementium");
@@ -1807,15 +1807,26 @@ public final class BotaniaLanguageProvider implements DataProvider {
 		both("block.botania.alfsteel_backpack", "Alfsteel Backpack", "Mochila de alfsteel");
 		both("botania.sophisticated.stored_mana", "Stored mana: %s", "Maná almacenado: %s");
 		both("gui.botania.sophisticated.mana_pile", "Mana Pile", "Pila de maná");
-		both("gui.botania.sophisticated.mana_pile.tooltip", "Holds a Mana Tablet or Mirror whose mana flows into the pile", "Guarda una tablilla o un espejo de man\u00e1 cuyo man\u00e1 pasa a la pila");
-		both("gui.botania.sophisticated.mana_pile.slot", "Mana Tablet or Mirror", "Tablilla o espejo de man\u00e1");
+		both("gui.botania.sophisticated.mana_pile.tooltip", "Holds a Botania mana item: in Fill mode its mana flows into the pile, in Drain mode the pile recharges it. With a Mana Support Upgrade, Drain mode also recharges the mana items you carry", "Guarda un objeto de maná de Botania: en modo Cargar su maná pasa a la pila y en modo Descargar la pila lo recarga. Con una mejora de soporte de maná, el modo Descargar también recarga los objetos de maná que llevas");
+		both("gui.botania.sophisticated.mana_pile.slot", "Botania mana item", "Objeto de maná de Botania");
+		both("gui.botania.sophisticated.mana_pile.mode.fill", "Fill the pile (items pour their mana into the pile)", "Cargar la pila (los objetos vuelcan su maná en la pila)");
+		both("gui.botania.sophisticated.mana_pile.mode.drain", "Drain the pile (the pile charges your items; needs a Mana Support Upgrade for the items you carry)", "Descargar la pila (la pila carga tus objetos; los que llevas encima necesitan la mejora de soporte de maná)");
+		both("gui.botania.sophisticated.mana_pile.mode.fill.short", "Mode: Fill", "Modo: Cargar");
+		both("gui.botania.sophisticated.mana_pile.mode.drain.short", "Mode: Drain", "Modo: Descargar");
+		both("gui.botania.sophisticated.mana_pile.infusion.on", "Infusion: on", "Infusión: activada");
+		both("gui.botania.sophisticated.mana_pile.infusion.off", "Infusion: off", "Infusión: desactivada");
+		both("gui.botania.sophisticated.mana_pile.infusion.detail", "Automatically infuses the item in the Infusion Input slot with the ones stored in the storage and keeps the results inside, spending the mana of the pile like a Mana Pool. Recipes with a catalyst only work with that catalyst in the Catalyst slot", "Infunde automáticamente el objeto del hueco de entrada con los que haya en el almacenamiento y guarda los resultados dentro, gastando el maná de la pila como una piscina de maná. Las recetas con catalizador solo funcionan con ese catalizador en el hueco de catalizador");
+		both("gui.botania.sophisticated.mana_pile.infusion_input", "Infusion Input: the item to infuse", "Entrada de infusión: el objeto que se infunde");
+		both("gui.botania.sophisticated.mana_pile.infusion_output", "Infusion Result: take the infused items from here", "Resultado de infusión: saca de aquí los objetos infundidos");
+		both("gui.botania.sophisticated.mana_pile.catalyst", "Catalyst (optional): a block such as the Alchemy or Conjuration Catalyst, for the infusion recipes that need it", "Catalizador (opcional): un bloque como el catalizador de alquimia o de conjuración, para las recetas de infusión que lo necesitan");
+		both("gui.botania.sophisticated.mana_pile.catalyst.short", "Catalyst", "Catalizador");
 		both("gui.botania.sophisticated.mana_pile.contents", "%1$s of a total of %2$s mana", "%1$s de un total de %2$s de man\u00e1");
 		both("item.botania.runic_altar_upgrade", "Runic Altar Upgrade", "Mejora de altar rúnico");
-		both("item.botania.runic_altar_upgrade.tooltip", "Performs Runic Altar crafting inside the storage. Put the ingredients and a Livingrock in its tab and it spends the mana of the Mana Pile Upgrade of the same storage, leaving the result in the storage", "Realiza las recetas del altar rúnico dentro del almacenamiento. Coloca los ingredientes y una roca viva en su pestaña y gasta el maná de la mejora de pila de maná del mismo almacenamiento, dejando el resultado en el almacenamiento");
+		both("item.botania.runic_altar_upgrade.tooltip", "Performs Runic Altar crafting inside the storage. Put the ingredients and a Livingrock in its tab and it spends the mana of the Mana Pile Upgrade of the same storage, leaving the result in the storage. The items placed in its tab work as a pattern: after each craft they are refilled automatically with identical items from the storage, so it keeps crafting while there is material inside", "Realiza las recetas del altar rúnico dentro del almacenamiento. Coloca los ingredientes y una roca viva en su pestaña y gasta el maná de la mejora de pila de maná del mismo almacenamiento, dejando el resultado en el almacenamiento. Los objetos de su pestaña sirven de patrón: tras cada crafteo se rellenan solos con objetos iguales del almacenamiento, así que sigue crafteando mientras quede material dentro");
 		both("item.botania.elven_portal_upgrade", "Elven Portal Upgrade", "Mejora de portal élfico");
-		both("item.botania.elven_portal_upgrade.tooltip", "Performs Elven Gateway trades inside the storage. Items placed in its tab are traded automatically, spending the mana of the Mana Pile Upgrade of the same storage", "Realiza los intercambios del acceso élfico dentro del almacenamiento. Los objetos de su pestaña se intercambian solos, gastando el maná de la mejora de pila de maná del mismo almacenamiento");
+		both("item.botania.elven_portal_upgrade.tooltip", "Performs Elven Gateway trades inside the storage. Items placed in its tab are traded automatically, spending the mana of the Mana Pile Upgrade of the same storage. The items placed in its tab work as a pattern: after each craft they are refilled automatically with identical items from the storage, so it keeps crafting while there is material inside", "Realiza los intercambios del acceso élfico dentro del almacenamiento. Los objetos de su pestaña se intercambian solos, gastando el maná de la mejora de pila de maná del mismo almacenamiento. Los objetos de su pestaña sirven de patrón: tras cada crafteo se rellenan solos con objetos iguales del almacenamiento, así que sigue crafteando mientras quede material dentro");
 		both("item.botania.brewery_upgrade", "Botanical Brewery Upgrade", "Mejora de fermentador botánico");
-		both("item.botania.brewery_upgrade.tooltip", "Brews inside the storage. Put a Vial, Flask, Incense Stick or Blood Pendant and the reagents in its tab and it spends the mana of the Mana Pile Upgrade of the same storage, leaving the brew in the storage", "Prepara fermentos dentro del almacenamiento. Coloca un vial, un matraz, una barra de incienso o un colgante de sangre y los reactivos en su pestaña y gasta el maná de la mejora de pila de maná del mismo almacenamiento, dejando el fermento en el almacenamiento");
+		both("item.botania.brewery_upgrade.tooltip", "Brews inside the storage. Put a Vial, Flask, Incense Stick or Blood Pendant and the reagents in its tab and it spends the mana of the Mana Pile Upgrade of the same storage, leaving the brew in the storage. The items placed in its tab work as a pattern: after each craft they are refilled automatically with identical items from the storage, so it keeps crafting while there is material inside", "Prepara fermentos dentro del almacenamiento. Coloca un vial, un matraz, una barra de incienso o un colgante de sangre y los reactivos en su pestaña y gasta el maná de la mejora de pila de maná del mismo almacenamiento, dejando el fermento en el almacenamiento. Los objetos de su pestaña sirven de patrón: tras cada crafteo se rellenan solos con objetos iguales del almacenamiento, así que sigue crafteando mientras quede material dentro");
 		both("gui.botania.sophisticated.runic_altar", "Runic Altar", "Altar rúnico");
 		both("gui.botania.sophisticated.runic_altar.tooltip", "Ingredients and Livingrock for the Runic Altar recipes", "Ingredientes y roca viva para las recetas del altar rúnico");
 		both("gui.botania.sophisticated.elven_portal", "Elven Portal", "Portal élfico");
@@ -1833,7 +1844,8 @@ public final class BotaniaLanguageProvider implements DataProvider {
 		both("gui.botania.sophisticated.transfer.no_upgrade.runic_altar", "Open a storage with a Runic Altar Upgrade to transfer this recipe", "Abre un almacenamiento con una mejora de altar rúnico para transferir esta receta");
 		both("gui.botania.sophisticated.transfer.no_upgrade.elven_portal", "Open a storage with an Elven Portal Upgrade to transfer this recipe", "Abre un almacenamiento con una mejora de portal élfico para transferir esta receta");
 		both("gui.botania.sophisticated.transfer.no_upgrade.brewery", "Open a storage with a Botanical Brewery Upgrade to transfer this recipe", "Abre un almacenamiento con una mejora de fermentador botánico para transferir esta receta");
-		for (BotaniaStorageTier tier : BotaniaStorageTier.values()) {
+		both("gui.botania.sophisticated.transfer.no_upgrade.mana_infusion", "Open a storage with a Mana Pile Upgrade to transfer this recipe", "Abre un almacenamiento con una mejora de pila de maná para transferir esta receta");
+		for (StorageTier tier : StorageTier.values()) {
 			both("block.botania." + tier.barrelName(), tier.english() + " Barrel", "Barril de " + tier.spanish());
 			both("block.botania." + tier.chestName(), tier.english() + " Chest", "Cofre de " + tier.spanish());
 			both("botania.sophisticated.tier." + tier.id(), tier.english(), tier.spanish());
@@ -2072,6 +2084,9 @@ public final class BotaniaLanguageProvider implements DataProvider {
 		both("botania.page.arsNouveau2", "Your $(thing)Mana$(0) items pay for Ars Nouveau spells when your own reserve runs short, at roughly 167 $(thing)Mana$(0) per point. In the other direction, Botania tools draw on your Ars Nouveau reserve once no mana item has any left, at 4 $(thing)Mana$(0) per point.$(p)Eating a $(item)Mana Cookie$(0) also grants $(thing)Mana Regen$(0). The rates and each of these switches can be changed in the $(thing)botania-ars_nouveau-common.toml$(0) config file.", "Tus objetos de $(thing)man\u00e1$(0) pagan los hechizos de Ars Nouveau cuando tu propia reserva se queda corta, a unos 167 de $(thing)man\u00e1$(0) por punto. En sentido contrario, las herramientas de Botania usan tu reserva de Ars Nouveau cuando ning\u00fan objeto de man\u00e1 tiene ya, a 4 de $(thing)man\u00e1$(0) por punto.$(p)Comer una $(item)galleta de man\u00e1$(0) tambi\u00e9n da $(thing)regeneraci\u00f3n de man\u00e1$(0). Los ratios y cada uno de estos interruptores se pueden cambiar en el archivo de configuraci\u00f3n $(thing)botania-ars_nouveau-common.toml$(0).");
 		both("botania.thaumaturge.revealing", "Works as Goggles of Revealing", "Funciona como unas gafas de revelación");
 		both("botania.thaumaturge.vis_discount", "%s%% Vis discount", "%s%% de descuento de vis");
+		both("item.botania.mana_inkwell", "Botanurgist's Inkwell", "Tintero de Botanurgo");
+		both("botania.thaumaturge.inkwell", "Ink: %s/%s", "Tinta: %s/%s");
+		both("botania.page.thaumaturge4", "The $(item)Botanurgist's Inkwell$(0) is a set of $(item)Scribing Tools$(0) that holds $(thing)Mana$(0) instead of ink. It works at the $(thing)Research Table$(0) like any other scribing tools, but every stroke is paid for with $(thing)Mana$(0), and it is refilled by dropping it in a $(l:mana/pool)$(item)Mana Pool$(0)$(/l) or by any other means of charging Mana items, never with dye.", "El $(item)tintero de Botanurgo$(0) son unas $(item)herramientas de escritura$(0) que guardan $(thing)maná$(0) en lugar de tinta. Funciona en la $(thing)mesa de investigación$(0) como cualquier otro juego de herramientas de escritura, pero cada trazo se paga con $(thing)maná$(0), y se rellena dejándolo en una $(l:mana/pool)$(item)piscina de maná$(0)$(/l) o con cualquier otra forma de cargar objetos de maná, nunca con tinte.");
 		same("botania.entry.thaumaturge", "Thaumaturge");
 		both("botania.tagline.thaumaturge", "Botanical armor with a keen eye", "Armadura botánica con buen ojo");
 		both("botania.page.thaumaturge0", "The paths of $(thing)Botany$(0) and $(thing)Thaumaturgy$(0) cross once more. Combining a $(item)Manasteel$(0), $(item)Elementium$(0) or $(item)Terrasteel Helmet$(0) with a pair of $(item)Goggles of Revealing$(0) from $(thing)Thaumaturge$(0) gives a $(item)Helmet of Revealing$(0), which does the job of both.$(p)The helmet keeps everything it had: its protection, its mana repair, its $(l:tools/terrasteel_armor)set bonus$(/l) and any $(item)Ancient Will$(0) already attached. On top of that it reveals aura nodes and every readout the goggles would show, and grants the same 5% $(thing)Vis$(0) discount.", "Los caminos de la $(thing)botánica$(0) y la $(thing)taumaturgia$(0) se cruzan de nuevo. Combinar un $(item)casco de manacero$(0), de $(item)elementio$(0) o de $(item)terracero$(0) con unas $(item)gafas de revelación$(0) de $(thing)Thaumaturge$(0) da un $(item)casco de revelación$(0), que hace el trabajo de ambos.$(p)El casco conserva todo lo que tenía: su protección, su reparación con maná, su $(l:tools/terrasteel_armor)bonificación de conjunto$(/l) y cualquier $(item)legado antiguo$(0) que ya tuviera. Además revela los nodos de aura y todo lo que mostrarían las gafas, y da el mismo 5% de descuento de $(thing)vis$(0).");
@@ -4409,11 +4424,13 @@ public final class BotaniaLanguageProvider implements DataProvider {
 		both("botania.page.asgardandelion0", "The $(item)Asgardandelion$(0) is a generating flower that makes an absurd amount of mana: $(thing)1,000,000$(0) mana every single tick by default. It needs no fuel, no pollination and no upkeep, and it never wilts.", "El $(item)asgardiente de le\u00f3n$(0) es una flor generadora que produce una cantidad absurda de man\u00e1: $(thing)1.000.000$(0) de man\u00e1 en cada tick por defecto. No necesita combustible, ni polinizaci\u00f3n, ni mantenimiento, y nunca se marchita.");
 		both("botania.page.asgardandelion1", "It stores one tick of production and hands it to the $(item)Mana Spreader$(0) or $(item)Mana Pool$(0) it is bound to, so one flower fills a whole pool every tick and everything beyond that is wasted. The amount per tick can be changed, or the flower switched off, in the $(thing)asgardandelion$(0) section of $(thing)botania-common.toml$(0).", "Guarda un tick de producci\u00f3n y se lo entrega al $(item)esparcidor de man\u00e1$(0) o a la $(item)piscina de man\u00e1$(0) a la que est\u00e1 enlazada, as\u00ed que una sola flor llena una piscina entera en cada tick y todo lo que sobre se pierde. La cantidad por tick se puede cambiar, o la flor se puede apagar, en la secci\u00f3n $(thing)asgardandelion$(0) de $(thing)botania-common.toml$(0).");
 		both("botania.page.asgardandelion2", "It is made on a $(l:basics/terrasteel)$(item)Terrestrial Agglomeration Plate$(0) from a $(l:generating_flowers/wither_mana_rose)$(item)Wither Mana Rose$(0), a Dandelion, 8 $(item)Gaia Spirits$(0), 4 $(item)Terrasteel Blocks$(0) and 4 $(item)Dragonstone Blocks$(0), and it takes 1,000,000 mana. Combine it with any $(item)Floating Flower$(0) to get a floating one.", "Se hace en una $(l:basics/terrasteel)$(item)placa de aglomeraci\u00f3n terrestre$(0) con una $(l:generating_flowers/wither_mana_rose)$(item)rosa de man\u00e1 wither$(0), un diente de le\u00f3n, 8 $(item)esp\u00edritus de Gaia$(0), 4 $(item)bloques de terracero$(0) y 4 $(item)bloques de piedra del drag\u00f3n$(0), y cuesta 1.000.000 de man\u00e1. Comb\u00ednala con cualquier $(item)flor flotante$(0) para obtener una flotante.");
+		both("botania.page.asgardandelion3", "With $(thing)Re-Avaritia$(0) installed, the plate recipe is disabled and the $(item)Asgardandelion$(0) is crafted on the $(item)Extreme Crafting Table$(0) instead (9x9, tier 4): a rim of $(item)Terrasteel Blocks$(0) crossed by $(item)Dragonstone Blocks$(0), 4 $(l:generating_flowers/wither_mana_rose)$(item)Wither Mana Roses$(0), 8 $(item)Gaia Spirits$(0) and a Dandelion in the centre.", "Con $(thing)Re-Avaritia$(0) instalado, la receta de la placa se desactiva y el $(item)Asgardiente de le\u00f3n$(0) se fabrica en la $(item)mesa de crafteo extrema$(0) (9x9, nivel 4): un borde de $(item)bloques de terracero$(0) cruzado por $(item)bloques de piedra del drag\u00f3n$(0), 4 $(l:generating_flowers/wither_mana_rose)$(item)rosas de man\u00e1 wither$(0), 8 $(item)esp\u00edritus de Gaia$(0) y un diente de le\u00f3n en el centro.");
 		same("botania.entry.avaritiaTable", "Re-Avaritia Recipes");
 		both("botania.tagline.avaritiaTable", "Creative objects on the Extreme Crafting Table", "Objetos creativos en la mesa de crafteo extrema");
 		both("botania.page.avaritiaTable0", "When $(thing)Re-Avaritia$(0) is installed, the Creative Crafting module also adds recipes for its $(item)Extreme Crafting Table$(0) (the 9x9 table, tier 4). They use only Botania ingredients and come on top of the $(l:basics/terrasteel)$(item)Terrestrial Agglomeration Plate$(0)$(/l) recipes, which keep working.", "Cuando $(thing)Re-Avaritia$(0) está instalado, el módulo de crafteo creativo también añade recetas para su $(item)mesa de crafteo extrema$(0) (la mesa 9x9, nivel 4). Usan solo ingredientes de Botania y se suman a las recetas de la $(l:basics/terrasteel)$(item)placa de aglomeración terrestre$(0)$(/l), que siguen funcionando.");
 		both("botania.page.avaritiaTable1", "$(item)Creative Mana Pool$(0): 9x9, terrasteel blocks on the rim, $(item)Gaia Spirits$(0), $(item)Mana Pools$(0), $(item)Dragonstone Blocks$(0) and a column of $(item)Fabulous Pools$(0) around a $(item)Mana Tablet$(0).$(p)$(item)Creative Mana Tablet$(0): 9x9, the eight sin runes, the relics ($(item)Odin Ring$(0), $(item)Thor Ring$(0), $(item)King Key$(0), $(item)Flugel Eye$(0), $(item)Flügel Tiara$(0) and more), four $(item)Mana Mirrors$(0), $(item)Fabulous Pools$(0) and a $(item)Mana Tablet$(0).", "$(item)Piscina de maná creativa$(0): 9x9, bloques de terracero en el borde, $(item)espíritus de Gaia$(0), $(item)piscinas de maná$(0), $(item)bloques de piedra dragón$(0) y una columna de $(item)piscinas fabulosas$(0) alrededor de una $(item)tableta de maná$(0).$(p)$(item)Tableta de maná creativa$(0): 9x9, las ocho runas de pecados, las reliquias ($(item)anillo de Odin$(0), $(item)anillo de Thor$(0), $(item)llave del rey$(0), $(item)ojo de Flugel$(0), $(item)tiara de los Flügel$(0) y más), cuatro $(item)espejos de maná$(0), $(item)piscinas fabulosas$(0) y una $(item)tableta de maná$(0).");
 		both("botania.page.avaritiaTable2", "$(item)Creative Corporea Spark$(0): 5x5, a $(item)Master Corporea Spark$(0) in the centre with $(item)Gaia Spirits$(0), $(item)Pixie Dust$(0), $(item)Elementium Blocks$(0) and a $(item)Rune of Mana$(0).$(p)$(item)Infrangible Platform$(0) (x4): 3x3, $(item)Terrasteel Blocks$(0) in the corners, $(item)Abstruse Platforms$(0) on the sides and a $(item)Dragonstone Block$(0) in the middle.", "$(item)Chispa de corporea creativa$(0): 5x5, una $(item)chispa maestra de corporea$(0) en el centro con $(item)espíritus de Gaia$(0), $(item)polvo de píxie$(0), $(item)bloques de elementium$(0) y una $(item)runa de maná$(0).$(p)$(item)Plataforma irrompible$(0) (x4): 3x3, $(item)bloques de terracero$(0) en las esquinas, $(item)plataformas abstrusas$(0) en los lados y un $(item)bloque de piedra dragón$(0) en el centro.");
+		both("botania.page.avaritiaTable3", "$(l:generating_flowers/asgardandelion)$(item)Asgardandelion$(0)$(/l) (Asgard module): 9x9, $(item)Terrasteel Blocks$(0), $(item)Dragonstone Blocks$(0), 4 $(item)Wither Mana Roses$(0), 8 $(item)Gaia Spirits$(0) and a Dandelion. While Re-Avaritia is installed this is its only recipe: the plate one is disabled.", "$(l:generating_flowers/asgardandelion)$(item)Asgardiente de le\u00f3n$(0)$(/l) (m\u00f3dulo Asgard): 9x9, $(item)bloques de terracero$(0), $(item)bloques de piedra del drag\u00f3n$(0), 4 $(item)rosas de man\u00e1 wither$(0), 8 $(item)esp\u00edritus de Gaia$(0) y un diente de le\u00f3n. Con Re-Avaritia instalado es su \u00fanica receta: la de la placa se desactiva.");
 	}
 
 	private void jade() {
@@ -4571,5 +4588,52 @@ public final class BotaniaLanguageProvider implements DataProvider {
 		both("emi.category.botania.pure_daisy", "Pure Daisy", "Margarita pura");
 		both("emi.category.botania.runic_altar", "Runic Altar", "Altar r\u00fanico");
 		both("emi.category.botania.terrestrial_agglomeration", "Terrestrial Agglomeration", "Aglomeraci\u00f3n terrestre");
+	}
+
+	private enum StorageTier {
+		MANASTEEL("manasteel", "Manasteel", "manacero"),
+		ELEMENTIUM("elementium", "Elementium", "elementio"),
+		TERRASTEEL("terrasteel", "Terrasteel", "terracero"),
+		GAIA("gaia", "Gaia", "Gaia"),
+		ALFSTEEL("alfsteel", "Alfsteel", "alfsteel");
+
+		private final String id;
+		private final String english;
+		private final String spanish;
+
+		StorageTier(String id, String english, String spanish) {
+			this.id = id;
+			this.english = english;
+			this.spanish = spanish;
+		}
+
+		String id() {
+			return id;
+		}
+
+		String english() {
+			return english;
+		}
+
+		String spanish() {
+			return spanish;
+		}
+
+		String barrelName() {
+			return id + "_barrel";
+		}
+
+		String chestName() {
+			return id + "_chest";
+		}
+
+		StorageTier previous() {
+			return ordinal() == 0 ? null : values()[ordinal() - 1];
+		}
+
+		String upgradeName() {
+			StorageTier previous = previous();
+			return (previous == null ? "netherite" : previous.id()) + "_to_" + id + "_tier_upgrade";
+		}
 	}
 }

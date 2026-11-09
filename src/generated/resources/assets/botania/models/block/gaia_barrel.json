@@ -1,6 +1,5 @@
 {
   "parent": "sophisticatedstorage:block/barrel",
-  "flat_top_model": "botania:block/flat/gaia_barrel",
   "loader": "sophisticatedstorage:barrel",
   "model_parts": {
     "tier": {

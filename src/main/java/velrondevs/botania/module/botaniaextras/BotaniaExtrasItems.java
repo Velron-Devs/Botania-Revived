@@ -1,6 +1,6 @@
 package velrondevs.botania.module.botaniaextras;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
@@ -64,11 +64,11 @@ public final class BotaniaExtrasItems {
 		return color == null ? bifrostSeeds : SEEDS.get(color);
 	}
 
-	public static ResourceLocation seedsId(@Nullable DyeColor color) {
+	public static Identifier seedsId(@Nullable DyeColor color) {
 		return color == null ? prefix("bifrost_seeds") : prefix(color.getSerializedName() + "_iridescent_seeds");
 	}
 
-	public static void registerItems(BiConsumer<Item, ResourceLocation> r) {
+	public static void registerItems(BiConsumer<Item, Identifier> r) {
 		for (DyeColor color : DyeColor.values()) {
 			r.accept(getSeeds(color), seedsId(color));
 		}

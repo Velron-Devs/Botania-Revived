@@ -8,15 +8,10 @@
   "type": "botania:helm_revealing",
   "category": "equipment",
   "ingredients": [
-    {
-      "item": "botania:terrasteel_helmet"
-    },
-    {
-      "item": "thaumaturge:goggles_revealing"
-    }
+    "botania:terrasteel_helmet",
+    "thaumaturge:goggles_revealing"
   ],
   "result": {
-    "count": 1,
     "id": "botania:terrasteel_helmet_revealing"
   }
 }

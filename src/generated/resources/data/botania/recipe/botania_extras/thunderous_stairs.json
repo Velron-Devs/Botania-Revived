@@ -8,9 +8,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "building",
   "key": {
-    "Q": {
-      "item": "botania:thunderous_planks"
-    }
+    "Q": "botania:thunderous_planks"
   },
   "pattern": [
     "Q  ",

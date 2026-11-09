@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "tag": "botania:elementium_blocks"
-    }
+    "#botania:elementium_blocks"
   ],
   "result": {
     "count": 9,

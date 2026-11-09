@@ -9,6 +9,7 @@ import net.minecraft.data.recipes.ShapelessRecipeBuilder;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.neoforge.common.Tags;
+import net.neoforged.neoforge.common.crafting.CompoundIngredient;
 
 import org.apache.commons.lang3.mutable.MutableObject;
 
@@ -29,13 +30,13 @@ public class ConventionRecipeProvider extends BotaniaRecipeProvider {
 
 	@Override
 	protected void buildRecipes(RecipeOutput consumer) {
-		ShapelessRecipeBuilder.shapeless(RecipeCategory.BUILDING_BLOCKS, BotaniaBlocks.azulejo0)
+		ShapelessRecipeBuilder.shapeless(items(), RecipeCategory.BUILDING_BLOCKS, BotaniaBlocks.azulejo0)
 				.requires(Items.BLUE_DYE)
 				.requires(ConventionItemTagProvider.STORAGE_BLOCKS_QUARTZ)
 				.unlockedBy("has_item", conditionsFromItem(Items.BLUE_DYE))
 				.save(consumer);
 
-		ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, BotaniaItems.baubleBox)
+		ShapedRecipeBuilder.shaped(items(), RecipeCategory.TOOLS, BotaniaItems.baubleBox)
 				.define('C', Tags.Items.CHESTS_WOODEN)
 				.define('G', Items.GOLD_INGOT)
 				.define('M', BotaniaTags.Items.INGOTS_MANASTEEL)
@@ -45,7 +46,7 @@ public class ConventionRecipeProvider extends BotaniaRecipeProvider {
 				.unlockedBy("has_item", conditionsFromTag(BotaniaTags.Items.INGOTS_MANASTEEL))
 				.save(consumer);
 
-		ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, BotaniaItems.glassPick)
+		ShapedRecipeBuilder.shaped(items(), RecipeCategory.TOOLS, BotaniaItems.glassPick)
 				.define('T', BotaniaItems.livingwoodTwig)
 				.define('G', Tags.Items.GLASS_BLOCKS_COLORLESS)
 				.define('I', BotaniaTags.Items.INGOTS_MANASTEEL)
@@ -55,7 +56,7 @@ public class ConventionRecipeProvider extends BotaniaRecipeProvider {
 				.unlockedBy("has_item", conditionsFromTag(BotaniaTags.Items.INGOTS_MANASTEEL))
 				.save(consumer);
 
-		ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, BotaniaBlocks.prism)
+		ShapedRecipeBuilder.shaped(items(), RecipeCategory.DECORATIONS, BotaniaBlocks.prism)
 				.define('P', Tags.Items.GEMS_PRISMARINE)
 				.define('S', BotaniaBlocks.spectralPlatform)
 				.define('G', Tags.Items.GLASS_BLOCKS_COLORLESS)
@@ -66,22 +67,22 @@ public class ConventionRecipeProvider extends BotaniaRecipeProvider {
 				.unlockedBy("has_alt_item", conditionsFromItem(BotaniaBlocks.spectralPlatform))
 				.save(consumer);
 
-		ShapedRecipeBuilder.shaped(RecipeCategory.MISC, BotaniaItems.lensNormal)
+		ShapedRecipeBuilder.shaped(items(), RecipeCategory.MISC, BotaniaItems.lensNormal)
 				.define('S', BotaniaTags.Items.INGOTS_MANASTEEL)
-				.define('G', Ingredient.fromValues(Stream.of(new Ingredient.TagValue(Tags.Items.GLASS_BLOCKS_COLORLESS), new Ingredient.TagValue(Tags.Items.GLASS_PANES_COLORLESS))))
+				.define('G', CompoundIngredient.of(tag(Tags.Items.GLASS_BLOCKS_COLORLESS), tag(Tags.Items.GLASS_PANES_COLORLESS)))
 				.pattern(" S ")
 				.pattern("SGS")
 				.pattern(" S ")
 				.unlockedBy("has_item", conditionsFromTag(BotaniaTags.Items.INGOTS_MANASTEEL))
 				.save(consumer);
 
-		registerRedStringBlock(consumer, BotaniaBlocks.redStringContainer, Ingredient.of(Tags.Items.CHESTS_WOODEN), conditionsFromTag(Tags.Items.CHESTS_WOODEN));
-		ShapelessRecipeBuilder.shapeless(RecipeCategory.REDSTONE, BotaniaBlocks.corporeaRetainer)
+		registerRedStringBlock(consumer, BotaniaBlocks.redStringContainer, tag(Tags.Items.CHESTS_WOODEN), conditionsFromTag(Tags.Items.CHESTS_WOODEN));
+		ShapelessRecipeBuilder.shapeless(items(), RecipeCategory.REDSTONE, BotaniaBlocks.corporeaRetainer)
 				.requires(Tags.Items.CHESTS_WOODEN)
 				.requires(BotaniaItems.corporeaSpark)
 				.unlockedBy("has_item", conditionsFromItem(BotaniaItems.corporeaSpark))
 				.save(consumer);
-		ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, BotaniaItems.phantomInk, 4)
+		ShapelessRecipeBuilder.shapeless(items(), RecipeCategory.MISC, BotaniaItems.phantomInk, 4)
 				.requires(BotaniaItems.manaPearl)
 				.requires(Tags.Items.DYES)
 				.requires(Tags.Items.GLASS_BLOCKS)
@@ -91,14 +92,14 @@ public class ConventionRecipeProvider extends BotaniaRecipeProvider {
 
 		MutableObject<GogAlternationResult.Captured> base = new MutableObject<>();
 		MutableObject<GogAlternationResult.Captured> gog = new MutableObject<>();
-		ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, BotaniaItems.fertilizer)
+		ShapelessRecipeBuilder.shapeless(items(), RecipeCategory.MISC, BotaniaItems.fertilizer)
 				.requires(Items.BONE_MEAL)
-				.requires(Ingredient.of(Tags.Items.DYES), 4)
+				.requires(tag(Tags.Items.DYES), 4)
 				.unlockedBy("has_item", conditionsFromTag(Tags.Items.DYES))
 				.save(GogAlternationResult.capture(consumer, base), "botania:fertilizer_dye");
-		ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, BotaniaItems.fertilizer, 3)
+		ShapelessRecipeBuilder.shapeless(items(), RecipeCategory.MISC, BotaniaItems.fertilizer, 3)
 				.requires(Items.BONE_MEAL)
-				.requires(Ingredient.of(Tags.Items.DYES), 4)
+				.requires(tag(Tags.Items.DYES), 4)
 				.unlockedBy("has_item", conditionsFromTag(Tags.Items.DYES))
 				.save(GogAlternationResult.capture(consumer, gog), "botania:fertilizer_dye");
 		GogAlternationResult.accept(consumer, gog.getValue(), base.getValue());

@@ -3,14 +3,14 @@ package velrondevs.botania.client.render.entity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.Mth;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.resources.Identifier;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -26,26 +26,24 @@ import java.util.Random;
 
 import static velrondevs.botania.common.lib.ResourceLocationHelper.prefix;
 
-public abstract class BaseSparkRenderer<T extends SparkBaseEntity> extends EntityRenderer<T> {
+public abstract class BaseSparkRenderer<T extends SparkBaseEntity> extends BotaniaEntityRenderer<T> {
 
 	private final TextureAtlasSprite starSprite;
 	private final TextureAtlasSprite worldSprite;
 
 	public BaseSparkRenderer(EntityRendererProvider.Context ctx) {
 		super(ctx);
-		var atlas = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS);
 		this.starSprite = Objects.requireNonNull(
-				atlas.apply(prefix("item/corporea_spark_star"))
+				RenderHelper.itemSprite(prefix("item/corporea_spark_star"))
 		);
 		this.worldSprite = Objects.requireNonNull(
-				atlas.apply(prefix("item/spark"))
+				RenderHelper.itemSprite(prefix("item/spark"))
 		);
 	}
 
 	@Override
-	public void render(@NotNull T tEntity, float yaw, float partialTicks, PoseStack ms, MultiBufferSource buffers, int light) {
+	protected void render(@NotNull T tEntity, float yaw, float partialTicks, PoseStack ms, MultiBufferSource buffers, SubmitNodeCollector collector, int light) {
 		TextureAtlasSprite iicon = getBaseIcon(tEntity);
-		ClientXplatAbstractions.instance().markSpriteActive(iicon);
 
 		ms.pushPose();
 
@@ -60,7 +58,7 @@ public abstract class BaseSparkRenderer<T extends SparkBaseEntity> extends Entit
 
 		VertexConsumer buffer = buffers.getBuffer(RenderHelper.SPARK);
 		ms.pushPose();
-		ms.mulPose(entityRenderDispatcher.cameraOrientation());
+		ms.mulPose(Minecraft.getInstance().gameRenderer.getMainCamera().rotation());
 		renderIcon(ms, buffer, iicon, iconColor);
 
 		ms.pushPose();
@@ -88,12 +86,6 @@ public abstract class BaseSparkRenderer<T extends SparkBaseEntity> extends Entit
 	@Nullable
 	protected TextureAtlasSprite getSpinningIcon(T entity) {
 		return null;
-	}
-
-	@NotNull
-	@Override
-	public ResourceLocation getTextureLocation(@NotNull SparkBaseEntity entity) {
-		return InventoryMenu.BLOCK_ATLAS;
 	}
 
 	private void renderIcon(PoseStack ms, VertexConsumer buffer, TextureAtlasSprite icon, int color) {

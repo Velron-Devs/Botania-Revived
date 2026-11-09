@@ -3,11 +3,11 @@ package velrondevs.botania.client.render.entity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.phys.AABB;
 
 import org.jetbrains.annotations.NotNull;
@@ -17,16 +17,14 @@ import velrondevs.botania.client.core.handler.ClientTickHandler;
 import velrondevs.botania.client.core.helper.RenderHelper;
 import velrondevs.botania.common.entity.MagicLandmineEntity;
 
-public class MagicLandmineRenderer extends EntityRenderer<MagicLandmineEntity> {
+public class MagicLandmineRenderer extends BotaniaEntityRenderer<MagicLandmineEntity> {
 
 	public MagicLandmineRenderer(EntityRendererProvider.Context ctx) {
 		super(ctx);
 	}
 
 	@Override
-	public void render(MagicLandmineEntity e, float entityYaw, float partialTicks, PoseStack ms, MultiBufferSource buffers, int light) {
-		super.render(e, entityYaw, partialTicks, ms, buffers, light);
-
+	protected void render(MagicLandmineEntity e, float entityYaw, float partialTicks, PoseStack ms, MultiBufferSource buffers, SubmitNodeCollector collector, int light) {
 		ms.pushPose();
 		AABB aabb = e.getBoundingBox().move(e.position().scale(-1));
 
@@ -53,11 +51,5 @@ public class MagicLandmineRenderer extends EntityRenderer<MagicLandmineEntity> {
 		RenderHelper.flatRectangle(buffer, mat, f, x, 0, f, z, r, g, b, alpha);
 		RenderHelper.incrementOffY();
 		ms.popPose();
-	}
-
-	@NotNull
-	@Override
-	public ResourceLocation getTextureLocation(@NotNull MagicLandmineEntity entity) {
-		return InventoryMenu.BLOCK_ATLAS;
 	}
 }

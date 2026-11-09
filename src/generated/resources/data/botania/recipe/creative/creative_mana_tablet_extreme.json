@@ -1,84 +1,37 @@
 {
   "neoforge:conditions": [
     {
-      "type": "neoforge:and",
-      "values": [
-        {
-          "type": "neoforge:mod_loaded",
-          "modid": "avaritia"
-        },
-        {
-          "type": "botania:module_enabled",
-          "module": "creative"
-        }
-      ]
+      "type": "neoforge:mod_loaded",
+      "modid": "avaritia"
+    },
+    {
+      "type": "botania:module_enabled",
+      "module": "creative"
     }
   ],
   "type": "avaritia:shaped_table",
   "key": {
-    "A": {
-      "item": "botania:elementium_block"
-    },
-    "B": {
-      "item": "botania:rune_envy"
-    },
-    "C": {
-      "item": "botania:rune_gluttony"
-    },
-    "D": {
-      "item": "botania:rune_winter"
-    },
-    "E": {
-      "item": "botania:rune_lust"
-    },
-    "F": {
-      "item": "botania:rune_pride"
-    },
-    "G": {
-      "item": "botania:rune_wrath"
-    },
-    "H": {
-      "item": "botania:rune_greed"
-    },
-    "I": {
-      "item": "botania:rune_sloth"
-    },
-    "J": {
-      "item": "botania:infinite_fruit"
-    },
-    "K": {
-      "item": "botania:flight_tiara"
-    },
-    "L": {
-      "item": "botania:king_key"
-    },
-    "M": {
-      "item": "botania:flugel_eye"
-    },
-    "N": {
-      "item": "botania:odin_ring"
-    },
-    "O": {
-      "item": "botania:spawner_mover"
-    },
-    "P": {
-      "item": "botania:mana_mirror"
-    },
-    "Q": {
-      "item": "botania:thor_ring"
-    },
-    "R": {
-      "item": "botania:mana_tablet"
-    },
-    "S": {
-      "item": "botania:dice"
-    },
-    "T": {
-      "item": "botania:fabulous_pool"
-    },
-    "U": {
-      "item": "botania:terrasteel_block"
-    }
+    "A": "botania:elementium_block",
+    "B": "botania:rune_envy",
+    "C": "botania:rune_gluttony",
+    "D": "botania:rune_winter",
+    "E": "botania:rune_lust",
+    "F": "botania:rune_pride",
+    "G": "botania:rune_wrath",
+    "H": "botania:rune_greed",
+    "I": "botania:rune_sloth",
+    "J": "botania:infinite_fruit",
+    "K": "botania:flight_tiara",
+    "L": "botania:king_key",
+    "M": "botania:flugel_eye",
+    "N": "botania:odin_ring",
+    "O": "botania:spawner_mover",
+    "P": "botania:mana_mirror",
+    "Q": "botania:thor_ring",
+    "R": "botania:mana_tablet",
+    "S": "botania:dice",
+    "T": "botania:fabulous_pool",
+    "U": "botania:terrasteel_block"
   },
   "pattern": [
     "BAAACAAAD",
@@ -96,9 +49,9 @@
       "minecraft:custom_data": {
         "creative": true,
         "mana": 500000
-      }
+      },
+      "minecraft:rarity": "epic"
     },
-    "count": 1,
     "id": "botania:mana_tablet"
   },
   "tier": 4

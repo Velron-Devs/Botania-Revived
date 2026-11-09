@@ -3,15 +3,10 @@
   "category": "redstone",
   "group": "botania:spreader",
   "ingredients": [
-    {
-      "item": "botania:mana_spreader"
-    },
-    {
-      "item": "minecraft:redstone"
-    }
+    "botania:mana_spreader",
+    "minecraft:redstone"
   ],
   "result": {
-    "count": 1,
     "id": "botania:redstone_spreader"
   }
 }

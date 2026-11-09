@@ -25,7 +25,7 @@ public class FelPumpkinBehavior extends OptionalDispenseItemBehavior {
 				&& world.getBlockState(blockpos.below(2)).is(Blocks.IRON_BARS))
 		{
 			this.setSuccess(true);
-			if (!world.isClientSide) {
+			if (!world.isClientSide()) {
 				world.setBlockAndUpdate(blockpos, blockcarvedpumpkin.defaultBlockState());
 			}
 

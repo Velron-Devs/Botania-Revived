@@ -30,12 +30,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "C": {
-      "item": "botania:elementium_stack_upgrade"
-    },
-    "I": {
-      "tag": "botania:terrasteel_ingots"
-    }
+    "C": "botania:elementium_stack_upgrade",
+    "I": "#botania:terrasteel_ingots"
   },
   "pattern": [
     "III",

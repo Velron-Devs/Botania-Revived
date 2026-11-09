@@ -5,12 +5,9 @@
     "block": "botania:alchemy_catalyst"
   },
   "group": "botania:froglight_cycle",
-  "input": {
-    "item": "minecraft:verdant_froglight"
-  },
+  "input": "minecraft:verdant_froglight",
   "mana": 40,
   "output": {
-    "count": 1,
     "id": "minecraft:pearlescent_froglight"
   }
 }

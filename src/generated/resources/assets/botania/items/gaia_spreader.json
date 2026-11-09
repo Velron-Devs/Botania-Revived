@@ -1,0 +1,12 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "botania:item/gaia_spreader",
+    "tints": [
+      {
+        "type": "botania:tint",
+        "kind": "block"
+      }
+    ]
+  }
+}

@@ -8,7 +8,6 @@ import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.SimpleCraftingRecipeSerializer;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.world.level.Level;
 
@@ -17,11 +16,9 @@ import org.jetbrains.annotations.NotNull;
 import velrondevs.botania.registry.BotaniaItems;
 
 public class SpellbindingClothRecipe extends CustomRecipe {
-	public static final RecipeSerializer<SpellbindingClothRecipe> SERIALIZER = new SimpleCraftingRecipeSerializer<>(SpellbindingClothRecipe::new);
+	public static final RecipeSerializer<SpellbindingClothRecipe> SERIALIZER = RecipeUtils.simpleSerializer(SpellbindingClothRecipe::new);
 
-	public SpellbindingClothRecipe(CraftingBookCategory category) {
-		super(category);
-	}
+	public SpellbindingClothRecipe() {}
 
 	@Override
 	public boolean matches(@NotNull CraftingInput inv, @NotNull Level world) {
@@ -46,7 +43,7 @@ public class SpellbindingClothRecipe extends CustomRecipe {
 
 	@NotNull
 	@Override
-	public ItemStack assemble(@NotNull CraftingInput inv, @NotNull HolderLookup.Provider registries) {
+	public ItemStack assemble(@NotNull CraftingInput inv) {
 		ItemStack stackToDisenchant = ItemStack.EMPTY;
 		for (int i = 0; i < inv.size(); i++) {
 			ItemStack stack = inv.getItem(i);
@@ -65,14 +62,9 @@ public class SpellbindingClothRecipe extends CustomRecipe {
 		return stackToDisenchant;
 	}
 
-	@Override
-	public boolean canCraftInDimensions(int width, int height) {
-		return width * height >= 2;
-	}
-
 	@NotNull
 	@Override
-	public RecipeSerializer<?> getSerializer() {
+	public RecipeSerializer<? extends CustomRecipe> getSerializer() {
 		return SERIALIZER;
 	}
 

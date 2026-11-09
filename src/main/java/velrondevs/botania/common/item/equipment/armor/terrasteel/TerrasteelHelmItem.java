@@ -1,5 +1,8 @@
 package velrondevs.botania.common.item.equipment.armor.terrasteel;
 
+import net.minecraft.world.item.equipment.ArmorType;
+import java.util.function.Consumer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.damagesource.DamageSource;
@@ -29,14 +32,14 @@ public class TerrasteelHelmItem extends TerrasteelArmorItem implements ManaDisco
 	public static final String TAG_ANCIENT_WILL = "AncientWill";
 
 	public TerrasteelHelmItem(Properties props) {
-		super(Type.HELMET, props);
+		super(ArmorType.HELMET, props);
 	}
 
 	@Override
-	public void inventoryTick(ItemStack stack, Level world, Entity entity, int slot, boolean selected) {
-		super.inventoryTick(stack, world, entity, slot, selected);
-		if (!world.isClientSide && entity instanceof Player player
-				&& player.getInventory().armor.contains(stack)
+	public void inventoryTick(ItemStack stack, ServerLevel world, Entity entity, @Nullable EquipmentSlot eqSlot) {
+		super.inventoryTick(stack, world, entity, eqSlot);
+		if (!world.isClientSide() && entity instanceof Player player
+				&& player.getItemBySlot(getEquipmentSlot()) == stack
 				&& hasArmorSet(player)) {
 			int food = player.getFoodData().getFoodLevel();
 			if (food > 0 && food < 18 && player.isHurt() && player.tickCount % 80 == 0) {
@@ -68,11 +71,11 @@ public class TerrasteelHelmItem extends TerrasteelArmorItem implements ManaDisco
 	}
 
 	@Override
-	public void addArmorSetDescription(ItemStack stack, List<Component> list) {
+	public void addArmorSetDescription(ItemStack stack, Consumer<Component> list) {
 		super.addArmorSetDescription(stack, list);
 		for (AncientWillType type : AncientWillType.values()) {
 			if (hasAncientWill(stack, type)) {
-				list.add(Component.translatable("botania.armorset.will_" + type.name().toLowerCase(Locale.ROOT) + ".desc").withStyle(ChatFormatting.GRAY));
+				list.accept(Component.translatable("botania.armorset.will_" + type.name().toLowerCase(Locale.ROOT) + ".desc").withStyle(ChatFormatting.GRAY));
 			}
 		}
 	}
@@ -113,7 +116,7 @@ public class TerrasteelHelmItem extends TerrasteelArmorItem implements ManaDisco
 					player.heal(amount * 0.25F);
 				}
 				if (hasAncientWill_(stack, AncientWillType.TORAG)) {
-					entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60, 1));
+					entity.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 60, 1));
 				}
 				if (hasAncientWill_(stack, AncientWillType.VERAC)) {
 					source = BotaniaDamageTypes.Sources.playerAttackArmorPiercing(player.level().registryAccess(), player);

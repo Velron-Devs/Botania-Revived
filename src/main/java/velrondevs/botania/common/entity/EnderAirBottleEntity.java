@@ -6,7 +6,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
@@ -51,7 +51,8 @@ public class EnderAirBottleEntity extends ThrowableProjectile implements ItemSup
 	}
 
 	public EnderAirBottleEntity(LivingEntity entity, Level world) {
-		super(BotaniaEntities.ENDER_AIR_BOTTLE, entity, world);
+		super(BotaniaEntities.ENDER_AIR_BOTTLE, entity.getX(), entity.getEyeY() - 0.1F, entity.getZ(), world);
+		setOwner(entity);
 	}
 
 	public EnderAirBottleEntity(double x, double y, double z, Level world) {
@@ -73,7 +74,7 @@ public class EnderAirBottleEntity extends ThrowableProjectile implements ItemSup
 	@Override
 	protected void onHitBlock(@NotNull BlockHitResult result) {
 		super.onHitBlock(result);
-		if (level().isClientSide) {
+		if (level().isClientSide()) {
 			return;
 		}
 		convertBlock(result.getBlockPos());
@@ -83,7 +84,7 @@ public class EnderAirBottleEntity extends ThrowableProjectile implements ItemSup
 	@Override
 	protected void onHitEntity(@NotNull EntityHitResult result) {
 		super.onHitEntity(result);
-		if (this.level().isClientSide) {
+		if (this.level().isClientSide()) {
 			return;
 		}
 		Entity entity = result.getEntity();
@@ -95,7 +96,7 @@ public class EnderAirBottleEntity extends ThrowableProjectile implements ItemSup
 			Vec3 lookVec = entity.getLookAngle();
 			Vec3 vec = new Vec3(lookVec.x(), 0, lookVec.z()).normalize();
 
-			((ServerLevel) this.level()).sendParticles(new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(Items.GHAST_TEAR)),
+			((ServerLevel) this.level()).sendParticles(new ItemParticleOption(ParticleTypes.ITEM, Items.GHAST_TEAR),
 					entity.getX() + (2.3 * vec.x), entity.getY() + vec.y + 2.6, entity.getZ() + (2.3 * vec.z),
 					40,
 					Math.abs(vec.z) + 0.15, 0.2, Math.abs(vec.x) + 0.15, 0.2);
@@ -108,7 +109,7 @@ public class EnderAirBottleEntity extends ThrowableProjectile implements ItemSup
 
 			LootParams context = builder.create(LootContextParamSets.ENTITY);
 			for (ItemStack stack : table.getRandomItems(context)) {
-				ItemEntity item = entity.spawnAtLocation(stack, 2);
+				ItemEntity item = entity.spawnAtLocation((ServerLevel) level(), stack, 2);
 				item.setDeltaMovement(item.getDeltaMovement().add(vec.scale(0.4)));
 			}
 		} else {

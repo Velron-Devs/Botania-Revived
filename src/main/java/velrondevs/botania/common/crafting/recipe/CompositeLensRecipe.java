@@ -6,7 +6,6 @@ import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.SimpleCraftingRecipeSerializer;
 import net.minecraft.world.level.Level;
 
 import org.jetbrains.annotations.NotNull;
@@ -15,11 +14,9 @@ import velrondevs.botania.api.mana.CompositableLensItem;
 import velrondevs.botania.common.lib.BotaniaTags;
 
 public class CompositeLensRecipe extends CustomRecipe {
-	public static final RecipeSerializer<CompositeLensRecipe> SERIALIZER = new SimpleCraftingRecipeSerializer<>(CompositeLensRecipe::new);
+	public static final RecipeSerializer<CompositeLensRecipe> SERIALIZER = RecipeUtils.simpleSerializer(CompositeLensRecipe::new);
 
-	public CompositeLensRecipe(CraftingBookCategory category) {
-		super(category);
-	}
+	public CompositeLensRecipe() {}
 
 	@Override
 	public boolean matches(@NotNull CraftingInput inv, @NotNull Level world) {
@@ -49,7 +46,7 @@ public class CompositeLensRecipe extends CustomRecipe {
 
 	@NotNull
 	@Override
-	public ItemStack assemble(@NotNull CraftingInput inv, @NotNull HolderLookup.Provider registries) {
+	public ItemStack assemble(@NotNull CraftingInput inv) {
 		ItemStack lens = ItemStack.EMPTY;
 		ItemStack secondLens = ItemStack.EMPTY;
 
@@ -81,14 +78,9 @@ public class CompositeLensRecipe extends CustomRecipe {
 		return ItemStack.EMPTY;
 	}
 
-	@Override
-	public boolean canCraftInDimensions(int width, int height) {
-		return width * height >= 3;
-	}
-
 	@NotNull
 	@Override
-	public RecipeSerializer<?> getSerializer() {
+	public RecipeSerializer<? extends CustomRecipe> getSerializer() {
 		return SERIALIZER;
 	}
 }

@@ -3,12 +3,14 @@ package velrondevs.botania.compat.sophisticated.transfer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
-import net.neoforged.neoforge.items.IItemHandler;
+import velrondevs.botania.api.recipe.BotaniaRecipe;
+import velrondevs.botania.compat.sophisticated.UpgradeSlots;
 import net.p3pp3rf1y.sophisticatedcore.common.gui.StorageContainerMenuBase;
 import net.p3pp3rf1y.sophisticatedcore.common.gui.UpgradeContainerBase;
 
@@ -17,8 +19,12 @@ import org.jetbrains.annotations.Nullable;
 import velrondevs.botania.api.brew.BrewItem;
 import velrondevs.botania.api.recipe.BotanicalBreweryRecipe;
 import velrondevs.botania.api.recipe.ElvenTradeRecipe;
+import velrondevs.botania.api.recipe.ManaInfusionRecipe;
+import velrondevs.botania.api.recipe.StateIngredient;
 import velrondevs.botania.api.recipe.RunicAltarRecipe;
 import velrondevs.botania.compat.sophisticated.BreweryUpgradeItem;
+import velrondevs.botania.compat.sophisticated.ManaPileUpgradeContainer;
+import velrondevs.botania.compat.sophisticated.ManaPileUpgradeItem;
 import velrondevs.botania.compat.sophisticated.RunicAltarUpgradeItem;
 import velrondevs.botania.compat.sophisticated.StationUpgradeContainer;
 import velrondevs.botania.registry.BotaniaBrews;
@@ -41,17 +47,17 @@ public final class StationTransfer {
 
 	public record Plan(boolean ok, List<Integer> missingViews, ItemStack[] slots, int[] takes, boolean[] kept) {}
 
-	public static Optional<StationUpgradeContainer<?, ?>> find(StorageContainerMenuBase<?> menu, StationKind kind) {
+	public static Optional<UpgradeContainerBase<?, ?>> find(StorageContainerMenuBase<?> menu, StationKind kind) {
 		Optional<UpgradeContainerBase<?, ?>> open = menu.getOpenContainer();
 		if (open.isPresent() && kind.containerClass().isInstance(open.get())) {
-			return Optional.of((StationUpgradeContainer<?, ?>) open.get());
+			return open;
 		}
-		StationUpgradeContainer<?, ?> fallback = null;
+		UpgradeContainerBase<?, ?> fallback = null;
 		for (Map.Entry<Integer, UpgradeContainerBase<?, ?>> entry : new TreeMap<>(menu.getUpgradeContainers()).entrySet()) {
 			if (!kind.containerClass().isInstance(entry.getValue())) {
 				continue;
 			}
-			StationUpgradeContainer<?, ?> container = (StationUpgradeContainer<?, ?>) entry.getValue();
+			UpgradeContainerBase<?, ?> container = entry.getValue();
 			if (menu.getUpgradeEnabled(entry.getKey())) {
 				return Optional.of(container);
 			}
@@ -60,6 +66,27 @@ public final class StationTransfer {
 			}
 		}
 		return Optional.ofNullable(fallback);
+	}
+
+	public static UpgradeSlots inventory(UpgradeContainerBase<?, ?> container) {
+		if (container instanceof ManaPileUpgradeContainer pile) {
+			return pile.getUpgradeWrapper().getSlotInventory();
+		}
+		return ((StationUpgradeContainer<?, ?>) container).getUpgradeWrapper().getInventory();
+	}
+
+	public static boolean[] managed(StationKind kind, List<Need> needs, int slots) {
+		boolean[] managed = new boolean[slots];
+		if (kind != StationKind.MANA_INFUSION) {
+			Arrays.fill(managed, true);
+			return managed;
+		}
+		for (Need need : needs) {
+			if (need.slot() >= 0 && need.slot() < slots) {
+				managed[need.slot()] = true;
+			}
+		}
+		return managed;
 	}
 
 	public static List<Slot> sources(StorageContainerMenuBase<?> menu, Player player) {
@@ -83,9 +110,20 @@ public final class StationTransfer {
 
 	@Nullable
 	public static List<Need> needs(StationKind kind, Recipe<?> recipe, Item preferred) {
-		List<Ingredient> ingredients = recipe.getIngredients();
+		List<Ingredient> ingredients = recipe instanceof BotaniaRecipe botaniaRecipe ? botaniaRecipe.getIngredients() : List.of();
 		List<Need> needs = new ArrayList<>();
 		switch (kind) {
+			case MANA_INFUSION -> {
+				if (!(recipe instanceof ManaInfusionRecipe infusion) || ingredients.isEmpty()) {
+					return null;
+				}
+				needs.add(new Need(ManaPileUpgradeItem.Wrapper.INPUT_SLOT, List.of(ingredients.get(0)), 0, false));
+				StateIngredient catalyst = infusion.getRecipeCatalyst();
+				if (catalyst != null) {
+					needs.add(new Need(ManaPileUpgradeItem.Wrapper.CATALYST_SLOT,
+							List.of(stack -> stack.getItem() instanceof BlockItem block && catalyst.test(block.getBlock().defaultBlockState())), -1, true));
+				}
+			}
 			case RUNIC_ALTAR -> {
 				if (!(recipe instanceof RunicAltarRecipe altar) || ingredients.isEmpty() || ingredients.size() > RunicAltarUpgradeItem.Wrapper.INGREDIENT_SLOTS) {
 					return null;
@@ -133,7 +171,13 @@ public final class StationTransfer {
 		return !(stack.getItem() instanceof BrewItem item) || item.getBrew(stack) == null || item.getBrew(stack) == BotaniaBrews.fallbackBrew;
 	}
 
-	public static Plan plan(List<Need> needs, List<ItemStack> sources, IItemHandler target, boolean multi, boolean max, boolean includeTarget) {
+	public static Plan plan(List<Need> needs, List<ItemStack> sources, UpgradeSlots target, boolean multi, boolean max, boolean includeTarget) {
+		boolean[] all = new boolean[target.getSlots()];
+		Arrays.fill(all, true);
+		return plan(needs, sources, target, multi, max, includeTarget, all);
+	}
+
+	public static Plan plan(List<Need> needs, List<ItemStack> sources, UpgradeSlots target, boolean multi, boolean max, boolean includeTarget, boolean[] managed) {
 		int slots = target.getSlots();
 		boolean[] kept = new boolean[slots];
 		for (Need need : needs) {
@@ -148,7 +192,7 @@ public final class StationTransfer {
 		}
 		if (includeTarget) {
 			for (int slot = 0; slot < slots; slot++) {
-				if (!kept[slot] && !target.getStackInSlot(slot).isEmpty()) {
+				if (managed[slot] && !kept[slot] && !target.getStackInSlot(slot).isEmpty()) {
 					pool.add(target.getStackInSlot(slot).copy());
 				}
 			}
@@ -200,7 +244,7 @@ public final class StationTransfer {
 		return false;
 	}
 
-	private static int find(Need need, List<ItemStack> pool, int[] avail, IItemHandler target) {
+	private static int find(Need need, List<ItemStack> pool, int[] avail, UpgradeSlots target) {
 		for (Predicate<ItemStack> option : need.options()) {
 			for (int i = 0; i < pool.size(); i++) {
 				ItemStack stack = pool.get(i);
@@ -212,7 +256,7 @@ public final class StationTransfer {
 		return -1;
 	}
 
-	private static boolean fits(IItemHandler target, int slot, ItemStack stack) {
+	private static boolean fits(UpgradeSlots target, int slot, ItemStack stack) {
 		if (slot >= 0) {
 			return slot < target.getSlots() && target.isItemValid(slot, stack);
 		}
@@ -224,7 +268,7 @@ public final class StationTransfer {
 		return false;
 	}
 
-	private static boolean place(ItemStack[] out, IItemHandler target, int slot, ItemStack unit) {
+	private static boolean place(ItemStack[] out, UpgradeSlots target, int slot, ItemStack unit) {
 		if (slot >= 0) {
 			if (slot >= out.length || !out[slot].isEmpty()) {
 				return false;

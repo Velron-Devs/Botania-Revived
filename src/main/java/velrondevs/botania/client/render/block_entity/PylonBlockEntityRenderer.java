@@ -4,10 +4,11 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
@@ -24,11 +25,11 @@ import velrondevs.botania.common.helper.VecHelper;
 
 import java.util.Random;
 
-public class PylonBlockEntityRenderer implements BlockEntityRenderer<PylonBlockEntity> {
+public class PylonBlockEntityRenderer extends BotaniaBlockEntityRenderer<PylonBlockEntity> {
 
-	public static final ResourceLocation MANA_TEXTURE = ResourceLocation.parse(ResourcesLib.MODEL_PYLON_MANA);
-	public static final ResourceLocation NATURA_TEXTURE = ResourceLocation.parse(ResourcesLib.MODEL_PYLON_NATURA);
-	public static final ResourceLocation GAIA_TEXTURE = ResourceLocation.parse(ResourcesLib.MODEL_PYLON_GAIA);
+	public static final Identifier MANA_TEXTURE = Identifier.parse(ResourcesLib.MODEL_PYLON_MANA);
+	public static final Identifier NATURA_TEXTURE = Identifier.parse(ResourcesLib.MODEL_PYLON_NATURA);
+	public static final Identifier GAIA_TEXTURE = Identifier.parse(ResourcesLib.MODEL_PYLON_GAIA);
 
 	private final ManaPylonModel manaModel;
 	private final NaturaPylonModel naturaModel;
@@ -44,12 +45,12 @@ public class PylonBlockEntityRenderer implements BlockEntityRenderer<PylonBlockE
 	}
 
 	@Override
-	public void render(@Nullable PylonBlockEntity pylon, float pticks, PoseStack ms, MultiBufferSource buffers, int light, int overlay) {
+	protected void render(@Nullable PylonBlockEntity pylon, float pticks, PoseStack ms, MultiBufferSource buffers, SubmitNodeCollector collector, int light, int overlay) {
 		boolean renderingItem = pylon == null;
 		boolean direct = renderingItem && (forceTransform == ItemDisplayContext.GUI || forceTransform.firstPerson());
 		PylonBlock.Variant type = renderingItem ? forceVariant : ((PylonBlock) pylon.getBlockState().getBlock()).variant;
 		PylonModel model;
-		ResourceLocation texture;
+		Identifier texture;
 		RenderType shaderLayer;
 		switch (type) {
 			default -> {
@@ -84,7 +85,7 @@ public class PylonBlockEntityRenderer implements BlockEntityRenderer<PylonBlockE
 			ms.mulPose(VecHelper.rotateY(worldTime * 1.5F));
 		}
 
-		RenderType layer = RenderType.entityTranslucent(texture);
+		RenderType layer = RenderTypes.entityTranslucent(texture);
 
 		VertexConsumer buffer = buffers.getBuffer(layer);
 		model.renderRing(ms, buffer, light, overlay);
@@ -117,11 +118,11 @@ public class PylonBlockEntityRenderer implements BlockEntityRenderer<PylonBlockE
 		}
 
 		@Override
-		public void render(ItemStack stack, ItemDisplayContext type, PoseStack ms, MultiBufferSource buffers, int light, int overlay) {
+		public void render(ItemStack stack, ItemDisplayContext type, PoseStack ms, SubmitNodeCollector collector, int light, int overlay) {
 			if (Block.byItem(stack.getItem()) instanceof PylonBlock pylon) {
 				PylonBlockEntityRenderer.forceVariant = pylon.variant;
 				PylonBlockEntityRenderer.forceTransform = type;
-				super.render(stack, type, ms, buffers, light, overlay);
+				super.render(stack, type, ms, collector, light, overlay);
 			}
 		}
 	}

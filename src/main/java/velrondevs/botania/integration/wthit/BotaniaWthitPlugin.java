@@ -9,33 +9,33 @@ import mcp.mobius.waila.api.IWailaCommonPlugin;
 import mcp.mobius.waila.api.IntFormat;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import velrondevs.botania.api.BotaniaAPI;
 
 public class BotaniaWthitPlugin implements IWailaCommonPlugin {
-	public static final ResourceLocation MANA_ENABLED = id("mana.enabled");
-	public static final ResourceLocation MANA_COLOR = id("mana.color");
-	public static final ResourceLocation MANA_SHORT = id("mana.short_numbers");
-	public static final ResourceLocation POOL_MODE = id("pool.mode");
-	public static final ResourceLocation POOL_RECIPE = id("pool.recipe");
-	public static final ResourceLocation SPREADER_LENS = id("spreader.lens");
-	public static final ResourceLocation SPREADER_TARGET = id("spreader.target");
-	public static final ResourceLocation FLOWER_MANA = id("flower.mana");
-	public static final ResourceLocation FLOWER_COLOR = id("flower.flower_color");
-	public static final ResourceLocation FLOWER_BINDING = id("flower.binding");
-	public static final ResourceLocation FLOWER_TIMERS = id("flower.timers");
-	public static final ResourceLocation CRAFTING_RECIPE = id("crafting.recipe");
-	public static final ResourceLocation CRAFTING_STATUS = id("crafting.status");
-	public static final ResourceLocation PROGRESS_ENABLED = id("progress.enabled");
-	public static final ResourceLocation PROGRESS_COLOR = id("progress.color");
-	public static final ResourceLocation ENERGY_ENABLED = id("energy.enabled");
-	public static final ResourceLocation ENERGY_COLOR = id("energy.color");
-	public static final ResourceLocation PORTAL_ENABLED = id("portal.enabled");
+	public static final Identifier MANA_ENABLED = id("mana.enabled");
+	public static final Identifier MANA_COLOR = id("mana.color");
+	public static final Identifier MANA_SHORT = id("mana.short_numbers");
+	public static final Identifier POOL_MODE = id("pool.mode");
+	public static final Identifier POOL_RECIPE = id("pool.recipe");
+	public static final Identifier SPREADER_LENS = id("spreader.lens");
+	public static final Identifier SPREADER_TARGET = id("spreader.target");
+	public static final Identifier FLOWER_MANA = id("flower.mana");
+	public static final Identifier FLOWER_COLOR = id("flower.flower_color");
+	public static final Identifier FLOWER_BINDING = id("flower.binding");
+	public static final Identifier FLOWER_TIMERS = id("flower.timers");
+	public static final Identifier CRAFTING_RECIPE = id("crafting.recipe");
+	public static final Identifier CRAFTING_STATUS = id("crafting.status");
+	public static final Identifier PROGRESS_ENABLED = id("progress.enabled");
+	public static final Identifier PROGRESS_COLOR = id("progress.color");
+	public static final Identifier ENERGY_ENABLED = id("energy.enabled");
+	public static final Identifier ENERGY_COLOR = id("energy.color");
+	public static final Identifier PORTAL_ENABLED = id("portal.enabled");
 
-	private static ResourceLocation id(String path) {
-		return ResourceLocation.fromNamespaceAndPath(BotaniaAPI.MODID, path);
+	private static Identifier id(String path) {
+		return Identifier.fromNamespaceAndPath(BotaniaAPI.MODID, path);
 	}
 
 	@Override

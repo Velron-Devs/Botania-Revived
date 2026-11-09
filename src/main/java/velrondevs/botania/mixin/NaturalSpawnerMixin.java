@@ -37,7 +37,7 @@ public class NaturalSpawnerMixin {
 		}
 	}
 
-	@ModifyExpressionValue(method = "isValidPositionForMob", at = @At(value = "INVOKE", target = "Lnet/neoforged/neoforge/event/EventHooks;checkSpawnPosition(Lnet/minecraft/world/entity/Mob;Lnet/minecraft/world/level/ServerLevelAccessor;Lnet/minecraft/world/entity/MobSpawnType;)Z"))
+	@ModifyExpressionValue(method = "isValidPositionForMob", at = @At(value = "INVOKE", target = "Lnet/neoforged/neoforge/event/EventHooks;checkSpawnPosition(Lnet/minecraft/world/entity/Mob;Lnet/minecraft/world/level/ServerLevelAccessor;Lnet/minecraft/world/entity/EntitySpawnReason;)Z"))
 	private static boolean bloodthirstOverride(boolean original, @Local(argsOnly = true) ServerLevel world, @Local(argsOnly = true) Mob entity) {
 		if (BloodthirstMobEffect.overrideSpawn(world, entity.blockPosition(), entity.getType().getCategory())) {
 			return true;

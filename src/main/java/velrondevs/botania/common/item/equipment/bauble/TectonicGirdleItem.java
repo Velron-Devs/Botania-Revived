@@ -1,5 +1,8 @@
 package velrondevs.botania.common.item.equipment.bauble;
 
+import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
+import velrondevs.botania.client.core.helper.RenderHelper;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -11,7 +14,7 @@ import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -28,7 +31,7 @@ import velrondevs.botania.registry.BotaniaItems;
 
 public class TectonicGirdleItem extends BaubleItem {
 
-	private static final ResourceLocation texture = ResourceLocation.parse(ResourcesLib.MODEL_KNOCKBACK_BELT);
+	private static final Identifier texture = Identifier.parse(ResourcesLib.MODEL_KNOCKBACK_BELT);
 
 	public TectonicGirdleItem(Properties props) {
 		super(props);
@@ -48,10 +51,11 @@ public class TectonicGirdleItem extends BaubleItem {
 	}
 
 	public static class Renderer implements AccessoryRenderer {
-		private static HumanoidModel<LivingEntity> model = null;
+		private static HumanoidModel<HumanoidRenderState> model = null;
 
 		@Override
-		public void doRender(HumanoidModel<?> bipedModel, ItemStack stack, LivingEntity living, PoseStack ms, MultiBufferSource buffers, int light, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+		public void doRender(HumanoidModel<?> bipedModel, ItemStack stack, LivingEntity living, PoseStack ms, SubmitNodeCollector collector, int light, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+			MultiBufferSource buffers = RenderHelper.buffers(collector);
 			AccessoryRenderHelper.rotateIfSneaking(ms, living);
 
 			float s = 1.15F;

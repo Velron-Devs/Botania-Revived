@@ -1,0 +1,12 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "botania:item/cyan_iridescent_dirt",
+    "tints": [
+      {
+        "type": "minecraft:constant",
+        "value": -15295332
+      }
+    ]
+  }
+}

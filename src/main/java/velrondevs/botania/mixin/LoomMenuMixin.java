@@ -41,7 +41,7 @@ public abstract class LoomMenuMixin extends AbstractContainerMenu {
 
 	@Shadow
 	@Final
-	Slot patternSlot;
+	private Slot patternSlot;
 
 	@Shadow
 	@Final

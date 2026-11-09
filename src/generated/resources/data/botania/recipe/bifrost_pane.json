@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "B": {
-      "item": "botania:bifrost_perm"
-    }
+    "B": "botania:bifrost_perm"
   },
   "pattern": [
     "BBB",

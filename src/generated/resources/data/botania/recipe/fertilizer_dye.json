@@ -4,24 +4,13 @@
     "type": "minecraft:crafting_shapeless",
     "category": "misc",
     "ingredients": [
-      {
-        "item": "minecraft:bone_meal"
-      },
-      {
-        "tag": "c:dyes"
-      },
-      {
-        "tag": "c:dyes"
-      },
-      {
-        "tag": "c:dyes"
-      },
-      {
-        "tag": "c:dyes"
-      }
+      "minecraft:bone_meal",
+      "#c:dyes",
+      "#c:dyes",
+      "#c:dyes",
+      "#c:dyes"
     ],
     "result": {
-      "count": 1,
       "id": "botania:fertilizer"
     }
   },
@@ -29,21 +18,11 @@
     "type": "minecraft:crafting_shapeless",
     "category": "misc",
     "ingredients": [
-      {
-        "item": "minecraft:bone_meal"
-      },
-      {
-        "tag": "c:dyes"
-      },
-      {
-        "tag": "c:dyes"
-      },
-      {
-        "tag": "c:dyes"
-      },
-      {
-        "tag": "c:dyes"
-      }
+      "minecraft:bone_meal",
+      "#c:dyes",
+      "#c:dyes",
+      "#c:dyes",
+      "#c:dyes"
     ],
     "result": {
       "count": 3,

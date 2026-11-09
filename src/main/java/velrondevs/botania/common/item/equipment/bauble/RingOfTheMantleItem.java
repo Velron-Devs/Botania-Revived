@@ -19,7 +19,7 @@ public class RingOfTheMantleItem extends BaubleItem {
 
 	@Override
 	public void onWornTick(ItemStack stack, LivingEntity entity) {
-		if (!(entity instanceof Player player) || player.level().isClientSide) {
+		if (!(entity instanceof Player player) || player.level().isClientSide()) {
 			return;
 		}
 		boolean hasMana = ManaItemHandler.instance().requestManaExact(stack, player, MANA_COST, false);
@@ -39,13 +39,13 @@ public class RingOfTheMantleItem extends BaubleItem {
 		boolean hasMana = living instanceof Player player
 				&& ManaItemHandler.instance().requestManaExact(stack, player, MANA_COST, false);
 		if (hasMana) {
-			EntityHelper.addStaticEffect(living, MobEffects.DIG_SPEED, HASTE_AMPLIFIER);
+			EntityHelper.addStaticEffect(living, MobEffects.HASTE, HASTE_AMPLIFIER);
 		}
 	}
 
 	@Override
 	public void onUnequipped(ItemStack stack, LivingEntity living) {
-		EntityHelper.removeStaticEffect(living, MobEffects.DIG_SPEED, HASTE_AMPLIFIER);
+		EntityHelper.removeStaticEffect(living, MobEffects.HASTE, HASTE_AMPLIFIER);
 	}
 
 }

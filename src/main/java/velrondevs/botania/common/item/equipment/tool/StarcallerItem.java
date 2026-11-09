@@ -1,5 +1,7 @@
 package velrondevs.botania.common.item.equipment.tool;
 
+import org.jetbrains.annotations.Nullable;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -32,8 +34,8 @@ public class StarcallerItem extends ManasteelSwordItem {
 	}
 
 	@Override
-	public void inventoryTick(ItemStack stack, Level world, Entity entity, int slot, boolean selected) {
-		super.inventoryTick(stack, world, entity, slot, selected);
+	public void inventoryTick(ItemStack stack, ServerLevel world, Entity entity, @Nullable EquipmentSlot eqSlot) {
+		super.inventoryTick(stack, world, entity, eqSlot);
 		if (!(entity instanceof Player player)) {
 			return;
 		}
@@ -42,11 +44,11 @@ public class StarcallerItem extends ManasteelSwordItem {
 			ItemNBTHelper.setLong(stack, TAG_LAST_TRIGGER, world.getGameTime());
 		}
 
-		MobEffectInstance haste = player.getEffect(MobEffects.DIG_SPEED);
+		MobEffectInstance haste = player.getEffect(MobEffects.HASTE);
 		float check = haste == null ? 0.16666667F : haste.getAmplifier() == 1 ? 0.5F : 0.4F;
 
 		long timeSinceLast = world.getGameTime() - ItemNBTHelper.getLong(stack, TAG_LAST_TRIGGER, world.getGameTime());
-		if (timeSinceLast > INTERVAL && player.getMainHandItem() == stack && player.attackAnim == check && !world.isClientSide) {
+		if (timeSinceLast > INTERVAL && player.getMainHandItem() == stack && player.attackAnim == check && !world.isClientSide()) {
 			ItemNBTHelper.setLong(stack, TAG_LAST_TRIGGER, world.getGameTime());
 			summonFallingStar(stack, world, player);
 		}
@@ -66,7 +68,7 @@ public class StarcallerItem extends ManasteelSwordItem {
 			world.addFreshEntity(star);
 
 			if (!world.isRaining()
-					&& Math.abs(world.getDayTime() - 18000) < 1800
+					&& Math.abs(world.getDefaultClockTime() - 18000) < 1800
 					&& Math.random() < 0.125) {
 				FallingStarEntity bonusStar = new FallingStarEntity(player, world);
 				bonusStar.setPos(posVec.x, posVec.y, posVec.z);

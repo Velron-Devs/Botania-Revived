@@ -1,13 +1,13 @@
 package velrondevs.botania.common.item.equipment.tool.bow;
 
+import net.minecraft.world.InteractionResult;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
 import net.minecraft.world.item.ArrowItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -32,27 +32,27 @@ public class CrystalBowItem extends LivingwoodBowItem {
 
 	@NotNull
 	@Override
-	public InteractionResultHolder<ItemStack> use(@NotNull Level worldIn, Player playerIn, @NotNull InteractionHand handIn) {
+	public InteractionResult use(@NotNull Level worldIn, Player playerIn, @NotNull InteractionHand handIn) {
 		ItemStack itemstack = playerIn.getItemInHand(handIn);
 		boolean canMaterializeArrow = canFire(itemstack, playerIn);
 
 		if (!playerIn.getAbilities().instabuild && !canMaterializeArrow) {
-			return InteractionResultHolder.fail(itemstack);
+			return InteractionResult.FAIL;
 		} else {
 			playerIn.startUsingItem(handIn);
-			return InteractionResultHolder.consume(itemstack);
+			return InteractionResult.CONSUME;
 		}
 	}
 
 	@Override
-	public void releaseUsing(@NotNull ItemStack stack, @NotNull Level level, LivingEntity entityLiving, int timeLeft) {
+	public boolean releaseUsing(@NotNull ItemStack stack, @NotNull Level level, LivingEntity entityLiving, int timeLeft) {
 		if (entityLiving instanceof Player player) {
 			boolean canMaterializeArrow = canFire(stack, player);
 			ItemStack arrowStack = player.getProjectile(stack);
 
 			int i = (int) ((getUseDuration(stack, entityLiving) - timeLeft) * chargeVelocityMultiplier());
 			if (i < 0) {
-				return;
+				return false;
 			}
 
 			if (!arrowStack.isEmpty() || canMaterializeArrow) {
@@ -63,7 +63,7 @@ public class CrystalBowItem extends LivingwoodBowItem {
 				float power = getPowerForTime(i);
 				if (!((double) power < 0.1D)) {
 					boolean markUnpickable = player.getAbilities().instabuild || arrowStack.is(Items.ARROW);
-					if (!level.isClientSide) {
+					if (!level.isClientSide()) {
 						ArrowItem arrowItem = (ArrowItem) (arrowStack.getItem() instanceof ArrowItem ? arrowStack.getItem() : Items.ARROW);
 						AbstractArrow arrow = arrowItem.createArrow(level, arrowStack, player, stack);
 						arrow.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, power * 3.0F, 1.0F);
@@ -71,7 +71,7 @@ public class CrystalBowItem extends LivingwoodBowItem {
 							arrow.setCritArrow(true);
 						}
 
-						stack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(player.getUsedItemHand()));
+						stack.hurtAndBreak(1, player, player.getUsedItemHand().asEquipmentSlot());
 						if (markUnpickable || player.getAbilities().instabuild && (arrowStack.is(Items.SPECTRAL_ARROW) || arrowStack.is(Items.TIPPED_ARROW))) {
 							arrow.pickup = AbstractArrow.Pickup.CREATIVE_ONLY;
 						}
@@ -93,6 +93,7 @@ public class CrystalBowItem extends LivingwoodBowItem {
 				}
 			}
 		}
+		return true;
 	}
 
 	@Override

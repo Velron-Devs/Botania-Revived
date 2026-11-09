@@ -1,5 +1,6 @@
 package velrondevs.botania.compat.sophisticated;
 
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
@@ -22,7 +23,7 @@ public class ElvenPortalUpgradeItem extends UpgradeItemBase<ElvenPortalUpgradeIt
 	public static final UpgradeType<Wrapper> TYPE = new UpgradeType<>(Wrapper::new);
 
 	public ElvenPortalUpgradeItem() {
-		super(UpgradeLimits.of(SophisticatedConfig::portalMaxPerStorage));
+		super(UpgradeLimits.of(SophisticatedConfig::portalMaxPerStorage), new Item.Properties());
 	}
 
 	@Override
@@ -77,7 +78,7 @@ public class ElvenPortalUpgradeItem extends UpgradeItemBase<ElvenPortalUpgradeIt
 			if (units.isEmpty()) {
 				return null;
 			}
-			for (RecipeHolder<ElvenTradeRecipe> holder : level.getRecipeManager().getAllRecipesFor(BotaniaRecipeTypes.ELVEN_TRADE_TYPE)) {
+			for (RecipeHolder<ElvenTradeRecipe> holder : BotaniaRecipeTypes.getAllRecipesFor(level, BotaniaRecipeTypes.ELVEN_TRADE_TYPE)) {
 				ElvenTradeRecipe recipe = holder.value();
 				if (recipe.isReturnRecipe()) {
 					continue;

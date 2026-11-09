@@ -9,9 +9,7 @@
   "category": "building",
   "group": "botania:iridescent_planks",
   "ingredients": [
-    {
-      "item": "botania:orange_iridescent_log"
-    }
+    "botania:orange_iridescent_log"
   ],
   "result": {
     "count": 4,

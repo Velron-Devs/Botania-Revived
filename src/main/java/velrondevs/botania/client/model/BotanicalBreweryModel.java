@@ -4,35 +4,34 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
 import org.jetbrains.annotations.Nullable;
 
+import velrondevs.botania.client.core.helper.RenderHelper;
 import velrondevs.botania.client.lib.ResourcesLib;
 import velrondevs.botania.common.block.block_entity.BreweryBlockEntity;
 import velrondevs.botania.common.helper.VecHelper;
 
-public class BotanicalBreweryModel extends Model {
-	private static final ResourceLocation TEXTURE = ResourceLocation.parse(ResourcesLib.MODEL_BREWERY);
+public class BotanicalBreweryModel {
+	private static final Identifier TEXTURE = Identifier.parse(ResourcesLib.MODEL_BREWERY);
 	final ModelPart top;
 	final ModelPart pole;
 	final ModelPart bottom;
-
 	final ModelPart plate;
 
 	public BotanicalBreweryModel(ModelPart root) {
-		super(RenderType::entitySolid);
-
 		top = root.getChild("top");
 		pole = root.getChild("pole");
 		bottom = root.getChild("bottom");
@@ -57,29 +56,26 @@ public class BotanicalBreweryModel extends Model {
 		return mesh;
 	}
 
-	public void render(@Nullable BreweryBlockEntity brewery, double time, PoseStack ms, MultiBufferSource buffers, int light, int overlay) {
+	public void render(@Nullable BreweryBlockEntity brewery, double time, PoseStack ms, MultiBufferSource buffers, SubmitNodeCollector collector, int light, int overlay) {
 		float offset = (float) Math.sin(time / 40) * 0.1F + 0.05F;
 		boolean hasTile = brewery != null;
 		int plates = hasTile ? brewery.inventorySize() - 1 : 7;
 		float deg = (float) time / 16F;
 		float polerot = -deg * 25F;
-
 		ms.translate(0F, offset, 0F);
 		ms.mulPose(VecHelper.rotateY(polerot));
 		if (hasTile && !brewery.getItemHandler().getItem(0).isEmpty()) {
 			ms.pushPose();
 			ms.mulPose(VecHelper.rotateX(180));
 			ms.translate(0, -0.45F, 0);
-			renderItemStack(brewery.getItemHandler().getItem(0), ms, buffers, brewery.getLevel(), light, overlay);
+			renderItemStack(brewery.getItemHandler().getItem(0), ms, buffers, collector, brewery.getLevel(), light, overlay);
 			ms.popPose();
 		}
-
 		RenderType layer = renderType(TEXTURE);
 		pole.render(ms, buffers.getBuffer(layer), light, overlay);
 		top.render(ms, buffers.getBuffer(layer), light, overlay);
 		bottom.render(ms, buffers.getBuffer(layer), light, overlay);
 		ms.mulPose(VecHelper.rotateY(-polerot));
-
 		float degper = (float) (2F * Math.PI) / plates;
 		for (int i = 0; i < plates; i++) {
 			plate.yRot = deg;
@@ -87,7 +83,6 @@ public class BotanicalBreweryModel extends Model {
 			if (time == -1) {
 				offset1 = 0F;
 			}
-
 			ms.translate(0F, offset1, 0F);
 			if (hasTile && !brewery.getItemHandler().getItem(i + 1).isEmpty()) {
 				float rot = plate.yRot * 180F / (float) Math.PI;
@@ -99,32 +94,32 @@ public class BotanicalBreweryModel extends Model {
 				ms.translate(transX, transY, transZ);
 				ms.mulPose(VecHelper.rotateX(-90F));
 				ms.translate(0.125F, 0.125F, 0);
-				renderItemStack(brewery.getItemHandler().getItem(i + 1), ms, buffers, brewery.getLevel(), light, overlay);
+				renderItemStack(brewery.getItemHandler().getItem(i + 1), ms, buffers, collector, brewery.getLevel(), light, overlay);
 				ms.popPose();
 			}
 			plate.render(ms, buffers.getBuffer(layer), light, overlay);
 			ms.translate(0F, -offset1, 0F);
-
 			deg += degper;
 		}
 		ms.translate(0F, -offset, 0F);
 	}
 
-	private void renderItemStack(ItemStack stack, PoseStack ms, MultiBufferSource buffers, @Nullable Level level, int light, int overlay) {
+	private void renderItemStack(ItemStack stack, PoseStack ms, MultiBufferSource buffers, SubmitNodeCollector collector, @Nullable Level level, int light, int overlay) {
 		if (!stack.isEmpty()) {
 			Minecraft mc = Minecraft.getInstance();
 			ms.pushPose();
-
 			float s = 0.25F;
 			ms.scale(s, s, s);
-			mc.getItemRenderer().renderStatic(stack, ItemDisplayContext.GROUND,
-					light, overlay, ms, buffers, level, 0);
+			RenderHelper.renderItem(stack, ItemDisplayContext.GROUND, ms, collector, light, overlay, level, 0);
 			ms.popPose();
 		}
 	}
 
-	@Override
 	public void renderToBuffer(PoseStack ms, VertexConsumer buffer, int light, int overlay, int color) {
 		throw new UnsupportedOperationException("unimplemented, call using other render method");
+	}
+
+	public RenderType renderType(Identifier texture) {
+		return RenderTypes.entitySolid(texture);
 	}
 }

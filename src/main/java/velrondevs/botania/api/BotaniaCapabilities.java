@@ -17,7 +17,7 @@ import velrondevs.botania.api.mana.ManaReceiver;
 import velrondevs.botania.api.mana.ManaTrigger;
 import velrondevs.botania.api.mana.spark.SparkAttachable;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public final class BotaniaCapabilities {
 	public static final ItemCapability<AvatarWieldable, Void> AVATAR_WIELDABLE = ItemCapability.createVoid(rl("avatar_wieldable"), AvatarWieldable.class);
@@ -36,8 +36,8 @@ public final class BotaniaCapabilities {
 	public static final BlockCapability<Wandable, Void> WANDABLE = BlockCapability.createVoid(rl("wandable"), Wandable.class);
 	public static final BlockCapability<PhantomInkableBlock, Void> PHANTOM_INKABLE = BlockCapability.createVoid(rl("phantom_inkable"), PhantomInkableBlock.class);
 
-	private static ResourceLocation rl(String path) {
-		return ResourceLocation.fromNamespaceAndPath(BotaniaAPI.MODID, path);
+	private static Identifier rl(String path) {
+		return Identifier.fromNamespaceAndPath(BotaniaAPI.MODID, path);
 	}
 
 	private BotaniaCapabilities() {}

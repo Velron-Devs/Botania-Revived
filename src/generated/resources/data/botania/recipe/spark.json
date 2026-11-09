@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "B": {
-      "item": "minecraft:blaze_powder"
-    },
-    "N": {
-      "item": "minecraft:gold_nugget"
-    },
-    "P": {
-      "tag": "botania:petals"
-    }
+    "B": "minecraft:blaze_powder",
+    "N": "minecraft:gold_nugget",
+    "P": "#botania:petals"
   },
   "pattern": [
     " P ",
@@ -18,7 +12,6 @@
     " P "
   ],
   "result": {
-    "count": 1,
     "id": "botania:spark"
   }
 }

@@ -1,30 +1,15 @@
 {
   "type": "botania:petal_apothecary",
   "ingredients": [
-    {
-      "tag": "botania:petals/red"
-    },
-    {
-      "tag": "botania:petals/red"
-    },
-    {
-      "tag": "botania:petals/gray"
-    },
-    {
-      "tag": "botania:petals/light_gray"
-    },
-    {
-      "item": "botania:rune_fire"
-    },
-    {
-      "item": "botania:rune_summer"
-    }
+    "#botania:petals/red",
+    "#botania:petals/red",
+    "#botania:petals/gray",
+    "#botania:petals/light_gray",
+    "botania:rune_fire",
+    "botania:rune_summer"
   ],
   "output": {
-    "count": 1,
     "id": "botania:exoflame"
   },
-  "reagent": {
-    "tag": "botania:seed_apothecary_reagent"
-  }
+  "reagent": "#botania:seed_apothecary_reagent"
 }

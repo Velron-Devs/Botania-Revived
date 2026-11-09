@@ -2,32 +2,56 @@ package velrondevs.botania.datagen.providers.tags;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.tags.ItemTagsProvider;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.data.tags.IntrinsicHolderTagsProvider;
 import net.minecraft.data.tags.TagsProvider;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.TagBuilder;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.Tags;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 import velrondevs.botania.common.helper.ColorHelper;
 import velrondevs.botania.common.lib.BotaniaTags;
 import velrondevs.botania.common.lib.LibMisc;
 import velrondevs.botania.module.BotaniaModules;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 import static velrondevs.botania.registry.BotaniaItems.*;
 
-public class ConventionItemTagProvider extends ItemTagsProvider {
+public class ConventionItemTagProvider extends IntrinsicHolderTagsProvider<Item> {
 	public static final TagKey<Item> STORAGE_BLOCKS_QUARTZ = c("storage_blocks/quartz");
 
+	private final CompletableFuture<TagsProvider.TagLookup<Block>> blockTags;
+	private final Map<TagKey<Block>, TagKey<Item>> tagsToCopy = new LinkedHashMap<>();
+
 	public ConventionItemTagProvider(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> lookupProvider,
-			CompletableFuture<TagsProvider.TagLookup<Block>> blockTagProvider, ExistingFileHelper helper) {
-		super(packOutput, lookupProvider, blockTagProvider, LibMisc.MOD_ID, helper);
+			CompletableFuture<TagsProvider.TagLookup<Item>> parent, CompletableFuture<TagsProvider.TagLookup<Block>> blockTags) {
+		super(packOutput, Registries.ITEM, lookupProvider, parent, item -> item.builtInRegistryHolder().key(), LibMisc.MOD_ID);
+		this.blockTags = blockTags;
+	}
+
+	protected void copy(TagKey<Block> blockTag, TagKey<Item> itemTag) {
+		this.tagsToCopy.put(blockTag, itemTag);
+	}
+
+	@Override
+	protected CompletableFuture<HolderLookup.Provider> createContentsProvider() {
+		return super.createContentsProvider().thenCombine(this.blockTags, (provider, lookup) -> {
+			this.tagsToCopy.forEach((fromBlockTag, toItemTag) -> {
+				TagBuilder toBuilder = this.getOrCreateRawBuilder(toItemTag);
+				TagBuilder fromBuilder = lookup.apply(fromBlockTag).orElseThrow(() -> new IllegalStateException("Missing block tag " + fromBlockTag.location()));
+				fromBuilder.build().forEach(toBuilder::add);
+				fromBuilder.getRemoveEntries().forEach(toBuilder::remove);
+			});
+			return provider;
+		});
 	}
 
 	@Override
@@ -133,15 +157,15 @@ public class ConventionItemTagProvider extends ItemTagsProvider {
 	}
 
 	private static TagKey<Item> accessory(String name) {
-		return ItemTags.create(ResourceLocation.fromNamespaceAndPath("curios", name));
+		return ItemTags.create(Identifier.fromNamespaceAndPath("curios", name));
 	}
 
 	private static TagKey<Item> c(String name) {
-		return ItemTags.create(ResourceLocation.fromNamespaceAndPath("c", name));
+		return ItemTags.create(Identifier.fromNamespaceAndPath("c", name));
 	}
 
 	private static TagKey<Item> quark(String name) {
-		return ItemTags.create(ResourceLocation.fromNamespaceAndPath("quark", name));
+		return ItemTags.create(Identifier.fromNamespaceAndPath("quark", name));
 	}
 
 	private void copyToSameName(TagKey<Block> source) {

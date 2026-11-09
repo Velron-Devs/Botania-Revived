@@ -25,7 +25,7 @@ public class InventoryMixin {
 
 	@Shadow
 	@Final
-	public NonNullList<ItemStack> items;
+	private NonNullList<ItemStack> items;
 
 	@Inject(method = "findSlotMatchingItem", at = @At("RETURN"), cancellable = true)
 	private void findBlockProviderItem(ItemStack searchStack, CallbackInfoReturnable<Integer> cir) {

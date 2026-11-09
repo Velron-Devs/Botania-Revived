@@ -4,7 +4,7 @@ import net.minecraft.commands.CacheableFunction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -32,7 +32,7 @@ public class PureDaisyProvider extends BotaniaRecipeProvider {
 	@Override
 	protected void buildRecipes(RecipeOutput consumer) {
 		pureDaisy(consumer, id("livingrock"), StateIngredientHelper.of(Blocks.STONE), BotaniaBlocks.livingrock.defaultBlockState());
-		consumer.accept(id("livingwood"), new StateCopyingPureDaisyRecipe(
+		consumer.accept(key(id("livingwood")), new StateCopyingPureDaisyRecipe(
 				StateIngredientHelper.of(BlockTags.LOGS),
 				BotaniaBlocks.livingwoodLog, DEFAULT_TIME), null);
 		pureDaisy(consumer, id("cobblestone"), StateIngredientHelper.of(Blocks.NETHERRACK), Blocks.COBBLESTONE.defaultBlockState());
@@ -49,15 +49,15 @@ public class PureDaisyProvider extends BotaniaRecipeProvider {
 		return "Botania Pure Daisy recipes";
 	}
 
-	private static ResourceLocation id(String path) {
+	private static Identifier id(String path) {
 		return prefix("pure_daisy/" + path);
 	}
 
-	protected static void pureDaisy(RecipeOutput consumer, ResourceLocation id, StateIngredient input, BlockState state) {
+	protected static void pureDaisy(RecipeOutput consumer, Identifier id, StateIngredient input, BlockState state) {
 		pureDaisy(consumer, id, input, state, DEFAULT_TIME, null);
 	}
 
-	protected static void pureDaisy(RecipeOutput consumer, ResourceLocation id, StateIngredient input, BlockState state, int time, @Nullable ResourceLocation function) {
-		consumer.accept(id, new PureDaisyRecipe(input, state, time, Optional.ofNullable(function).map(CacheableFunction::new)), null);
+	protected static void pureDaisy(RecipeOutput consumer, Identifier id, StateIngredient input, BlockState state, int time, @Nullable Identifier function) {
+		consumer.accept(key(id), new PureDaisyRecipe(input, state, time, Optional.ofNullable(function).map(CacheableFunction::new)), null);
 	}
 }

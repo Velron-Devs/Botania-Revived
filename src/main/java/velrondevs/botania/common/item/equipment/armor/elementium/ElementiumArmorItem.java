@@ -1,5 +1,7 @@
 package velrondevs.botania.common.item.equipment.armor.elementium;
 
+import net.minecraft.world.item.equipment.ArmorType;
+import java.util.function.Consumer;
 import com.google.common.base.Suppliers;
 
 import net.minecraft.ChatFormatting;
@@ -19,7 +21,7 @@ import java.util.function.Supplier;
 
 public abstract class ElementiumArmorItem extends ManasteelArmorItem {
 
-	public ElementiumArmorItem(Type type, Properties props) {
+	public ElementiumArmorItem(ArmorType type, Properties props) {
 		super(type, BotaniaAPI.instance().getElementiumArmorMaterial(), props);
 	}
 
@@ -67,9 +69,9 @@ public abstract class ElementiumArmorItem extends ManasteelArmorItem {
 	}
 
 	@Override
-	public void addArmorSetDescription(ItemStack stack, List<Component> list) {
+	public void addArmorSetDescription(ItemStack stack, Consumer<Component> list) {
 		super.addArmorSetDescription(stack, list);
-		list.add(Component.translatable("botania.armorset.elementium.desc").withStyle(ChatFormatting.GRAY));
+		list.accept(Component.translatable("botania.armorset.elementium.desc").withStyle(ChatFormatting.GRAY));
 	}
 
 }

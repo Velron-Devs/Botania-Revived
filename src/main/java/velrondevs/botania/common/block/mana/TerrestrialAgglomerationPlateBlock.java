@@ -1,8 +1,12 @@
 package velrondevs.botania.common.block.mana;
 
+import net.minecraft.core.Direction;
+
+import velrondevs.botania.common.block.RecipeLookup;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -43,9 +47,9 @@ public class TerrestrialAgglomerationPlateBlock extends BotaniaWaterloggedBlock 
 	}
 
 	@Override
-	public ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+	public InteractionResult useItemOn(ItemStack stack, BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
 		if (!stack.isEmpty() && usesItem(stack, world)) {
-			if (!world.isClientSide) {
+			if (!world.isClientSide()) {
 				ItemStack target = stack.split(1);
 				ItemEntity item = new ItemEntity(world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, target);
 				item.setPickUpDelay(40);
@@ -53,14 +57,14 @@ public class TerrestrialAgglomerationPlateBlock extends BotaniaWaterloggedBlock 
 				world.addFreshEntity(item);
 			}
 
-			return ItemInteractionResult.sidedSuccess(world.isClientSide());
+			return InteractionResult.SUCCESS;
 		}
 
-		return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+		return InteractionResult.TRY_WITH_EMPTY_HAND;
 	}
 
 	private static boolean usesItem(ItemStack stack, Level world) {
-		for (var value : world.getRecipeManager().getAllRecipesFor(BotaniaRecipeTypes.TERRA_PLATE_TYPE)) {
+		for (var value : RecipeLookup.getAllRecipesFor(world, BotaniaRecipeTypes.TERRA_PLATE_TYPE)) {
 			for (Ingredient i : value.value().getIngredients()) {
 				if (i.test(stack)) {
 					return true;
@@ -84,7 +88,7 @@ public class TerrestrialAgglomerationPlateBlock extends BotaniaWaterloggedBlock 
 	@Nullable
 	@Override
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-		if (!level.isClientSide) {
+		if (!level.isClientSide()) {
 			return createTickerHelper(type, BotaniaBlockEntities.TERRA_PLATE, TerrestrialAgglomerationPlateBlockEntity::serverTick);
 		}
 		return null;
@@ -96,7 +100,7 @@ public class TerrestrialAgglomerationPlateBlock extends BotaniaWaterloggedBlock 
 	}
 
 	@Override
-	public int getAnalogOutputSignal(BlockState state, Level world, BlockPos pos) {
+	public int getAnalogOutputSignal(BlockState state, Level world, BlockPos pos, Direction direction) {
 		return world.getBlockEntity(pos) instanceof TerrestrialAgglomerationPlateBlockEntity plate
 				? plate.getComparatorLevel()
 				: 0;

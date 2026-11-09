@@ -2,7 +2,7 @@ package velrondevs.botania.common.loot;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
@@ -19,9 +19,9 @@ import java.util.function.Consumer;
 import static velrondevs.botania.common.lib.ResourceLocationHelper.prefix;
 
 public final class LootHandler {
-	public static final ResourceKey<LootTable> GOG_SEEDS_TABLE = ResourceKey.create(Registries.LOOT_TABLE, ResourceLocation.fromNamespaceAndPath(BotaniaAPI.GOG_MODID, "extra_seeds"));
+	public static final ResourceKey<LootTable> GOG_SEEDS_TABLE = ResourceKey.create(Registries.LOOT_TABLE, Identifier.fromNamespaceAndPath(BotaniaAPI.GOG_MODID, "extra_seeds"));
 
-	public static void lootLoad(ResourceLocation id, Consumer<LootPool.Builder> addPool) {
+	public static void lootLoad(Identifier id, Consumer<LootPool.Builder> addPool) {
 		String prefix = "minecraft:chests/";
 		String name = id.toString();
 
@@ -48,7 +48,7 @@ public final class LootHandler {
 
 			addPool.accept(LootPool.lootPool().add(NestedLootTable.lootTableReference(ResourceKey.create(Registries.LOOT_TABLE, ElementiumAxeItem.BEHEADING_LOOT_TABLE))));
 		} else if (XplatAbstractions.INSTANCE.gogLoaded()
-				&& (Blocks.SHORT_GRASS.getLootTable().location().equals(id) || Blocks.TALL_GRASS.getLootTable().location().equals(id))) {
+				&& (Blocks.SHORT_GRASS.getLootTable().get().identifier().equals(id) || Blocks.TALL_GRASS.getLootTable().get().identifier().equals(id))) {
 			addPool.accept(LootPool.lootPool().add(NestedLootTable.lootTableReference(GOG_SEEDS_TABLE)));
 		}
 	}

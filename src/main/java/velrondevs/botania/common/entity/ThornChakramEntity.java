@@ -1,5 +1,7 @@
 package velrondevs.botania.common.entity;
 
+import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -46,7 +48,8 @@ public class ThornChakramEntity extends ThrowableProjectile implements ItemSuppl
 	}
 
 	public ThornChakramEntity(LivingEntity e, Level world, ItemStack stack) {
-		super(BotaniaEntities.THORN_CHAKRAM, e, world);
+		super(BotaniaEntities.THORN_CHAKRAM, e.getX(), e.getEyeY() - 0.1F, e.getZ(), world);
+		setOwner(e);
 		this.stack = stack.copy();
 	}
 
@@ -84,7 +87,7 @@ public class ThornChakramEntity extends ThrowableProjectile implements ItemSuppl
 			}
 		}
 
-		if (level().isClientSide && isFire()) {
+		if (level().isClientSide() && isFire()) {
 			double r = 0.1;
 			double m = 0.1;
 			for (int i = 0; i < 3; i++) {
@@ -92,7 +95,7 @@ public class ThornChakramEntity extends ThrowableProjectile implements ItemSuppl
 			}
 		}
 
-		if (!level().isClientSide && (getTimesBounced() >= MAX_BOUNCES || tickCount > 60)) {
+		if (!level().isClientSide() && (getTimesBounced() >= MAX_BOUNCES || tickCount > 60)) {
 			Entity thrower = getOwner();
 			if (thrower == null) {
 				dropAndKill();
@@ -143,7 +146,7 @@ public class ThornChakramEntity extends ThrowableProjectile implements ItemSuppl
 			setDeltaMovement(movementVec);
 			bounced = true;
 
-			if (!level().isClientSide) {
+			if (!level().isClientSide()) {
 				setTimesBounced(getTimesBounced() + 1);
 			}
 		}
@@ -152,7 +155,7 @@ public class ThornChakramEntity extends ThrowableProjectile implements ItemSuppl
 	@Override
 	protected void onHitEntity(@NotNull EntityHitResult hit) {
 		super.onHitEntity(hit);
-		if (!level().isClientSide && hit.getEntity() instanceof LivingEntity hitEntity && hit.getEntity() != getOwner()) {
+		if (!level().isClientSide() && hit.getEntity() instanceof LivingEntity hitEntity && hit.getEntity() != getOwner()) {
 			Entity thrower = getOwner();
 			DamageSource src = damageSources().generic();
 			if (thrower instanceof Player) {
@@ -163,7 +166,7 @@ public class ThornChakramEntity extends ThrowableProjectile implements ItemSuppl
 			hitEntity.hurt(src, 12);
 			if (isFire()) {
 				hitEntity.igniteForSeconds(5);
-			} else if (level().random.nextInt(3) == 0) {
+			} else if (level().getRandom().nextInt(3) == 0) {
 				hitEntity.addEffect(new MobEffectInstance(MobEffects.POISON, 60, 0));
 			}
 		}
@@ -203,21 +206,19 @@ public class ThornChakramEntity extends ThrowableProjectile implements ItemSuppl
 	}
 
 	@Override
-	public void addAdditionalSaveData(CompoundTag compound) {
+	public void addAdditionalSaveData(ValueOutput compound) {
 		super.addAdditionalSaveData(compound);
 		if (!stack.isEmpty()) {
-			compound.put("fly_stack", stack.save(registryAccess()));
+			compound.store("fly_stack", ItemStack.CODEC, stack);
 		}
 		compound.putBoolean("flare", isFire());
 	}
 
 	@Override
-	public void readAdditionalSaveData(CompoundTag compound) {
+	public void readAdditionalSaveData(ValueInput compound) {
 		super.readAdditionalSaveData(compound);
-		if (compound.contains("fly_stack")) {
-			stack = ItemStack.parseOptional(registryAccess(), compound.getCompound("fly_stack"));
-		}
-		setFire(compound.getBoolean("flare"));
+		compound.read("fly_stack", ItemStack.CODEC).ifPresent(s -> stack = s);
+		setFire(compound.getBooleanOr("flare", false));
 	}
 
 	@NotNull

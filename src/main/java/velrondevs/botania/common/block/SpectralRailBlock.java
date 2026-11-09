@@ -1,11 +1,15 @@
 package velrondevs.botania.common.block;
 
+import net.minecraft.util.profiling.Profiler;
+
 import com.google.common.base.Preconditions;
 import com.mojang.serialization.MapCodec;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.world.entity.vehicle.AbstractMinecart;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.InsideBlockEffectApplier;
+import net.minecraft.world.entity.vehicle.minecart.AbstractMinecart;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseRailBlock;
 import net.minecraft.world.level.block.Block;
@@ -44,7 +48,7 @@ public class SpectralRailBlock extends BaseRailBlock {
 	}
 
 	private void updateFloating(AbstractMinecart cart) {
-		cart.level().getProfiler().push("cartFloating");
+		Profiler.get().push("cartFloating");
 		SpectralRailComponent persistentData = XplatAbstractions.INSTANCE.ghostRailComponent(cart);
 		int floatTicks = persistentData.floatTicks;
 		Preconditions.checkState(floatTicks > 0);
@@ -69,19 +73,19 @@ public class SpectralRailBlock extends BaseRailBlock {
 			cart.level().levelEvent(LevelEvent.PARTICLES_SHOOT_SMOKE, entPos, 0);
 		}
 
-		cart.level().getProfiler().pop();
+		Profiler.get().pop();
 	}
 
 	@Override
-	public void onMinecartPass(BlockState state, Level world, BlockPos pos, AbstractMinecart cart) {
-		if (!world.isClientSide) {
+	protected void entityInside(BlockState state, Level world, BlockPos pos, Entity entity, InsideBlockEffectApplier effectApplier, boolean isPrecise) {
+		if (!world.isClientSide() && entity instanceof AbstractMinecart cart) {
 			XplatAbstractions.INSTANCE.ghostRailComponent(cart).floatTicks = 20;
 			updateFloating(cart);
 		}
 	}
 
 	public void tickCart(AbstractMinecart c) {
-		if (c.level().isClientSide || c.isRemoved()) {
+		if (c.level().isClientSide() || c.isRemoved()) {
 			return;
 		}
 

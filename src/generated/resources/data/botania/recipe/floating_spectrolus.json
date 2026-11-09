@@ -3,15 +3,10 @@
   "category": "misc",
   "group": "botania:floating_flower",
   "ingredients": [
-    {
-      "tag": "botania:floating_flowers"
-    },
-    {
-      "item": "botania:spectrolus"
-    }
+    "#botania:floating_flowers",
+    "botania:spectrolus"
   ],
   "result": {
-    "count": 1,
     "id": "botania:floating_spectrolus"
   }
 }

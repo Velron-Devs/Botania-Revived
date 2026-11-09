@@ -1,5 +1,7 @@
 package velrondevs.botania.module.botaniaextras.block;
 
+import net.minecraft.world.level.redstone.Orientation;
+
 import com.mojang.serialization.MapCodec;
 
 import net.minecraft.core.BlockPos;
@@ -45,13 +47,13 @@ public class IridescentLanternBlock extends Block {
 	}
 
 	@Override
-	protected void neighborChanged(BlockState state, Level level, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean movedByPiston) {
+	protected void neighborChanged(BlockState state, Level level, BlockPos pos, Block neighborBlock, Orientation neighborPos, boolean movedByPiston) {
 		super.neighborChanged(state, level, pos, neighborBlock, neighborPos, movedByPiston);
 		update(state, level, pos);
 	}
 
 	private static void update(BlockState state, Level level, BlockPos pos) {
-		if (level.isClientSide) {
+		if (level.isClientSide()) {
 			return;
 		}
 		int power = level.getBestNeighborSignal(pos);

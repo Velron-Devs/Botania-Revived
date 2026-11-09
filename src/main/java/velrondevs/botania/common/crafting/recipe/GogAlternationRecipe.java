@@ -1,5 +1,6 @@
 package velrondevs.botania.common.crafting.recipe;
 
+import velrondevs.botania.common.crafting.BotaniaRecipeSerializer;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -12,11 +13,11 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import velrondevs.botania.xplat.XplatAbstractions;
 
 public class GogAlternationRecipe {
-	public static final RecipeSerializer<Recipe<?>> SERIALIZER = new Serializer();
+	public static final RecipeSerializer<Recipe<?>> SERIALIZER = new Serializer().toVanilla();
 
 	private record Alternatives(Recipe<?> gog, Recipe<?> base) {}
 
-	private static class Serializer implements RecipeSerializer<Recipe<?>> {
+	private static class Serializer implements BotaniaRecipeSerializer<Recipe<?>> {
 		private static final MapCodec<Alternatives> ALTERNATIVES_CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
 				Recipe.CODEC.fieldOf("gog").forGetter(Alternatives::gog),
 				Recipe.CODEC.fieldOf("base").forGetter(Alternatives::base)

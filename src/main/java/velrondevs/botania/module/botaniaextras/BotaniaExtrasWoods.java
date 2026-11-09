@@ -1,7 +1,7 @@
 package velrondevs.botania.module.botaniaextras;
 
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
@@ -56,7 +56,7 @@ public final class BotaniaExtrasWoods {
 			this.soil = soil;
 			this.log = new RotatedPillarBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_LOG).mapColor(mapColor));
 			this.planks = new BotaniaBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PLANKS).mapColor(mapColor));
-			this.leaves = new LeavesBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_LEAVES).mapColor(mapColor));
+			this.leaves = new net.minecraft.world.level.block.TintedParticleLeavesBlock(0.01F, BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_LEAVES).mapColor(mapColor));
 			this.slab = new SlabBlock(BlockBehaviour.Properties.ofFullCopy(planks));
 			this.stairs = new BotaniaStairBlock(planks.defaultBlockState(), BlockBehaviour.Properties.ofFullCopy(planks));
 		}
@@ -102,7 +102,7 @@ public final class BotaniaExtrasWoods {
 			return List.of(log, planks, leaves, slab, stairs);
 		}
 
-		public ResourceLocation id(String suffix) {
+		public Identifier id(String suffix) {
 			return prefix(name + "_" + suffix);
 		}
 	}
@@ -150,7 +150,7 @@ public final class BotaniaExtrasWoods {
 		return BY_SOIL.containsKey(block);
 	}
 
-	public static void registerBlocks(BiConsumer<Block, ResourceLocation> r) {
+	public static void registerBlocks(BiConsumer<Block, Identifier> r) {
 		for (WoodSet set : SETS) {
 			register(r, set.log, set.id("log"));
 			register(r, set.planks, set.id("planks"));
@@ -161,12 +161,12 @@ public final class BotaniaExtrasWoods {
 		register(r, sapling, prefix("iridescent_sapling"));
 	}
 
-	private static void register(BiConsumer<Block, ResourceLocation> r, Block block, ResourceLocation id) {
+	private static void register(BiConsumer<Block, Identifier> r, Block block, Identifier id) {
 		ALL.add(block);
 		r.accept(block, id);
 	}
 
-	public static void registerItemBlocks(BiConsumer<Item, ResourceLocation> r) {
+	public static void registerItemBlocks(BiConsumer<Item, Identifier> r) {
 		Item.Properties props = BotaniaItems.defaultBuilder();
 		for (Block b : ALL) {
 			r.accept(new BlockItem(b, props), BuiltInRegistries.BLOCK.getKey(b));

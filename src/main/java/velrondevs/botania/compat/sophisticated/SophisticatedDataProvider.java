@@ -1,11 +1,12 @@
 package velrondevs.botania.compat.sophisticated;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 
-import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 
 import velrondevs.botania.common.lib.LibMisc;
@@ -34,14 +35,17 @@ public final class SophisticatedDataProvider extends JsonFileProvider {
 	}
 
 	public static void gatherData(GatherDataEvent evt) {
-		DataGenerator generator = evt.getGenerator();
-		PackOutput output = generator.getPackOutput();
-		generator.addProvider(evt.includeServer(), new SophisticatedDataProvider(output, false));
-		generator.addProvider(evt.includeClient(), new SophisticatedDataProvider(output, true));
+		PackOutput output = evt.getGenerator().getPackOutput();
+		if (evt instanceof GatherDataEvent.Server) {
+			evt.addProvider(new SophisticatedDataProvider(output, false));
+		}
+		if (evt instanceof GatherDataEvent.Client) {
+			evt.addProvider(new SophisticatedDataProvider(output, true));
+		}
 	}
 
 	@Override
-	protected void addFiles(Map<ResourceLocation, JsonObject> files) {
+	protected void addFiles(Map<Identifier, JsonObject> files) {
 		if (assets) {
 			for (String name : ITEMS) {
 				JsonObject model = new JsonObject();
@@ -50,6 +54,12 @@ public final class SophisticatedDataProvider extends JsonFileProvider {
 				textures.addProperty("layer0", botania("item/" + name));
 				model.add("textures", textures);
 				files.put(id("models/item/" + name), model);
+				JsonObject definition = new JsonObject();
+				JsonObject reference = new JsonObject();
+				reference.addProperty("type", "minecraft:model");
+				reference.addProperty("model", botania("item/" + name));
+				definition.add("model", reference);
+				files.put(id("items/" + name), definition);
 			}
 			BotaniaBackpackData.addAssets(files);
 			BotaniaStorageData.addAssets(files);
@@ -64,8 +74,8 @@ public final class SophisticatedDataProvider extends JsonFileProvider {
 		files.put(id("tags/item/sophisticated_upgrade_bases"), bases);
 		BotaniaBackpackData.addData(files);
 		BotaniaStorageData.addData(files);
-		files.put(ResourceLocation.fromNamespaceAndPath(SophisticatedModule.BACKPACKS, "tags/item/upgrade"), upgradeTag());
-		files.put(ResourceLocation.fromNamespaceAndPath(SophisticatedModule.STORAGE, "tags/item/upgrade"), upgradeTag());
+		files.put(Identifier.fromNamespaceAndPath(SophisticatedModule.BACKPACKS, "tags/item/upgrade"), upgradeTag());
+		files.put(Identifier.fromNamespaceAndPath(SophisticatedModule.STORAGE, "tags/item/upgrade"), upgradeTag());
 
 		files.put(id("tags/item/" + NETHERITE_STACKS), optionalTag(
 				SophisticatedModule.BACKPACKS + ":stack_upgrade_tier_4", SophisticatedModule.STORAGE + ":stack_upgrade_tier_5"));
@@ -98,39 +108,41 @@ public final class SophisticatedDataProvider extends JsonFileProvider {
 		files.put(id("recipe/sophisticated/" + SophisticatedItems.MANA_LINK), link);
 		files.put(id("advancement/recipes/misc/sophisticated/" + SophisticatedItems.MANA_LINK), advancement("sophisticated/" + SophisticatedItems.MANA_LINK, botania("rune_mana")));
 
-		JsonObject altar = recipe(SophisticatedItems.RUNIC_ALTAR, "SRS", "PBP", "SRS");
+		JsonObject altar = recipe(SophisticatedItems.RUNIC_ALTAR, "SGS", "PBP", "SAS");
 		JsonObject altarKey = new JsonObject();
 		altarKey.add("S", item(botania("livingrock")));
-		altarKey.add("R", item(botania("rune_mana")));
+		altarKey.add("G", item(botania("glimmering_livingwood_log")));
+		altarKey.add("A", item(botania("alfheim_portal")));
 		altarKey.add("P", item(botania("mana_pearl")));
 		altarKey.add("B", tag(BASES_TAG));
 		altar.add("key", altarKey);
 		files.put(id("recipe/sophisticated/" + SophisticatedItems.RUNIC_ALTAR), altar);
 		files.put(id("advancement/recipes/misc/sophisticated/" + SophisticatedItems.RUNIC_ALTAR), advancement("sophisticated/" + SophisticatedItems.RUNIC_ALTAR, botania("livingrock")));
 
-		JsonObject portal = recipe(SophisticatedItems.ELVEN_PORTAL, "DWD", "EBE", "DWD");
+		JsonObject portal = recipe(SophisticatedItems.ELVEN_PORTAL, "DGD", "EBE", "DAD");
 		JsonObject portalKey = new JsonObject();
 		portalKey.add("D", tag(LibMisc.MOD_ID + ":dragonstone_gems"));
-		portalKey.add("W", tag(LibMisc.MOD_ID + ":dreamwood_logs"));
+		portalKey.add("G", item(botania("glimmering_livingwood_log")));
+		portalKey.add("A", item(botania("alfheim_portal")));
 		portalKey.add("E", tag(LibMisc.MOD_ID + ":elementium_ingots"));
 		portalKey.add("B", tag(BASES_TAG));
 		portal.add("key", portalKey);
 		files.put(id("recipe/sophisticated/" + SophisticatedItems.ELVEN_PORTAL), portal);
 		files.put(id("advancement/recipes/misc/sophisticated/" + SophisticatedItems.ELVEN_PORTAL), advancement("sophisticated/" + SophisticatedItems.ELVEN_PORTAL, "#botania:dragonstone_gems"));
 
-		JsonObject brewery = recipe(SophisticatedItems.BREWERY, "VNV", "FBF", "VPV");
+		JsonObject brewery = recipe(SophisticatedItems.BREWERY, "VGV", "FBF", "VAV");
 		JsonObject breweryKey = new JsonObject();
 		breweryKey.add("V", item(botania("vial")));
-		breweryKey.add("N", item("minecraft:nether_wart"));
+		breweryKey.add("G", item(botania("glimmering_livingwood_log")));
+		breweryKey.add("A", item(botania("alfheim_portal")));
 		breweryKey.add("F", item(botania("flask")));
-		breweryKey.add("P", item(botania("mana_pearl")));
 		breweryKey.add("B", tag(BASES_TAG));
 		brewery.add("key", breweryKey);
 		files.put(id("recipe/sophisticated/" + SophisticatedItems.BREWERY), brewery);
 		files.put(id("advancement/recipes/misc/sophisticated/" + SophisticatedItems.BREWERY), advancement("sophisticated/" + SophisticatedItems.BREWERY, botania("vial")));
 	}
 
-	private static void manasteelStack(Map<ResourceLocation, JsonObject> files, String folder, String centerTag, boolean atm) {
+	private static void manasteelStack(Map<Identifier, JsonObject> files, String folder, String centerTag, boolean atm) {
 		String name = SophisticatedItems.MANASTEEL_STACK;
 		JsonObject json = recipe(name, "III", "ICI", "III");
 		JsonArray conditions = json.getAsJsonArray("neoforge:conditions");
@@ -167,11 +179,11 @@ public final class SophisticatedDataProvider extends JsonFileProvider {
 		return tag;
 	}
 
-	private static void stack(Map<ResourceLocation, JsonObject> files, String name, JsonObject ring, JsonObject center, String trigger) {
+	private static void stack(Map<Identifier, JsonObject> files, String name, JsonElement ring, JsonElement center, String trigger) {
 		stack(files, name, ring, center, trigger, null);
 	}
 
-	private static void stack(Map<ResourceLocation, JsonObject> files, String name, JsonObject ring, JsonObject center, String trigger, String requiredMod) {
+	private static void stack(Map<Identifier, JsonObject> files, String name, JsonElement ring, JsonElement center, String trigger, String requiredMod) {
 		JsonObject json = recipe(name, "III", "ICI", "III");
 		requireMod(json, requiredMod);
 		JsonObject key = new JsonObject();
@@ -277,23 +289,19 @@ public final class SophisticatedDataProvider extends JsonFileProvider {
 		return entry;
 	}
 
-	private static JsonObject item(String id) {
-		JsonObject json = new JsonObject();
-		json.addProperty("item", id);
-		return json;
+	private static JsonElement item(String id) {
+		return new JsonPrimitive(id);
 	}
 
-	private static JsonObject tag(String id) {
-		JsonObject json = new JsonObject();
-		json.addProperty("tag", id);
-		return json;
+	private static JsonElement tag(String id) {
+		return new JsonPrimitive("#" + id);
 	}
 
 	private static String botania(String path) {
 		return LibMisc.MOD_ID + ":" + path;
 	}
 
-	private static ResourceLocation id(String path) {
-		return ResourceLocation.fromNamespaceAndPath(LibMisc.MOD_ID, path);
+	private static Identifier id(String path) {
+		return Identifier.fromNamespaceAndPath(LibMisc.MOD_ID, path);
 	}
 }

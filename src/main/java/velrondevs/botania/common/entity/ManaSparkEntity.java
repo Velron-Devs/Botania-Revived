@@ -1,8 +1,14 @@
 package velrondevs.botania.common.entity;
 
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -81,7 +87,7 @@ public class ManaSparkEntity extends SparkBaseEntity implements ManaSpark {
 
 	@Override
 	public void tick() {
-		if (level().isClientSide) {
+		if (level().isClientSide()) {
 			return;
 		}
 
@@ -111,8 +117,12 @@ public class ManaSparkEntity extends SparkBaseEntity implements ManaSpark {
 				ItemStack input = new ItemStack(getSparkItem());
 				for (Player player : players) {
 					List<ItemStack> stacks = new ArrayList<>();
-					stacks.addAll(player.getInventory().items);
-					stacks.addAll(player.getInventory().armor);
+					stacks.addAll(player.getInventory().getNonEquipmentItems());
+					for (EquipmentSlot slot : EquipmentSlot.values()) {
+						if (slot.isArmor()) {
+							stacks.add(player.getItemBySlot(slot));
+						}
+					}
 
 					Container inv = BotaniaAPI.instance().getAccessoriesInventory(player);
 					for (int i = 0; i < inv.getContainerSize(); i++) {
@@ -300,7 +310,7 @@ public class ManaSparkEntity extends SparkBaseEntity implements ManaSpark {
 	}
 
 	public static void particleBeam(Player player, Entity e1, Entity e2) {
-		if (e1 != null && e2 != null && !e1.level().isClientSide) {
+		if (e1 != null && e2 != null && !e1.level().isClientSide()) {
 			XplatAbstractions.INSTANCE.sendToPlayer(player, new BotaniaEffectPacket(EffectType.SPARK_NET_INDICATOR,
 					e1.getX(), e1.getY(), e1.getZ(),
 					e1.getId(), e2.getId()));
@@ -313,9 +323,9 @@ public class ManaSparkEntity extends SparkBaseEntity implements ManaSpark {
 
 	private void dropAndKill() {
 		SparkUpgradeType upgrade = getUpgrade();
-		spawnAtLocation(new ItemStack(getSparkItem()), 0F);
+		spawnAtLocation((ServerLevel) level(), new ItemStack(getSparkItem()), 0F);
 		if (upgrade != SparkUpgradeType.NONE) {
-			spawnAtLocation(SparkAugmentItem.getByType(upgrade), 0F);
+			spawnAtLocation((ServerLevel) level(), SparkAugmentItem.getByType(upgrade), 0F);
 		}
 		discard();
 	}
@@ -327,15 +337,15 @@ public class ManaSparkEntity extends SparkBaseEntity implements ManaSpark {
 	}
 
 	@Override
-	public InteractionResult interact(Player player, InteractionHand hand) {
+	public InteractionResult interact(Player player, InteractionHand hand, Vec3 location) {
 		ItemStack stack = player.getItemInHand(hand);
 		if (isAlive() && !stack.isEmpty()) {
 			SparkUpgradeType upgrade = getUpgrade();
 			if (stack.getItem() instanceof WandOfTheForestItem) {
-				if (!level().isClientSide) {
+				if (!level().isClientSide()) {
 					if (player.isShiftKeyDown() || !PlayerHelper.isTruePlayer(player)) {
 						if (upgrade != SparkUpgradeType.NONE) {
-							spawnAtLocation(SparkAugmentItem.getByType(upgrade), 0F);
+							spawnAtLocation((ServerLevel) level(), SparkAugmentItem.getByType(upgrade), 0F);
 							setUpgrade(SparkUpgradeType.NONE);
 
 							outgoingTransfers.clear();
@@ -350,26 +360,25 @@ public class ManaSparkEntity extends SparkBaseEntity implements ManaSpark {
 					}
 				}
 
-				return InteractionResult.sidedSuccess(level().isClientSide);
+				return InteractionResult.SUCCESS;
 			} else if (stack.getItem() instanceof SparkAugmentItem newUpgrade && upgrade == SparkUpgradeType.NONE) {
-				if (!level().isClientSide) {
+				if (!level().isClientSide()) {
 					setUpgrade(newUpgrade.type);
 					stack.shrink(1);
 				}
-				return InteractionResult.sidedSuccess(level().isClientSide);
+				return InteractionResult.SUCCESS;
 			} else if (stack.is(BotaniaItems.phantomInk)) {
-				if (!level().isClientSide) {
+				if (!level().isClientSide()) {
 					setInvisible(true);
 				}
-				return InteractionResult.sidedSuccess(level().isClientSide);
-			} else if (stack.getItem() instanceof DyeItem dye) {
-				DyeColor color = dye.getDyeColor();
+				return InteractionResult.SUCCESS;
+			} else if (stack.get(DataComponents.DYE) instanceof DyeColor color) {
 				if (color != getNetwork()) {
-					if (!level().isClientSide) {
+					if (!level().isClientSide()) {
 						setNetwork(color);
 						stack.shrink(1);
 					}
-					return InteractionResult.sidedSuccess(level().isClientSide);
+					return InteractionResult.SUCCESS;
 				}
 			}
 		}
@@ -378,13 +387,13 @@ public class ManaSparkEntity extends SparkBaseEntity implements ManaSpark {
 	}
 
 	@Override
-	protected void readAdditionalSaveData(@NotNull CompoundTag cmp) {
+	protected void readAdditionalSaveData(ValueInput cmp) {
 		super.readAdditionalSaveData(cmp);
-		setUpgrade(SparkUpgradeType.values()[cmp.getInt(TAG_UPGRADE)]);
+		setUpgrade(SparkUpgradeType.values()[cmp.getIntOr(TAG_UPGRADE, 0)]);
 	}
 
 	@Override
-	protected void addAdditionalSaveData(@NotNull CompoundTag cmp) {
+	protected void addAdditionalSaveData(ValueOutput cmp) {
 		super.addAdditionalSaveData(cmp);
 		cmp.putInt(TAG_UPGRADE, getUpgrade().ordinal());
 	}
@@ -500,13 +509,13 @@ public class ManaSparkEntity extends SparkBaseEntity implements ManaSpark {
 
 	public record WandHud(ManaSparkEntity entity) implements WandHUD {
 		@Override
-		public void renderHUD(GuiGraphics gui, Minecraft mc) {
+		public void renderHUD(GuiGraphicsExtractor gui, Minecraft mc) {
 			ItemStack sparkStack = new ItemStack(entity.getSparkItem());
 			ItemStack augmentStack = SparkAugmentItem.getByType(entity.getUpgrade());
 			DyeColor networkColor = entity.getNetwork();
 			Component networkColorName = Component.translatable("color.minecraft." + networkColor.getName())
 					.withStyle(ChatFormatting.ITALIC);
-			int textColor = ColorHelper.getColorLegibleOnGrayBackground(networkColor);
+			int textColor = 0xFF000000 | ColorHelper.getColorLegibleOnGrayBackground(networkColor);
 
 			int width = 4 + Collections.max(Arrays.asList(
 					mc.font.width(networkColorName),
@@ -523,7 +532,7 @@ public class ManaSparkEntity extends SparkBaseEntity implements ManaSpark {
 
 			RenderHelper.renderItemWithNameCentered(gui, mc, sparkStack, centerY + 10, textColor);
 			RenderHelper.renderItemWithNameCentered(gui, mc, augmentStack, centerY + 28, textColor);
-			gui.drawString(mc.font, networkColorName, centerX - networkColorTextStart, centerY + (augmentStack.isEmpty() ? 28 : 46), textColor);
+			gui.text(mc.font, networkColorName, centerX - networkColorTextStart, centerY + (augmentStack.isEmpty() ? 28 : 46), textColor);
 		}
 	}
 }

@@ -3,25 +3,23 @@ package velrondevs.botania.client.model;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
-import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.resources.Identifier;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 
 import velrondevs.botania.common.helper.VecHelper;
 
-public class BellowsModel extends Model {
-
+public class BellowsModel {
 	private final ModelPart top;
 	private final ModelPart base;
 	private final ModelPart pipe;
 	private final ModelPart funnel;
 
 	public BellowsModel(ModelPart root) {
-		super(RenderType::entityCutout);
-
 		top = root.getChild("top");
 		base = root.getChild("base");
 		pipe = root.getChild("pipe");
@@ -46,7 +44,6 @@ public class BellowsModel extends Model {
 		return mesh;
 	}
 
-	@Override
 	public void renderToBuffer(PoseStack ms, VertexConsumer buffer, int light, int overlay, int color) {
 		render(ms, buffer, light, overlay, color, 1);
 	}
@@ -54,13 +51,10 @@ public class BellowsModel extends Model {
 	public void render(PoseStack ms, VertexConsumer buffer, int light, int overlay, int color, float fract) {
 		base.render(ms, buffer, light, overlay, color);
 		pipe.render(ms, buffer, light, overlay, color);
-
 		float mov = (1F - fract) * 0.5F;
-
 		ms.translate(0F, mov, 0F);
 		top.render(ms, buffer, light, overlay, color);
 		ms.translate(0F, -mov, 0F);
-
 		ms.mulPose(VecHelper.rotateX(180F));
 		ms.translate(-0.19F, -1.375F, -0.19F);
 		ms.scale(1F, fract, 1F);
@@ -68,4 +62,7 @@ public class BellowsModel extends Model {
 		ms.scale(1F, 1F / fract, 1F);
 	}
 
+	public RenderType renderType(Identifier texture) {
+		return RenderTypes.entityCutout(texture);
+	}
 }

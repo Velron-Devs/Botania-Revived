@@ -9,14 +9,14 @@ import me.shedaniel.rei.api.common.entry.EntryIngredient;
 import me.shedaniel.rei.api.common.entry.EntryStack;
 import me.shedaniel.rei.api.common.util.EntryStacks;
 
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 
 import velrondevs.botania.api.recipe.OrechidRecipe;
+import velrondevs.botania.client.core.helper.RenderHelper;
 import velrondevs.botania.client.integration.shared.OrechidUIHelper;
 import velrondevs.botania.common.block.block_entity.mana.ManaPoolBlockEntity;
 import velrondevs.botania.common.helper.ItemNBTHelper;
@@ -40,11 +40,11 @@ public final class BotaniaReiCategories {
 	public static final CategoryIdentifier<BotaniaReiDisplay> ORECHID_IGNEM = CategoryIdentifier.of(prefix("orechid_ignem"));
 	public static final CategoryIdentifier<BotaniaReiDisplay> MARIMORPHOSIS = CategoryIdentifier.of(prefix("marimorphosis"));
 
-	private static final ResourceLocation PURE_DAISY_TEXTURE = prefix("textures/gui/pure_daisy_overlay.png");
-	private static final ResourceLocation PETAL_TEXTURE = prefix("textures/gui/petal_overlay.png");
-	private static final ResourceLocation TERRA_TEXTURE = prefix("textures/gui/terrasteel_jei_overlay.png");
-	private static final ResourceLocation BREWERY_TEXTURE = prefix("textures/gui/nei_brewery.png");
-	private static final ResourceLocation ELVEN_TEXTURE = prefix("textures/gui/elven_trade_overlay.png");
+	private static final Identifier PURE_DAISY_TEXTURE = prefix("textures/gui/pure_daisy_overlay.png");
+	private static final Identifier PETAL_TEXTURE = prefix("textures/gui/petal_overlay.png");
+	private static final Identifier TERRA_TEXTURE = prefix("textures/gui/terrasteel_jei_overlay.png");
+	private static final Identifier BREWERY_TEXTURE = prefix("textures/gui/nei_brewery.png");
+	private static final Identifier ELVEN_TEXTURE = prefix("textures/gui/elven_trade_overlay.png");
 
 	private BotaniaReiCategories() {}
 
@@ -182,9 +182,8 @@ public final class BotaniaReiCategories {
 			int swirlX = origin.x + 12;
 			int swirlY = origin.y + 22;
 			widgets.add(Widgets.createDrawableWidget((graphics, mouseX, mouseY, delta) -> {
-				TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
-						.apply(prefix("block/alfheim_portal_swirl"));
-				graphics.blit(swirlX, swirlY, 0, 48, 48, sprite);
+				TextureAtlasSprite sprite = RenderHelper.blockSprite(prefix("block/alfheim_portal_swirl"));
+				graphics.blitSprite(RenderPipelines.GUI_TEXTURED, sprite, swirlX, swirlY, 48, 48);
 			}));
 			int sx = 35;
 			for (EntryIngredient ing : display.ingredients()) {

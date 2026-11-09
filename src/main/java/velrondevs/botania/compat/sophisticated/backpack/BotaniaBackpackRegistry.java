@@ -3,11 +3,12 @@ package velrondevs.botania.compat.sophisticated.backpack;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.cauldron.CauldronInteraction;
+import net.minecraft.core.cauldron.CauldronInteractions;
 import net.minecraft.core.dispenser.BlockSource;
 import net.minecraft.core.dispenser.OptionalDispenseItemBehavior;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -21,7 +22,10 @@ import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.event.BlockEntityTypeAddBlocksEvent;
-import net.neoforged.neoforge.items.wrapper.EmptyItemHandler;
+import net.neoforged.neoforge.transfer.EmptyResourceHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.p3pp3rf1y.sophisticatedbackpacks.Config;
 import net.p3pp3rf1y.sophisticatedbackpacks.backpack.BackpackBlock;
 import net.p3pp3rf1y.sophisticatedbackpacks.backpack.BackpackItem;
@@ -55,14 +59,14 @@ public final class BotaniaBackpackRegistry {
 	public static void register(ModuleContext ctx) {
 		ctx.bindBlocks(consumer -> {
 			for (BotaniaBackpackTier tier : BotaniaBackpackTier.active()) {
-				BackpackBlock block = new BackpackBlock(tier.explosionResistance());
+				BackpackBlock block = new BackpackBlock(tier.explosionResistance(), Block.Properties.of());
 				BLOCKS.put(tier, block);
 				consumer.accept(block, id(tier));
 			}
 		});
 		ctx.bindItems(consumer -> {
 			for (BotaniaBackpackTier tier : BotaniaBackpackTier.active()) {
-				BackpackItem item = new BackpackItem(tier.slots(), tier.upgradeSlots(), () -> BLOCKS.get(tier), Item.Properties::fireResistant);
+				BackpackItem item = new BackpackItem(tier.slots(), tier.upgradeSlots(), () -> BLOCKS.get(tier), Item.Properties::fireResistant, new Item.Properties());
 				ITEMS.put(tier, item);
 				consumer.accept(item, id(tier));
 			}
@@ -73,23 +77,24 @@ public final class BotaniaBackpackRegistry {
 		ctx.modBus().addListener((FMLCommonSetupEvent event) -> event.enqueueWork(BotaniaBackpackRegistry::registerBehaviors));
 	}
 
-	private static ResourceLocation id(BotaniaBackpackTier tier) {
-		return ResourceLocation.fromNamespaceAndPath(LibMisc.MOD_ID, tier.id());
+	private static Identifier id(BotaniaBackpackTier tier) {
+		return Identifier.fromNamespaceAndPath(LibMisc.MOD_ID, tier.id());
 	}
 
 	private static void registerCapabilities(RegisterCapabilitiesEvent event) {
 		Item[] items = ITEMS.values().toArray(new Item[0]);
-		event.registerItem(Capabilities.ItemHandler.ITEM, (stack, context) -> {
+		event.registerItem(Capabilities.Item.ITEM, (stack, access) -> {
 			IBackpackWrapper wrapper = wrapper(stack);
-			return wrapper.getContentsUuid().isEmpty() ? EmptyItemHandler.INSTANCE : wrapper.getInventoryForInputOutput();
+			ItemAccess itemAccess = access == null ? ItemAccess.forStack(stack) : access;
+			return wrapper.getContentsUuid().isEmpty() ? EmptyResourceHandler.<ItemResource>instance() : BackpackWrapper.getItemInventoryHandler(itemAccess);
 		}, items);
-		event.registerItem(Capabilities.FluidHandler.ITEM, (stack, context) -> {
+		event.registerItem(Capabilities.Fluid.ITEM, (stack, access) -> {
 			if (!Config.SERVER.itemFluidHandlerEnabled.get()) {
 				return null;
 			}
-			return BackpackWrapper.getCapabilityFluidHandler(stack).orElse(null);
+			return wrapper(stack).getItemFluidHandler(access == null ? ItemAccess.forStack(stack) : access).orElse(null);
 		}, items);
-		event.registerItem(Capabilities.EnergyStorage.ITEM, (stack, context) -> wrapper(stack).getEnergyStorage().orElse(null), items);
+		event.registerItem(Capabilities.Energy.ITEM, (stack, access) -> BackpackWrapper.getItemEnergyHandler(access == null ? ItemAccess.forStack(stack) : access).orElse(null), items);
 	}
 
 	private static IBackpackWrapper wrapper(ItemStack stack) {
@@ -99,7 +104,7 @@ public final class BotaniaBackpackRegistry {
 	private static void registerBehaviors() {
 		for (BackpackItem item : ITEMS.values()) {
 			DispenserBlock.registerBehavior(item, new Dispense());
-			CauldronInteraction.WATER.map().put(item, new Wash());
+			CauldronInteractions.WATER.put(item, new Wash());
 		}
 	}
 
@@ -120,16 +125,16 @@ public final class BotaniaBackpackRegistry {
 
 	private static final class Wash implements CauldronInteraction {
 		@Override
-		public ItemInteractionResult interact(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, ItemStack stack) {
+		public InteractionResult interact(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, ItemStack stack) {
 			IBackpackWrapper wrapper = BackpackWrapper.fromStack(stack);
 			if (isDefault(wrapper)) {
-				return ItemInteractionResult.FAIL;
+				return InteractionResult.FAIL;
 			}
-			if (!level.isClientSide) {
+			if (!level.isClientSide()) {
 				wrapper.setColors(BackpackWrapper.DEFAULT_MAIN_COLOR, BackpackWrapper.DEFAULT_ACCENT_COLOR);
 				LayeredCauldronBlock.lowerFillLevel(state, level, pos);
 			}
-			return ItemInteractionResult.sidedSuccess(level.isClientSide);
+			return InteractionResult.SUCCESS;
 		}
 
 		private static boolean isDefault(IStorageWrapper wrapper) {

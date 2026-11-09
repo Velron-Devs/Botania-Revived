@@ -2,7 +2,7 @@ package velrondevs.botania.api.brew;
 
 import com.google.common.collect.ImmutableList;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.alchemy.PotionContents;
@@ -27,7 +27,7 @@ public class Brew {
 	}
 
 	public Brew(int cost, Supplier<List<MobEffectInstance>> effects) {
-		this.color = () -> PotionContents.getColor(effects.get()) & 0xFFFFFF;
+		this.color = () -> PotionContents.getColorOptional(effects.get()).orElse(-13083194) & 0xFFFFFF;
 		this.cost = cost;
 		this.effects = effects;
 	}
@@ -51,7 +51,7 @@ public class Brew {
 	}
 
 	public String getTranslationKey() {
-		ResourceLocation id = BotaniaAPI.instance().getBrewRegistry().getKey(this);
+		Identifier id = BotaniaAPI.instance().getBrewRegistry().getKey(this);
 		return String.format("%s.brew.%s", id.getNamespace(), id.getPath());
 	}
 

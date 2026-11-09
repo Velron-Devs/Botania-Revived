@@ -1,5 +1,7 @@
 package velrondevs.botania.common.item.equipment.bauble;
 
+import velrondevs.botania.client.core.helper.RenderHelper;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
@@ -7,7 +9,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
@@ -32,8 +34,8 @@ import velrondevs.botania.registry.BotaniaSounds;
 
 public class CloakOfVirtueItem extends BaubleItem {
 
-	private static final ResourceLocation texture = ResourceLocation.parse(ResourcesLib.MODEL_HOLY_CLOAK);
-	private static final ResourceLocation textureGlow = ResourceLocation.parse(ResourcesLib.MODEL_HOLY_CLOAK_GLOW);
+	private static final Identifier texture = Identifier.parse(ResourcesLib.MODEL_HOLY_CLOAK);
+	private static final Identifier textureGlow = Identifier.parse(ResourcesLib.MODEL_HOLY_CLOAK_GLOW);
 
 	private static final String TAG_COOLDOWN = "cooldown";
 	private static final String TAG_IN_EFFECT = "inEffect";
@@ -75,7 +77,8 @@ public class CloakOfVirtueItem extends BaubleItem {
 		private static CloakModel model = null;
 
 		@Override
-		public void doRender(HumanoidModel<?> bipedModel, ItemStack stack, LivingEntity living, PoseStack ms, MultiBufferSource buffers, int light, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+		public void doRender(HumanoidModel<?> bipedModel, ItemStack stack, LivingEntity living, PoseStack ms, SubmitNodeCollector collector, int light, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+			MultiBufferSource buffers = RenderHelper.buffers(collector);
 			CloakOfVirtueItem item = ((CloakOfVirtueItem) stack.getItem());
 			AccessoryRenderHelper.rotateIfSneaking(ms, living);
 			boolean armor = !living.getItemBySlot(EquipmentSlot.CHEST).isEmpty();
@@ -134,11 +137,11 @@ public class CloakOfVirtueItem extends BaubleItem {
 		ItemNBTHelper.setBoolean(stack, TAG_IN_EFFECT, effect);
 	}
 
-	ResourceLocation getCloakTexture() {
+	Identifier getCloakTexture() {
 		return texture;
 	}
 
-	ResourceLocation getCloakGlowTexture() {
+	Identifier getCloakGlowTexture() {
 		return textureGlow;
 	}
 }

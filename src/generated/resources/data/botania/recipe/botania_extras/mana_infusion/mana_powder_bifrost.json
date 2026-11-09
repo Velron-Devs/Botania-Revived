@@ -6,12 +6,9 @@
     }
   ],
   "type": "botania:mana_infusion",
-  "input": {
-    "item": "botania:floral_bifrost_powder"
-  },
+  "input": "botania:floral_bifrost_powder",
   "mana": 400,
   "output": {
-    "count": 1,
     "id": "botania:mana_powder"
   }
 }

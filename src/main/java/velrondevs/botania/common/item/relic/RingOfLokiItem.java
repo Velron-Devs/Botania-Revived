@@ -1,5 +1,7 @@
 package velrondevs.botania.common.item.relic;
 
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.server.level.ServerLevel;
 import com.google.common.collect.ImmutableList;
 
 import net.minecraft.client.Minecraft;
@@ -78,7 +80,7 @@ public class RingOfLokiItem extends RelicBaubleItem implements WireframeCoordina
 		BlockPos hit = lookPos.getBlockPos();
 		if (stack.isEmpty() && hand == InteractionHand.MAIN_HAND) {
 			BlockPos originCoords = getBindingCenter(lokiRing);
-			if (!world.isClientSide) {
+			if (!world.isClientSide()) {
 				if (originCoords.getY() == Integer.MIN_VALUE) {
 
 					setBindingCenter(lokiRing, hit);
@@ -96,7 +98,7 @@ public class RingOfLokiItem extends RelicBaubleItem implements WireframeCoordina
 							if (cursors.size() < MAX_NUM_CURSORS) {
 								cursors.add(relPos);
 							} else {
-								player.displayClientMessage(Component.translatable("botaniamisc.lokiRingLimitReached"), true);
+								player.sendOverlayMessage(Component.translatable("botaniamisc.lokiRingLimitReached"));
 							}
 						}
 						setCursorList(lokiRing, cursors);
@@ -148,7 +150,7 @@ public class RingOfLokiItem extends RelicBaubleItem implements WireframeCoordina
 	public static void breakOnAllCursors(Player player, ItemStack stack, BlockPos pos, Direction side) {
 		Item item = stack.getItem();
 		ItemStack lokiRing = getLokiRing(player);
-		if (lokiRing.isEmpty() || player.level().isClientSide || !(item instanceof SequentialBreaker breaker)) {
+		if (lokiRing.isEmpty() || player.level().isClientSide() || !(item instanceof SequentialBreaker breaker)) {
 			return;
 		}
 
@@ -178,12 +180,10 @@ public class RingOfLokiItem extends RelicBaubleItem implements WireframeCoordina
 	}
 
 	@Override
-	public void inventoryTick(ItemStack stack, Level world, Entity entity, int slot, boolean held) {
-		super.inventoryTick(stack, world, entity, slot, held);
+	public void inventoryTick(ItemStack stack, ServerLevel world, Entity entity, @Nullable EquipmentSlot eqSlot) {
+		super.inventoryTick(stack, world, entity, eqSlot);
 
-		if (slot >= 0) {
-			exitBindingMode(stack);
-		}
+		exitBindingMode(stack);
 	}
 
 	@Override
@@ -256,12 +256,12 @@ public class RingOfLokiItem extends RelicBaubleItem implements WireframeCoordina
 		CompoundTag cmp = ItemNBTHelper.getCompound(stack, TAG_CURSOR_LIST, false);
 		List<BlockPos> cursors = new ArrayList<>();
 
-		int count = cmp.getInt(TAG_CURSOR_COUNT);
+		int count = cmp.getIntOr(TAG_CURSOR_COUNT, 0);
 		for (int i = 0; i < count; i++) {
-			CompoundTag cursorCmp = cmp.getCompound(TAG_CURSOR_PREFIX + i);
-			int x = cursorCmp.getInt(TAG_X_OFFSET);
-			int y = cursorCmp.getInt(TAG_Y_OFFSET);
-			int z = cursorCmp.getInt(TAG_Z_OFFSET);
+			CompoundTag cursorCmp = cmp.getCompoundOrEmpty(TAG_CURSOR_PREFIX + i);
+			int x = cursorCmp.getIntOr(TAG_X_OFFSET, 0);
+			int y = cursorCmp.getIntOr(TAG_Y_OFFSET, 0);
+			int z = cursorCmp.getIntOr(TAG_Z_OFFSET, 0);
 			cursors.add(new BlockPos(x, y, z));
 		}
 

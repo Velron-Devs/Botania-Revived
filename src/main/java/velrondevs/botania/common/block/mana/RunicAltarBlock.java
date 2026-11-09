@@ -1,9 +1,12 @@
 package velrondevs.botania.common.block.mana;
 
+import net.minecraft.core.Direction;
+
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
@@ -47,9 +50,9 @@ public class RunicAltarBlock extends BotaniaWaterloggedBlock implements EntityBl
 	}
 
 	@Override
-	public ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+	public InteractionResult useItemOn(ItemStack stack, BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
 		if (!(world.getBlockEntity(pos) instanceof RunicAltarBlockEntity altar)) {
-			return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+			return InteractionResult.TRY_WITH_EMPTY_HAND;
 		}
 		boolean mainHandEmpty = player.getMainHandItem().isEmpty();
 
@@ -58,26 +61,21 @@ public class RunicAltarBlock extends BotaniaWaterloggedBlock implements EntityBl
 		} else if (!altar.isEmpty() && altar.manaToGet == 0 && mainHandEmpty) {
 			InventoryHelper.withdrawFromInventory(altar, player);
 			VanillaPacketDispatcher.dispatchTEToNearbyPlayers(altar);
-			return ItemInteractionResult.sidedSuccess(world.isClientSide());
+			return InteractionResult.SUCCESS;
 		} else if (!stack.isEmpty()) {
 			boolean result = altar.addItem(player, stack, hand);
 			VanillaPacketDispatcher.dispatchTEToNearbyPlayers(altar);
 			if (result) {
-				return ItemInteractionResult.sidedSuccess(world.isClientSide());
+				return InteractionResult.SUCCESS;
 			}
 		}
 
-		return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+		return InteractionResult.TRY_WITH_EMPTY_HAND;
 	}
 
 	@Override
-	public void onRemove(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull BlockState newState, boolean isMoving) {
-		if (!state.is(newState.getBlock())) {
-			if (world.getBlockEntity(pos) instanceof SimpleInventoryBlockEntity inventory) {
-				Containers.dropContents(world, pos, inventory.getItemHandler());
-			}
-			super.onRemove(state, world, pos, newState, isMoving);
-		}
+	protected void affectNeighborsAfterRemoval(BlockState state, ServerLevel level, BlockPos pos, boolean movedByPiston) {
+		Containers.updateNeighboursAfterDestroy(state, level, pos);
 	}
 
 	@NotNull
@@ -89,7 +87,7 @@ public class RunicAltarBlock extends BotaniaWaterloggedBlock implements EntityBl
 	@Nullable
 	@Override
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-		if (level.isClientSide) {
+		if (level.isClientSide()) {
 			return createTickerHelper(type, BotaniaBlockEntities.RUNE_ALTAR, RunicAltarBlockEntity::clientTick);
 		} else {
 			return createTickerHelper(type, BotaniaBlockEntities.RUNE_ALTAR, RunicAltarBlockEntity::serverTick);
@@ -102,7 +100,7 @@ public class RunicAltarBlock extends BotaniaWaterloggedBlock implements EntityBl
 	}
 
 	@Override
-	public int getAnalogOutputSignal(BlockState state, Level world, BlockPos pos) {
+	public int getAnalogOutputSignal(BlockState state, Level world, BlockPos pos, Direction direction) {
 		return world.getBlockEntity(pos) instanceof RunicAltarBlockEntity altar ? altar.signal : 0;
 	}
 

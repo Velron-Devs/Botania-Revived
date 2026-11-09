@@ -1,7 +1,6 @@
 package velrondevs.botania.datagen.providers.asgard;
 
 import net.minecraft.core.HolderLookup;
-import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 
@@ -11,10 +10,14 @@ public final class AsgardDatagen {
 	private AsgardDatagen() {}
 
 	public static void gatherData(GatherDataEvent evt, CompletableFuture<HolderLookup.Provider> lookup) {
-		DataGenerator generator = evt.getGenerator();
-		PackOutput output = generator.getPackOutput();
-		generator.addProvider(evt.includeServer(), new AsgardRecipeProvider(output, lookup));
-		generator.addProvider(evt.includeServer(), new AsgardLootProvider(output, lookup));
-		generator.addProvider(evt.includeClient(), new AsgardModelProvider(output));
+		PackOutput output = evt.getGenerator().getPackOutput();
+		if (evt instanceof GatherDataEvent.Server) {
+			evt.addProvider(new AsgardRecipeProvider(output, lookup));
+			evt.addProvider(new AsgardExtremeRecipeProvider(output));
+			evt.addProvider(new AsgardLootProvider(output, lookup));
+		}
+		if (evt instanceof GatherDataEvent.Client) {
+			evt.addProvider(new AsgardModelProvider(output));
+		}
 	}
 }

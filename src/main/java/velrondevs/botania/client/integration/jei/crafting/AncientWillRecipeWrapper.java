@@ -9,6 +9,9 @@ import mezz.jei.api.recipe.category.extensions.vanilla.crafting.ICraftingCategor
 
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.display.SlotDisplay;
+
+import velrondevs.botania.client.integration.jei.JeiSlotDisplays;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -24,6 +27,17 @@ import java.util.List;
 public class AncientWillRecipeWrapper implements ICraftingCategoryExtension<AncientWillRecipe> {
 
 	public AncientWillRecipeWrapper() {	}
+
+	@Override
+	public List<SlotDisplay> getIngredients(@NotNull RecipeHolder<AncientWillRecipe> recipeHolder) {
+		return JeiSlotDisplays.ofAll(List.of(List.of(new ItemStack(BotaniaItems.terrasteelHelm)), List.of(
+				new ItemStack(BotaniaItems.ancientWillAhrim),
+				new ItemStack(BotaniaItems.ancientWillDharok),
+				new ItemStack(BotaniaItems.ancientWillGuthan),
+				new ItemStack(BotaniaItems.ancientWillTorag),
+				new ItemStack(BotaniaItems.ancientWillVerac),
+				new ItemStack(BotaniaItems.ancientWillKaril))));
+	}
 
 	@Override
 	public void setRecipe(@NotNull RecipeHolder<AncientWillRecipe> recipeHolder, @NotNull IRecipeLayoutBuilder builder, @NotNull ICraftingGridHelper helper, @NotNull IFocusGroup focusGroup) {

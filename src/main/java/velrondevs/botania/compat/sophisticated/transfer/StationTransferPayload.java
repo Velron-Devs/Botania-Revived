@@ -6,13 +6,16 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
-import net.neoforged.neoforge.items.IItemHandlerModifiable;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.item.Items;
+import velrondevs.botania.compat.sophisticated.UpgradeSlots;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.neoforged.neoforge.network.handling.IPayloadHandler;
@@ -20,19 +23,19 @@ import net.p3pp3rf1y.sophisticatedcore.common.gui.StorageContainerMenuBase;
 import net.p3pp3rf1y.sophisticatedcore.util.InventoryHelper;
 
 import velrondevs.botania.common.lib.LibMisc;
-import velrondevs.botania.compat.sophisticated.StationUpgradeContainer;
+import net.p3pp3rf1y.sophisticatedcore.common.gui.UpgradeContainerBase;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public record StationTransferPayload(int containerId, int kind, ResourceLocation recipeId, ResourceLocation preferred, boolean max) implements CustomPacketPayload {
-	public static final Type<StationTransferPayload> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(LibMisc.MOD_ID, "station_transfer"));
+public record StationTransferPayload(int containerId, int kind, Identifier recipeId, Identifier preferred, boolean max) implements CustomPacketPayload {
+	public static final Type<StationTransferPayload> TYPE = new Type<>(Identifier.fromNamespaceAndPath(LibMisc.MOD_ID, "station_transfer"));
 	public static final StreamCodec<RegistryFriendlyByteBuf, StationTransferPayload> STREAM_CODEC = StreamCodec.composite(
 			ByteBufCodecs.VAR_INT, StationTransferPayload::containerId,
 			ByteBufCodecs.VAR_INT, StationTransferPayload::kind,
-			ResourceLocation.STREAM_CODEC, StationTransferPayload::recipeId,
-			ResourceLocation.STREAM_CODEC, StationTransferPayload::preferred,
+			Identifier.STREAM_CODEC, StationTransferPayload::recipeId,
+			Identifier.STREAM_CODEC, StationTransferPayload::preferred,
 			ByteBufCodecs.BOOL, StationTransferPayload::max,
 			StationTransferPayload::new);
 
@@ -59,38 +62,39 @@ public record StationTransferPayload(int containerId, int kind, ResourceLocation
 		if (stationKind == null) {
 			return;
 		}
-		Optional<StationUpgradeContainer<?, ?>> container = StationTransfer.find(menu, stationKind);
+		Optional<UpgradeContainerBase<?, ?>> container = StationTransfer.find(menu, stationKind);
 		if (container.isEmpty()) {
 			notify(player, stationKind.missingUpgradeKey());
 			return;
 		}
-		Optional<RecipeHolder<?>> holder = player.serverLevel().getRecipeManager().byKey(recipeId);
+		Optional<RecipeHolder<?>> holder = player.level().recipeAccess().byKey(ResourceKey.create(Registries.RECIPE, recipeId));
 		if (holder.isEmpty() || !stationKind.acceptsRecipe(holder.get().value())) {
 			notify(player, "gui.botania.sophisticated.transfer.invalid");
 			return;
 		}
-		Item preferredItem = BuiltInRegistries.ITEM.get(preferred);
+		Item preferredItem = BuiltInRegistries.ITEM.getOptional(preferred).orElse(Items.AIR);
 		List<StationTransfer.Need> needs = StationTransfer.needs(stationKind, holder.get().value(), preferredItem);
 		if (needs == null) {
 			notify(player, "gui.botania.sophisticated.transfer.invalid");
 			return;
 		}
 		boolean multi = stationKind == StationKind.ELVEN_PORTAL;
-		IItemHandlerModifiable target = container.get().getUpgradeWrapper().getInventory();
+		UpgradeSlots target = StationTransfer.inventory(container.get());
+		boolean[] managed = StationTransfer.managed(stationKind, needs, target.getSlots());
 		List<Slot> sources = StationTransfer.sources(menu, player);
-		StationTransfer.Plan check = StationTransfer.plan(needs, StationTransfer.snapshot(sources), target, multi, max, true);
+		StationTransfer.Plan check = StationTransfer.plan(needs, StationTransfer.snapshot(sources), target, multi, max, true, managed);
 		if (!check.ok()) {
 			notify(player, "gui.botania.sophisticated.transfer.missing");
 			return;
 		}
 		for (int slot = 0; slot < target.getSlots(); slot++) {
 			ItemStack current = target.getStackInSlot(slot);
-			if (!check.kept()[slot] && !current.isEmpty()) {
+			if (managed[slot] && !check.kept()[slot] && !current.isEmpty()) {
 				target.setStackInSlot(slot, ItemStack.EMPTY);
 				giveBack(menu, player, current.copy());
 			}
 		}
-		StationTransfer.Plan plan = StationTransfer.plan(needs, StationTransfer.snapshot(sources), target, multi, max, false);
+		StationTransfer.Plan plan = StationTransfer.plan(needs, StationTransfer.snapshot(sources), target, multi, max, false, managed);
 		if (!plan.ok()) {
 			notify(player, "gui.botania.sophisticated.transfer.missing");
 			return;
@@ -129,7 +133,8 @@ public record StationTransferPayload(int containerId, int kind, ResourceLocation
 		ItemStack rest = stack;
 		player.getInventory().add(rest);
 		if (!rest.isEmpty()) {
-			rest = InventoryHelper.insertIntoInventory(rest, menu.getStorageWrapper().getInventoryForUpgradeProcessing(), false);
+			int inserted = InventoryHelper.insert(menu.getStorageWrapper().getInventoryForUpgradeProcessing(), rest);
+			rest = rest.copyWithCount(rest.getCount() - inserted);
 		}
 		if (!rest.isEmpty()) {
 			player.drop(rest, false);
@@ -137,6 +142,6 @@ public record StationTransferPayload(int containerId, int kind, ResourceLocation
 	}
 
 	private static void notify(ServerPlayer player, String key) {
-		player.displayClientMessage(Component.translatable(key), true);
+		player.sendOverlayMessage(Component.translatable(key));
 	}
 }

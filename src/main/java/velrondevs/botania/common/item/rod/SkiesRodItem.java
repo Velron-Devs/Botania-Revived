@@ -1,10 +1,13 @@
 package velrondevs.botania.common.item.rod;
 
-import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.Nullable;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -39,7 +42,7 @@ import java.util.UUID;
 
 public class SkiesRodItem extends Item {
 
-	private static final ResourceLocation avatarOverlay = ResourceLocation.parse(ResourcesLib.MODEL_AVATAR_TORNADO);
+	private static final Identifier avatarOverlay = Identifier.parse(ResourcesLib.MODEL_AVATAR_TORNADO);
 
 	private static final int FLY_TIME = 20;
 	private static final int FALL_MULTIPLIER = 3;
@@ -54,7 +57,7 @@ public class SkiesRodItem extends Item {
 	}
 
 	@Override
-	public void inventoryTick(ItemStack stack, Level world, Entity ent, int slot, boolean active) {
+	public void inventoryTick(ItemStack stack, ServerLevel world, Entity ent, @Nullable EquipmentSlot eqSlot) {
 		if (ent instanceof Player player) {
 			boolean damaged = getFlyCounter(stack) > 0;
 			boolean held = player.getMainHandItem() == stack || player.getOffhandItem() == stack;
@@ -125,17 +128,17 @@ public class SkiesRodItem extends Item {
 
 	@NotNull
 	@Override
-	public InteractionResultHolder<ItemStack> use(Level world, Player player, @NotNull InteractionHand hand) {
+	public InteractionResult use(Level world, Player player, @NotNull InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
 		int fly = getFlyCounter(stack);
 		if (fly == 0 && ManaItemHandler.instance().requestManaExactForTool(stack, player, COST, false)) {
 			ManaItemHandler.instance().requestManaExactForTool(stack, player, COST, true);
 			setFlying(stack, true);
 			player.gameEvent(GameEvent.ITEM_INTERACT_FINISH);
-			return InteractionResultHolder.sidedSuccess(stack, world.isClientSide());
+			return InteractionResult.SUCCESS;
 		}
 
-		return InteractionResultHolder.pass(stack);
+		return InteractionResult.PASS;
 	}
 
 	public static boolean isFlying(ItemStack stack) {
@@ -162,10 +165,10 @@ public class SkiesRodItem extends Item {
 			Map<UUID, Integer> cooldowns = tile.getBoostCooldowns();
 			ManaReceiver receiver = XplatAbstractions.INSTANCE.findManaReceiver(world, te.getBlockPos(), te.getBlockState(), te, null);
 
-			if (!world.isClientSide) {
+			if (!world.isClientSide()) {
 				decAvatarCooldowns(cooldowns);
 			}
-			if (!world.isClientSide && receiver.getCurrentMana() >= COST && tile.isEnabled()) {
+			if (!world.isClientSide() && receiver.getCurrentMana() >= COST && tile.isEnabled()) {
 				double range = 5.5;
 				double rangeY = 3.5;
 				List<Player> players = world.getEntitiesOfClass(Player.class, new AABB(
@@ -193,7 +196,7 @@ public class SkiesRodItem extends Item {
 		}
 
 		@Override
-		public ResourceLocation getOverlayResource(Avatar tile) {
+		public Identifier getOverlayResource(Avatar tile) {
 			return avatarOverlay;
 		}
 	}
@@ -205,7 +208,7 @@ public class SkiesRodItem extends Item {
 				p.getDeltaMovement().y() + lookDir.y() * mult,
 				p.getDeltaMovement().z() + lookDir.z() * mult);
 
-		if (!world.isClientSide) {
+		if (!world.isClientSide()) {
 			XplatAbstractions.INSTANCE.sendToPlayer(p, new AvatarSkiesRodPacket(true));
 			XplatAbstractions.INSTANCE.sendToTracking(p,
 					new BotaniaEffectPacket(EffectType.AVATAR_TORNADO_BOOST,
@@ -217,7 +220,7 @@ public class SkiesRodItem extends Item {
 	public static void doAvatarJump(Player p, Level world) {
 		p.setDeltaMovement(p.getDeltaMovement().x(), 2.8, p.getDeltaMovement().z());
 
-		if (!world.isClientSide) {
+		if (!world.isClientSide()) {
 			XplatAbstractions.INSTANCE.sendToPlayer(p, new AvatarSkiesRodPacket(false));
 			XplatAbstractions.INSTANCE.sendToTracking(p,
 					new BotaniaEffectPacket(EffectType.AVATAR_TORNADO_JUMP,

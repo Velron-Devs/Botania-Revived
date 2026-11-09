@@ -1,13 +1,19 @@
 package velrondevs.botania.registry;
 
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeInput;
+import net.minecraft.world.item.crafting.RecipeMap;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.server.ServerLifecycleHooks;
+
+import org.jetbrains.annotations.Nullable;
 
 import velrondevs.botania.api.recipe.*;
 import velrondevs.botania.common.crafting.BotanicalBreweryRecipe;
@@ -25,47 +31,52 @@ import velrondevs.botania.common.crafting.recipe.HeadRecipe;
 import velrondevs.botania.common.crafting.recipe.NoOpRecipeSerializer;
 import velrondevs.botania.common.crafting.recipe.StateCopyingPureDaisyRecipe;
 
+import java.util.Collection;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.BiConsumer;
 
 import static velrondevs.botania.common.lib.ResourceLocationHelper.prefix;
 
 public class BotaniaRecipeTypes {
 	public static final RecipeType<velrondevs.botania.api.recipe.ManaInfusionRecipe> MANA_INFUSION_TYPE = new ModRecipeType<>();
-	public static final RecipeSerializer<ManaInfusionRecipe> MANA_INFUSION_SERIALIZER = new ManaInfusionRecipe.Serializer();
+	public static final RecipeSerializer<ManaInfusionRecipe> MANA_INFUSION_SERIALIZER = new ManaInfusionRecipe.Serializer().toVanilla();
 
 	public static final RecipeType<velrondevs.botania.api.recipe.ElvenTradeRecipe> ELVEN_TRADE_TYPE = new ModRecipeType<>();
-	public static final RecipeSerializer<ElvenTradeRecipe> ELVEN_TRADE_SERIALIZER = new ElvenTradeRecipe.Serializer();
-	public static final RecipeSerializer<LexiconElvenTradeRecipe> LEXICON_ELVEN_TRADE_SERIALIZER = new NoOpRecipeSerializer<>(LexiconElvenTradeRecipe::new);
+	public static final RecipeSerializer<ElvenTradeRecipe> ELVEN_TRADE_SERIALIZER = new ElvenTradeRecipe.Serializer().toVanilla();
+	public static final RecipeSerializer<LexiconElvenTradeRecipe> LEXICON_ELVEN_TRADE_SERIALIZER = new NoOpRecipeSerializer<>(LexiconElvenTradeRecipe::new).toVanilla();
 
 	public static final RecipeType<velrondevs.botania.api.recipe.PureDaisyRecipe> PURE_DAISY_TYPE = new ModRecipeType<>();
-	public static final RecipeSerializer<PureDaisyRecipe> PURE_DAISY_SERIALIZER = new PureDaisyRecipe.Serializer();
-	public static final RecipeSerializer<StateCopyingPureDaisyRecipe> COPYING_PURE_DAISY_SERIALIZER = new StateCopyingPureDaisyRecipe.Serializer();
+	public static final RecipeSerializer<PureDaisyRecipe> PURE_DAISY_SERIALIZER = new PureDaisyRecipe.Serializer().toVanilla();
+	public static final RecipeSerializer<StateCopyingPureDaisyRecipe> COPYING_PURE_DAISY_SERIALIZER = new StateCopyingPureDaisyRecipe.Serializer().toVanilla();
 
 	public static final RecipeType<velrondevs.botania.api.recipe.BotanicalBreweryRecipe> BREW_TYPE = new ModRecipeType<>();
-	public static final RecipeSerializer<BotanicalBreweryRecipe> BREW_SERIALIZER = new BotanicalBreweryRecipe.Serializer();
+	public static final RecipeSerializer<BotanicalBreweryRecipe> BREW_SERIALIZER = new BotanicalBreweryRecipe.Serializer().toVanilla();
 
 	public static final RecipeType<PetalApothecaryRecipe> PETAL_TYPE = new ModRecipeType<>();
-	public static final RecipeSerializer<PetalsRecipe> PETAL_SERIALIZER = new PetalsRecipe.Serializer();
+	public static final RecipeSerializer<PetalsRecipe> PETAL_SERIALIZER = new PetalsRecipe.Serializer().toVanilla();
 
 	public static final RecipeType<velrondevs.botania.api.recipe.RunicAltarRecipe> RUNE_TYPE = new ModRecipeType<>();
-	public static final RecipeSerializer<RunicAltarRecipe> RUNE_SERIALIZER = new RunicAltarRecipe.Serializer<>(RunicAltarRecipe::new);
-	public static final RecipeSerializer<HeadRecipe> RUNE_HEAD_SERIALIZER = new HeadRecipe.Serializer();
+	public static final RecipeSerializer<RunicAltarRecipe> RUNE_SERIALIZER = new RunicAltarRecipe.Serializer<>(RunicAltarRecipe::new).toVanilla();
+	public static final RecipeSerializer<HeadRecipe> RUNE_HEAD_SERIALIZER = new HeadRecipe.Serializer().toVanilla();
 
 	public static final RecipeType<TerrestrialAgglomerationRecipe> TERRA_PLATE_TYPE = new ModRecipeType<>();
-	public static final RecipeSerializer<RecipeTerraPlate> TERRA_PLATE_SERIALIZER = new RecipeTerraPlate.Serializer();
+	public static final RecipeSerializer<RecipeTerraPlate> TERRA_PLATE_SERIALIZER = new RecipeTerraPlate.Serializer().toVanilla();
 
 	public static final RecipeType<OrechidRecipe> ORECHID_TYPE = new ModRecipeType<>();
-	public static final RecipeSerializer<OrechidRecipe> ORECHID_SERIALIZER = new OrechidRecipe.Serializer();
+	public static final RecipeSerializer<OrechidRecipe> ORECHID_SERIALIZER = new OrechidRecipe.Serializer().toVanilla();
 
 	public static final RecipeType<OrechidIgnemRecipe> ORECHID_IGNEM_TYPE = new ModRecipeType<>();
-	public static final RecipeSerializer<OrechidIgnemRecipe> ORECHID_IGNEM_SERIALIZER = new OrechidIgnemRecipe.Serializer();
+	public static final RecipeSerializer<OrechidIgnemRecipe> ORECHID_IGNEM_SERIALIZER = new OrechidIgnemRecipe.Serializer().toVanilla();
 
 	public static final RecipeType<MarimorphosisRecipe> MARIMORPHOSIS_TYPE = new ModRecipeType<>();
-	public static final RecipeSerializer<MarimorphosisRecipe> MARIMORPHOSIS_SERIALIZER = new MarimorphosisRecipe.Serializer();
+	public static final RecipeSerializer<MarimorphosisRecipe> MARIMORPHOSIS_SERIALIZER = new MarimorphosisRecipe.Serializer().toVanilla();
 
-	public static void submitRecipeTypes(BiConsumer<RecipeType<?>, ResourceLocation> r) {
+	private static volatile RecipeMap clientRecipes = RecipeMap.EMPTY;
+
+	public static void submitRecipeTypes(BiConsumer<RecipeType<?>, Identifier> r) {
 		r.accept(ELVEN_TRADE_TYPE, velrondevs.botania.api.recipe.ElvenTradeRecipe.TYPE_ID);
 		r.accept(MANA_INFUSION_TYPE, velrondevs.botania.api.recipe.ManaInfusionRecipe.TYPE_ID);
 		r.accept(PURE_DAISY_TYPE, velrondevs.botania.api.recipe.PureDaisyRecipe.TYPE_ID);
@@ -78,7 +89,7 @@ public class BotaniaRecipeTypes {
 		r.accept(MARIMORPHOSIS_TYPE, velrondevs.botania.api.recipe.OrechidRecipe.MARIMORPHOSIS_TYPE_ID);
 	}
 
-	public static void submitRecipeSerializers(BiConsumer<RecipeSerializer<?>, ResourceLocation> r) {
+	public static void submitRecipeSerializers(BiConsumer<RecipeSerializer<?>, Identifier> r) {
 		r.accept(ELVEN_TRADE_SERIALIZER, velrondevs.botania.api.recipe.ElvenTradeRecipe.TYPE_ID);
 		r.accept(LEXICON_ELVEN_TRADE_SERIALIZER, prefix("elven_trade_lexicon"));
 		r.accept(MANA_INFUSION_SERIALIZER, velrondevs.botania.api.recipe.ManaInfusionRecipe.TYPE_ID);
@@ -94,6 +105,34 @@ public class BotaniaRecipeTypes {
 		r.accept(MARIMORPHOSIS_SERIALIZER, velrondevs.botania.api.recipe.OrechidRecipe.MARIMORPHOSIS_TYPE_ID);
 	}
 
+	public static List<RecipeType<?>> syncedTypes() {
+		return List.of(MANA_INFUSION_TYPE, ELVEN_TRADE_TYPE, PURE_DAISY_TYPE, BREW_TYPE, PETAL_TYPE, RUNE_TYPE,
+				TERRA_PLATE_TYPE, ORECHID_TYPE, ORECHID_IGNEM_TYPE, MARIMORPHOSIS_TYPE);
+	}
+
+	public static void setClientRecipes(RecipeMap recipes) {
+		clientRecipes = recipes;
+	}
+
+	public static RecipeMap recipeMap(@Nullable Level level) {
+		if (level instanceof ServerLevel serverLevel) {
+			return serverLevel.recipeAccess().recipeMap();
+		}
+		if (level != null && level.isClientSide()) {
+			return clientRecipes;
+		}
+		MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
+		return server != null ? server.getRecipeManager().recipeMap() : clientRecipes;
+	}
+
+	public static <I extends RecipeInput, T extends Recipe<I>> Collection<RecipeHolder<T>> getAllRecipesFor(@Nullable Level level, RecipeType<T> type) {
+		return recipeMap(level).byType(type);
+	}
+
+	public static <I extends RecipeInput, T extends Recipe<I>> Optional<RecipeHolder<T>> getRecipeFor(Level level, RecipeType<T> type, I input) {
+		return recipeMap(level).getRecipesFor(type, input, level).findFirst();
+	}
+
 	private static class ModRecipeType<T extends Recipe<?>> implements RecipeType<T> {
 		@Override
 		public String toString() {
@@ -101,10 +140,10 @@ public class BotaniaRecipeTypes {
 		}
 	}
 
-	public static <I extends RecipeInput, T extends Recipe<I>> Map<ResourceLocation, T> getRecipes(Level world, RecipeType<T> type) {
-		Map<ResourceLocation, T> map = new LinkedHashMap<>();
-		for (RecipeHolder<T> holder : world.getRecipeManager().getAllRecipesFor(type)) {
-			map.put(holder.id(), holder.value());
+	public static <I extends RecipeInput, T extends Recipe<I>> Map<Identifier, T> getRecipes(@Nullable Level world, RecipeType<T> type) {
+		Map<Identifier, T> map = new LinkedHashMap<>();
+		for (RecipeHolder<T> holder : getAllRecipesFor(world, type)) {
+			map.put(holder.id().identifier(), holder.value());
 		}
 		return map;
 	}

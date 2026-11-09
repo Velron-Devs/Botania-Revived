@@ -5,15 +5,13 @@ import com.mojang.serialization.MapCodec;
 
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.storage.loot.LootContext;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParam;
+import net.minecraft.util.context.ContextKey;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
-import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType;
 
 import org.jetbrains.annotations.NotNull;
 
 import velrondevs.botania.common.helper.PlayerHelper;
-import velrondevs.botania.registry.BotaniaLootModifiers;
 
 import java.util.Set;
 
@@ -25,19 +23,19 @@ public class RealPlayerCondition implements LootItemCondition {
 
 	@Override
 	public boolean test(LootContext lootContext) {
-		Player player = lootContext.getParamOrNull(LootContextParams.LAST_DAMAGE_PLAYER);
+		Player player = lootContext.getOptionalParameter(LootContextParams.LAST_DAMAGE_PLAYER);
 		return PlayerHelper.isTruePlayer(player);
 	}
 
 	@NotNull
 	@Override
-	public Set<LootContextParam<?>> getReferencedContextParams() {
+	public Set<ContextKey<?>> getReferencedContextParams() {
 		return ImmutableSet.of(LootContextParams.LAST_DAMAGE_PLAYER);
 	}
 
 	@NotNull
 	@Override
-	public LootItemConditionType getType() {
-		return BotaniaLootModifiers.KILLED_BY_REAL_PLAYER;
+	public MapCodec<? extends LootItemCondition> codec() {
+		return CODEC;
 	}
 }

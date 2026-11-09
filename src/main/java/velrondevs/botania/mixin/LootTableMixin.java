@@ -19,8 +19,8 @@ public class LootTableMixin {
 	@ModifyVariable(method = "getRandomItemsRaw(Lnet/minecraft/world/level/storage/loot/LootContext;Ljava/util/function/Consumer;)V", at = @At("HEAD"), argsOnly = true)
 	private Consumer<ItemStack> filterDisposables(Consumer<ItemStack> inner, LootContext context) {
 		return stack -> {
-			Entity e = context.getParamOrNull(LootContextParams.THIS_ENTITY);
-			ItemStack tool = context.getParamOrNull(LootContextParams.TOOL);
+			Entity e = context.getOptionalParameter(LootContextParams.THIS_ENTITY);
+			ItemStack tool = context.getOptionalParameter(LootContextParams.TOOL) instanceof ItemStack toolStack ? toolStack : null;
 			if (e != null && tool != null) {
 				if (ElementiumPickaxeItem.shouldFilterOut(e, tool, stack)) {
 					return;

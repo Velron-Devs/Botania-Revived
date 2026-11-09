@@ -3,18 +3,19 @@ package velrondevs.botania.datagen.providers.tags;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.tags.TagsProvider;
+import net.minecraft.data.tags.KeyTagProvider;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.world.level.biome.Biome;
 import net.neoforged.neoforge.common.Tags;
 
+import velrondevs.botania.common.lib.LibMisc;
 import velrondevs.botania.common.lib.BotaniaTags;
 
 import java.util.concurrent.CompletableFuture;
 
-public class BiomeTagProvider extends TagsProvider<Biome> {
+public class BiomeTagProvider extends KeyTagProvider<Biome> {
 	public BiomeTagProvider(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> lookupProvider) {
-		super(packOutput, Registries.BIOME, lookupProvider);
+		super(packOutput, Registries.BIOME, lookupProvider, LibMisc.MOD_ID);
 	}
 
 	@Override

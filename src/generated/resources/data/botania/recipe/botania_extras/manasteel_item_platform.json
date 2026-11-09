@@ -8,19 +8,14 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "N": {
-      "tag": "botania:manasteel_nuggets"
-    },
-    "W": {
-      "item": "botania:livingwood_slab"
-    }
+    "N": "#botania:manasteel_nuggets",
+    "W": "botania:livingwood_slab"
   },
   "pattern": [
     "N",
     "W"
   ],
   "result": {
-    "count": 1,
     "id": "botania:manasteel_item_platform"
   }
 }

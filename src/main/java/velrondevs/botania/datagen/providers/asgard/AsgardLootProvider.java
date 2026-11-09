@@ -54,7 +54,7 @@ public class AsgardLootProvider implements DataProvider {
 				LootTable table = builder.setParamSet(LootContextParamSets.BLOCK).build();
 				JsonElement json = LootTable.DIRECT_CODEC.encodeStart(ops, table).getOrThrow();
 				ICondition.writeConditions(ops, json.getAsJsonObject(), List.of(condition));
-				futures.add(DataProvider.saveStable(cache, json, pathProvider.json(key.location())));
+				futures.add(DataProvider.saveStable(cache, json, pathProvider.json(key.identifier())));
 			});
 			return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
 		});

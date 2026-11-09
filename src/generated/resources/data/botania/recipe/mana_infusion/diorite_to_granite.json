@@ -5,12 +5,9 @@
     "block": "botania:alchemy_catalyst"
   },
   "group": "botania:stone_cycle",
-  "input": {
-    "item": "minecraft:diorite"
-  },
+  "input": "minecraft:diorite",
   "mana": 200,
   "output": {
-    "count": 1,
     "id": "minecraft:granite"
   }
 }

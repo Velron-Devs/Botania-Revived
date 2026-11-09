@@ -23,12 +23,8 @@
   "type": "sophisticatedstorage:storage_tier_upgrade",
   "category": "misc",
   "key": {
-    "I": {
-      "tag": "botania:manasteel_ingots"
-    },
-    "S": {
-      "item": "sophisticatedatm:unobtainium_barrel"
-    }
+    "I": "#botania:manasteel_ingots",
+    "S": "sophisticatedatm:unobtainium_barrel"
   },
   "pattern": [
     "III",

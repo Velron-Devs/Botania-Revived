@@ -1,16 +1,20 @@
 package velrondevs.botania.common.item;
 
+import net.minecraft.world.entity.player.Inventory;
+import java.util.function.Consumer;
+import net.minecraft.world.item.component.TooltipDisplay;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.entity.player.Player;
@@ -49,15 +53,15 @@ public class BlackHoleTalismanItem extends Item {
 
 	@NotNull
 	@Override
-	public InteractionResultHolder<ItemStack> use(Level world, Player player, @NotNull InteractionHand hand) {
+	public InteractionResult use(Level world, Player player, @NotNull InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
 		if (getBlock(stack) != null && player.isSecondaryUseActive()) {
 			ItemNBTHelper.setBoolean(stack, TAG_ACTIVE, !ItemNBTHelper.getBoolean(stack, TAG_ACTIVE, false));
 			player.playSound(BotaniaSounds.blackHoleTalismanConfigure, 1F, 1F);
-			return InteractionResultHolder.sidedSuccess(stack, world.isClientSide());
+			return InteractionResult.SUCCESS;
 		}
 
-		return InteractionResultHolder.pass(stack);
+		return InteractionResult.PASS;
 	}
 
 	@NotNull
@@ -71,7 +75,7 @@ public class BlackHoleTalismanItem extends Item {
 		ItemStack stack = ctx.getItemInHand();
 
 		if (!state.isAir() && setBlock(stack, state.getBlock())) {
-			return InteractionResult.sidedSuccess(world.isClientSide());
+			return InteractionResult.SUCCESS;
 		} else {
 			Block bBlock = getBlock(stack);
 
@@ -80,7 +84,7 @@ public class BlackHoleTalismanItem extends Item {
 			}
 
 			if (world.getBlockEntity(pos) instanceof Container container) {
-				if (!world.isClientSide) {
+				if (!world.isClientSide()) {
 					ItemStack toAdd = new ItemStack(bBlock);
 					int maxSize = toAdd.getMaxStackSize();
 					toAdd.setCount(remove(stack, maxSize));
@@ -89,14 +93,14 @@ public class BlackHoleTalismanItem extends Item {
 						add(stack, remainder.getCount());
 					}
 				}
-				return InteractionResult.sidedSuccess(world.isClientSide());
+				return InteractionResult.SUCCESS;
 			} else {
 				if (player == null || player.getAbilities().instabuild || getBlockCount(stack) > 0) {
 					ItemStack toUse = new ItemStack(bBlock);
 					InteractionResult result = PlayerHelper.substituteUse(ctx, toUse);
 
 					if (result.consumesAction()) {
-						if (!world.isClientSide) {
+						if (!world.isClientSide()) {
 							remove(stack, 1);
 							ItemsRemainingRenderHandler.send(player, toUse, getBlockCount(stack));
 						}
@@ -110,9 +114,9 @@ public class BlackHoleTalismanItem extends Item {
 	}
 
 	@Override
-	public void inventoryTick(ItemStack itemstack, Level world, Entity entity, int slot, boolean selected) {
+	public void inventoryTick(ItemStack itemstack, ServerLevel world, Entity entity, @Nullable EquipmentSlot eqSlot) {
 		Block block = getBlock(itemstack);
-		if (!entity.level().isClientSide && ItemNBTHelper.getBoolean(itemstack, TAG_ACTIVE, false) && block != null) {
+		if (!entity.level().isClientSide() && ItemNBTHelper.getBoolean(itemstack, TAG_ACTIVE, false) && block != null) {
 			if (entity instanceof Player player) {
 				suckFromPlayerInv(itemstack, block, player);
 			}
@@ -121,7 +125,7 @@ public class BlackHoleTalismanItem extends Item {
 
 	private static void suckFromPlayerInv(ItemStack talisman, Block toTake, Player player) {
 		int highestIdx = -1;
-		int[] counts = new int[player.getInventory().getContainerSize() - player.getInventory().armor.size()];
+		int[] counts = new int[Inventory.INVENTORY_SIZE];
 
 		for (int i = 0; i < counts.length; i++) {
 			ItemStack stack = player.getInventory().getItem(i);
@@ -184,17 +188,17 @@ public class BlackHoleTalismanItem extends Item {
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext world, List<Component> stacks, TooltipFlag flags) {
+	public void appendHoverText(ItemStack stack, TooltipContext world, TooltipDisplay tooltipDisplay, Consumer<Component> stacks, TooltipFlag flags) {
 		Block block = getBlock(stack);
 		if (block != null) {
 			int count = getBlockCount(stack);
-			stacks.add(Component.literal(count + " ").append(new ItemStack(block).getHoverName()).withStyle(ChatFormatting.GRAY));
+			stacks.accept(Component.literal(count + " ").append(new ItemStack(block).getHoverName()).withStyle(ChatFormatting.GRAY));
 		}
 
 		if (ItemNBTHelper.getBoolean(stack, TAG_ACTIVE, false)) {
-			stacks.add(Component.translatable("botaniamisc.active"));
+			stacks.accept(Component.translatable("botaniamisc.active"));
 		} else {
-			stacks.add(Component.translatable("botaniamisc.inactive"));
+			stacks.accept(Component.translatable("botaniamisc.inactive"));
 		}
 	}
 
@@ -215,7 +219,7 @@ public class BlackHoleTalismanItem extends Item {
 
 	@Nullable
 	public static Block getBlock(ItemStack stack) {
-		ResourceLocation id = ResourceLocation.tryParse(getBlockName(stack));
+		Identifier id = Identifier.tryParse(getBlockName(stack));
 		if (id != null) {
 			return BuiltInRegistries.BLOCK.getOptional(id).orElse(null);
 		}

@@ -3,12 +3,9 @@
   "category": "misc",
   "group": "botania:dye",
   "ingredients": [
-    {
-      "tag": "botania:petals/red"
-    }
+    "#botania:petals/red"
   ],
   "result": {
-    "count": 1,
     "id": "minecraft:red_dye"
   }
 }

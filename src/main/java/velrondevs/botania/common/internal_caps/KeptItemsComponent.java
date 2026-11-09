@@ -1,5 +1,6 @@
 package velrondevs.botania.common.internal_caps;
 
+import velrondevs.botania.common.helper.ItemNBTHelper;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -24,9 +25,9 @@ public class KeptItemsComponent extends SerializableComponent {
 	@Override
 	public void readFromNbt(CompoundTag tag, HolderLookup.Provider registries) {
 		stacks.clear();
-		ListTag list = tag.getList("stacks", Tag.TAG_COMPOUND);
+		ListTag list = tag.getListOrEmpty("stacks");
 		for (Tag t : list) {
-			stacks.add(ItemStack.parseOptional(registries, (CompoundTag) t));
+			stacks.add(ItemNBTHelper.parseStack(registries, t));
 		}
 	}
 
@@ -34,7 +35,7 @@ public class KeptItemsComponent extends SerializableComponent {
 	public void writeToNbt(CompoundTag tag, HolderLookup.Provider registries) {
 		ListTag list = new ListTag();
 		for (ItemStack stack : stacks) {
-			list.add(stack.saveOptional(registries));
+			list.add(ItemNBTHelper.saveStack(registries, stack));
 		}
 		tag.put("stacks", list);
 	}

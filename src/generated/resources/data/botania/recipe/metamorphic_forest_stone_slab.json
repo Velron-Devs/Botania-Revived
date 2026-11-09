@@ -3,9 +3,7 @@
   "category": "building",
   "group": "botania:metamorphic_stone_slab",
   "key": {
-    "Q": {
-      "item": "botania:metamorphic_forest_stone"
-    }
+    "Q": "botania:metamorphic_forest_stone"
   },
   "pattern": [
     "QQQ"

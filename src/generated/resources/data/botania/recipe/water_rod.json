@@ -3,14 +3,16 @@
   "category": "equipment",
   "key": {
     "B": {
-      "item": "minecraft:potion"
+      "neoforge:ingredient_type": "neoforge:components",
+      "components": {
+        "minecraft:potion_contents": {
+          "potion": "minecraft:water"
+        }
+      },
+      "items": "minecraft:potion"
     },
-    "R": {
-      "item": "botania:rune_water"
-    },
-    "T": {
-      "item": "botania:livingwood_twig"
-    }
+    "R": "botania:rune_water",
+    "T": "botania:livingwood_twig"
   },
   "pattern": [
     "  B",
@@ -18,7 +20,6 @@
     "R  "
   ],
   "result": {
-    "count": 1,
     "id": "botania:water_rod"
   }
 }

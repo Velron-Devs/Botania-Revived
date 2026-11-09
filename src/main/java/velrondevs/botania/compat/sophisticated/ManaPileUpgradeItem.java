@@ -5,16 +5,20 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.items.IItemHandlerModifiable;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
+
+import org.jspecify.annotations.Nullable;
 import net.p3pp3rf1y.sophisticatedcore.api.IStashStorageItem;
 import net.p3pp3rf1y.sophisticatedcore.api.IStorageWrapper;
-import net.p3pp3rf1y.sophisticatedcore.init.ModCoreDataComponents;
 import net.p3pp3rf1y.sophisticatedcore.inventory.InventoryHandler;
-import net.p3pp3rf1y.sophisticatedcore.inventory.StatefulComponentItemHandler;
 import net.p3pp3rf1y.sophisticatedcore.upgrades.IStackableContentsUpgrade;
 import net.p3pp3rf1y.sophisticatedcore.upgrades.ITickableUpgrade;
 import net.p3pp3rf1y.sophisticatedcore.upgrades.IUpgradeItem;
@@ -24,17 +28,20 @@ import net.p3pp3rf1y.sophisticatedcore.upgrades.UpgradeWrapperBase;
 
 import velrondevs.botania.api.mana.ManaItem;
 import velrondevs.botania.api.mana.ManaItemHandler;
+import velrondevs.botania.api.recipe.ManaInfusionRecipe;
+import velrondevs.botania.registry.BotaniaRecipeTypes;
 import velrondevs.botania.xplat.XplatAbstractions;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 public class ManaPileUpgradeItem extends UpgradeItemBase<ManaPileUpgradeItem.Wrapper> {
 	public static final UpgradeType<Wrapper> TYPE = new UpgradeType<>(Wrapper::new);
 
 	public ManaPileUpgradeItem() {
-		super(UpgradeLimits.of(SophisticatedConfig::pileMaxPerStorage));
+		super(UpgradeLimits.of(SophisticatedConfig::pileMaxPerStorage), new Item.Properties());
 	}
 
 	@Override
@@ -48,10 +55,15 @@ public class ManaPileUpgradeItem extends UpgradeItemBase<ManaPileUpgradeItem.Wra
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
-		super.appendHoverText(stack, context, tooltip, flag);
+	public int getInventoryColumnsTaken() {
+		return 2;
+	}
+
+	@Override
+	public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay display, Consumer<Component> tooltip, TooltipFlag flag) {
+		super.appendHoverText(stack, context, display, tooltip, flag);
 		int mana = stack.getOrDefault(SophisticatedComponents.MANA, 0);
-		tooltip.add(Component.translatable("botania.sophisticated.stored_mana", String.format("%,d", mana)).withStyle(ChatFormatting.AQUA));
+		tooltip.accept(Component.translatable("botania.sophisticated.stored_mana", String.format("%,d", mana)).withStyle(ChatFormatting.AQUA));
 	}
 
 	public static int capacityFor(IStorageWrapper storage) {
@@ -125,15 +137,55 @@ public class ManaPileUpgradeItem extends UpgradeItemBase<ManaPileUpgradeItem.Wra
 	}
 
 	public static class Wrapper extends UpgradeWrapperBase<Wrapper, ManaPileUpgradeItem> implements ITickableUpgrade, IStackableContentsUpgrade {
-		private final Slot slot;
+		public static final int SOURCE_SLOT = 0;
+		public static final int CATALYST_SLOT = 1;
+		public static final int INPUT_SLOT = 2;
+		public static final int OUTPUT_SLOT = 3;
+		public static final int SLOT_COUNT = 4;
+		private final UpgradeSlots slot;
+		private long nextCharge;
+		private long nextInfusion;
 
 		protected Wrapper(IStorageWrapper storageWrapper, ItemStack upgrade, Consumer<ItemStack> upgradeSaveHandler) {
 			super(storageWrapper, upgrade, upgradeSaveHandler);
-			slot = new Slot();
+			slot = new UpgradeSlots(upgrade, SLOT_COUNT, Wrapper::accepts, index -> index == INPUT_SLOT || index == OUTPUT_SLOT ? 64 : 1, this::save);
 		}
 
-		public IItemHandlerModifiable getSlotInventory() {
+		public UpgradeSlots getSlotInventory() {
 			return slot;
+		}
+
+		public boolean isInfusing() {
+			return upgrade.getOrDefault(SophisticatedComponents.PILE_INFUSION, false);
+		}
+
+		public void setInfusing(boolean infusing) {
+			if (infusing == isInfusing()) {
+				return;
+			}
+			if (infusing) {
+				upgrade.set(SophisticatedComponents.PILE_INFUSION, true);
+			} else {
+				upgrade.remove(SophisticatedComponents.PILE_INFUSION);
+			}
+			upgrade.remove(SophisticatedComponents.PILE_INFUSED);
+			save();
+		}
+
+		public boolean isDischarging() {
+			return upgrade.getOrDefault(SophisticatedComponents.PILE_DISCHARGE, false);
+		}
+
+		public void setDischarging(boolean discharging) {
+			if (discharging == isDischarging()) {
+				return;
+			}
+			if (discharging) {
+				upgrade.set(SophisticatedComponents.PILE_DISCHARGE, true);
+			} else {
+				upgrade.remove(SophisticatedComponents.PILE_DISCHARGE);
+			}
+			save();
 		}
 
 		public int getMana() {
@@ -182,8 +234,24 @@ public class ManaPileUpgradeItem extends UpgradeItemBase<ManaPileUpgradeItem.Wra
 		}
 
 		@Override
-		public void tick(Entity entity, Level level, BlockPos pos) {
-			if (level.isClientSide() || isInCooldown(level)) {
+		public void tick(@Nullable Entity entity, Level level, BlockPos pos) {
+			if (level.isClientSide()) {
+				return;
+			}
+			if (level.getGameTime() >= nextInfusion) {
+				nextInfusion = level.getGameTime() + SophisticatedConfig.pileInfusionInterval();
+				ejectInvalidInput();
+				if (isInfusing()) {
+					infuse(level);
+				}
+			}
+			if (isDischarging()) {
+				if (SophisticatedConfig.pileChargeItems()) {
+					chargeSlot(level);
+				}
+				return;
+			}
+			if (isInCooldown(level)) {
 				return;
 			}
 			boolean fromSlot = SophisticatedConfig.pileAbsorbFromSlot();
@@ -212,6 +280,195 @@ public class ManaPileUpgradeItem extends UpgradeItemBase<ManaPileUpgradeItem.Wra
 			}
 		}
 
+		private static boolean accepts(int index, ItemStack stack) {
+			return switch (index) {
+				case SOURCE_SLOT -> isManaSource(stack);
+				case CATALYST_SLOT -> stack.getItem() instanceof BlockItem;
+				case INPUT_SLOT -> hasInfusionRecipe(stack);
+				default -> false;
+			};
+		}
+
+		private static boolean hasInfusionRecipe(ItemStack stack) {
+			for (RecipeHolder<ManaInfusionRecipe> holder : BotaniaRecipeTypes.getAllRecipesFor(null, BotaniaRecipeTypes.MANA_INFUSION_TYPE)) {
+				if (holder.value().matches(stack)) {
+					return true;
+				}
+			}
+			return false;
+		}
+
+		private void ejectInvalidInput() {
+			ItemStack input = slot.getStackInSlot(INPUT_SLOT);
+			if (input.isEmpty() || hasInfusionRecipe(input)) {
+				return;
+			}
+			StationAutomation.flush(slot, INPUT_SLOT, storageWrapper.getInventoryForUpgradeProcessing());
+		}
+
+		private void infuse(Level level) {
+			if (upgrade.has(SophisticatedComponents.PILE_INFUSED)) {
+				upgrade.remove(SophisticatedComponents.PILE_INFUSED);
+				save();
+			}
+			boolean autoFeed = SophisticatedConfig.pileInfusionAutoFeed();
+			boolean autoOutput = SophisticatedConfig.pileInfusionAutoOutput();
+			int maxCrafts = SophisticatedConfig.pileInfusionMaxPerInterval();
+			BlockState catalyst = catalystState();
+			for (int crafts = 0; crafts < maxCrafts; crafts++) {
+				if (autoOutput) {
+					flushOutput();
+				}
+				if (autoFeed) {
+					refillInput();
+				}
+				ItemStack input = slot.getStackInSlot(INPUT_SLOT);
+				if (input.isEmpty()) {
+					return;
+				}
+				Optional<RecipeHolder<ManaInfusionRecipe>> holder = findRecipe(level, input, catalyst);
+				if (holder.isEmpty()) {
+					return;
+				}
+				ManaInfusionRecipe recipe = holder.get().value();
+				int cost = Math.max(0, recipe.getManaToConsume());
+				if (getMana() < cost) {
+					return;
+				}
+				ItemStack output = recipe.getRecipeOutput(level.registryAccess(), input.copyWithCount(1));
+				if (output.isEmpty()) {
+					return;
+				}
+				ItemStack current = slot.getStackInSlot(OUTPUT_SLOT);
+				ItemStack result;
+				if (current.isEmpty()) {
+					result = output.copy();
+				} else if (ItemStack.isSameItemSameComponents(current, output) && current.getCount() + output.getCount() <= current.getMaxStackSize()) {
+					result = current.copyWithCount(current.getCount() + output.getCount());
+				} else {
+					return;
+				}
+				slot.setStackInSlot(INPUT_SLOT, input.getCount() > 1 ? input.copyWithCount(input.getCount() - 1) : ItemStack.EMPTY);
+				slot.setStackInSlot(OUTPUT_SLOT, result);
+				if (cost > 0) {
+					extract(cost, false);
+				}
+			}
+			if (autoOutput) {
+				flushOutput();
+			}
+			if (autoFeed) {
+				refillInput();
+			}
+		}
+
+		private void refillInput() {
+			ItemStack input = slot.getStackInSlot(INPUT_SLOT);
+			StationAutomation.refill(slot, INPUT_SLOT, input, Integer.MAX_VALUE, storageWrapper.getInventoryForUpgradeProcessing());
+		}
+
+		private void flushOutput() {
+			StationAutomation.flush(slot, OUTPUT_SLOT, storageWrapper.getInventoryForUpgradeProcessing());
+		}
+
+		private BlockState catalystState() {
+			ItemStack catalyst = slot.getStackInSlot(CATALYST_SLOT);
+			return catalyst.getItem() instanceof BlockItem blockItem ? blockItem.getBlock().defaultBlockState() : Blocks.AIR.defaultBlockState();
+		}
+
+		private static Optional<RecipeHolder<ManaInfusionRecipe>> findRecipe(Level level, ItemStack stack, BlockState catalyst) {
+			RecipeHolder<ManaInfusionRecipe> plain = null;
+			for (RecipeHolder<ManaInfusionRecipe> holder : BotaniaRecipeTypes.getAllRecipesFor(level, BotaniaRecipeTypes.MANA_INFUSION_TYPE)) {
+				ManaInfusionRecipe recipe = holder.value();
+				if (!recipe.matches(stack)) {
+					continue;
+				}
+				if (recipe.getRecipeCatalyst() == null) {
+					if (plain == null) {
+						plain = holder;
+					}
+				} else if (recipe.getRecipeCatalyst().test(catalyst)) {
+					return Optional.of(holder);
+				}
+			}
+			return Optional.ofNullable(plain);
+		}
+
+		private void chargeSlot(Level level) {
+			long time = level.getGameTime();
+			if (time < nextCharge) {
+				return;
+			}
+			nextCharge = time + SophisticatedConfig.pileChargeInterval();
+			ItemStack slotCopy = slot.getStackInSlot(SOURCE_SLOT).copy();
+			int demand = space(slotCopy);
+			if (demand <= 0) {
+				return;
+			}
+			int taken = extract(Math.min(Math.min(getMana(), SophisticatedConfig.pileChargeRate()), demand), false);
+			if (taken <= 0) {
+				return;
+			}
+			int added = charge(slotCopy, taken);
+			if (added > 0) {
+				slot.setStackInSlot(SOURCE_SLOT, slotCopy);
+			}
+			if (taken > added) {
+				insert(taken - added, false);
+			}
+		}
+
+		public int chargeStacks(List<ItemStack> targets) {
+			int available = Math.min(getMana(), SophisticatedConfig.pileChargeRate());
+			if (available <= 0 || targets.isEmpty()) {
+				return 0;
+			}
+			long demand = 0;
+			for (ItemStack stack : targets) {
+				demand += space(stack);
+			}
+			if (demand <= 0) {
+				return 0;
+			}
+			int taken = extract((int) Math.min(available, demand), false);
+			if (taken <= 0) {
+				return 0;
+			}
+			int left = taken;
+			for (ItemStack stack : targets) {
+				if (left <= 0) {
+					break;
+				}
+				left -= charge(stack, left);
+			}
+			if (left > 0) {
+				insert(left, false);
+			}
+			return taken - left;
+		}
+
+		private int space(ItemStack stack) {
+			if (stack.isEmpty() || stack.getItem() instanceof IStashStorageItem) {
+				return 0;
+			}
+			ManaItem target = XplatAbstractions.INSTANCE.findManaItem(stack);
+			if (target == null || !target.canReceiveManaFromItem(upgrade)) {
+				return 0;
+			}
+			return (int) Math.max(0L, (long) target.getMaxMana() - target.getMana());
+		}
+
+		private int charge(ItemStack stack, int max) {
+			int amount = Math.min(max, space(stack));
+			if (amount <= 0) {
+				return 0;
+			}
+			ManaItem target = XplatAbstractions.INSTANCE.findManaItem(stack);
+			int before = target.getMana();
+			target.addMana(amount);
+			return (int) Math.max(0L, Math.min(amount, (long) target.getMana() - before));
+		}
+
 		private int drain(ItemStack stack, int max) {
 			ManaItem source = XplatAbstractions.INSTANCE.findManaItem(stack);
 			if (source == null || max <= 0 || source.isNoExport() || !source.canExportManaToItem(upgrade)) {
@@ -226,14 +483,14 @@ public class ManaPileUpgradeItem extends UpgradeItemBase<ManaPileUpgradeItem.Wra
 		}
 
 		private int absorbFromSlot(int max) {
-			ItemStack stack = slot.getStackInSlot(0);
+			ItemStack stack = slot.getStackInSlot(SOURCE_SLOT);
 			if (!isManaSource(stack)) {
 				return 0;
 			}
 			ItemStack copy = stack.copy();
 			int removed = drain(copy, max);
 			if (removed > 0) {
-				slot.setStackInSlot(0, copy);
+				slot.setStackInSlot(SOURCE_SLOT, copy);
 			}
 			return removed;
 		}
@@ -241,7 +498,7 @@ public class ManaPileUpgradeItem extends UpgradeItemBase<ManaPileUpgradeItem.Wra
 		private int absorbFromItems(int max) {
 			InventoryHandler inventory = storageWrapper.getInventoryHandler();
 			int absorbed = 0;
-			for (int index = 0; index < inventory.getSlots() && absorbed < max; index++) {
+			for (int index = 0; index < inventory.size() && absorbed < max; index++) {
 				ItemStack stack = inventory.getStackInSlot(index);
 				if (!isManaSource(stack)) {
 					continue;
@@ -287,27 +544,6 @@ public class ManaPileUpgradeItem extends UpgradeItemBase<ManaPileUpgradeItem.Wra
 			}
 			double needed = 1.0 + ((double) mana / base - 1.0) / ratio;
 			return needed >= Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) Math.ceil(needed);
-		}
-
-		private final class Slot extends StatefulComponentItemHandler {
-			private Slot() {
-				super(Wrapper.this.upgrade, ModCoreDataComponents.LENIENT_CONTAINER.get(), 1);
-			}
-
-			@Override
-			public boolean isItemValid(int index, ItemStack stack) {
-				return stack.isEmpty() || isManaSource(stack);
-			}
-
-			@Override
-			public int getSlotLimit(int index) {
-				return 1;
-			}
-
-			@Override
-			protected void onContentsChanged(int index, ItemStack oldStack, ItemStack newStack) {
-				save();
-			}
 		}
 	}
 }

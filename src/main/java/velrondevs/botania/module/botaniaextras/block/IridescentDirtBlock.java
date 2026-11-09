@@ -15,9 +15,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.BonemealableBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
-import net.minecraft.world.level.levelgen.feature.configurations.RandomPatchConfiguration;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
-import net.neoforged.neoforge.common.util.TriState;
+import net.minecraft.util.TriState;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -90,10 +89,9 @@ public class IridescentDirtBlock extends Block implements BonemealableBlock {
 					}
 				}
 			} else {
-				List<ConfiguredFeature<?, ?>> flowers = level.getBiome(target).value().getGenerationSettings().getFlowerFeatures();
+				List<ConfiguredFeature<?, ?>> flowers = level.getBiome(target).value().getGenerationSettings().getBoneMealFeatures();
 				if (!flowers.isEmpty()) {
-					Holder<PlacedFeature> feature = ((RandomPatchConfiguration) flowers.get(0).config()).feature();
-					feature.value().place(level, level.getChunkSource().getGenerator(), random, target);
+					net.minecraft.util.Util.getRandom(flowers, random).place(level, level.getChunkSource().getGenerator(), random, target);
 				}
 			}
 		}

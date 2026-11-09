@@ -1,5 +1,7 @@
 package velrondevs.botania.common.item.relic;
 
+import java.util.function.Consumer;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.NbtOps;
@@ -8,14 +10,13 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemUtils;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.UseAnim;
+import net.minecraft.world.item.ItemUseAnimation;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
@@ -56,7 +57,7 @@ public class EyeOfTheFlugelItem extends RelicItem {
 		Player player = ctx.getPlayer();
 
 		if (player != null && player.isSecondaryUseActive()) {
-			if (world.isClientSide) {
+			if (world.isClientSide()) {
 				for (int i = 0; i < 10; i++) {
 					float x1 = (float) (pos.getX() + Math.random());
 					float y1 = pos.getY() + 1;
@@ -67,11 +68,11 @@ public class EyeOfTheFlugelItem extends RelicItem {
 			} else {
 				ItemStack stack = ctx.getItemInHand();
 				Tag nbt = BlockPos.CODEC.encodeStart(NbtOps.INSTANCE, pos).getOrThrow();
-				ItemNBTHelper.set(stack, TAG_TARGET_PREFIX + world.dimension().location(), nbt);
+				ItemNBTHelper.set(stack, TAG_TARGET_PREFIX + world.dimension().identifier(), nbt);
 				world.playSound(null, player.getX(), player.getY(), player.getZ(), BotaniaSounds.flugelEyeBind, SoundSource.PLAYERS, 1F, 1F);
 			}
 
-			return InteractionResult.sidedSuccess(world.isClientSide());
+			return InteractionResult.SUCCESS;
 		}
 
 		return InteractionResult.PASS;
@@ -79,7 +80,7 @@ public class EyeOfTheFlugelItem extends RelicItem {
 
 	@Override
 	public void onUseTick(Level world, LivingEntity living, ItemStack stack, int count) {
-		if (world.isClientSide) {
+		if (world.isClientSide()) {
 			float x = (float) (living.getX() - Math.random() * living.getBbWidth());
 			float y = (float) (living.getY() + Math.random());
 			float z = (float) (living.getZ() - Math.random() * living.getBbWidth());
@@ -90,14 +91,14 @@ public class EyeOfTheFlugelItem extends RelicItem {
 
 	@NotNull
 	@Override
-	public InteractionResultHolder<ItemStack> use(Level world, Player player, @NotNull InteractionHand hand) {
+	public InteractionResult use(Level world, Player player, @NotNull InteractionHand hand) {
 		return ItemUtils.startUsingInstantly(world, player, hand);
 	}
 
 	@NotNull
 	@Override
 	public ItemStack finishUsingItem(@NotNull ItemStack stack, Level world, LivingEntity living) {
-		String tag = TAG_TARGET_PREFIX + world.dimension().location();
+		String tag = TAG_TARGET_PREFIX + world.dimension().identifier();
 		Tag nbt = ItemNBTHelper.get(stack, tag);
 		if (nbt == null) {
 			return stack;
@@ -137,8 +138,8 @@ public class EyeOfTheFlugelItem extends RelicItem {
 
 	@NotNull
 	@Override
-	public UseAnim getUseAnimation(ItemStack stack) {
-		return UseAnim.BOW;
+	public ItemUseAnimation getUseAnimation(ItemStack stack) {
+		return ItemUseAnimation.BOW;
 	}
 
 	public static class CoordBoundItemImpl implements CoordBoundItem {
@@ -151,7 +152,7 @@ public class EyeOfTheFlugelItem extends RelicItem {
 		@Nullable
 		@Override
 		public BlockPos getBinding(Level world) {
-			String tag = TAG_TARGET_PREFIX + world.dimension().location();
+			String tag = TAG_TARGET_PREFIX + world.dimension().identifier();
 			Tag nbt = ItemNBTHelper.get(stack, tag);
 			if (nbt != null) {
 				return BlockPos.CODEC.parse(NbtOps.INSTANCE, nbt).result()
@@ -162,8 +163,8 @@ public class EyeOfTheFlugelItem extends RelicItem {
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext world, List<Component> tooltip, TooltipFlag flags) {
-		super.appendHoverText(stack, world, tooltip, flags);
+	public void appendHoverText(ItemStack stack, TooltipContext world, TooltipDisplay tooltipDisplay, Consumer<Component> tooltip, TooltipFlag flags) {
+		super.appendHoverText(stack, world, tooltipDisplay, tooltip, flags);
 
 		Level level = world.level();
 		if (level == null) {
@@ -176,10 +177,10 @@ public class EyeOfTheFlugelItem extends RelicItem {
 		}
 
 		BlockPos binding = coordBoundItem.getBinding(level);
-		Component worldText = Component.literal(level.dimension().location().toString()).withStyle(ChatFormatting.GREEN);
+		Component worldText = Component.literal(level.dimension().identifier().toString()).withStyle(ChatFormatting.GREEN);
 
 		if (binding == null) {
-			tooltip.add(Component.translatable("botaniamisc.flugelUnbound", worldText).withStyle(ChatFormatting.GRAY));
+			tooltip.accept(Component.translatable("botaniamisc.flugelUnbound", worldText).withStyle(ChatFormatting.GRAY));
 		} else {
 			Component bindingText = Component.literal("[").withStyle(ChatFormatting.WHITE)
 					.append(Component.literal(Integer.toString(binding.getX())).withStyle(ChatFormatting.GOLD))
@@ -189,7 +190,7 @@ public class EyeOfTheFlugelItem extends RelicItem {
 					.append(Component.literal(Integer.toString(binding.getZ())).withStyle(ChatFormatting.GOLD))
 					.append("]");
 
-			tooltip.add(Component.translatable("botaniamisc.flugelBound", bindingText, worldText).withStyle(ChatFormatting.GRAY));
+			tooltip.accept(Component.translatable("botaniamisc.flugelBound", bindingText, worldText).withStyle(ChatFormatting.GRAY));
 		}
 	}
 

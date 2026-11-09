@@ -1,0 +1,12 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "botania:item/yellow_petal_block",
+    "tints": [
+      {
+        "type": "botania:tint",
+        "kind": "block"
+      }
+    ]
+  }
+}

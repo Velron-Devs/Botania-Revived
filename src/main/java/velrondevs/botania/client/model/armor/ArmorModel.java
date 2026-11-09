@@ -1,15 +1,12 @@
 package velrondevs.botania.client.model.armor;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.renderer.entity.state.ArmorStandRenderState;
+import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.decoration.ArmorStand;
 
-public class ArmorModel extends HumanoidModel<LivingEntity> {
+public class ArmorModel extends HumanoidModel<HumanoidRenderState> {
 	protected final EquipmentSlot slot;
 
 	public ArmorModel(ModelPart root, EquipmentSlot slot) {
@@ -18,44 +15,40 @@ public class ArmorModel extends HumanoidModel<LivingEntity> {
 	}
 
 	@Override
-	public void setupAnim(LivingEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-		if (!(entity instanceof ArmorStand entityIn)) {
-			super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-			return;
+	public void setupAnim(HumanoidRenderState state) {
+		super.setupAnim(state);
+		if (state instanceof ArmorStandRenderState stand) {
+			float f = (float) Math.PI / 180F;
+			this.head.xRot = f * stand.headPose.x();
+			this.head.yRot = f * stand.headPose.y();
+			this.head.zRot = f * stand.headPose.z();
+			this.body.xRot = f * stand.bodyPose.x();
+			this.body.yRot = f * stand.bodyPose.y();
+			this.body.zRot = f * stand.bodyPose.z();
+			this.leftArm.xRot = f * stand.leftArmPose.x();
+			this.leftArm.yRot = f * stand.leftArmPose.y();
+			this.leftArm.zRot = f * stand.leftArmPose.z();
+			this.rightArm.xRot = f * stand.rightArmPose.x();
+			this.rightArm.yRot = f * stand.rightArmPose.y();
+			this.rightArm.zRot = f * stand.rightArmPose.z();
+			this.leftLeg.xRot = f * stand.leftLegPose.x();
+			this.leftLeg.yRot = f * stand.leftLegPose.y();
+			this.leftLeg.zRot = f * stand.leftLegPose.z();
+			this.rightLeg.xRot = f * stand.rightLegPose.x();
+			this.rightLeg.yRot = f * stand.rightLegPose.y();
+			this.rightLeg.zRot = f * stand.rightLegPose.z();
 		}
-
-		this.head.xRot = ((float) Math.PI / 180F) * entityIn.getHeadPose().getX();
-		this.head.yRot = ((float) Math.PI / 180F) * entityIn.getHeadPose().getY();
-		this.head.zRot = ((float) Math.PI / 180F) * entityIn.getHeadPose().getZ();
-		this.head.setPos(0.0F, 1.0F, 0.0F);
-		this.body.xRot = ((float) Math.PI / 180F) * entityIn.getBodyPose().getX();
-		this.body.yRot = ((float) Math.PI / 180F) * entityIn.getBodyPose().getY();
-		this.body.zRot = ((float) Math.PI / 180F) * entityIn.getBodyPose().getZ();
-		this.leftArm.xRot = ((float) Math.PI / 180F) * entityIn.getLeftArmPose().getX();
-		this.leftArm.yRot = ((float) Math.PI / 180F) * entityIn.getLeftArmPose().getY();
-		this.leftArm.zRot = ((float) Math.PI / 180F) * entityIn.getLeftArmPose().getZ();
-		this.rightArm.xRot = ((float) Math.PI / 180F) * entityIn.getRightArmPose().getX();
-		this.rightArm.yRot = ((float) Math.PI / 180F) * entityIn.getRightArmPose().getY();
-		this.rightArm.zRot = ((float) Math.PI / 180F) * entityIn.getRightArmPose().getZ();
-		this.leftLeg.xRot = ((float) Math.PI / 180F) * entityIn.getLeftLegPose().getX();
-		this.leftLeg.yRot = ((float) Math.PI / 180F) * entityIn.getLeftLegPose().getY();
-		this.leftLeg.zRot = ((float) Math.PI / 180F) * entityIn.getLeftLegPose().getZ();
-		this.leftLeg.setPos(1.9F, 11.0F, 0.0F);
-		this.rightLeg.xRot = ((float) Math.PI / 180F) * entityIn.getRightLegPose().getX();
-		this.rightLeg.yRot = ((float) Math.PI / 180F) * entityIn.getRightLegPose().getY();
-		this.rightLeg.zRot = ((float) Math.PI / 180F) * entityIn.getRightLegPose().getZ();
-		this.rightLeg.setPos(-1.9F, 11.0F, 0.0F);
-		this.hat.copyFrom(this.head);
-	}
-
-	@Override
-	public void renderToBuffer(PoseStack ms, VertexConsumer buffer, int light, int overlay, int color) {
 		setPartVisibility(slot);
-		super.renderToBuffer(ms, buffer, light, overlay, color);
 	}
 
 	private void setPartVisibility(EquipmentSlot slot) {
-		setAllVisible(false);
+		head.visible = false;
+		hat.visible = false;
+		body.visible = false;
+		rightArm.visible = false;
+		leftArm.visible = false;
+		rightLeg.visible = false;
+		leftLeg.visible = false;
 		switch (slot) {
 			case HEAD -> {
 				head.visible = true;
@@ -74,6 +67,8 @@ public class ArmorModel extends HumanoidModel<LivingEntity> {
 			case FEET -> {
 				rightLeg.visible = true;
 				leftLeg.visible = true;
+			}
+			default -> {
 			}
 		}
 	}

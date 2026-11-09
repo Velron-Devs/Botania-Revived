@@ -1,5 +1,7 @@
 package velrondevs.botania.common.crafting.recipe;
 
+import velrondevs.botania.api.recipe.BotaniaRecipe;
+import velrondevs.botania.common.crafting.BotaniaRecipeSerializer;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -35,7 +37,7 @@ public class StateCopyingPureDaisyRecipe extends PureDaisyRecipe {
 
 	@Override
 	public boolean set(Level world, BlockPos pos, SpecialFlowerBlockEntity pureDaisy) {
-		if (!world.isClientSide) {
+		if (!world.isClientSide()) {
 			Block block = getOutputState().getBlock();
 			world.setBlockAndUpdate(pos, block.withPropertiesOf(world.getBlockState(pos)));
 		}
@@ -43,7 +45,7 @@ public class StateCopyingPureDaisyRecipe extends PureDaisyRecipe {
 	}
 
 	@Override
-	public RecipeSerializer<?> getSerializer() {
+	public RecipeSerializer<? extends BotaniaRecipe> getSerializer() {
 		return BotaniaRecipeTypes.COPYING_PURE_DAISY_SERIALIZER;
 	}
 
@@ -51,7 +53,7 @@ public class StateCopyingPureDaisyRecipe extends PureDaisyRecipe {
 		return getOutputState().getBlock();
 	}
 
-	public static class Serializer implements RecipeSerializer<StateCopyingPureDaisyRecipe> {
+	public static class Serializer implements BotaniaRecipeSerializer<StateCopyingPureDaisyRecipe> {
 		public static final MapCodec<StateCopyingPureDaisyRecipe> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
 				StateIngredientHelper.CODEC.fieldOf("input").forGetter(StateCopyingPureDaisyRecipe::getInput),
 				BuiltInRegistries.BLOCK.byNameCodec().fieldOf("output").forGetter(StateCopyingPureDaisyRecipe::getOutputBlock),

@@ -34,7 +34,7 @@ public abstract class PlayerMixin extends LivingEntity implements PlayerAccess {
 
 	@ModifyArg(
 		method = "attack",
-		at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;hurt(Lnet/minecraft/world/damagesource/DamageSource;F)Z")
+		at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;hurtOrSimulate(Lnet/minecraft/world/damagesource/DamageSource;F)Z")
 	)
 	private DamageSource onDamageTarget(DamageSource source, float amount) {
 		if (this.terraWillCritTarget != null) {

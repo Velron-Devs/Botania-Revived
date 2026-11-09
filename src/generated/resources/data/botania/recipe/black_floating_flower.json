@@ -3,15 +3,9 @@
   "category": "misc",
   "group": "botania:floating_flowers",
   "key": {
-    "D": {
-      "item": "minecraft:dirt"
-    },
-    "F": {
-      "item": "botania:black_shiny_flower"
-    },
-    "S": {
-      "item": "botania:grass_seeds"
-    }
+    "D": "minecraft:dirt",
+    "F": "botania:black_shiny_flower",
+    "S": "botania:grass_seeds"
   },
   "pattern": [
     "F",
@@ -19,7 +13,6 @@
     "D"
   ],
   "result": {
-    "count": 1,
     "id": "botania:black_floating_flower"
   }
 }

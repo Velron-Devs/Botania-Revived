@@ -9,9 +9,7 @@
   "category": "building",
   "group": "botania:vivid_planks",
   "ingredients": [
-    {
-      "item": "botania:vivid_log"
-    }
+    "botania:vivid_log"
   ],
   "result": {
     "count": 4,

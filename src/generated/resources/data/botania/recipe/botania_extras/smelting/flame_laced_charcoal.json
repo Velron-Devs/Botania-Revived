@@ -9,11 +9,8 @@
   "category": "misc",
   "cookingtime": 200,
   "experience": 0.15,
-  "ingredient": {
-    "item": "botania:infernal_log"
-  },
+  "ingredient": "botania:infernal_log",
   "result": {
-    "count": 1,
     "id": "botania:flame_laced_charcoal"
   }
 }

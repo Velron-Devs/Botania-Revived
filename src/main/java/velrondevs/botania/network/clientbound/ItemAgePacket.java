@@ -3,7 +3,7 @@ package velrondevs.botania.network.clientbound;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 
@@ -14,7 +14,7 @@ import static velrondevs.botania.common.lib.ResourceLocationHelper.prefix;
 
 public record ItemAgePacket(int entityId, int timeCounter) implements BotaniaPacket {
 
-	public static final ResourceLocation ID = prefix("ia");
+	public static final Identifier ID = prefix("ia");
 	public static final Type<ItemAgePacket> TYPE = new Type<>(ID);
 	public static final StreamCodec<RegistryFriendlyByteBuf, ItemAgePacket> STREAM_CODEC = StreamCodec.ofMember(ItemAgePacket::encode, ItemAgePacket::decode);
 

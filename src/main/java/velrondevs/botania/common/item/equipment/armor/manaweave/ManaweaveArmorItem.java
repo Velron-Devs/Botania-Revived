@@ -1,5 +1,7 @@
 package velrondevs.botania.common.item.equipment.armor.manaweave;
 
+import net.minecraft.world.item.equipment.ArmorType;
+import java.util.function.Consumer;
 import com.google.common.base.Suppliers;
 
 import net.minecraft.ChatFormatting;
@@ -27,7 +29,7 @@ import java.util.function.Supplier;
 
 public class ManaweaveArmorItem extends ManasteelArmorItem {
 
-	public ManaweaveArmorItem(Type type, Properties props) {
+	public ManaweaveArmorItem(ArmorType type, Properties props) {
 		super(type, BotaniaAPI.instance().getManaweaveArmorMaterial(), props);
 	}
 
@@ -38,12 +40,11 @@ public class ManaweaveArmorItem extends ManasteelArmorItem {
 
 	@NotNull
 	@Override
-	public String getDescriptionId(ItemStack stack) {
-		String name = super.getDescriptionId(stack);
+	public Component getName(ItemStack stack) {
 		if (XplatAbstractions.INSTANCE.isPhysicalClient() && ClientProxy.jingleTheBells) {
-			name = name.replaceAll("manaweave", "santaweave");
+			return Component.translatable(getDescriptionId().replaceAll("manaweave", "santaweave"));
 		}
-		return name;
+		return super.getName(stack);
 	}
 
 	private static final Supplier<ItemStack[]> armorSet = Suppliers.memoize(() -> new ItemStack[] {
@@ -85,19 +86,19 @@ public class ManaweaveArmorItem extends ManasteelArmorItem {
 	}
 
 	@Override
-	public void addInformationAfterShift(ItemStack stack, TooltipContext world, List<Component> list, TooltipFlag flags) {
+	public void addInformationAfterShift(ItemStack stack, TooltipContext world, Consumer<Component> list, TooltipFlag flags) {
 		if (XplatAbstractions.INSTANCE.isPhysicalClient() && ClientProxy.jingleTheBells) {
-			list.add(Component.translatable("botaniamisc.santaweaveInfo"));
-			list.add(Component.literal(""));
+			list.accept(Component.translatable("botaniamisc.santaweaveInfo"));
+			list.accept(Component.literal(""));
 		}
 
 		super.addInformationAfterShift(stack, world, list, flags);
 	}
 
 	@Override
-	public void addArmorSetDescription(ItemStack stack, List<Component> list) {
-		list.add(Component.translatable("botania.armorset.manaweave.desc0").withStyle(ChatFormatting.GRAY));
-		list.add(Component.translatable("botania.armorset.manaweave.desc1").withStyle(ChatFormatting.GRAY));
+	public void addArmorSetDescription(ItemStack stack, Consumer<Component> list) {
+		list.accept(Component.translatable("botania.armorset.manaweave.desc0").withStyle(ChatFormatting.GRAY));
+		list.accept(Component.translatable("botania.armorset.manaweave.desc1").withStyle(ChatFormatting.GRAY));
 	}
 
 	@SoftImplement("IForgeItem")

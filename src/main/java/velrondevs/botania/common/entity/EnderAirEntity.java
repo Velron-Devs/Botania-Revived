@@ -1,5 +1,9 @@
 package velrondevs.botania.common.entity;
 
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.core.particles.ColorParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -25,10 +29,10 @@ public class EnderAirEntity extends Entity {
 	@Override
 	public void tick() {
 		super.tick();
-		if (!level().isClientSide && tickCount > MAX_AGE) {
+		if (!level().isClientSide() && tickCount > MAX_AGE) {
 			discard();
 		}
-		if (level().isClientSide && random.nextBoolean()) {
+		if (level().isClientSide() && random.nextBoolean()) {
 			float r = (EnderAirBottleEntity.PARTICLE_COLOR >> 16 & 0xFF) / 255.0F;
 			float g = (EnderAirBottleEntity.PARTICLE_COLOR >> 8 & 0xFF) / 255.0F;
 			float b = (EnderAirBottleEntity.PARTICLE_COLOR & 0xFF) / 255.0F;
@@ -45,12 +49,17 @@ public class EnderAirEntity extends Entity {
 	protected void defineSynchedData(SynchedEntityData.Builder builder) {}
 
 	@Override
-	protected void readAdditionalSaveData(@NotNull CompoundTag tag) {
-		tickCount = tag.getInt(TAG_AGE);
+	public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
+		return false;
 	}
 
 	@Override
-	protected void addAdditionalSaveData(@NotNull CompoundTag tag) {
+	protected void readAdditionalSaveData(ValueInput tag) {
+		tickCount = tag.getIntOr(TAG_AGE, 0);
+	}
+
+	@Override
+	protected void addAdditionalSaveData(ValueOutput tag) {
 		tag.putInt(TAG_AGE, tickCount);
 	}
 

@@ -14,7 +14,7 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.DoublePlantBlock;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
-import net.minecraft.advancements.critereon.StatePropertiesPredicate;
+import net.minecraft.advancements.criterion.StatePropertiesPredicate;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
@@ -66,7 +66,7 @@ public class BotaniaExtrasLootProvider implements DataProvider {
 				LootTable table = builder.setParamSet(LootContextParamSets.BLOCK).build();
 				JsonElement json = LootTable.DIRECT_CODEC.encodeStart(ops, table).getOrThrow();
 				ICondition.writeConditions(ops, json.getAsJsonObject(), List.of(condition));
-				futures.add(DataProvider.saveStable(cache, json, pathProvider.json(key.location())));
+				futures.add(DataProvider.saveStable(cache, json, pathProvider.json(key.identifier())));
 			});
 			return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
 		});

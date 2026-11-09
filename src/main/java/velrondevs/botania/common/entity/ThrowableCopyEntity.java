@@ -45,7 +45,7 @@ public abstract class ThrowableCopyEntity extends Projectile {
 			this.hitTargetOrDeflectSelf(hitResult);
 		}
 
-		this.checkInsideBlocks();
+		this.applyEffectsFromBlocks();
 		Vec3 vec3 = this.getDeltaMovement();
 		double d = this.getX() + vec3.x;
 		double e = this.getY() + vec3.y;

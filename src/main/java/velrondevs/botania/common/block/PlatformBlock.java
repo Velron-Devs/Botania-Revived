@@ -1,10 +1,14 @@
 package velrondevs.botania.common.block;
 
+import java.util.function.Consumer;
+
+import net.minecraft.world.item.component.TooltipDisplay;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -113,20 +117,19 @@ public class PlatformBlock extends BotaniaBlock implements ManaCollisionGhost, E
 		return Behaviour.SKIP_ALL;
 	}
 
-	@Override
-	public void appendHoverText(ItemStack stack, Item.TooltipContext worldIn, List<Component> tooltip, TooltipFlag flagIn) {
+	public void appendHoverText(ItemStack stack, Item.TooltipContext worldIn, TooltipDisplay tooltipDisplay, Consumer<Component> tooltip, TooltipFlag flagIn) {
 		if (variant.indestructible) {
-			tooltip.add(Component.translatable("botaniamisc.creative").withStyle(ChatFormatting.GRAY));
+			tooltip.accept(Component.translatable("botaniamisc.creative").withStyle(ChatFormatting.GRAY));
 		}
 	}
 
 	@NotNull
 	@Override
-	public ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+	public InteractionResult useItemOn(ItemStack stack, BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
 		ItemStack currentStack = player.getItemInHand(hand);
 
 		if (variant.indestructible && !player.isCreative()) {
-			return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+			return InteractionResult.TRY_WITH_EMPTY_HAND;
 		}
 		if (!currentStack.isEmpty()
 				&& Block.byItem(currentStack.getItem()) != Blocks.AIR
@@ -135,18 +138,18 @@ public class PlatformBlock extends BotaniaBlock implements ManaCollisionGhost, E
 			BlockState changeState = Block.byItem(currentStack.getItem()).getStateForPlacement(ctx);
 
 			if (changeState != null && !changeState.is(BotaniaTags.Blocks.UNSUPPORTED_PLATFORM_DISGUISE)
-					&& (changeState.isSolidRender(world, pos) || changeState.getRenderShape() == RenderShape.MODEL)
+					&& (changeState.isSolidRender() || changeState.getRenderShape() == RenderShape.MODEL)
 					&& !(changeState.getBlock() instanceof PlatformBlock)
 					&& !changeState.isAir()) {
-				if (!world.isClientSide) {
+				if (!world.isClientSide()) {
 					camo.setCamoState(changeState);
 				}
 
-				return ItemInteractionResult.sidedSuccess(world.isClientSide());
+				return InteractionResult.SUCCESS;
 			}
 		}
 
-		return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+		return InteractionResult.TRY_WITH_EMPTY_HAND;
 	}
 
 }

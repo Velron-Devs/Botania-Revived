@@ -1,6 +1,5 @@
 package velrondevs.botania.client.integration.jei;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
@@ -12,10 +11,10 @@ import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec2;
@@ -40,7 +39,7 @@ public class TerrestrialAgglomerationRecipeCategory implements IRecipeCategory<T
 	private final IDrawable terraPlate;
 
 	public TerrestrialAgglomerationRecipeCategory(IGuiHelper guiHelper) {
-		ResourceLocation location = prefix("textures/gui/terrasteel_jei_overlay.png");
+		Identifier location = prefix("textures/gui/terrasteel_jei_overlay.png");
 		overlay = guiHelper.createDrawable(location, 42, 29, 64, 64);
 		icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(BotaniaBlocks.terraPlate));
 		localizedName = Component.translatable("botania.nei.terraPlate");
@@ -80,12 +79,10 @@ public class TerrestrialAgglomerationRecipeCategory implements IRecipeCategory<T
 	}
 
 	@Override
-	public void draw(@NotNull TerrestrialAgglomerationRecipe recipe, @NotNull IRecipeSlotsView view, @NotNull GuiGraphics gui, double mouseX, double mouseY) {
-		RenderSystem.enableBlend();
+	public void draw(@NotNull TerrestrialAgglomerationRecipe recipe, @NotNull IRecipeSlotsView view, @NotNull GuiGraphicsExtractor gui, double mouseX, double mouseY) {
 		overlay.draw(gui, 25, 14);
 		HUDHandler.renderManaBar(gui, 6, 126, 0x0000FF, 0.75F, recipe.getMana(), 100000);
 		terraPlate.draw(gui, 35, 92);
-		RenderSystem.disableBlend();
 	}
 
 	@Override
@@ -103,12 +100,12 @@ public class TerrestrialAgglomerationRecipeCategory implements IRecipeCategory<T
 			point = PetalApothecaryRecipeCategory.rotatePointAbout(point, center, angleBetweenEach);
 		}
 
-		builder.addSlot(RecipeIngredientRole.CATALYST, 48, 92)
+		builder.addSlot(RecipeIngredientRole.CRAFTING_STATION, 48, 92)
 				.addItemStack(new ItemStack(BotaniaBlocks.terraPlate));
 	}
 
 	@Override
-	public ResourceLocation getRegistryName(@NotNull TerrestrialAgglomerationRecipe recipe) {
+	public Identifier getIdentifier(@NotNull TerrestrialAgglomerationRecipe recipe) {
 		return JEIRecipeIds.idOf(recipe);
 	}
 }

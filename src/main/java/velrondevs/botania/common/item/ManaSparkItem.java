@@ -1,5 +1,7 @@
 package velrondevs.botania.common.item;
 
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionResult;
@@ -32,7 +34,7 @@ public class ManaSparkItem extends Item {
 			}
 		}
 		return attachSpark(ctx.getLevel(), ctx.getClickedPos(), ctx.getItemInHand(), otherHandStack)
-				? InteractionResult.sidedSuccess(ctx.getLevel().isClientSide)
+				? InteractionResult.SUCCESS
 				: InteractionResult.PASS;
 	}
 
@@ -40,13 +42,13 @@ public class ManaSparkItem extends Item {
 		var attach = XplatAbstractions.INSTANCE.findSparkAttachable(world, pos, world.getBlockState(pos), world.getBlockEntity(pos), Direction.UP);
 		if (attach != null) {
 			if (attach.canAttachSpark(stack) && attach.getAttachedSpark() == null) {
-				if (!world.isClientSide) {
+				if (!world.isClientSide()) {
 					stack.shrink(1);
 					ManaSparkEntity spark = new ManaSparkEntity(world);
 					spark.setPos(pos.getX() + 0.5, pos.getY() + 1.25, pos.getZ() + 0.5);
-					if (otherHandStack.getItem() instanceof DyeItem dye) {
+					if (otherHandStack.get(DataComponents.DYE) instanceof DyeColor dyeColor) {
 						otherHandStack.shrink(1);
-						spark.setNetwork(dye.getDyeColor());
+						spark.setNetwork(dyeColor);
 					}
 					world.addFreshEntity(spark);
 					attach.attachSpark(spark);

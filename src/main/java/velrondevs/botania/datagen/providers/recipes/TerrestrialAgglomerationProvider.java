@@ -4,10 +4,11 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 
+import velrondevs.botania.common.crafting.recipe.RecipeUtils;
 import velrondevs.botania.common.block.block_entity.mana.ManaPoolBlockEntity;
 import velrondevs.botania.common.crafting.RecipeTerraPlate;
 import velrondevs.botania.registry.BotaniaItems;
@@ -28,13 +29,13 @@ public class TerrestrialAgglomerationProvider extends BotaniaRecipeProvider {
 
 	@Override
 	protected void buildRecipes(RecipeOutput consumer) {
-		consumer.accept(idFor("terrasteel_ingot"), new RecipeTerraPlate(ManaPoolBlockEntity.MAX_MANA / 2,
-				NonNullList.of(Ingredient.EMPTY, Ingredient.of(BotaniaItems.manaSteel),
+		consumer.accept(key(idFor("terrasteel_ingot")), new RecipeTerraPlate(ManaPoolBlockEntity.MAX_MANA / 2,
+				RecipeUtils.ingredientList(Ingredient.of(BotaniaItems.manaSteel),
 						Ingredient.of(BotaniaItems.manaPearl), Ingredient.of(BotaniaItems.manaDiamond)),
 				new ItemStack(BotaniaItems.terrasteel)), null);
 	}
 
-	private static ResourceLocation idFor(String s) {
+	private static Identifier idFor(String s) {
 		return prefix("terra_plate/" + s);
 	}
 }

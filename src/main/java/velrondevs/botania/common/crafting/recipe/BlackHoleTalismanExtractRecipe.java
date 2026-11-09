@@ -7,7 +7,6 @@ import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.SimpleCraftingRecipeSerializer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 
@@ -18,11 +17,9 @@ import velrondevs.botania.common.item.BlackHoleTalismanItem;
 import velrondevs.botania.registry.BotaniaItems;
 
 public class BlackHoleTalismanExtractRecipe extends CustomRecipe {
-	public static final RecipeSerializer<BlackHoleTalismanExtractRecipe> SERIALIZER = new SimpleCraftingRecipeSerializer<>(BlackHoleTalismanExtractRecipe::new);
+	public static final RecipeSerializer<BlackHoleTalismanExtractRecipe> SERIALIZER = RecipeUtils.simpleSerializer(BlackHoleTalismanExtractRecipe::new);
 
-	public BlackHoleTalismanExtractRecipe(CraftingBookCategory category) {
-		super(category);
-	}
+	public BlackHoleTalismanExtractRecipe() {}
 
 	@Override
 	public boolean matches(@NotNull CraftingInput inv, @NotNull Level world) {
@@ -50,7 +47,7 @@ public class BlackHoleTalismanExtractRecipe extends CustomRecipe {
 
 	@NotNull
 	@Override
-	public ItemStack assemble(@NotNull CraftingInput inv, @NotNull HolderLookup.Provider registries) {
+	public ItemStack assemble(@NotNull CraftingInput inv) {
 		ItemStack talisman = ItemStack.EMPTY;
 
 		for (int i = 0; i < inv.size(); i++) {
@@ -71,14 +68,9 @@ public class BlackHoleTalismanExtractRecipe extends CustomRecipe {
 		return ItemStack.EMPTY;
 	}
 
-	@Override
-	public boolean canCraftInDimensions(int width, int height) {
-		return width * height > 0;
-	}
-
 	@NotNull
 	@Override
-	public RecipeSerializer<?> getSerializer() {
+	public RecipeSerializer<? extends CustomRecipe> getSerializer() {
 		return SERIALIZER;
 	}
 

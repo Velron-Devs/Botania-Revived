@@ -1,43 +1,52 @@
 package velrondevs.botania.client.render.entity;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.resources.Identifier;
 
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.Nullable;
 
-import velrondevs.botania.client.core.helper.CoreShaders;
+import velrondevs.botania.client.core.helper.RenderHelper;
 import velrondevs.botania.client.core.proxy.ClientProxy;
 import velrondevs.botania.client.lib.ResourcesLib;
 import velrondevs.botania.client.model.BotaniaModelLayers;
 import velrondevs.botania.client.model.PixieModel;
 import velrondevs.botania.common.entity.PixieEntity;
 
-public class PixieRenderer extends MobRenderer<PixieEntity, PixieModel> {
+public class PixieRenderer extends MobRenderer<PixieEntity, PixieRenderer.State, PixieModel> {
+	public static class State extends LivingEntityRenderState {
+		public boolean evil;
+	}
 
 	public PixieRenderer(EntityRendererProvider.Context ctx) {
 		super(ctx, new PixieModel(ctx.bakeLayer(BotaniaModelLayers.PIXIE)), 0.0F);
 	}
 
 	@Override
-	public void render(PixieEntity mob, float yaw, float partialTicks, PoseStack pos, MultiBufferSource buffers, int light) {
-		ShaderInstance shader = CoreShaders.doppleganger();
-		if (shader != null) {
-			shader.safeGetUniform("BotaniaDisfiguration").set(GaiaGuardianRenderer.DEFAULT_DISFIGURATION);
-			shader.safeGetUniform("BotaniaGrainIntensity").set(GaiaGuardianRenderer.DEFAULT_GRAIN_INTENSITY);
-		}
-		super.render(mob, yaw, partialTicks, pos, buffers, light);
+	public State createRenderState() {
+		return new State();
 	}
 
-	@NotNull
 	@Override
-	public ResourceLocation getTextureLocation(@NotNull PixieEntity entity) {
+	public void extractRenderState(PixieEntity entity, State state, float partialTicks) {
+		super.extractRenderState(entity, state, partialTicks);
+		state.evil = entity.getPixieType() == 1;
+	}
+
+	@Override
+	protected @Nullable RenderType getRenderType(State state, boolean isBodyVisible, boolean forceTransparent, boolean appearGlowing) {
+		if (state.evil && isBodyVisible) {
+			return RenderHelper.getDopplegangerLayer(getTextureLocation(state));
+		}
+		return super.getRenderType(state, isBodyVisible, forceTransparent, appearGlowing);
+	}
+
+	@Override
+	public Identifier getTextureLocation(State state) {
 		return ClientProxy.dootDoot
-				? ResourceLocation.parse(ResourcesLib.MODEL_PIXIE_HALLOWEEN)
-				: ResourceLocation.parse(ResourcesLib.MODEL_PIXIE);
+				? Identifier.parse(ResourcesLib.MODEL_PIXIE_HALLOWEEN)
+				: Identifier.parse(ResourcesLib.MODEL_PIXIE);
 	}
 }

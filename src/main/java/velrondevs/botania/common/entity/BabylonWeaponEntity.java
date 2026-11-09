@@ -1,5 +1,7 @@
 package velrondevs.botania.common.entity;
 
+import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
@@ -83,12 +85,12 @@ public class BabylonWeaponEntity extends ThrowableCopyEntity {
 	public void tick() {
 		Entity thrower = getOwner();
 		if (!(thrower instanceof Player player) || !thrower.isAlive()) {
-			if (!level().isClientSide) {
+			if (!level().isClientSide()) {
 				discard();
 			}
 			return;
 		}
-		if (!level().isClientSide) {
+		if (!level().isClientSide()) {
 			ItemStack stack = PlayerHelper.getFirstHeldItem(player, BotaniaItems.kingKey);
 			boolean newCharging = !stack.isEmpty() && KeyOfTheKingsLawItem.isCharging(stack);
 			if (isCharging() != newCharging) {
@@ -108,8 +110,8 @@ public class BabylonWeaponEntity extends ThrowableCopyEntity {
 			int chargeTime = getChargeTicks();
 			setChargeTicks(chargeTime + 1);
 
-			if (level().random.nextInt(20) == 0) {
-				level().playSound(null, getX(), getY(), getZ(), BotaniaSounds.babylonSpawn, SoundSource.PLAYERS, 0.1F, 1F + level().random.nextFloat() * 3F);
+			if (level().getRandom().nextInt(20) == 0) {
+				level().playSound(null, getX(), getY(), getZ(), BotaniaSounds.babylonSpawn, SoundSource.PLAYERS, 0.1F, 1F + level().getRandom().nextFloat() * 3F);
 			}
 		} else {
 			if (liveTime < delay) {
@@ -126,10 +128,10 @@ public class BabylonWeaponEntity extends ThrowableCopyEntity {
 				Vec3 thisVec = VecHelper.fromEntityCenter(this);
 
 				mot = playerLook.subtract(thisVec.x, thisVec.y, thisVec.z).normalize().scale(2);
-				level().playSound(null, getX(), getY(), getZ(), BotaniaSounds.babylonAttack, SoundSource.PLAYERS, 2F, 0.1F + level().random.nextFloat() * 3F);
+				level().playSound(null, getX(), getY(), getZ(), BotaniaSounds.babylonAttack, SoundSource.PLAYERS, 2F, 0.1F + level().getRandom().nextFloat() * 3F);
 			}
 
-			if (!level().isClientSide) {
+			if (!level().isClientSide()) {
 				setLiveTicks(liveTime + 1);
 				AABB axis = new AABB(getX(), getY(), getZ(), xOld, yOld, zOld).inflate(2);
 				List<LivingEntity> entities = level().getEntitiesOfClass(LivingEntity.class, axis);
@@ -151,12 +153,12 @@ public class BabylonWeaponEntity extends ThrowableCopyEntity {
 
 		setDeltaMovement(mot);
 
-		if (level().isClientSide && liveTime > delay) {
+		if (level().isClientSide() && liveTime > delay) {
 			WispParticleData data = WispParticleData.wisp(0.3F, 1F, 1F, 0F, 1);
 			level().addParticle(data, getX(), getY(), getZ(), 0, -0F, 0);
 		}
 
-		if (!level().isClientSide && liveTime > 200 + delay) {
+		if (!level().isClientSide() && liveTime > 200 + delay) {
 			discard();
 		}
 	}
@@ -176,8 +178,8 @@ public class BabylonWeaponEntity extends ThrowableCopyEntity {
 	}
 
 	private void explodeAndDie() {
-		if (!level().isClientSide) {
-			Holder<DamageType> type = level().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(BotaniaDamageTypes.KEY_EXPLOSION);
+		if (!level().isClientSide()) {
+			Holder<DamageType> type = level().registryAccess().lookupOrThrow(Registries.DAMAGE_TYPE).getOrThrow(BotaniaDamageTypes.KEY_EXPLOSION);
 			DamageSource source = new DamageSource(type, this, this.getOwner());
 			level().explode(this, source, null, getX(), getY(), getZ(), 3F, false, Level.ExplosionInteraction.NONE);
 			discard();
@@ -185,7 +187,7 @@ public class BabylonWeaponEntity extends ThrowableCopyEntity {
 	}
 
 	@Override
-	public void addAdditionalSaveData(@NotNull CompoundTag cmp) {
+	public void addAdditionalSaveData(ValueOutput cmp) {
 		super.addAdditionalSaveData(cmp);
 		cmp.putBoolean(TAG_CHARGING, isCharging());
 		cmp.putInt(TAG_VARIETY, getVariety());
@@ -196,14 +198,14 @@ public class BabylonWeaponEntity extends ThrowableCopyEntity {
 	}
 
 	@Override
-	public void readAdditionalSaveData(@NotNull CompoundTag cmp) {
+	public void readAdditionalSaveData(ValueInput cmp) {
 		super.readAdditionalSaveData(cmp);
-		setCharging(cmp.getBoolean(TAG_CHARGING));
-		setVariety(cmp.getInt(TAG_VARIETY));
-		setChargeTicks(cmp.getInt(TAG_CHARGE_TICKS));
-		setLiveTicks(cmp.getInt(TAG_LIVE_TICKS));
-		setDelay(cmp.getInt(TAG_DELAY));
-		setRotation(cmp.getFloat(TAG_ROTATION));
+		setCharging(cmp.getBooleanOr(TAG_CHARGING, false));
+		setVariety(cmp.getIntOr(TAG_VARIETY, 0));
+		setChargeTicks(cmp.getIntOr(TAG_CHARGE_TICKS, 0));
+		setLiveTicks(cmp.getIntOr(TAG_LIVE_TICKS, 0));
+		setDelay(cmp.getIntOr(TAG_DELAY, 0));
+		setRotation(cmp.getFloatOr(TAG_ROTATION, 0F));
 	}
 
 	public boolean isCharging() {

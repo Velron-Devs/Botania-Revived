@@ -9,12 +9,8 @@
   "category": "misc",
   "group": "botania:coat_of_arms",
   "key": {
-    "L": {
-      "item": "botania:brown_iridescent_leaves"
-    },
-    "S": {
-      "item": "botania:mana_string"
-    }
+    "L": "botania:brown_iridescent_leaves",
+    "S": "botania:mana_string"
   },
   "pattern": [
     "LLL",
@@ -22,7 +18,6 @@
     "LLL"
   ],
   "result": {
-    "count": 1,
     "id": "botania:coat_of_arms_swiss"
   }
 }

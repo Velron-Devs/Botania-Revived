@@ -3,7 +3,7 @@ package velrondevs.botania.network.clientbound;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import velrondevs.botania.common.item.rod.SkiesRodItem;
 import velrondevs.botania.network.BotaniaPacket;
@@ -11,7 +11,7 @@ import velrondevs.botania.network.BotaniaPacket;
 import static velrondevs.botania.common.lib.ResourceLocationHelper.prefix;
 
 public record AvatarSkiesRodPacket(boolean elytra) implements BotaniaPacket {
-	public static final ResourceLocation ID = prefix("atr");
+	public static final Identifier ID = prefix("atr");
 	public static final Type<AvatarSkiesRodPacket> TYPE = new Type<>(ID);
 	public static final StreamCodec<RegistryFriendlyByteBuf, AvatarSkiesRodPacket> STREAM_CODEC = StreamCodec.ofMember(AvatarSkiesRodPacket::encode, AvatarSkiesRodPacket::decode);
 
