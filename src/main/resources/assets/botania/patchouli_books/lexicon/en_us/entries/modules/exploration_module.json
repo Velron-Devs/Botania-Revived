@@ -1,0 +1,17 @@
+{
+  "name": "botania.entry.explorationModule",
+  "category": "botania:modules",
+  "icon": "botania:livingwood_log",
+  "flag": "botania:exploration",
+  "sortnum": 3,
+  "pages": [
+    {
+      "type": "text",
+      "text": "botania.page.explorationModule0"
+    },
+    {
+      "type": "text",
+      "text": "botania.page.explorationModule1"
+    }
+  ]
+}

@@ -13,14 +13,14 @@ import velrondevs.botania.common.entity.CorporeaSparkEntity;
 import velrondevs.botania.common.entity.ManaSparkEntity;
 import velrondevs.botania.registry.BotaniaEntities;
 
-final class SceneHelper {
-	static final int MANA_COLOR = 0x20FF20;
-	static final int POOL_COLOR = 0x00C6FF;
+public final class SceneHelper {
+	public static final int MANA_COLOR = 0x20FF20;
+	public static final int POOL_COLOR = 0x00C6FF;
 	static final int GAIA_COLOR = 0xF74BC8;
 
 	private SceneHelper() {}
 
-	static void burst(SceneBuilder scene, Vec3 from, Vec3 to, int ticks, int color) {
+	public static void burst(SceneBuilder scene, Vec3 from, Vec3 to, int ticks, int color) {
 		float r = (color >> 16 & 0xFF) / 255F;
 		float g = (color >> 8 & 0xFF) / 255F;
 		float b = (color & 0xFF) / 255F;
@@ -50,7 +50,7 @@ final class SceneHelper {
 		}
 	}
 
-	static ElementLink<EntityElement> spark(SceneBuilder scene, Vec3 at, SparkUpgradeType upgrade) {
+	public static ElementLink<EntityElement> spark(SceneBuilder scene, Vec3 at, SparkUpgradeType upgrade) {
 		return scene.world().createEntity(level -> {
 			ManaSparkEntity spark = new ManaSparkEntity(level);
 			spark.setPos(at.x, at.y, at.z);

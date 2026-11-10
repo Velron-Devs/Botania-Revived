@@ -1,0 +1,17 @@
+{
+  "name": "botania.entry.skyboxModule",
+  "category": "botania:modules",
+  "icon": "botania:rainbow_rod",
+  "flag": "botania:skybox",
+  "sortnum": 4,
+  "pages": [
+    {
+      "type": "text",
+      "text": "botania.page.skyboxModule0"
+    },
+    {
+      "type": "text",
+      "text": "botania.page.skyboxModule1"
+    }
+  ]
+}

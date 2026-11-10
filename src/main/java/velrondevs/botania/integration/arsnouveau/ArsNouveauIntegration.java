@@ -19,7 +19,6 @@ public final class ArsNouveauIntegration {
 	private ArsNouveauIntegration() {}
 
 	public static void init(IEventBus modBus, ModContainer container) {
-		ArsNouveauConfig.register(container);
 		ArsNouveauAttachments.REGISTER.register(modBus);
 		modBus.addListener(ArsNouveauIntegration::registerCapabilities);
 		PlayerManaSources.register(new ArsManaBridge());

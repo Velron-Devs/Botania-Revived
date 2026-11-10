@@ -40,6 +40,26 @@ public class BotaniaConfig {
 		int looniumLootCooldown();
 		int looniumLootItemsPerCycle();
 		int looniumLootRange();
+		int fabulousManaPoolCapacity();
+		boolean sparkBatchTransfer();
+		int sparkBatchAmount();
+		int orechidCost();
+		int orechidRange();
+		int orechidRangeY();
+		int orechidIgnemCost();
+		int orechidIgnemRange();
+		int orechidIgnemRangeY();
+		boolean orechidIgnemAnyDimension();
+		int marimorphosisCost();
+		int marimorphosisInterval();
+		int marimorphosisRange();
+		int marimorphosisRangeY();
+		boolean entropinnyumAcceptOverflow();
+		int gaiaGuardianDamageCap();
+		boolean reducedUpdateFrequency();
+		int hopperhockInterval();
+		int functionalFlowerRedstoneInterval();
+		double alfsteelSpreaderSpeedMultiplier();
 	}
 
 	public interface ClientConfigAccess {
@@ -95,6 +115,10 @@ public class BotaniaConfig {
 		PatchouliAPI.get().setConfigFlag("botania:ender_hand_pickpocket", common().enderPickpocketEnabled());
 		PatchouliAPI.get().setConfigFlag("botania:wither_mana_rose", common().witherManaRoseEnabled());
 		PatchouliAPI.get().setConfigFlag("botania:loonium_mobs", common().looniumMode() == LooniumMode.MOBS);
+		resetModulePatchouliFlags();
+	}
+
+	public static void resetModulePatchouliFlags() {
 		for (BotaniaModule module : BotaniaModules.all()) {
 			PatchouliAPI.get().setConfigFlag(module.patchouliFlag(), module.isEnabled());
 		}

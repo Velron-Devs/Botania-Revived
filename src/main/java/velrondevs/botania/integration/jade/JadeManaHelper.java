@@ -23,6 +23,8 @@ import snownee.jade.api.ui.IElement;
 import snownee.jade.api.ui.IElementHelper;
 import snownee.jade.api.ui.ProgressStyle;
 
+import velrondevs.botania.integration.thaumaturge.NodeBoostApi;
+
 import java.util.List;
 import java.util.Locale;
 
@@ -104,6 +106,12 @@ public final class JadeManaHelper {
 			text = String.format(Locale.ROOT, "%dh %02dm", seconds / 3600, seconds / 60 % 60);
 		}
 		return Component.literal(text);
+	}
+
+	public static void addNodeBoost(ITooltip tooltip, double multiplier) {
+		if (multiplier > 1.0) {
+			tooltip.add(IThemeHelper.get().success(NodeBoostApi.tooltip(multiplier)));
+		}
 	}
 
 	public static void addManaBar(ITooltip tooltip, IPluginConfig config, int mana, int max, int color) {

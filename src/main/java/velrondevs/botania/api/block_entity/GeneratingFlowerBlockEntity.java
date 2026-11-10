@@ -15,6 +15,7 @@ import org.jetbrains.annotations.Nullable;
 import velrondevs.botania.api.BotaniaAPI;
 import velrondevs.botania.api.internal.ManaNetwork;
 import velrondevs.botania.api.mana.ManaCollector;
+import velrondevs.botania.integration.thaumaturge.NodeBoostApi;
 
 public abstract class GeneratingFlowerBlockEntity extends BindableSpecialFlowerBlockEntity<ManaCollector> {
 	private static final ResourceLocation SPREADER_ID = ResourceLocation.fromNamespaceAndPath(BotaniaAPI.MODID, "mana_spreader");
@@ -51,6 +52,11 @@ public abstract class GeneratingFlowerBlockEntity extends BindableSpecialFlowerB
 	}
 
 	@Override
+	protected NodeBoostApi.Target getNodeBoostTarget() {
+		return NodeBoostApi.Target.GENERATING_FLOWER;
+	}
+
+	@Override
 	public int getBindingRadius() {
 		return LINK_RANGE;
 	}
@@ -81,6 +87,11 @@ public abstract class GeneratingFlowerBlockEntity extends BindableSpecialFlowerB
 	@Override
 	public void addMana(int mana) {
 		this.mana = Math.min(getMaxMana(), this.getMana() + mana);
+		setChanged();
+	}
+
+	protected void addManaUncapped(int mana) {
+		this.mana = (int) Math.max(0, Math.min(Integer.MAX_VALUE, (long) this.getMana() + mana));
 		setChanged();
 	}
 

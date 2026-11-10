@@ -12,7 +12,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
 import velrondevs.botania.api.item.Relic;
-import velrondevs.botania.common.handler.EquipmentHandler;
 import velrondevs.botania.common.lib.BotaniaTags;
 import velrondevs.botania.registry.BotaniaItems;
 
@@ -41,7 +40,11 @@ public class RingOfOdinItem extends RelicBaubleItem {
 
 	public static boolean onPlayerAttacked(Player player, DamageSource src) {
 		return (src.is(BotaniaTags.DamageTypes.RING_OF_ODIN_IMMUNE))
-				&& !EquipmentHandler.findOrEmpty(BotaniaItems.odinRing, player).isEmpty();
+				&& !getOdinRing(player).isEmpty();
+	}
+
+	public static ItemStack getOdinRing(Player player) {
+		return RingOfTheAesirItem.findWithAesir(BotaniaItems.odinRing, player);
 	}
 
 	public static Relic makeRelic(ItemStack stack) {

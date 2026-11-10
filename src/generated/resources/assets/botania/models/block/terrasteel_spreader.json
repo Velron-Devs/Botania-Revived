@@ -1,0 +1,9 @@
+{
+  "parent": "botania:block/shapes/spreader",
+  "textures": {
+    "back": "botania:block/terrasteel_spreader_back",
+    "inside": "botania:block/terrasteel_spreader_inside",
+    "outside": "botania:block/terrasteel_spreader_outside",
+    "side": "botania:block/terrasteel_spreader_side"
+  }
+}

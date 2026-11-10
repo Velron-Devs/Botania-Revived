@@ -254,6 +254,10 @@
     {
       "id": "botania:shimmer_quartz_stairs",
       "required": false
+    },
+    {
+      "id": "botania:mana_motor",
+      "required": false
     }
   ]
 }

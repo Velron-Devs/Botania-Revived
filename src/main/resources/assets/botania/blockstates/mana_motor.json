@@ -1,0 +1,26 @@
+{
+  "variants": {
+    "facing=down": {
+      "model": "botania:block/mana_motor/block_vertical",
+      "x": 180
+    },
+    "facing=east": {
+      "model": "botania:block/mana_motor/block",
+      "y": 270
+    },
+    "facing=north": {
+      "model": "botania:block/mana_motor/block",
+      "y": 180
+    },
+    "facing=south": {
+      "model": "botania:block/mana_motor/block"
+    },
+    "facing=up": {
+      "model": "botania:block/mana_motor/block_vertical"
+    },
+    "facing=west": {
+      "model": "botania:block/mana_motor/block",
+      "y": 90
+    }
+  }
+}

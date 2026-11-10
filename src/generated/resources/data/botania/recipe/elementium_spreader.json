@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "redstone",
+  "group": "botania:spreader",
+  "ingredients": [
+    {
+      "item": "botania:elven_spreader"
+    },
+    {
+      "tag": "botania:elementium_ingots"
+    },
+    {
+      "tag": "botania:elementium_ingots"
+    },
+    {
+      "item": "botania:pixie_dust"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "botania:elementium_spreader"
+  }
+}

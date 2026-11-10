@@ -14,6 +14,11 @@ public record StationState(int status, int mana, int cost) {
 	public static final int NO_SPACE = 3;
 	public static final int NO_REAGENT = 4;
 	public static final int WORKING = 5;
+	public static final int NO_WAND = 6;
+	public static final int NO_PYLONS = 7;
+	public static final int NO_WATER = 8;
+	public static final int NO_SEED = 9;
+	public static final int NO_SPARK = 10;
 
 	public static final StationState EMPTY = new StationState(IDLE, 0, 0);
 

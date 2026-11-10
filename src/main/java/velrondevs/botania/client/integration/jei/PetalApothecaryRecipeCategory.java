@@ -4,6 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
+import mezz.jei.api.gui.builder.IRecipeSlotBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.drawable.IDrawableStatic;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
@@ -91,7 +92,7 @@ public class PetalApothecaryRecipeCategory implements IRecipeCategory<PetalApoth
 				recipe.getResultItem(RegistryAccess.EMPTY), WATER_BUCKET, recipe.getReagent());
 	}
 
-	public static void setRecipeLayout(@NotNull IRecipeLayoutBuilder builder, List<Ingredient> ingredients, Block catalyst, ItemStack output, Ingredient... reagents) {
+	public static IRecipeSlotBuilder setRecipeLayout(@NotNull IRecipeLayoutBuilder builder, List<Ingredient> ingredients, Block catalyst, ItemStack output, Ingredient... reagents) {
 		Vec2 center = new Vec2(CENTER_X, CENTER_Y);
 		if (reagents.length > 0) {
 			Vec2 reagentPoint = new Vec2(CENTER_X, CENTER_Y + 10);
@@ -113,7 +114,7 @@ public class PetalApothecaryRecipeCategory implements IRecipeCategory<PetalApoth
 			point = rotatePointAbout(point, center, angleBetweenEach);
 		}
 
-		builder.addSlot(RecipeIngredientRole.OUTPUT, 86, 10)
+		return builder.addSlot(RecipeIngredientRole.OUTPUT, 86, 10)
 				.addItemStack(output);
 	}
 

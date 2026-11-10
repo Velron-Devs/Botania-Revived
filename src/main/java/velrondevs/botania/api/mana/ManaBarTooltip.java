@@ -8,11 +8,13 @@ import velrondevs.botania.xplat.XplatAbstractions;
 public class ManaBarTooltip implements TooltipComponent {
 	private final float percentageFull;
 	private final int pickLevel;
+	private final int mana;
+	private final int maxMana;
 
 	public static ManaBarTooltip fromManaItem(ItemStack stack) {
 		var manaItem = XplatAbstractions.INSTANCE.findManaItem(stack);
 		if (manaItem != null) {
-			return new ManaBarTooltip(getFractionForDisplay(manaItem));
+			return new ManaBarTooltip(getFractionForDisplay(manaItem), -1, manaItem.getMana(), manaItem.getMaxMana());
 		}
 		throw new IllegalArgumentException("Item does not have the capability " + ManaItem.class.getName());
 	}
@@ -26,8 +28,14 @@ public class ManaBarTooltip implements TooltipComponent {
 	}
 
 	public ManaBarTooltip(float percentageFull, int pickLevel) {
+		this(percentageFull, pickLevel, -1, -1);
+	}
+
+	public ManaBarTooltip(float percentageFull, int pickLevel, int mana, int maxMana) {
 		this.percentageFull = percentageFull;
 		this.pickLevel = pickLevel;
+		this.mana = mana;
+		this.maxMana = maxMana;
 	}
 
 	public float getPercentageFull() {
@@ -36,5 +44,13 @@ public class ManaBarTooltip implements TooltipComponent {
 
 	public int getPickLevel() {
 		return pickLevel;
+	}
+
+	public int getMana() {
+		return mana;
+	}
+
+	public int getMaxMana() {
+		return maxMana;
 	}
 }

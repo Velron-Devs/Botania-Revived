@@ -16,6 +16,8 @@ import org.jetbrains.annotations.Nullable;
 import velrondevs.botania.api.BotaniaAPI;
 import velrondevs.botania.api.internal.ManaNetwork;
 import velrondevs.botania.api.mana.ManaPool;
+import velrondevs.botania.integration.thaumaturge.NodeBoostApi;
+import velrondevs.botania.xplat.BotaniaConfig;
 
 public abstract class FunctionalFlowerBlockEntity extends BindableSpecialFlowerBlockEntity<ManaPool> {
 	private static final ResourceLocation POOL_ID = ResourceLocation.fromNamespaceAndPath(BotaniaAPI.MODID, "mana_pool");
@@ -25,6 +27,7 @@ public abstract class FunctionalFlowerBlockEntity extends BindableSpecialFlowerB
 
 	private int mana;
 	public int redstoneSignal = 0;
+	private boolean redstoneChecked = false;
 
 	public FunctionalFlowerBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
 		super(type, pos, state, ManaPool.class);
@@ -40,11 +43,14 @@ public abstract class FunctionalFlowerBlockEntity extends BindableSpecialFlowerB
 
 		drawManaFromPool();
 
-		redstoneSignal = 0;
-		if (acceptsRedstone()) {
-			for (Direction dir : Direction.values()) {
-				int redstoneSide = getLevel().getSignal(getBlockPos().relative(dir), dir);
-				redstoneSignal = Math.max(redstoneSignal, redstoneSide);
+		if (shouldCheckRedstone()) {
+			redstoneChecked = true;
+			redstoneSignal = 0;
+			if (acceptsRedstone()) {
+				for (Direction dir : Direction.values()) {
+					int redstoneSide = getLevel().getSignal(getBlockPos().relative(dir), dir);
+					redstoneSignal = Math.max(redstoneSignal, redstoneSide);
+				}
 			}
 		}
 
@@ -58,6 +64,18 @@ public abstract class FunctionalFlowerBlockEntity extends BindableSpecialFlowerB
 				BotaniaAPI.instance().sparkleFX(getLevel(), getBlockPos().getX() + 0.3 + Math.random() * 0.5, getBlockPos().getY() + 0.5 + Math.random() * 0.5, getBlockPos().getZ() + 0.3 + Math.random() * 0.5, red, green, blue, (float) Math.random(), 5);
 			}
 		}
+	}
+
+	private boolean shouldCheckRedstone() {
+		if (!redstoneChecked || !BotaniaConfig.common().reducedUpdateFrequency()) {
+			return true;
+		}
+		return ticksExisted % BotaniaConfig.common().functionalFlowerRedstoneInterval() == 0;
+	}
+
+	@Override
+	protected NodeBoostApi.Target getNodeBoostTarget() {
+		return NodeBoostApi.Target.FUNCTIONAL_FLOWER;
 	}
 
 	@Override

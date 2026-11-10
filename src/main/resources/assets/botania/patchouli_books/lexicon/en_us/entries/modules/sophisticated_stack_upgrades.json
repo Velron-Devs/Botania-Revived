@@ -1,0 +1,46 @@
+{
+  "name": "botania.entry.sophisticatedStackUpgrades",
+  "category": "botania:modules",
+  "icon": "botania:terrasteel_stack_upgrade",
+  "flag": "&botania:sophisticated,mod:sophisticatedcore",
+  "sortnum": 8,
+  "pages": [
+    {
+      "type": "text",
+      "text": "botania.page.sophisticatedStackUpgrades0"
+    },
+    {
+      "type": "text",
+      "text": "botania.page.sophisticatedStackUpgrades1"
+    },
+    {
+      "type": "crafting",
+      "text": "botania.page.sophisticatedStackUpgrades2",
+      "recipe": "botania:sophisticated/manasteel_stack_upgrade",
+      "flag": "!mod:sophisticatedatm"
+    },
+    {
+      "type": "crafting",
+      "text": "botania.page.sophisticatedStackUpgrades3",
+      "recipe": "botania:sophisticated/atm/manasteel_stack_upgrade",
+      "flag": "mod:sophisticatedatm"
+    },
+    {
+      "type": "crafting",
+      "text": "botania.page.sophisticatedStackUpgrades4",
+      "recipe": "botania:sophisticated/elementium_stack_upgrade",
+      "recipe2": "botania:sophisticated/terrasteel_stack_upgrade"
+    },
+    {
+      "type": "crafting",
+      "text": "botania.page.sophisticatedStackUpgrades5",
+      "recipe": "botania:sophisticated/gaia_stack_upgrade"
+    },
+    {
+      "type": "crafting",
+      "text": "botania.page.sophisticatedStackUpgrades6",
+      "recipe": "botania:sophisticated/alfsteel_stack_upgrade",
+      "flag": "mod:masterfulbotany"
+    }
+  ]
+}

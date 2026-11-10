@@ -495,7 +495,11 @@ public class ManaPileUpgradeItem extends UpgradeItemBase<ManaPileUpgradeItem.Wra
 				return 0;
 			}
 			source.addMana(-Math.min(max, before));
-			return Math.max(0, before - source.getMana());
+			int removed = Math.max(0, before - source.getMana());
+			if (removed == 0 && before >= source.getMaxMana()) {
+				return Math.min(max, before);
+			}
+			return removed;
 		}
 
 		private int absorbFromSlot(int max) {

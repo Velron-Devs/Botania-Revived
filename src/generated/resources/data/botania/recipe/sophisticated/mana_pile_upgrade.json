@@ -36,17 +36,17 @@
     "D": {
       "tag": "botania:mana_diamond_gems"
     },
-    "M": {
-      "tag": "botania:manasteel_ingots"
+    "F": {
+      "item": "botania:fabulous_pool"
     },
-    "P": {
-      "item": "botania:mana_pearl"
+    "X": {
+      "item": "botania:bifrost_pane"
     }
   },
   "pattern": [
-    "PDP",
-    "MBM",
-    "PDP"
+    "XFX",
+    "DBD",
+    "XFX"
   ],
   "result": {
     "count": 1,

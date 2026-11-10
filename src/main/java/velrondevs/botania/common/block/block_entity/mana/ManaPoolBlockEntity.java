@@ -265,7 +265,7 @@ public class ManaPoolBlockEntity extends BotaniaBlockEntity implements ManaPool,
 
 	private void initManaCapAndNetwork() {
 		if (getMaxMana() == -1) {
-			manaCap = ((ManaPoolBlock) getBlockState().getBlock()).variant == ManaPoolBlock.Variant.DILUTED ? MAX_MANA_DILLUTED : MAX_MANA;
+			manaCap = getCapacity(((ManaPoolBlock) getBlockState().getBlock()).variant);
 		}
 		if (!ManaNetworkHandler.instance.isPoolIn(level, this) && !isRemoved()) {
 			BotaniaAPI.instance().getManaNetworkInstance().fireManaNetworkEvent(this, ManaBlockType.POOL, ManaNetworkAction.ADD);
@@ -587,8 +587,19 @@ public class ManaPoolBlockEntity extends BotaniaBlockEntity implements ManaPool,
 		return 0;
 	}
 
+	public static int getCapacity(ManaPoolBlock.Variant variant) {
+		return switch (variant) {
+			case DILUTED -> MAX_MANA_DILLUTED;
+			case FABULOUS -> BotaniaConfig.common().fabulousManaPoolCapacity();
+			default -> MAX_MANA;
+		};
+	}
+
 	@Override
 	public int getMaxMana() {
+		if (manaCap != -1 && level != null && !level.isClientSide && getBlockState().getBlock() instanceof ManaPoolBlock pool && pool.variant == ManaPoolBlock.Variant.FABULOUS) {
+			return getCapacity(pool.variant);
+		}
 		return manaCap;
 	}
 

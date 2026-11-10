@@ -124,7 +124,7 @@ file="META-INF/accesstransformer.cfg"
 [[dependencies.${mod_id}]]
     modId="ponder"
     type="optional"
-    versionRange="[${ponder_version},)"
+    versionRange="[1.0.0,)"
     ordering="NONE"
     side="CLIENT"
 
@@ -160,5 +160,12 @@ file="META-INF/accesstransformer.cfg"
     modId="sophisticatedbackpacks"
     type="optional"
     versionRange="[${sb_version},)"
+    ordering="AFTER"
+    side="BOTH"
+
+[[dependencies.${mod_id}]]
+    modId="create"
+    type="optional"
+    versionRange="[6.0.0,)"
     ordering="AFTER"
     side="BOTH"

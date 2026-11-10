@@ -1,0 +1,48 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:and",
+      "values": [
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "avaritia"
+        },
+        {
+          "type": "botania:module_enabled",
+          "module": "asg"
+        }
+      ]
+    }
+  ],
+  "type": "avaritia:shaped_table",
+  "key": {
+    "I": {
+      "item": "avaritia:infinity_ingot"
+    },
+    "N": {
+      "item": "avaritia:neutron_ingot"
+    },
+    "U": {
+      "item": "avaritia:neutron_nugget"
+    },
+    "X": {
+      "item": "avaritia:infinity_catalyst"
+    }
+  },
+  "pattern": [
+    "   III   ",
+    "  IIIII  ",
+    "  IIXII  ",
+    "  IIIII  ",
+    "   III   ",
+    " UU N UU ",
+    "UUUUNUUUU",
+    " UU N UU ",
+    "    N    "
+  ],
+  "result": {
+    "count": 1,
+    "id": "botania:asgardandelion"
+  },
+  "tier": 4
+}

@@ -342,6 +342,7 @@ public class BlockTagProvider extends IntrinsicHolderTagsProvider<Block> {
 						|| BuiltInRegistries.BLOCK.getKey(b).getPath().contains(LibBlockNames.SHIMMERROCK)
 				)
 		);
+		tag(BlockTags.MINEABLE_WITH_PICKAXE).addOptional(ResourceLocation.fromNamespaceAndPath("botania", "mana_motor"));
 		var axe = Set.of(
 				alfPortal, turntable, manaBomb, bellows, incensePlate,
 				cacophonium, avatar, root, felPumpkin
@@ -357,6 +358,7 @@ public class BlockTagProvider extends IntrinsicHolderTagsProvider<Block> {
 						|| BuiltInRegistries.BLOCK.getKey(b).getPath().contains(LibBlockNames.SHIMMERWOOD_PLANKS)
 				)
 		);
+		tag(BlockTags.MINEABLE_WITH_AXE).addOptional(ResourceLocation.fromNamespaceAndPath("botania", LibBlockNames.SPREADER_ALFSTEEL));
 		BotaniaModules.addBlockTags(this::tag);
 	}
 

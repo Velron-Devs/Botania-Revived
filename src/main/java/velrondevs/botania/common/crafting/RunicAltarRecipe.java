@@ -25,6 +25,7 @@ public class RunicAltarRecipe implements velrondevs.botania.api.recipe.RunicAlta
 	private final ItemStack output;
 	private final NonNullList<Ingredient> inputs;
 	private final int mana;
+	private boolean returnRunes = true;
 
 	public RunicAltarRecipe(ItemStack output, int mana, Ingredient... inputs) {
 		Preconditions.checkArgument(inputs.length <= 16, "Cannot have more than 16 ingredients");
@@ -73,6 +74,16 @@ public class RunicAltarRecipe implements velrondevs.botania.api.recipe.RunicAlta
 		return mana;
 	}
 
+	@Override
+	public boolean returnsRunes() {
+		return returnRunes;
+	}
+
+	public RunicAltarRecipe setReturnRunes(boolean returnRunes) {
+		this.returnRunes = returnRunes;
+		return this;
+	}
+
 	@FunctionalInterface
 	public interface Factory<T extends RunicAltarRecipe> {
 		T create(ItemStack output, int mana, Ingredient... inputs);
@@ -86,20 +97,28 @@ public class RunicAltarRecipe implements velrondevs.botania.api.recipe.RunicAlta
 			this.codec = RecordCodecBuilder.mapCodec(instance -> instance.group(
 					ItemStack.STRICT_CODEC.fieldOf("output").forGetter(recipe -> ((RunicAltarRecipe) recipe).output),
 					Codec.INT.fieldOf("mana").forGetter(recipe -> ((RunicAltarRecipe) recipe).mana),
-					RecipeUtils.INGREDIENTS_CODEC.fieldOf("ingredients").forGetter(recipe -> ((RunicAltarRecipe) recipe).inputs)
-			).apply(instance, (output, mana, inputs) -> factory.create(output, mana, inputs.toArray(new Ingredient[0]))));
+					RecipeUtils.INGREDIENTS_CODEC.fieldOf("ingredients").forGetter(recipe -> ((RunicAltarRecipe) recipe).inputs),
+					Codec.BOOL.optionalFieldOf("return_runes", true).forGetter(recipe -> ((RunicAltarRecipe) recipe).returnRunes)
+			).apply(instance, (output, mana, inputs, returnRunes) -> withReturnRunes(factory.create(output, mana, inputs.toArray(new Ingredient[0])), returnRunes)));
 			this.streamCodec = StreamCodec.of(
 					(buf, recipe) -> {
 						RecipeUtils.INGREDIENTS_STREAM_CODEC.encode(buf, recipe.getIngredients());
 						ItemStack.STREAM_CODEC.encode(buf, ((RunicAltarRecipe) recipe).output);
 						buf.writeVarInt(recipe.getManaUsage());
+						buf.writeBoolean(recipe.returnsRunes());
 					},
 					buf -> {
 						Ingredient[] inputs = RecipeUtils.INGREDIENTS_STREAM_CODEC.decode(buf).toArray(new Ingredient[0]);
 						ItemStack output = ItemStack.STREAM_CODEC.decode(buf);
 						int mana = buf.readVarInt();
-						return factory.create(output, mana, inputs);
+						boolean returnRunes = buf.readBoolean();
+						return withReturnRunes(factory.create(output, mana, inputs), returnRunes);
 					});
+		}
+
+		private static <R extends RunicAltarRecipe> R withReturnRunes(R recipe, boolean returnRunes) {
+			recipe.setReturnRunes(returnRunes);
+			return recipe;
 		}
 
 		@Override

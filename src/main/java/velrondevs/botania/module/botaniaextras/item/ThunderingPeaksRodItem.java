@@ -32,13 +32,12 @@ import velrondevs.botania.api.item.AvatarWieldable;
 import velrondevs.botania.api.mana.ManaItemHandler;
 import velrondevs.botania.api.mana.ManaReceiver;
 import velrondevs.botania.common.entity.GaiaGuardianEntity;
-import velrondevs.botania.common.handler.EquipmentHandler;
 import velrondevs.botania.common.helper.VecHelper;
+import velrondevs.botania.common.item.relic.RingOfThorItem;
 import velrondevs.botania.common.proxy.Proxy;
 import velrondevs.botania.module.botaniaextras.ClericalColors;
 import velrondevs.botania.network.EffectType;
 import velrondevs.botania.network.clientbound.BotaniaEffectPacket;
-import velrondevs.botania.registry.BotaniaItems;
 import velrondevs.botania.xplat.XplatAbstractions;
 
 import java.util.HashMap;
@@ -112,7 +111,7 @@ public class ThunderingPeaksRodItem extends Item {
 		if (!(living instanceof Player player)) {
 			return;
 		}
-		boolean thor = !EquipmentHandler.findOrEmpty(BotaniaItems.thorRing, player).isEmpty();
+		boolean thor = !RingOfThorItem.getThorRing(player).isEmpty();
 		boolean priest = PriestEmblemItem.hasEmblem(player, PriestEmblemItem.Type.THOR);
 		boolean prowess = ManaItemHandler.instance().hasProficiency(player, stack);
 		int speed = getSpeed(thor, prowess, priest);

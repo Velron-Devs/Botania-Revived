@@ -41,6 +41,7 @@ public enum ManaEnchanterProvider implements IBlockComponentProvider, IServerDat
 		if (!item.isEmpty()) {
 			JadeManaHelper.addItemLine(tooltip, item, item.getHoverName());
 		}
+		JadeManaHelper.addNodeBoost(tooltip, enchanter.getNodeBoostMultiplier());
 	}
 
 	@Override

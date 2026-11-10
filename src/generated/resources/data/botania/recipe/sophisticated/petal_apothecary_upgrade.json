@@ -1,0 +1,58 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:and",
+      "values": [
+        {
+          "type": "botania:module_enabled",
+          "module": "sophisticated"
+        },
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "sophisticatedcore"
+        },
+        {
+          "type": "neoforge:or",
+          "values": [
+            {
+              "type": "neoforge:mod_loaded",
+              "modid": "sophisticatedbackpacks"
+            },
+            {
+              "type": "neoforge:mod_loaded",
+              "modid": "sophisticatedstorage"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "botania:apothecary_default"
+    },
+    "B": {
+      "tag": "botania:sophisticated_upgrade_bases"
+    },
+    "S": {
+      "item": "botania:grass_seeds"
+    },
+    "U": {
+      "item": "minecraft:water_bucket"
+    },
+    "V": {
+      "item": "botania:vial"
+    }
+  },
+  "pattern": [
+    "VUV",
+    "SBS",
+    "VAV"
+  ],
+  "result": {
+    "count": 1,
+    "id": "botania:petal_apothecary_upgrade"
+  }
+}

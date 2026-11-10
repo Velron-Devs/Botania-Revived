@@ -33,7 +33,7 @@
       "conditions": {
         "items": [
           {
-            "items": "botania:vial"
+            "items": "botania:brewery"
           }
         ]
       },

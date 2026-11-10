@@ -60,10 +60,14 @@ public final class BotaniaReiDisplays {
 
 	public static BotaniaReiDisplay runicAltar(RecipeHolder<? extends RunicAltarRecipe> holder) {
 		RunicAltarRecipe recipe = holder.value();
+		EntryStack<ItemStack> result = EntryStacks.of(recipe.getResultItem(RegistryAccess.EMPTY));
+		if (!recipe.returnsRunes()) {
+			result = result.tooltip(RunicAltarRecipe.consumesRunesNote());
+		}
 		return new BotaniaReiDisplay(BotaniaReiCategories.RUNIC_ALTAR,
 				EntryIngredients.ofIngredients(recipe.getIngredients()),
 				List.of(EntryIngredients.of(BotaniaBlocks.livingrock)),
-				List.of(EntryIngredients.of(recipe.getResultItem(RegistryAccess.EMPTY))),
+				List.of(EntryIngredient.of(result)),
 				holder.id(), recipe.getManaUsage(), null);
 	}
 

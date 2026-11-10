@@ -20,13 +20,18 @@ import velrondevs.botania.api.brew.BrewItem;
 import velrondevs.botania.api.recipe.BotanicalBreweryRecipe;
 import velrondevs.botania.api.recipe.ElvenTradeRecipe;
 import velrondevs.botania.api.recipe.ManaInfusionRecipe;
+import velrondevs.botania.api.recipe.PetalApothecaryRecipe;
 import velrondevs.botania.api.recipe.RunicAltarRecipe;
 import velrondevs.botania.api.recipe.StateIngredient;
+import velrondevs.botania.api.recipe.TerrestrialAgglomerationRecipe;
 import velrondevs.botania.compat.sophisticated.BreweryUpgradeItem;
+import velrondevs.botania.compat.sophisticated.ElvenPortalUpgradeItem;
 import velrondevs.botania.compat.sophisticated.ManaPileUpgradeContainer;
 import velrondevs.botania.compat.sophisticated.ManaPileUpgradeItem;
+import velrondevs.botania.compat.sophisticated.PetalApothecaryUpgradeItem;
 import velrondevs.botania.compat.sophisticated.RunicAltarUpgradeItem;
 import velrondevs.botania.compat.sophisticated.StationUpgradeContainer;
+import velrondevs.botania.compat.sophisticated.TerraPlateUpgradeItem;
 import velrondevs.botania.registry.BotaniaBrews;
 import velrondevs.botania.registry.BotaniaItems;
 
@@ -79,6 +84,11 @@ public final class StationTransfer {
 		boolean[] managed = new boolean[slots];
 		if (kind != StationKind.MANA_INFUSION) {
 			Arrays.fill(managed, true);
+			for (int tool : toolSlots(kind)) {
+				if (tool < slots) {
+					managed[tool] = false;
+				}
+			}
 			return managed;
 		}
 		for (Need need : needs) {
@@ -87,6 +97,15 @@ public final class StationTransfer {
 			}
 		}
 		return managed;
+	}
+
+	private static int[] toolSlots(StationKind kind) {
+		return switch (kind) {
+			case RUNIC_ALTAR -> new int[] {RunicAltarUpgradeItem.Wrapper.WAND_SLOT};
+			case ELVEN_PORTAL -> new int[] {ElvenPortalUpgradeItem.Wrapper.PYLON_SLOT_A, ElvenPortalUpgradeItem.Wrapper.PYLON_SLOT_B};
+			case TERRA_PLATE -> new int[] {TerraPlateUpgradeItem.Wrapper.SPARK_SLOT};
+			default -> new int[0];
+		};
 	}
 
 	public static List<Slot> sources(StorageContainerMenuBase<?> menu, Player player) {
@@ -132,6 +151,24 @@ public final class StationTransfer {
 					needs.add(new Need(i, List.of(ingredients.get(i)), i + 1, false));
 				}
 				needs.add(new Need(RunicAltarUpgradeItem.Wrapper.REAGENT_SLOT, List.of(altar.getReagent()), 0, true));
+			}
+			case PETAL_APOTHECARY -> {
+				if (!(recipe instanceof PetalApothecaryRecipe petals) || ingredients.isEmpty() || ingredients.size() > PetalApothecaryUpgradeItem.Wrapper.INGREDIENT_SLOTS) {
+					return null;
+				}
+				for (int i = 0; i < ingredients.size(); i++) {
+					needs.add(new Need(i, List.of(ingredients.get(i)), i + 2, false));
+				}
+				needs.add(new Need(PetalApothecaryUpgradeItem.Wrapper.REAGENT_SLOT, List.of(petals.getReagent()), 1, true));
+				needs.add(new Need(PetalApothecaryUpgradeItem.Wrapper.WATER_SLOT, List.of(PetalApothecaryUpgradeItem.Wrapper::isWater), 0, true));
+			}
+			case TERRA_PLATE -> {
+				if (!(recipe instanceof TerrestrialAgglomerationRecipe) || ingredients.isEmpty() || ingredients.size() > TerraPlateUpgradeItem.Wrapper.INGREDIENT_SLOTS) {
+					return null;
+				}
+				for (int i = 0; i < ingredients.size(); i++) {
+					needs.add(new Need(i, List.of(ingredients.get(i)), i, false));
+				}
 			}
 			case ELVEN_PORTAL -> {
 				if (!(recipe instanceof ElvenTradeRecipe trade) || trade.isReturnRecipe() || ingredients.isEmpty()) {

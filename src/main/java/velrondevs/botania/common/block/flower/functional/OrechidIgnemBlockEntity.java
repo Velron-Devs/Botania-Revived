@@ -7,9 +7,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import velrondevs.botania.api.recipe.OrechidRecipe;
 import velrondevs.botania.registry.BotaniaFlowerBlocks;
 import velrondevs.botania.registry.BotaniaRecipeTypes;
+import velrondevs.botania.xplat.BotaniaConfig;
 
 public class OrechidIgnemBlockEntity extends OrechidBlockEntity {
-	private static final int COST = 20000;
+	public static final int DEFAULT_COST = 20000;
 
 	public OrechidIgnemBlockEntity(BlockPos pos, BlockState state) {
 		super(BotaniaFlowerBlocks.ORECHID_IGNEM, pos, state);
@@ -17,7 +18,7 @@ public class OrechidIgnemBlockEntity extends OrechidBlockEntity {
 
 	@Override
 	public boolean canOperate() {
-		return getLevel().dimensionType().hasCeiling();
+		return BotaniaConfig.common().orechidIgnemAnyDimension() || getLevel().dimensionType().hasCeiling();
 	}
 
 	@Override
@@ -27,7 +28,17 @@ public class OrechidIgnemBlockEntity extends OrechidBlockEntity {
 
 	@Override
 	public int getCost() {
-		return COST;
+		return BotaniaConfig.common().orechidIgnemCost();
+	}
+
+	@Override
+	public int getRange() {
+		return BotaniaConfig.common().orechidIgnemRange();
+	}
+
+	@Override
+	public int getRangeY() {
+		return BotaniaConfig.common().orechidIgnemRangeY();
 	}
 
 	@Override

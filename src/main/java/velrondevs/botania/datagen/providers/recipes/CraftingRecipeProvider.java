@@ -1,5 +1,8 @@
 package velrondevs.botania.datagen.providers.recipes;
 
+import net.minecraft.advancements.Advancement;
+import net.minecraft.advancements.AdvancementRequirements;
+import net.minecraft.advancements.AdvancementRewards;
 import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.critereon.InventoryChangeTrigger;
 import net.minecraft.advancements.critereon.ItemPredicate;
@@ -66,6 +69,7 @@ public class CraftingRecipeProvider extends BotaniaRecipeProvider {
 		specialRecipe(consumer, SpellbindingClothRecipe::new, CraftingBookCategory.EQUIPMENT);
 		specialRecipe(consumer, SplitLensRecipe::new, CraftingBookCategory.REDSTONE);
 		specialRecipe(consumer, TerraShattererTippingRecipe::new, CraftingBookCategory.EQUIPMENT);
+		aesirRingRecipe(consumer);
 
 		registerMain(consumer);
 		registerMisc(consumer);
@@ -138,6 +142,21 @@ public class CraftingRecipeProvider extends BotaniaRecipeProvider {
 				.group("botania:spreader")
 				.unlockedBy("has_item", conditionsFromTag(BotaniaTags.Items.INGOTS_ELEMENTIUM))
 				.unlockedBy("has_alt_item", conditionsFromTag(BotaniaTags.Items.DREAMWOOD_LOGS))
+				.save(consumer);
+		ShapelessRecipeBuilder.shapeless(RecipeCategory.REDSTONE, BotaniaBlocks.elementiumSpreader)
+				.requires(BotaniaBlocks.elvenSpreader)
+				.requires(BotaniaTags.Items.INGOTS_ELEMENTIUM)
+				.requires(BotaniaTags.Items.INGOTS_ELEMENTIUM)
+				.requires(BotaniaItems.pixieDust)
+				.group("botania:spreader")
+				.unlockedBy("has_item", conditionsFromItem(BotaniaBlocks.elvenSpreader))
+				.save(consumer);
+		ShapelessRecipeBuilder.shapeless(RecipeCategory.REDSTONE, BotaniaBlocks.terrasteelSpreader)
+				.requires(BotaniaBlocks.elementiumSpreader)
+				.requires(BotaniaTags.Items.INGOTS_TERRASTEEL)
+				.requires(BotaniaTags.Items.INGOTS_TERRASTEEL)
+				.group("botania:spreader")
+				.unlockedBy("has_item", conditionsFromItem(BotaniaBlocks.elementiumSpreader))
 				.save(consumer);
 		ShapelessRecipeBuilder.shapeless(RecipeCategory.REDSTONE, BotaniaBlocks.gaiaSpreader)
 				.requires(BotaniaBlocks.elvenSpreader)
@@ -2661,6 +2680,18 @@ public class CraftingRecipeProvider extends BotaniaRecipeProvider {
 				.group("botania:cosmetic_bauble")
 				.unlockedBy("has_item", conditionsFromItem(BotaniaItems.manaString))
 				.save(consumer);
+	}
+
+	protected void aesirRingRecipe(RecipeOutput consumer) {
+		ResourceLocation id = prefix("aesir_ring");
+		Advancement.Builder advancement = consumer.advancement()
+				.addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(id))
+				.addCriterion("has_item", InventoryChangeTrigger.TriggerInstance.hasItems(ItemPredicate.Builder.item()
+						.of(BotaniaItems.thorRing, BotaniaItems.odinRing, BotaniaItems.lokiRing).build()))
+				.rewards(AdvancementRewards.Builder.recipe(id))
+				.requirements(AdvancementRequirements.Strategy.OR);
+		consumer.accept(id, new AesirRingRecipe(CraftingBookCategory.EQUIPMENT),
+				advancement.build(id.withPrefix("recipes/" + RecipeCategory.TOOLS.getFolderName() + "/")));
 	}
 
 	protected void specialRecipe(RecipeOutput consumer, Function<CraftingBookCategory, Recipe<?>> factory, CraftingBookCategory category) {

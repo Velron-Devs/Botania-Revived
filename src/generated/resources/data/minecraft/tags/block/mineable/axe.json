@@ -19,6 +19,7 @@
     "botania:drum_canopy",
     "botania:drum_gathering",
     "botania:drum_wild",
+    "botania:elementium_spreader",
     "botania:elven_spreader",
     "botania:fel_pumpkin",
     "botania:framed_dreamwood",
@@ -67,7 +68,12 @@
     "botania:stripped_livingwood_slab",
     "botania:stripped_livingwood_stairs",
     "botania:stripped_livingwood_wall",
+    "botania:terrasteel_spreader",
     "botania:turntable",
+    {
+      "id": "botania:alfsteel_spreader",
+      "required": false
+    },
     {
       "id": "botania:white_iridescent_log",
       "required": false

@@ -13,6 +13,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
+import net.neoforged.neoforge.common.conditions.ModLoadedCondition;
+import net.neoforged.neoforge.common.conditions.NotCondition;
+import net.neoforged.neoforge.common.conditions.OrCondition;
 
 import velrondevs.botania.common.block.block_entity.mana.ManaPoolBlockEntity;
 import velrondevs.botania.common.crafting.RecipeTerraPlate;
@@ -59,15 +62,6 @@ public class AsgardRecipeProvider extends BotaniaRecipeProvider {
 	@Override
 	protected void buildRecipes(RecipeOutput unconditional) {
 		RecipeOutput output = unconditional.withConditions(AsgardModule.INSTANCE.enabledCondition());
-
-		List<Ingredient> inputs = new ArrayList<>();
-		inputs.add(Ingredient.of(BotaniaFlowerBlocks.witherManaRose));
-		inputs.add(Ingredient.of(Items.DANDELION));
-		add(inputs, 8, BotaniaItems.lifeEssence);
-		add(inputs, 4, BotaniaBlocks.terrasteelBlock);
-		add(inputs, 4, BotaniaBlocks.dragonstoneBlock);
-		output.accept(id("terra_plate/asgardandelion"),
-				new RecipeTerraPlate(COST_ASGARDANDELION, NonNullList.of(Ingredient.EMPTY, inputs.toArray(new Ingredient[0])), new ItemStack(AsgardFlowers.asgardandelion)), null);
 
 		ShapelessRecipeBuilder.shapeless(RecipeCategory.DECORATIONS, AsgardFlowers.asgardandelionFloating)
 				.requires(BotaniaTags.Items.FLOATING_FLOWERS)

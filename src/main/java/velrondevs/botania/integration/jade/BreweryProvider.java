@@ -33,6 +33,7 @@ public enum BreweryProvider implements IBlockComponentProvider, IServerDataProvi
 		if (!output.isEmpty()) {
 			JadeManaHelper.addRecipeRow(tooltip, List.of(brewery.getItemHandler().getItem(0).copyWithCount(1)), (float) mana / required, output);
 		}
+		JadeManaHelper.addNodeBoost(tooltip, brewery.getNodeBoostMultiplier());
 	}
 
 	@Override

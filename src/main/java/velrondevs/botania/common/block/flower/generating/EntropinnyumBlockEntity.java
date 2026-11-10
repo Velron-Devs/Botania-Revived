@@ -2,6 +2,8 @@ package velrondevs.botania.common.block.flower.generating;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.PrimedTnt;
 import net.minecraft.world.level.block.state.BlockState;
@@ -11,10 +13,16 @@ import net.minecraft.world.phys.Vec3;
 
 import velrondevs.botania.api.block_entity.GeneratingFlowerBlockEntity;
 import velrondevs.botania.api.block_entity.RadiusDescriptor;
+import velrondevs.botania.api.mana.ManaReceiver;
+import velrondevs.botania.api.mana.spark.ManaSpark;
+import velrondevs.botania.api.mana.spark.SparkAttachable;
 import velrondevs.botania.client.fx.SparkleParticleData;
 import velrondevs.botania.registry.BotaniaFlowerBlocks;
 import velrondevs.botania.registry.BotaniaSounds;
+import velrondevs.botania.xplat.BotaniaConfig;
 import velrondevs.botania.xplat.XplatAbstractions;
+
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -91,6 +99,86 @@ public class EntropinnyumBlockEntity extends GeneratingFlowerBlockEntity {
 	@Override
 	public RadiusDescriptor getRadius() {
 		return RadiusDescriptor.Rectangle.square(getEffectivePos(), RANGE);
+	}
+
+	@Override
+	public void addMana(int mana) {
+		if (mana < 0 && getMana() > getMaxMana()) {
+			addManaUncapped(mana);
+		} else {
+			super.addMana(mana);
+		}
+	}
+
+	public static boolean acceptsOverflow() {
+		return BotaniaConfig.common().entropinnyumAcceptOverflow();
+	}
+
+	@Nullable
+	public OverflowReceiver getOverflowReceiver() {
+		return acceptsOverflow() ? new OverflowReceiver(this) : null;
+	}
+
+	public record OverflowReceiver(EntropinnyumBlockEntity flower) implements ManaReceiver, SparkAttachable {
+		@Override
+		public Level getManaReceiverLevel() {
+			return flower.getLevel();
+		}
+
+		@Override
+		public BlockPos getManaReceiverPos() {
+			return flower.getBlockPos();
+		}
+
+		@Override
+		public int getCurrentMana() {
+			return flower.getMana();
+		}
+
+		@Override
+		public boolean isFull() {
+			return !acceptsOverflow() || flower.getMana() == Integer.MAX_VALUE;
+		}
+
+		@Override
+		public void receiveMana(int mana) {
+			if (mana > 0 && !acceptsOverflow()) {
+				return;
+			}
+			flower.addManaUncapped(mana);
+			flower.sync();
+		}
+
+		@Override
+		public boolean canReceiveManaFromBursts() {
+			return acceptsOverflow();
+		}
+
+		@Override
+		public boolean canAttachSpark(ItemStack stack) {
+			return acceptsOverflow();
+		}
+
+		@Override
+		public int getAvailableSpaceForMana() {
+			return acceptsOverflow() ? Integer.MAX_VALUE - flower.getMana() : 0;
+		}
+
+		@Override
+		public ManaSpark getAttachedSpark() {
+			Level level = flower.getLevel();
+			if (level == null) {
+				return null;
+			}
+			BlockPos above = flower.getBlockPos().above();
+			List<Entity> sparks = level.getEntitiesOfClass(Entity.class, new AABB(Vec3.atLowerCornerOf(above), Vec3.atLowerCornerOf(above.offset(1, 1, 1))), e -> e instanceof ManaSpark);
+			return sparks.size() == 1 ? (ManaSpark) sparks.get(0) : null;
+		}
+
+		@Override
+		public boolean areIncomingTranfersDone() {
+			return false;
+		}
 	}
 
 }

@@ -14,6 +14,7 @@ public final class AsgardDatagen {
 		DataGenerator generator = evt.getGenerator();
 		PackOutput output = generator.getPackOutput();
 		generator.addProvider(evt.includeServer(), new AsgardRecipeProvider(output, lookup));
+		generator.addProvider(evt.includeServer(), new AsgardExtremeRecipeProvider(output));
 		generator.addProvider(evt.includeServer(), new AsgardLootProvider(output, lookup));
 		generator.addProvider(evt.includeClient(), new AsgardModelProvider(output));
 	}

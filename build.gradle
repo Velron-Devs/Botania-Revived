@@ -83,6 +83,17 @@ sourceSets.main.resources {
 
 repositories {
     mavenCentral()
+    exclusiveContent {
+        forRepository {
+            maven {
+                name = 'Curse Maven'
+                url = 'https://cursemaven.com'
+            }
+        }
+        filter {
+            includeGroup 'curse.maven'
+        }
+    }
     maven {
         name = 'Jared'
         url = 'https://maven.blamejared.com/'
@@ -150,6 +161,21 @@ repositories {
             includeGroup 'net.createmod.ponder'
             includeGroup 'dev.engine-room.flywheel'
             includeGroup 'dev.engine-room.vanillin'
+            includeGroup 'com.simibubi.create'
+        }
+    }
+    maven {
+        name = 'devOS'
+        url = 'https://mvn.devos.one/snapshots/'
+        content {
+            includeGroup 'com.tterrag.registrate'
+        }
+    }
+    maven {
+        name = 'NovaCommittee'
+        url = 'https://maven.nova-committee.cn/s3'
+        content {
+            includeGroup 'committee.nova.mods'
         }
     }
     maven {
@@ -224,6 +250,21 @@ dependencies {
         runtimeOnly("dev.engine-room.flywheel:flywheel-neoforge-${minecraft_version}:${flywheel_version}") { transitive = false }
     }
 
+    compileOnly("com.simibubi.create:create-${minecraft_version}:${create_version}:slim") { transitive = false }
+    compileOnly("dev.engine-room.flywheel:flywheel-neoforge-${minecraft_version}:${flywheel_version}") { transitive = false }
+    compileOnly("com.tterrag.registrate:Registrate:${registrate_version}") { transitive = false }
+    if (project.hasProperty('with_create')) {
+        runtimeOnly("com.simibubi.create:create-${minecraft_version}:${create_version}:slim") { transitive = false }
+        runtimeOnly("com.tterrag.registrate:Registrate:${registrate_version}") { transitive = false }
+        runtimeOnly("net.createmod.ponder:ponder-neoforge:${ponder_version}+mc${minecraft_version}") { transitive = false }
+        runtimeOnly("dev.engine-room.flywheel:flywheel-neoforge-${minecraft_version}:${flywheel_version}") { transitive = false }
+    }
+
+    if (devMod('avaritia')) {
+        compileOnly("${avaritia_dependency}") { transitive = false }
+        runtimeOnly("${avaritia_dependency}") { transitive = false }
+    }
+
     compileOnly("com.hollingsworth.ars_nouveau:ars_nouveau-1.21.1:${ars_nouveau_version}") { transitive = false }
     compileOnly("software.bernie.geckolib:geckolib-neoforge-1.21.1:${geckolib_version}") { transitive = false }
     compileOnly("com.hollingsworth.nuggets:nuggets-neoforge-1.21.1:${ars_nuggets_version}") { transitive = false }
@@ -241,14 +282,14 @@ dependencies {
         runtimeOnly("maven.modrinth:sophisticated-backpacks:${sophisticated_backpacks_version}") { transitive = false }
     }
 
-    if (devMod('spectrum') && !project.hasProperty('no_curios')) {
+    if (project.hasProperty("with_spectrum") && !project.hasProperty("no_curios")) {
         runtimeOnly "maven.modrinth:spectrum:${spectrum_version}"
         runtimeOnly "maven.modrinth:revelationary:${revelationary_version}"
         runtimeOnly "maven.modrinth:modonomicon:${modonomicon_version}"
     }
 
     compileOnly "maven.modrinth:fractal-lib:${fractal_version}"
-    if (!(devMod('spectrum') && !project.hasProperty('no_curios'))) {
+    if (!(project.hasProperty("with_spectrum") && !project.hasProperty("no_curios"))) {
         runtimeOnly "maven.modrinth:fractal-lib:${fractal_version}"
     }
     fractalJarJar("maven.modrinth:fractal-lib:${fractal_version}") { transitive = false }
@@ -261,11 +302,13 @@ dependencies {
         }
     }
 
-    if (project.hasProperty('with_thaumaturge') || project.hasProperty('thaumaturge_jar')) {
+    compileOnly("curse.maven:thaumaturge-1628024:${thaumaturge_file_id}") { transitive = false }
+    if (project.hasProperty("thaumaturge_jar")) {
         runtimeOnly "maven.modrinth:lithostitched:${lithostitched_version}"
-        if (project.hasProperty('thaumaturge_jar')) {
-            runtimeOnly files(project.property('thaumaturge_jar'))
-        }
+        runtimeOnly files(project.property("thaumaturge_jar"))
+    } else if (devMod("thaumaturge")) {
+        runtimeOnly "maven.modrinth:lithostitched:${lithostitched_version}"
+        runtimeOnly "curse.maven:thaumaturge-1628024:${thaumaturge_file_id}"
     }
 
 

@@ -171,6 +171,7 @@ public class ItemTagProvider extends ItemTagsProvider {
 				gravityRod,
 				missileRod);
 		this.tag(BotaniaTags.Items.MANA_USING_ITEMS).add(
+				aesirRing,
 				bloodPendant,
 				cobbleRod,
 				crystalBow,

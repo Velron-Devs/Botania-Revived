@@ -1,0 +1,10 @@
+{
+  "parent": "botania:block/shapes/spreader_item",
+  "textures": {
+    "back": "botania:block/elementium_spreader_back",
+    "core": "botania:block/elementium_spreader_core",
+    "inside": "botania:block/elementium_spreader_inside",
+    "outside": "botania:block/elementium_spreader_outside",
+    "side": "botania:block/elementium_spreader_side"
+  }
+}

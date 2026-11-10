@@ -1,0 +1,28 @@
+{
+  "name": "botania.entry.asgardModule",
+  "category": "botania:modules",
+  "icon": "botania:asgardandelion",
+  "flag": "botania:asg",
+  "sortnum": 1,
+  "pages": [
+    {
+      "type": "text",
+      "text": "botania.page.asgardModule0"
+    },
+    {
+      "type": "text",
+      "text": "botania.page.asgardModule1"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "botania:asgardandelion",
+      "link_recipe": false,
+      "text": "botania.page.asgardModule2"
+    },
+    {
+      "type": "crafting",
+      "text": "botania.page.asgardModule3",
+      "recipe": "botania:asg/floating_asgardandelion"
+    }
+  ]
+}

@@ -36,6 +36,8 @@ public final class SophisticatedRei {
 		registry.addWorkstations(BotaniaReiCategories.RUNIC_ALTAR, EntryStacks.of(SophisticatedItems.RUNIC_ALTAR_UPGRADE));
 		registry.addWorkstations(BotaniaReiCategories.ELVEN_TRADE, EntryStacks.of(SophisticatedItems.ELVEN_PORTAL_UPGRADE));
 		registry.addWorkstations(BotaniaReiCategories.BOTANICAL_BREWERY, EntryStacks.of(SophisticatedItems.BREWERY_UPGRADE));
+		registry.addWorkstations(BotaniaReiCategories.PETAL_APOTHECARY, EntryStacks.of(SophisticatedItems.PETAL_APOTHECARY_UPGRADE));
+		registry.addWorkstations(BotaniaReiCategories.TERRESTRIAL_AGGLOMERATION, EntryStacks.of(SophisticatedItems.TERRA_PLATE_UPGRADE));
 	}
 
 	public static void registerTransfers(TransferHandlerRegistry registry) {

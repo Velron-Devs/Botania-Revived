@@ -3,6 +3,7 @@ package velrondevs.botania.client.integration.emi;
 import dev.emi.emi.api.recipe.EmiRecipe;
 import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
+import dev.emi.emi.api.widget.SlotWidget;
 import dev.emi.emi.api.widget.WidgetHolder;
 
 import net.minecraft.core.RegistryAccess;
@@ -31,6 +32,7 @@ public class RunicAltarEmiRecipe extends BotaniaEmiRecipe {
 	public static final int POS_Y_REAGENTS = 30;
 	private final List<EmiIngredient> ingredients;
 	private final int mana;
+	private final boolean returnsRunes;
 
 	public RunicAltarEmiRecipe(RecipeHolder<? extends RunicAltarRecipe> holder) {
 		super(BotaniaEmiPlugin.RUNIC_ALTAR, holder);
@@ -38,10 +40,13 @@ public class RunicAltarEmiRecipe extends BotaniaEmiRecipe {
 		this.ingredients = recipe.getIngredients().stream().map(EmiIngredient::of).toList();
 		this.input = Stream.concat(ingredients.stream(), Stream.of(LIVINGROCK)).toList();
 
-		for (EmiIngredient ing : input) {
-			for (EmiStack stack : ing.getEmiStacks()) {
-				if (stack.getItemStack().getItem() instanceof RuneItem) {
-					stack.setRemainder(stack.copy());
+		this.returnsRunes = recipe.returnsRunes();
+		if (returnsRunes) {
+			for (EmiIngredient ing : input) {
+				for (EmiStack stack : ing.getEmiStacks()) {
+					if (stack.getItemStack().getItem() instanceof RuneItem) {
+						stack.setRemainder(stack.copy());
+					}
 				}
 			}
 		}
@@ -63,10 +68,13 @@ public class RunicAltarEmiRecipe extends BotaniaEmiRecipe {
 	@Override
 	public void addWidgets(WidgetHolder widgets) {
 		widgets.add(new ManaWidget(2, 100, mana, ManaPoolBlockEntity.MAX_MANA / 10));
-		RunicAltarEmiRecipe.addRunicAltarWidgets(widgets, this, ingredients, ALTAR, output.get(0), LIVINGROCK);
+		SlotWidget outputSlot = RunicAltarEmiRecipe.addRunicAltarWidgets(widgets, this, ingredients, ALTAR, output.get(0), LIVINGROCK);
+		if (!returnsRunes) {
+			outputSlot.appendTooltip(RunicAltarRecipe.consumesRunesNote());
+		}
 	}
 
-	public static void addRunicAltarWidgets(WidgetHolder widgets, EmiRecipe recipe,
+	public static SlotWidget addRunicAltarWidgets(WidgetHolder widgets, EmiRecipe recipe,
 			List<EmiIngredient> input, EmiIngredient altar, EmiStack output, EmiIngredient... reagents) {
 		double step = 360.0 / input.size();
 		widgets.add(new BlendTextureWidget(TEXTURE, 21, 0, 85, 82, 42, 11));
@@ -87,6 +95,6 @@ public class RunicAltarEmiRecipe extends BotaniaEmiRecipe {
 		} else {
 			widgets.addSlot(altar, CENTER_X, CENTER_Y + 1).drawBack(false).catalyst(true);
 		}
-		widgets.addSlot(output, CENTER_X + 38, 5).drawBack(false).recipeContext(recipe);
+		return widgets.addSlot(output, CENTER_X + 38, 5).drawBack(false).recipeContext(recipe);
 	}
 }

@@ -2,14 +2,17 @@ package velrondevs.botania.client.integration.ponder;
 
 import net.createmod.ponder.api.registration.PonderTagRegistrationHelper;
 import net.minecraft.resources.ResourceLocation;
+import net.neoforged.fml.ModList;
 
+import velrondevs.botania.integration.create.CreateIntegration;
+import velrondevs.botania.integration.create.ManaMotorScenes;
 import velrondevs.botania.registry.BotaniaBlocks;
 import velrondevs.botania.registry.BotaniaFlowerBlocks;
 
 import static velrondevs.botania.common.lib.ResourceLocationHelper.prefix;
 
-final class BotaniaPonderTags {
-	static final ResourceLocation MANA_NETWORK = prefix(PonderStrings.MANA_NETWORK);
+public final class BotaniaPonderTags {
+	public static final ResourceLocation MANA_NETWORK = prefix(PonderStrings.MANA_NETWORK);
 	static final ResourceLocation CRAFTING_DEVICES = prefix(PonderStrings.CRAFTING_DEVICES);
 	static final ResourceLocation ALFHEIM = prefix(PonderStrings.ALFHEIM);
 	static final ResourceLocation FLOWERS = prefix(PonderStrings.FLOWERS);
@@ -48,5 +51,8 @@ final class BotaniaPonderTags {
 				.item(BotaniaBlocks.corporeaIndex)
 				.addToIndex()
 				.register();
+		if (ModList.get().isLoaded(CreateIntegration.MOD_ID)) {
+			ManaMotorScenes.registerTags(helper);
+		}
 	}
 }

@@ -1,0 +1,33 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "create"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "key": {
+    "D": {
+      "item": "botania:mana_diamond"
+    },
+    "L": {
+      "item": "botania:livingrock"
+    },
+    "M": {
+      "item": "botania:manasteel_ingot"
+    },
+    "P": {
+      "item": "botania:mana_pool"
+    }
+  },
+  "pattern": [
+    " M ",
+    "MDM",
+    "LPL"
+  ],
+  "result": {
+    "count": 1,
+    "id": "botania:mana_motor"
+  }
+}

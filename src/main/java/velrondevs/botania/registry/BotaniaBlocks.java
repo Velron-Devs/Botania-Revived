@@ -82,6 +82,7 @@ import velrondevs.botania.common.helper.ColorHelper;
 import velrondevs.botania.common.item.block.BlockItemWithSpecialRenderer;
 import velrondevs.botania.common.item.block.TinyPotatoBlockItem;
 import velrondevs.botania.common.lib.LibBlockNames;
+import velrondevs.botania.compat.masterful.MasterfulBotanyCompat;
 import velrondevs.botania.xplat.XplatAbstractions;
 
 import java.util.Locale;
@@ -324,7 +325,10 @@ public final class BotaniaBlocks {
 	public static final Block manaSpreader = new ManaSpreaderBlock(ManaSpreaderBlock.Variant.MANA, BlockBehaviour.Properties.ofFullCopy(livingwood).isValidSpawn(NO_SPAWN));
 	public static final Block redstoneSpreader = new ManaSpreaderBlock(ManaSpreaderBlock.Variant.REDSTONE, BlockBehaviour.Properties.ofFullCopy(livingwood).isValidSpawn(NO_SPAWN));
 	public static final Block elvenSpreader = new ManaSpreaderBlock(ManaSpreaderBlock.Variant.ELVEN, BlockBehaviour.Properties.ofFullCopy(dreamwood).isValidSpawn(NO_SPAWN));
+	public static final Block elementiumSpreader = new ManaSpreaderBlock(ManaSpreaderBlock.Variant.ELEMENTIUM, BlockBehaviour.Properties.ofFullCopy(dreamwood).isValidSpawn(NO_SPAWN));
+	public static final Block terrasteelSpreader = new ManaSpreaderBlock(ManaSpreaderBlock.Variant.TERRASTEEL, BlockBehaviour.Properties.ofFullCopy(dreamwood).isValidSpawn(NO_SPAWN));
 	public static final Block gaiaSpreader = new ManaSpreaderBlock(ManaSpreaderBlock.Variant.GAIA, BlockBehaviour.Properties.ofFullCopy(dreamwood).isValidSpawn(NO_SPAWN));
+	public static final Block alfsteelSpreader = MasterfulBotanyCompat.isLoaded() ? new ManaSpreaderBlock(ManaSpreaderBlock.Variant.ALFSTEEL, BlockBehaviour.Properties.ofFullCopy(dreamwood).isValidSpawn(NO_SPAWN)) : null;
 
 	public static final Block manaPool = new ManaPoolBlock(ManaPoolBlock.Variant.DEFAULT, BlockBehaviour.Properties.ofFullCopy(livingrock));
 	public static final Block creativePool = new ManaPoolBlock(ManaPoolBlock.Variant.CREATIVE, BlockBehaviour.Properties.ofFullCopy(livingrock));
@@ -805,7 +809,12 @@ public final class BotaniaBlocks {
 		r.accept(manaSpreader, prefix(LibBlockNames.SPREADER));
 		r.accept(redstoneSpreader, prefix(LibBlockNames.SPREADER_REDSTONE));
 		r.accept(elvenSpreader, prefix(LibBlockNames.SPREADER_ELVEN));
+		r.accept(elementiumSpreader, prefix(LibBlockNames.SPREADER_ELEMENTIUM));
+		r.accept(terrasteelSpreader, prefix(LibBlockNames.SPREADER_TERRASTEEL));
 		r.accept(gaiaSpreader, prefix(LibBlockNames.SPREADER_GAIA));
+		if (alfsteelSpreader != null) {
+			r.accept(alfsteelSpreader, prefix(LibBlockNames.SPREADER_ALFSTEEL));
+		}
 		r.accept(manaPool, prefix(LibBlockNames.POOL));
 		r.accept(creativePool, prefix(LibBlockNames.POOL_CREATIVE));
 		r.accept(dilutedPool, prefix(LibBlockNames.POOL_DILUTED));
@@ -1209,7 +1218,12 @@ public final class BotaniaBlocks {
 		r.accept(new BlockItem(manaSpreader, props), BuiltInRegistries.BLOCK.getKey(manaSpreader));
 		r.accept(new BlockItem(redstoneSpreader, props), BuiltInRegistries.BLOCK.getKey(redstoneSpreader));
 		r.accept(new BlockItem(elvenSpreader, props), BuiltInRegistries.BLOCK.getKey(elvenSpreader));
+		r.accept(new BlockItem(elementiumSpreader, props), BuiltInRegistries.BLOCK.getKey(elementiumSpreader));
+		r.accept(new BlockItem(terrasteelSpreader, BotaniaItems.defaultBuilder().rarity(Rarity.UNCOMMON)), BuiltInRegistries.BLOCK.getKey(terrasteelSpreader));
 		r.accept(new BlockItem(gaiaSpreader, props), BuiltInRegistries.BLOCK.getKey(gaiaSpreader));
+		if (alfsteelSpreader != null) {
+			r.accept(new BlockItem(alfsteelSpreader, BotaniaItems.defaultBuilder().rarity(Rarity.EPIC)), BuiltInRegistries.BLOCK.getKey(alfsteelSpreader));
+		}
 		r.accept(new BlockItem(manaPool, props), BuiltInRegistries.BLOCK.getKey(manaPool));
 		r.accept(new BlockItem(creativePool, BotaniaItems.defaultBuilder().rarity(Rarity.EPIC)), BuiltInRegistries.BLOCK.getKey(creativePool));
 		r.accept(new BlockItem(dilutedPool, props), BuiltInRegistries.BLOCK.getKey(dilutedPool));

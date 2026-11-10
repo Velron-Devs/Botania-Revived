@@ -1,7 +1,6 @@
 package velrondevs.botania.compat.sophisticated;
 
 import net.minecraft.core.registries.Registries;
-import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.registries.RegisterEvent;
 import net.p3pp3rf1y.sophisticatedcore.common.gui.UpgradeContainerRegistry;
@@ -25,7 +24,7 @@ public final class SophisticatedCompat {
 	private SophisticatedCompat() {}
 
 	static void register(ModuleContext ctx) {
-		SophisticatedConfig.register(ModLoadingContext.get().getActiveContainer());
+		SophisticatedConfig.registerMigration(ctx.modBus());
 		ctx.bind(Registries.DATA_COMPONENT_TYPE, consumer -> {
 			consumer.accept(SophisticatedComponents.MANA, SophisticatedItems.id("upgrade_mana"));
 			consumer.accept(SophisticatedComponents.STATION, SophisticatedItems.id("station_state"));
@@ -39,6 +38,8 @@ public final class SophisticatedCompat {
 				UpgradeContainerRegistry.register(SophisticatedItems.id(SophisticatedItems.RUNIC_ALTAR), RunicAltarUpgradeContainer.TYPE);
 				UpgradeContainerRegistry.register(SophisticatedItems.id(SophisticatedItems.ELVEN_PORTAL), ElvenPortalUpgradeContainer.TYPE);
 				UpgradeContainerRegistry.register(SophisticatedItems.id(SophisticatedItems.BREWERY), BreweryUpgradeContainer.TYPE);
+				UpgradeContainerRegistry.register(SophisticatedItems.id(SophisticatedItems.PETAL_APOTHECARY), PetalApothecaryUpgradeContainer.TYPE);
+				UpgradeContainerRegistry.register(SophisticatedItems.id(SophisticatedItems.TERRA_PLATE), TerraPlateUpgradeContainer.TYPE);
 			}
 		});
 		ctx.modBus().addListener(StationTransferPayload::register);

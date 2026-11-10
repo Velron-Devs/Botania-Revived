@@ -39,6 +39,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.*;
@@ -167,9 +168,35 @@ public class BotaniaClient {
 		if (XplatAbstractions.INSTANCE.isModLoaded("ears")) {
 			EarsIntegration.register();
 		}
-		if (XplatAbstractions.INSTANCE.isModLoaded("ponder")) {
-			BotaniaPonderIntegration.init();
+		if (ponderSupported()) {
+			try {
+				BotaniaPonderIntegration.init();
+			} catch (LinkageError | RuntimeException ex) {
+				BotaniaAPI.LOGGER.warn("The installed Ponder version is not compatible, the Ponder scenes are disabled", ex);
+			}
 		}
+	}
+
+	private static boolean ponderSupported() {
+		return ModList.get().getModContainerById("ponder").map(container -> {
+			String version = container.getModInfo().getVersion().toString();
+			var matcher = java.util.regex.Pattern.compile("^(\\d+)\\.(\\d+)\\.(\\d+)").matcher(version);
+			if (!matcher.find()) {
+				return true;
+			}
+			int[] found = {Integer.parseInt(matcher.group(1)), Integer.parseInt(matcher.group(2)), Integer.parseInt(matcher.group(3))};
+			int[] minimum = {1, 0, 82};
+			for (int i = 0; i < 3; i++) {
+				if (found[i] != minimum[i]) {
+					boolean supported = found[i] > minimum[i];
+					if (!supported) {
+						BotaniaAPI.LOGGER.warn("Ponder {} is older than 1.0.82, the Ponder scenes of Botania are disabled", version);
+					}
+					return supported;
+				}
+			}
+			return true;
+		}).orElse(false);
 	}
 
 	@SubscribeEvent

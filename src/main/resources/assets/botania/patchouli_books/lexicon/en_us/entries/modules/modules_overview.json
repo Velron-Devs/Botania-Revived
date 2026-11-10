@@ -1,0 +1,21 @@
+{
+  "name": "botania.entry.modulesOverview",
+  "category": "botania:modules",
+  "icon": "botania:lexicon",
+  "priority": true,
+  "sortnum": 0,
+  "pages": [
+    {
+      "type": "text",
+      "text": "botania.page.modulesOverview0"
+    },
+    {
+      "type": "text",
+      "text": "botania.page.modulesOverview1"
+    },
+    {
+      "type": "text",
+      "text": "botania.page.modulesOverview2"
+    }
+  ]
+}

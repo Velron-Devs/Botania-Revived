@@ -25,6 +25,7 @@ import velrondevs.botania.module.botaniaextras.BotaniaExtrasModule;
 import velrondevs.botania.module.magicskies.MagicSkiesModule;
 import velrondevs.botania.module.creativecrafting.CreativeCraftingModule;
 import velrondevs.botania.module.exploration.ExplorationModule;
+import velrondevs.botania.xplat.BotaniaConfig;
 
 import java.io.Reader;
 import java.nio.file.Files;
@@ -97,6 +98,7 @@ public final class BotaniaModules {
 
 	public static void init(IEventBus modBus) {
 		load();
+		BotaniaConfig.resetModulePatchouliFlags();
 		modBus.addListener((RegisterEvent event) -> {
 			if (event.getRegistryKey().equals(NeoForgeRegistries.Keys.CONDITION_CODECS)) {
 				event.register(NeoForgeRegistries.Keys.CONDITION_CODECS, MODULE_ENABLED_CONDITION, () -> ModuleEnabledCondition.CODEC);

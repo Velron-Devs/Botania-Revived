@@ -73,6 +73,7 @@ public enum GeneratingFlowerProvider implements IBlockComponentProvider, IServer
 		}
 
 		JadeManaHelper.addBinding(tooltip, config, data, accessor, "botania.jade.bound_to", "botania.jade.not_bound");
+		JadeManaHelper.addNodeBoost(tooltip, flower.getNodeBoostMultiplier());
 	}
 
 	@Override

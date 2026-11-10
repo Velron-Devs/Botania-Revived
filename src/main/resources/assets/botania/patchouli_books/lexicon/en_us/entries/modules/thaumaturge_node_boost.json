@@ -1,0 +1,21 @@
+{
+  "name": "botania.entry.thaumaturgeNodeBoost",
+  "category": "botania:modules",
+  "icon": "botania:mana_spreader",
+  "flag": "mod:thaumaturge",
+  "sortnum": 12,
+  "pages": [
+    {
+      "type": "text",
+      "text": "botania.page.thaumaturgeNodeBoost0"
+    },
+    {
+      "type": "text",
+      "text": "botania.page.thaumaturgeNodeBoost1"
+    },
+    {
+      "type": "text",
+      "text": "botania.page.thaumaturgeNodeBoost2"
+    }
+  ]
+}

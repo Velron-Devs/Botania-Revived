@@ -31,6 +31,8 @@ import velrondevs.botania.common.annotations.SoftImplement;
 import velrondevs.botania.common.block.block_entity.red_string.RedStringSpooferBlockEntity;
 import velrondevs.botania.common.block.decor.FloatingFlowerBlock;
 import velrondevs.botania.common.lib.BotaniaTags;
+import velrondevs.botania.integration.thaumaturge.NodeBoostApi;
+import velrondevs.botania.integration.thaumaturge.NodeBoostTracker;
 import velrondevs.botania.registry.BotaniaBlocks;
 
 public abstract class SpecialFlowerBlockEntity extends BlockEntity implements FloatingFlowerProvider {
@@ -52,6 +54,9 @@ public abstract class SpecialFlowerBlockEntity extends BlockEntity implements Fl
 	public boolean overgrowthBoost = false;
 	private BlockPos positionOverride;
 	private boolean isFloating;
+	private final NodeBoostTracker nodeBoost = new NodeBoostTracker();
+	private boolean nodeBoostBatching = false;
+	private boolean nodeBoostSyncPending = false;
 
 	public static final String TAG_TICKS_EXISTED = "ticksExisted";
 	private static final String TAG_FLOATING_DATA = "floating";
@@ -65,12 +70,14 @@ public abstract class SpecialFlowerBlockEntity extends BlockEntity implements Fl
 			BotaniaAPI.LOGGER.error("Special flower changed floating state, this is not supported!", new Throwable());
 			self.isFloating = !self.isFloating;
 		}
+		int nodeBoostTicks = self.updateNodeBoost(level, worldPosition);
 		BlockEntity tileBelow = level.getBlockEntity(worldPosition.below());
 		if (tileBelow instanceof RedStringSpooferBlockEntity relay) {
 			BlockPos coords = relay.getBinding();
 			if (coords != null) {
 				self.positionOverride = coords;
 				self.tickFlower();
+				self.runNodeBoostTicks(nodeBoostTicks);
 
 				return;
 			} else {
@@ -89,8 +96,54 @@ public abstract class SpecialFlowerBlockEntity extends BlockEntity implements Fl
 			}
 		}
 		self.tickFlower();
+		self.runNodeBoostTicks(nodeBoostTicks);
 		self.overgrowth = false;
 		self.overgrowthBoost = false;
+	}
+
+	private int updateNodeBoost(Level level, BlockPos pos) {
+		NodeBoostApi.Target target = getNodeBoostTarget();
+		if (target == null) {
+			return 0;
+		}
+		nodeBoost.update(level, pos, target);
+		if (level.isClientSide || !isNodeBoostAffected()) {
+			return 0;
+		}
+		return nodeBoost.consumeExtraTicks();
+	}
+
+	private void runNodeBoostTicks(int extraTicks) {
+		if (extraTicks <= 0) {
+			return;
+		}
+		nodeBoostBatching = true;
+		try {
+			for (int i = 0; i < extraTicks && !isRemoved(); i++) {
+				tickFlower();
+			}
+		} finally {
+			nodeBoostBatching = false;
+		}
+		if (nodeBoostSyncPending) {
+			nodeBoostSyncPending = false;
+			if (!isRemoved()) {
+				sync();
+			}
+		}
+	}
+
+	@Nullable
+	protected NodeBoostApi.Target getNodeBoostTarget() {
+		return null;
+	}
+
+	public boolean isNodeBoostAffected() {
+		return true;
+	}
+
+	public double getNodeBoostMultiplier() {
+		return getNodeBoostTarget() != null && isNodeBoostAffected() ? nodeBoost.multiplier() : 1.0;
 	}
 
 	@Nullable
@@ -176,6 +229,10 @@ public abstract class SpecialFlowerBlockEntity extends BlockEntity implements Fl
 	}
 
 	public void sync() {
+		if (nodeBoostBatching) {
+			nodeBoostSyncPending = true;
+			return;
+		}
 		VanillaPacketDispatcher.dispatchTEToNearbyPlayers(this);
 	}
 

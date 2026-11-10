@@ -1,0 +1,42 @@
+{
+  "name": "botania.entry.sophisticatedStations",
+  "category": "botania:modules",
+  "icon": "botania:runic_altar_upgrade",
+  "flag": "&botania:sophisticated,mod:sophisticatedcore",
+  "sortnum": 10,
+  "pages": [
+    {
+      "type": "text",
+      "text": "botania.page.sophisticatedStations0"
+    },
+    {
+      "type": "crafting",
+      "text": "botania.page.sophisticatedStations1",
+      "recipe": "botania:sophisticated/runic_altar_upgrade"
+    },
+    {
+      "type": "crafting",
+      "text": "botania.page.sophisticatedStations2",
+      "recipe": "botania:sophisticated/elven_portal_upgrade"
+    },
+    {
+      "type": "crafting",
+      "text": "botania.page.sophisticatedStations3",
+      "recipe": "botania:sophisticated/brewery_upgrade"
+    },
+    {
+      "type": "crafting",
+      "text": "botania.page.sophisticatedStations4",
+      "recipe": "botania:sophisticated/petal_apothecary_upgrade"
+    },
+    {
+      "type": "crafting",
+      "text": "botania.page.sophisticatedStations5",
+      "recipe": "botania:sophisticated/remote_terra_plate_upgrade"
+    },
+    {
+      "type": "text",
+      "text": "botania.page.sophisticatedStations6"
+    }
+  ]
+}

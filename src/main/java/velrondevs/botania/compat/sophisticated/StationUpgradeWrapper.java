@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 public abstract class StationUpgradeWrapper<W extends StationUpgradeWrapper<W, I>, I extends UpgradeItemBase<W>> extends UpgradeWrapperBase<W, I> implements ITickableUpgrade {
-	protected record Plan(int cost, List<ItemStack> outputs, boolean missingReagent, Runnable commit) {}
+	protected record Plan(int cost, List<ItemStack> outputs, int missing, Runnable commit) {}
 
 	private final UpgradeSlots inventory;
 
@@ -44,6 +44,10 @@ public abstract class StationUpgradeWrapper<W extends StationUpgradeWrapper<W, I
 	}
 
 	protected abstract Plan plan(Level level);
+
+	protected boolean autoFeed() {
+		return SophisticatedConfig.stationAutoFeed();
+	}
 
 	protected static int scaleCost(int cost, int percent) {
 		if (cost <= 0 || percent <= 0) {
@@ -74,8 +78,8 @@ public abstract class StationUpgradeWrapper<W extends StationUpgradeWrapper<W, I
 		}
 		long total = ManaPileUpgradeItem.availableMana(storageWrapper);
 		int available = (int) Math.min(Integer.MAX_VALUE, total);
-		if (plan.missingReagent()) {
-			setState(new StationState(StationState.NO_REAGENT, available, plan.cost()));
+		if (plan.missing() != 0) {
+			setState(new StationState(plan.missing(), available, plan.cost()));
 			return false;
 		}
 		if (plan.cost() > 0) {
@@ -104,7 +108,7 @@ public abstract class StationUpgradeWrapper<W extends StationUpgradeWrapper<W, I
 				InventoryHelper.insertIntoInventory(output.copy(), target, false);
 			}
 		}
-		if (SophisticatedConfig.stationAutoFeed()) {
+		if (autoFeed()) {
 			for (int slot = 0; slot < pattern.length; slot++) {
 				StationAutomation.refill(inventory, slot, pattern[slot], pattern[slot].getCount(), target);
 			}

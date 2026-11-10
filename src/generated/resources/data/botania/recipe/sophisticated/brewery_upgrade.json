@@ -31,25 +31,25 @@
   "category": "misc",
   "key": {
     "A": {
-      "item": "botania:alfheim_portal"
+      "item": "botania:apothecary_default"
     },
     "B": {
       "tag": "botania:sophisticated_upgrade_bases"
     },
-    "F": {
-      "item": "botania:flask"
+    "D": {
+      "tag": "botania:mana_diamond_gems"
     },
-    "G": {
-      "item": "botania:glimmering_livingwood_log"
+    "L": {
+      "item": "botania:mana_pile_upgrade"
     },
-    "V": {
-      "item": "botania:vial"
+    "W": {
+      "item": "botania:brewery"
     }
   },
   "pattern": [
-    "VGV",
-    "FBF",
-    "VAV"
+    "DAD",
+    "LBL",
+    "DWD"
   ],
   "result": {
     "count": 1,

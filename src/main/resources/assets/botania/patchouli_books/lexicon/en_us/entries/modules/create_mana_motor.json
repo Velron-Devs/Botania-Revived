@@ -1,0 +1,26 @@
+{
+  "name": "botania.entry.createManaMotor",
+  "category": "botania:modules",
+  "icon": "botania:mana_motor",
+  "flag": "mod:create",
+  "sortnum": 11,
+  "pages": [
+    {
+      "type": "text",
+      "text": "botania.page.createManaMotor0"
+    },
+    {
+      "type": "text",
+      "text": "botania.page.createManaMotor1"
+    },
+    {
+      "type": "crafting",
+      "text": "botania.page.createManaMotor2",
+      "recipe": "botania:mana_motor"
+    },
+    {
+      "type": "text",
+      "text": "botania.page.createManaMotor3"
+    }
+  ]
+}

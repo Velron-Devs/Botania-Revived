@@ -1,0 +1,16 @@
+{
+  "name": "botania.entry.newSpreaders",
+  "category": "botania:modules",
+  "icon": "botania:terrasteel_spreader",
+  "sortnum": 13,
+  "pages": [
+    {
+      "type": "text",
+      "text": "botania.page.newSpreaders0"
+    },
+    {
+      "type": "text",
+      "text": "botania.page.newSpreaders1"
+    }
+  ]
+}

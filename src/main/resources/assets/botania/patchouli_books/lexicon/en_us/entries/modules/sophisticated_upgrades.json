@@ -1,0 +1,35 @@
+{
+  "name": "botania.entry.sophisticatedManaUpgrades",
+  "category": "botania:modules",
+  "icon": "botania:mana_pile_upgrade",
+  "flag": "&botania:sophisticated,mod:sophisticatedcore",
+  "sortnum": 9,
+  "pages": [
+    {
+      "type": "text",
+      "text": "botania.page.sophisticatedManaUpgrades0"
+    },
+    {
+      "type": "text",
+      "text": "botania.page.sophisticatedManaUpgrades1"
+    },
+    {
+      "type": "text",
+      "text": "botania.page.sophisticatedManaUpgrades2"
+    },
+    {
+      "type": "crafting",
+      "text": "botania.page.sophisticatedManaUpgrades3",
+      "recipe": "botania:sophisticated/mana_pile_upgrade"
+    },
+    {
+      "type": "text",
+      "text": "botania.page.sophisticatedManaUpgrades4"
+    },
+    {
+      "type": "crafting",
+      "text": "botania.page.sophisticatedManaUpgrades5",
+      "recipe": "botania:sophisticated/mana_link_upgrade"
+    }
+  ]
+}

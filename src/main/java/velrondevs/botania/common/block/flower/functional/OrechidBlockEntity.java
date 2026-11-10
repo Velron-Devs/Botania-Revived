@@ -30,12 +30,12 @@ import java.util.List;
 import java.util.function.Predicate;
 
 public class OrechidBlockEntity extends FunctionalFlowerBlockEntity {
-	private static final int COST = 17500;
+	public static final int DEFAULT_COST = 17500;
 	private static final int COST_GOG = 700;
 	private static final int DELAY = 100;
 	private static final int DELAY_GOG = 2;
-	private static final int RANGE = 5;
-	private static final int RANGE_Y = 3;
+	public static final int DEFAULT_RANGE = 5;
+	public static final int DEFAULT_RANGE_Y = 3;
 
 	protected OrechidBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
 		super(type, pos, state);
@@ -138,7 +138,8 @@ public class OrechidBlockEntity extends FunctionalFlowerBlockEntity {
 	}
 
 	public int getCost() {
-		return XplatAbstractions.INSTANCE.gogLoaded() ? COST_GOG : COST;
+		int cost = BotaniaConfig.common().orechidCost();
+		return XplatAbstractions.INSTANCE.gogLoaded() && cost == DEFAULT_COST ? COST_GOG : cost;
 	}
 
 	public int getDelay() {
@@ -156,11 +157,11 @@ public class OrechidBlockEntity extends FunctionalFlowerBlockEntity {
 	}
 
 	public int getRange() {
-		return RANGE;
+		return BotaniaConfig.common().orechidRange();
 	}
 
 	public int getRangeY() {
-		return RANGE_Y;
+		return BotaniaConfig.common().orechidRangeY();
 	}
 
 	@Override

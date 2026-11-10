@@ -27,6 +27,7 @@ import velrondevs.botania.api.block_entity.RadiusDescriptor;
 import velrondevs.botania.common.helper.*;
 import velrondevs.botania.common.internal_caps.ItemFlagsComponent;
 import velrondevs.botania.registry.BotaniaFlowerBlocks;
+import velrondevs.botania.xplat.BotaniaConfig;
 import velrondevs.botania.xplat.XplatAbstractions;
 
 import java.util.ArrayList;
@@ -56,6 +57,10 @@ public class HopperhockBlockEntity extends FunctionalFlowerBlockEntity implement
 		super.tickFlower();
 
 		if (getLevel().isClientSide || redstoneSignal > 0) {
+			return;
+		}
+
+		if (BotaniaConfig.common().reducedUpdateFrequency() && ticksExisted % BotaniaConfig.common().hopperhockInterval() != 0) {
 			return;
 		}
 

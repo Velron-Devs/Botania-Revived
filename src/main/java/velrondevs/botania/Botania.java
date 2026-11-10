@@ -127,6 +127,7 @@ import velrondevs.botania.integration.InventorySorterIntegration;
 import velrondevs.botania.integration.arsnouveau.ArsNouveauIntegration;
 import velrondevs.botania.integration.botanypots.BotaniaBotanyPotsIntegration;
 import velrondevs.botania.integration.corporea.ItemHandlerCorporeaNodeDetector;
+import velrondevs.botania.integration.create.CreateIntegration;
 import velrondevs.botania.integration.curios.CurioIntegration;
 import velrondevs.botania.integration.kubejs.BotaniaKubeJSIntegration;
 import velrondevs.botania.integration.thaumaturge.ThaumaturgeIntegration;
@@ -194,6 +195,9 @@ public class Botania {
 		}
 		if (ModList.get().isLoaded(ThaumaturgeIntegration.MOD_ID)) {
 			ThaumaturgeIntegration.init(modBus);
+		}
+		if (ModList.get().isLoaded("create")) {
+			CreateIntegration.init(modBus, container);
 		}
 	}
 
@@ -417,6 +421,7 @@ public class Botania {
 			}
 		});
 		bus.addListener((ItemTossEvent e) -> RingOfMagnetizationItem.onTossItem(e.getPlayer()));
+		bus.addListener(RingOfTheAesirItem::onToss);
 		bus.addListener(EventPriority.LOW, (LivingIncomingDamageEvent e) -> {
 			if (e.getEntity() instanceof Player player) {
 				Container worn = EquipmentHandler.getAllWorn(player);
@@ -499,7 +504,8 @@ public class Botania {
 			BotaniaItems.kingKey, KeyOfTheKingsLawItem::makeRelic,
 			BotaniaItems.lokiRing, RingOfLokiItem::makeRelic,
 			BotaniaItems.odinRing, RingOfOdinItem::makeRelic,
-			BotaniaItems.thorRing, RingOfThorItem::makeRelic
+			BotaniaItems.thorRing, RingOfThorItem::makeRelic,
+			BotaniaItems.aesirRing, RingOfTheAesirItem::makeRelic
 	));
 
 	private static <T> void registerItemCaps(RegisterCapabilitiesEvent e, ItemCapability<T, Void> cap, Map<Item, Function<ItemStack, T>> map) {
@@ -555,6 +561,8 @@ public class Botania {
 		for (var type : BlockEntityConstants.SELF_SPARK_ATTACHABLE_BES) {
 			registerSelf(e, BotaniaCapabilities.SPARK_ATTACHABLE, type, SparkAttachable.class);
 		}
+		e.registerBlockEntity(BotaniaCapabilities.MANA_RECEIVER, BotaniaFlowerBlocks.ENTROPINNYUM, (be, ctx) -> be.getOverflowReceiver());
+		e.registerBlockEntity(BotaniaCapabilities.SPARK_ATTACHABLE, BotaniaFlowerBlocks.ENTROPINNYUM, (be, ctx) -> be.getOverflowReceiver());
 	}
 
 	private static <T, C> void registerSelf(RegisterCapabilitiesEvent e, BlockCapability<T, C> cap, BlockEntityType<?> type, Class<T> clazz) {

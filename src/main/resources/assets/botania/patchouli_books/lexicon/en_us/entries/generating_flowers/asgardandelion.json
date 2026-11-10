@@ -4,7 +4,6 @@
   "icon": "botania:asgardandelion",
   "entry_color": "9208ff",
   "flag": "botania:asg",
-  "advancement": "botania:main/elf_lexicon_pickup",
   "pages": [
     {
       "type": "text",
@@ -15,13 +14,17 @@
       "text": "botania.page.asgardandelion1"
     },
     {
+      "type": "text",
+      "text": "botania.page.asgardandelion2"
+    },
+    {
       "type": "patchouli:spotlight",
       "item": "botania:asgardandelion",
       "title": "botania.entry.asgardandelion",
-      "text": "botania.page.asgardandelion2"
+      "text": "botania.page.asgardandelion3"
     }
   ],
   "extra_recipe_mappings": {
-    "botania:floating_asgardandelion": 2
+    "botania:floating_asgardandelion": 3
   }
 }

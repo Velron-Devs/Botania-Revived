@@ -101,7 +101,7 @@ public class ConventionItemTagProvider extends ItemTagsProvider {
 				superCloudPendant, superLavaPendant
 		);
 		tag(accessory("ring")).add(
-				auraRing, auraRingGreater, dodgeRing, lokiRing, magnetRing, magnetRingGreater,
+				aesirRing, auraRing, auraRingGreater, dodgeRing, lokiRing, magnetRing, magnetRingGreater,
 				manaRing, manaRingGreater, miningRing, odinRing, pixieRing, reachRing,
 				swapRing, thorRing, waterRing
 		);

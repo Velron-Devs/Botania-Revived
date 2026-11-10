@@ -38,6 +38,7 @@ public enum RunicAltarProvider implements IBlockComponentProvider, IServerDataPr
 		if (mana >= required) {
 			tooltip.add(IThemeHelper.get().success(Component.translatable("botania.jade.ready_wand")));
 		}
+		JadeManaHelper.addNodeBoost(tooltip, altar.getNodeBoostMultiplier());
 	}
 
 	@Override

@@ -1,0 +1,74 @@
+{
+  "name": "botania.entry.sophisticatedStorage",
+  "category": "botania:modules",
+  "icon": "botania:terrasteel_barrel",
+  "flag": "&botania:sophisticated,mod:sophisticatedstorage",
+  "sortnum": 7,
+  "pages": [
+    {
+      "type": "text",
+      "text": "botania.page.sophisticatedStorage0"
+    },
+    {
+      "type": "crafting",
+      "text": "botania.page.sophisticatedStorage1",
+      "recipe": "botania:sophisticated/manasteel_barrel",
+      "recipe2": "botania:sophisticated/manasteel_chest",
+      "flag": "!mod:sophisticatedatm"
+    },
+    {
+      "type": "crafting",
+      "text": "botania.page.sophisticatedStorage2",
+      "recipe": "botania:sophisticated/atm/manasteel_barrel",
+      "recipe2": "botania:sophisticated/atm/manasteel_chest",
+      "flag": "mod:sophisticatedatm"
+    },
+    {
+      "type": "crafting",
+      "text": "botania.page.sophisticatedStorage3",
+      "recipe": "botania:sophisticated/elementium_barrel",
+      "recipe2": "botania:sophisticated/elementium_chest"
+    },
+    {
+      "type": "crafting",
+      "text": "botania.page.sophisticatedStorage4",
+      "recipe": "botania:sophisticated/terrasteel_barrel",
+      "recipe2": "botania:sophisticated/terrasteel_chest"
+    },
+    {
+      "type": "crafting",
+      "text": "botania.page.sophisticatedStorage5",
+      "recipe": "botania:sophisticated/gaia_barrel",
+      "recipe2": "botania:sophisticated/gaia_chest"
+    },
+    {
+      "type": "crafting",
+      "text": "botania.page.sophisticatedStorage6",
+      "recipe": "botania:sophisticated/alfsteel_barrel",
+      "recipe2": "botania:sophisticated/alfsteel_chest",
+      "flag": "mod:masterfulbotany"
+    },
+    {
+      "type": "text",
+      "text": "botania.page.sophisticatedStorage7"
+    },
+    {
+      "type": "crafting",
+      "text": "botania.page.sophisticatedStorage8",
+      "recipe": "botania:sophisticated/netherite_to_manasteel_tier_upgrade",
+      "recipe2": "botania:sophisticated/manasteel_to_elementium_tier_upgrade"
+    },
+    {
+      "type": "crafting",
+      "text": "botania.page.sophisticatedStorage9",
+      "recipe": "botania:sophisticated/elementium_to_terrasteel_tier_upgrade",
+      "recipe2": "botania:sophisticated/terrasteel_to_gaia_tier_upgrade"
+    },
+    {
+      "type": "crafting",
+      "text": "botania.page.sophisticatedStorage10",
+      "recipe": "botania:sophisticated/gaia_to_alfsteel_tier_upgrade",
+      "flag": "mod:masterfulbotany"
+    }
+  ]
+}

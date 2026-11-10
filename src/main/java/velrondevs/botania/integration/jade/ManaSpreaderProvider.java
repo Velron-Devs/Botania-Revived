@@ -34,6 +34,7 @@ public enum ManaSpreaderProvider implements IBlockComponentProvider, IServerData
 		if (!lens.isEmpty()) {
 			JadeManaHelper.addItemLine(tooltip, lens, Component.translatable("botania.jade.lens", lens.getHoverName()));
 		}
+		JadeManaHelper.addNodeBoost(tooltip, spreader.getNodeBoostMultiplier());
 	}
 
 	@Override
