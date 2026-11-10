@@ -17,6 +17,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.PlayerModelType;
 import net.minecraft.world.entity.player.PlayerSkin;
 
+import velrondevs.botania.client.core.helper.BotaniaShaders;
 import velrondevs.botania.client.core.helper.RenderHelper;
 import velrondevs.botania.client.model.armor.ArmorModels;
 import velrondevs.botania.common.entity.GaiaGuardianEntity;
@@ -29,6 +30,7 @@ public class GaiaGuardianRenderer extends HumanoidMobRenderer<GaiaGuardianEntity
 	public static class State extends HumanoidRenderState {
 		public Identifier texture = DefaultPlayerSkin.getDefaultTexture();
 		public boolean slim;
+		public int shaderTint = -1;
 	}
 
 	private final HumanoidModel<State> normalModel;
@@ -58,6 +60,22 @@ public class GaiaGuardianRenderer extends HumanoidMobRenderer<GaiaGuardianEntity
 		}
 		state.texture = skin.body().texturePath();
 		state.slim = skin.model() == PlayerModelType.SLIM;
+
+		int invulTime = entity.getInvulTime();
+		float grainIntensity, disfiguration;
+		if (invulTime > 0) {
+			grainIntensity = invulTime > 20 ? 1F : invulTime * 0.05F;
+			disfiguration = grainIntensity * 0.3F;
+		} else {
+			disfiguration = (DEFAULT_DISFIGURATION + entity.hurtTime * ((1F - 0.15F) / 20F)) / 2F;
+			grainIntensity = DEFAULT_GRAIN_INTENSITY + entity.hurtTime * ((1F - 0.15F) / 10F);
+		}
+		state.shaderTint = BotaniaShaders.usable(BotaniaShaders.DOPPLEGANGER) ? BotaniaShaders.dopplegangerTint(grainIntensity, disfiguration) : -1;
+	}
+
+	@Override
+	protected int getModelTint(State state) {
+		return state.shaderTint;
 	}
 
 	@Override

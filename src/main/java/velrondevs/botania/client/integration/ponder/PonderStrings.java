@@ -1,5 +1,7 @@
 package velrondevs.botania.client.integration.ponder;
 
+import net.minecraft.locale.Language;
+
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -161,8 +163,13 @@ public final class PonderStrings {
 		TAGS.put(CORPOREA, List.of("Corporea", "Moving items instantly through a network of Sparks"));
 	}
 
+	private static String localized(String key, String fallback) {
+		Language language = Language.getInstance();
+		return language.has(key) ? language.getOrDefault(key) : fallback;
+	}
+
 	public static String title(String scene) {
-		return SCENES.get(scene).get(0);
+		return localized("botania.ponder." + scene + ".header", SCENES.get(scene).get(0));
 	}
 
 	public static String body(String scene, int index) {
@@ -170,14 +177,14 @@ public final class PonderStrings {
 		if (texts == null || index < 1 || index >= texts.size()) {
 			throw new IllegalArgumentException("No Ponder text " + index + " for scene " + scene);
 		}
-		return texts.get(index);
+		return localized("botania.ponder." + scene + ".text_" + index, texts.get(index));
 	}
 
 	public static String tagTitle(String tag) {
-		return TAGS.get(tag).get(0);
+		return localized("botania.ponder.tag." + tag, TAGS.get(tag).get(0));
 	}
 
 	public static String tagDescription(String tag) {
-		return TAGS.get(tag).get(1);
+		return localized("botania.ponder.tag." + tag + ".description", TAGS.get(tag).get(1));
 	}
 }

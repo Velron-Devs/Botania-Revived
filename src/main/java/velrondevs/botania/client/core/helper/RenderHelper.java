@@ -144,35 +144,35 @@ public final class RenderHelper {
 				.withTexture("Sampler0", TextureAtlas.LOCATION_ITEMS)
 				.setOutputTarget(OutputTarget.ITEM_ENTITY_TARGET)
 				.useLightmap().affectsCrumbling().createRenderSetup());
-		LIGHT_RELAY = make("light_relay", RenderSetup.builder(CoreShaders.halo())
+		LIGHT_RELAY = makeShaded("light_relay", BotaniaShaders.HALO, CoreShaders.TEXTURED_COLOR, b -> b
 				.withTexture("Sampler0", TextureAtlas.LOCATION_BLOCKS)
 				.setOutputTarget(OutputTarget.ITEM_ENTITY_TARGET)
-				.affectsCrumbling().createRenderSetup());
+				.affectsCrumbling());
 		ICON_OVERLAY = make("icon_overlay", RenderSetup.builder(CoreShaders.TEXTURED_LIGHTMAP)
 				.withTexture("Sampler0", TextureAtlas.LOCATION_BLOCKS)
 				.setOutputTarget(OutputTarget.ITEM_ENTITY_TARGET)
 				.useLightmap().affectsCrumbling().createRenderSetup());
-		MANA_POOL_WATER = make("mana_pool_water", RenderSetup.builder(CoreShaders.manaPool())
+		MANA_POOL_WATER = makeShaded("mana_pool_water", BotaniaShaders.MANA_POOL, CoreShaders.TEXTURED_LIGHTMAP, b -> b
 				.withTexture("Sampler0", TextureAtlas.LOCATION_BLOCKS)
 				.setOutputTarget(OutputTarget.ITEM_ENTITY_TARGET)
-				.useLightmap().createRenderSetup());
-		TERRA_PLATE = make("terra_plate_rune", RenderSetup.builder(CoreShaders.terraPlate())
+				.useLightmap());
+		TERRA_PLATE = makeShaded("terra_plate_rune", BotaniaShaders.TERRA_PLATE, CoreShaders.TEXTURED_LIGHTMAP, b -> b
 				.withTexture("Sampler0", TextureAtlas.LOCATION_BLOCKS)
 				.setOutputTarget(OutputTarget.ITEM_ENTITY_TARGET)
-				.useLightmap().createRenderSetup());
-		ENCHANTER = make("enchanter_rune", RenderSetup.builder(CoreShaders.enchanter())
+				.useLightmap());
+		ENCHANTER = makeShaded("enchanter_rune", BotaniaShaders.ENCHANTER, CoreShaders.TEXTURED_LIGHTMAP, b -> b
 				.withTexture("Sampler0", TextureAtlas.LOCATION_BLOCKS)
 				.setOutputTarget(OutputTarget.ITEM_ENTITY_TARGET)
-				.useLightmap().createRenderSetup());
+				.useLightmap());
 
-		BABYLON_ICON = make("babylon", RenderSetup.builder(CoreShaders.TEXTURED_COLOR_NO_CULL)
+		BABYLON_ICON = makeShaded("babylon", BotaniaShaders.HALO_NO_CULL, CoreShaders.TEXTURED_COLOR_NO_CULL, b -> b
 				.withTexture("Sampler0", Identifier.parse(ResourcesLib.MISC_BABYLON))
 				.setOutputTarget(OutputTarget.ITEM_ENTITY_TARGET)
-				.affectsCrumbling().createRenderSetup());
+				.affectsCrumbling());
 
-		HALO = make("halo", RenderSetup.builder(CoreShaders.TEXTURED_COLOR_NO_CULL)
+		HALO = makeShaded("halo", BotaniaShaders.HALO_NO_CULL, CoreShaders.TEXTURED_COLOR_NO_CULL, b -> b
 				.withTexture("Sampler0", FlugelTiaraItem.textureHalo)
-				.affectsCrumbling().createRenderSetup());
+				.affectsCrumbling());
 
 		STARFIELD = make("starfield", RenderSetup.builder(CoreShaders.starfield())
 				.withTexture("Sampler0", AbstractEndPortalRenderer.END_SKY_LOCATION)
@@ -203,14 +203,16 @@ public final class RenderHelper {
 	}
 
 	private static RenderType getPylonGlow(String name, Identifier texture, boolean direct) {
-		RenderSetup.RenderSetupBuilder builder = RenderSetup.builder(CoreShaders.pylon())
-				.withTexture("Sampler0", safeTexture(texture))
-				.useLightmap()
-				.useOverlay();
-		if (!direct) {
-			builder = builder.setOutputTarget(OutputTarget.ITEM_ENTITY_TARGET);
-		}
-		return make(name, builder.createRenderSetup());
+		return makeShaded(name, BotaniaShaders.PYLON, RenderPipelines.ENTITY_TRANSLUCENT, b -> {
+			RenderSetup.RenderSetupBuilder builder = b.withTexture("Sampler0", safeTexture(texture))
+					.useLightmap()
+					.useOverlay();
+			return direct ? builder : builder.setOutputTarget(OutputTarget.ITEM_ENTITY_TARGET);
+		});
+	}
+
+	private static RenderType makeShaded(String name, RenderPipeline shader, RenderPipeline fallback, Function<RenderSetup.RenderSetupBuilder, RenderSetup.RenderSetupBuilder> setup) {
+		return BotaniaShaders.shaded(ResourcesLib.PREFIX_MOD + name, shader, fallback, pipeline -> setup.apply(RenderSetup.builder(pipeline)).createRenderSetup());
 	}
 
 	private static final Function<Identifier, RenderType> HALO_LAYERS = Util.memoize(texture -> make("crafting_halo",
@@ -220,17 +222,16 @@ public final class RenderHelper {
 		return HALO_LAYERS.apply(texture);
 	}
 
-	private static final Function<Identifier, RenderType> DOPPLEGANGER = Util.memoize(texture -> make("doppleganger",
-			RenderSetup.builder(CoreShaders.doppleganger())
+	private static final Function<Identifier, RenderType> DOPPLEGANGER = Util.memoize(texture -> makeShaded("doppleganger",
+			BotaniaShaders.DOPPLEGANGER, RenderPipelines.ENTITY_TRANSLUCENT, b -> b
 					.withTexture("Sampler0", safeTexture(texture))
 					.useLightmap()
 					.useOverlay()
 					.affectsCrumbling()
-					.sortOnUpload()
-					.createRenderSetup()));
+					.sortOnUpload()));
 
 	public static RenderType getDopplegangerLayer(Identifier texture) {
-		return DOPPLEGANGER.apply(texture);
+		return BotaniaShaders.resolve(DOPPLEGANGER.apply(texture));
 	}
 
 	public static TextureAtlasSprite blockSprite(Identifier id) {

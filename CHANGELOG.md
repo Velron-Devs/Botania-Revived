@@ -1,5 +1,16 @@
 # Changelog
 
+## 2.0.1 (2026-11-10)
+
+- Fixed the Ponder scenes of the generating and functional flowers, the Mana Spreader tiers and the Mana Lenses showing only the base platform: Ponder discarded every block placed above the floor because the scene structures only contained the floor layer. Those scenes now show their blocks. With the Ponder bundled in Create: Adapted, the scene texts now follow the game language instead of always showing English.
+- Botania's own shaders are back: the Mana Pool water, the Pylons, the Terrestrial Agglomeration Plate and Mana Enchanter runes, the halos (Flugel Tiara, Babylon, Luminizer), the Gaia Guardian grain and deformation, its boss bar and the corrupted particles. If one of them fails to compile it falls back to the vanilla look and writes one line in the log.
+- The Garden of Glass sky (planets, aurora, daily rainbow, colored stars) and the Magic Skies module sky (stars, planets and rainbow, also in the End) are back, together with the Starfield Creator block effect.
+- The Lexica Botania is drawn as a 3D book in first person again, the Gaia Head shows your skin (or the skin of the mob you are watching from) as a block, as an item and worn, and a renamed Tiny Potato uses its named model.
+- Create integration: fixed the Mana Motor item model failing to load with Create: Adapted. Create: Adapted needs the official Create jar in the `create_original` folder of the game directory.
+- New optional integrations: Ears (armor with Phantom Ink no longer hides the Ears traits and the Flugel Tiara hides the Ears wings), Inventory Sorter (the Flower Pouch is not sorted) and Omni Pots (Botania soils work in the Omni Pot and the Infused Grass speeds it up with mana from a nearby pool, as a stand-in until Botany Pots is available).
+- Masterful Botany 1.0.1 for 26.1.2 is the version the AlfSteel Spreader is tested against.
+- Still not ported to 26.1.2: Ars Nouveau, Spectrum, Botany Pots, Quark and the Magic Skies sky in the Nether and in dimensions without sky.
+
 ## 2.0.0 (2026-11-10)
 
 - New Mana Spreader tiers: the Elementium Spreader and the Terrasteel Spreader sit between the Elven and the Gaia Spreader (Elementium: 320 mana per burst, 2400 capacity; Terrasteel: 480 per burst, 4000 capacity). With Masterful Botany installed there is also the AlfSteel Spreader, made from a Gaia Spreader, 2 Alfsteel Ingots and a Dragonstone: it moves mana 4 times faster than the Gaia Spreader (`integrations.masterful_botany.alfsteel_spreader_speed_multiplier`, 4.0 by default). It does not exist without Masterful Botany.

@@ -105,6 +105,13 @@ file="META-INF/accesstransformer.cfg"
     side="CLIENT"
 
 [[dependencies.${mod_id}]]
+    modId="ears"
+    type="optional"
+    versionRange="[1.4.7,)"
+    ordering="NONE"
+    side="CLIENT"
+
+[[dependencies.${mod_id}]]
     modId="thaumaturge"
     type="optional"
     versionRange="[${thaumaturge_version},)"

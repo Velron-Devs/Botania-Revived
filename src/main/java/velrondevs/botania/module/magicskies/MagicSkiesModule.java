@@ -8,6 +8,7 @@ import velrondevs.botania.common.lib.LibMisc;
 import velrondevs.botania.datagen.providers.magicskies.MagicSkiesDatagen;
 import velrondevs.botania.module.BotaniaModule;
 import velrondevs.botania.module.ModuleContext;
+import velrondevs.botania.module.magicskies.client.MagicSkiesClient;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -27,6 +28,11 @@ public final class MagicSkiesModule extends BotaniaModule {
 
 	@Override
 	public void register(ModuleContext ctx) {}
+
+	@Override
+	public void registerClient(ModuleContext ctx) {
+		MagicSkiesClient.init();
+	}
 
 	@Override
 	public void gatherData(GatherDataEvent evt, CompletableFuture<HolderLookup.Provider> lookup) {

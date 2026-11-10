@@ -115,7 +115,7 @@ public class CoreShaders {
 	}
 
 	public static RenderPipeline starfield() {
-		return RenderPipelines.END_PORTAL;
+		return StarfieldPipeline.PIPELINE;
 	}
 
 	public static RenderPipeline doppleganger() {

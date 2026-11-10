@@ -15,6 +15,7 @@ import net.minecraft.world.BossEvent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
+import velrondevs.botania.client.core.helper.BotaniaShaders;
 import velrondevs.botania.client.core.helper.RenderHelper;
 import velrondevs.botania.client.lib.ResourcesLib;
 import velrondevs.botania.common.entity.GaiaGuardianEntity;
@@ -76,7 +77,14 @@ public final class BossBarHandler {
 	}
 
 	private static void drawHealthBar(GuiGraphicsExtractor gui, GaiaGuardianEntity currentBoss, int x, int y, int u, int v, int w, int h, boolean bg) {
-		gui.blit(RenderPipelines.GUI_TEXTURED, BAR_TEXTURE, x, y, u, v, w, h, 256, 256);
+		if (BotaniaShaders.usable(BotaniaShaders.DOPPLEGANGER_BAR)) {
+			float time = currentBoss.getInvulTime();
+			float grainIntensity = time > 20 ? 1F : Math.max(currentBoss.isHardMode() ? 0.5F : 0F, time / 20F);
+			float hpFract = currentBoss.getHealth() / currentBoss.getMaxHealth();
+			gui.blit(BotaniaShaders.DOPPLEGANGER_BAR, BAR_TEXTURE, x, y, u, v, w, h, 256, 256, BotaniaShaders.dopplegangerBarTint(grainIntensity, hpFract));
+		} else {
+			gui.blit(RenderPipelines.GUI_TEXTURED, BAR_TEXTURE, x, y, u, v, w, h, 256, 256);
+		}
 	}
 
 }

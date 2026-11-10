@@ -1,15 +1,18 @@
 {
   "model": {
-    "type": "minecraft:condition",
-    "kind": "elven",
-    "on_false": {
-      "type": "minecraft:model",
-      "model": "botania:item/lexicon"
-    },
-    "on_true": {
-      "type": "minecraft:model",
-      "model": "botania:item/lexicon_elven"
-    },
-    "property": "botania:flag"
+    "type": "botania:lexicon",
+    "model": {
+      "type": "minecraft:condition",
+      "kind": "elven",
+      "on_false": {
+        "type": "minecraft:model",
+        "model": "botania:item/lexicon"
+      },
+      "on_true": {
+        "type": "minecraft:model",
+        "model": "botania:item/lexicon_elven"
+      },
+      "property": "botania:flag"
+    }
   }
 }

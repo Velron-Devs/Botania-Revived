@@ -28,7 +28,7 @@ public class DeferredBufferSource implements MultiBufferSource {
 
 	@Override
 	public VertexConsumer getBuffer(RenderType renderType) {
-		return recorders.computeIfAbsent(renderType, type -> {
+		return recorders.computeIfAbsent(BotaniaShaders.resolve(renderType), type -> {
 			Recorder recorder = new Recorder(LINE_WIDTHS.getOrDefault(type, 1.0F));
 			collector.submitCustomGeometry(new PoseStack(), type, (pose, buffer) -> recorder.replay(buffer));
 			return recorder;

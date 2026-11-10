@@ -74,6 +74,7 @@ sourceSets.main.resources {
     srcDir 'src/generated/resources'
     exclude 'assets/botania/patchouli_books/lexicon/en_us/README'
     exclude '.cache'
+    exclude 'META-INF/services/net.neoforged.neoforgespi.coremod.ICoreMod'
 }
 
 def createAdaptedJar = file(findProperty('create_adapted_jar') ?: 'dev_libs/create-adapted-26.1.2-1.31-public-external-assets.jar')
@@ -97,6 +98,12 @@ sourceSets.main.java {
     exclude 'velrondevs/botania/integration/arsnouveau/**'
     exclude 'velrondevs/botania/integration/botanypots/**'
     exclude 'velrondevs/botania/compat/spectrum/**'
+    exclude 'velrondevs/botania/coremod/spectrum/**'
+    exclude 'velrondevs/botania/datagen/providers/integration/QuarkAttributeTooltipProvider.java'
+    exclude 'velrondevs/botania/datagen/providers/integration/BotanyPotsDataProvider.java'
+    exclude 'velrondevs/botania/client/integration/emi/**'
+    exclude 'velrondevs/botania/module/botaniaextras/client/integration/BotaniaExtrasEmiPlugin.java'
+    exclude 'velrondevs/botania/module/botaniaextras/client/integration/TreeSuffusionEmiRecipe.java'
 }
 
 repositories {
@@ -136,6 +143,13 @@ repositories {
         }
         filter {
             includeGroup 'curse.maven'
+        }
+    }
+    maven {
+        name = 'Sleeping Town'
+        url = 'https://repo.sleeping.town/'
+        content {
+            includeGroup 'com.unascribed'
         }
     }
     maven {
@@ -232,9 +246,13 @@ dependencies {
         implementation "curse.maven:omni-pots-1575756:8555242"
     }
 
-    if (project.hasProperty("with_masterful")) {
-        def masterfulJar = project.findProperty("masterful_jar") ?: "${rootDir}/../botania addons 26.1.2/masterful botany/build/libs/MasterfulBotany-26.1.2-1.0.1-NeoForge.jar"
-        runtimeOnly files(masterfulJar)
+    compileOnly "com.unascribed:ears-api:${ears_version}"
+    if (!project.hasProperty("no_ears")) {
+        runtimeOnly "curse.maven:ears-412013:${ears_file_id}"
+    }
+
+    if (!project.hasProperty("no_masterful")) {
+        implementation "curse.maven:masterful-botany-1764701:${masterful_file_id}"
         runtimeOnly("org.moddingx:LibX:${minecraft_version}-${libx_version}") { transitive = false }
     }
 

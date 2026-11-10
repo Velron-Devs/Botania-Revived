@@ -127,8 +127,12 @@ public class BotaniaClient {
 		});
 		bus.addListener((RenderFrameEvent.Pre e) -> ClientTickHandler.renderTick(e.getPartialTick().getGameTimeDeltaPartialTick(true)));
 		bus.addListener(WorldOverlays::onSubmitCustomGeometry);
+		bus.addListener(velrondevs.botania.client.render.world.SkyblockSkyRenderer::onExtractLevelRenderState);
 
 		ClientProxy.initSeasonal();
+		if (net.neoforged.fml.ModList.get().isLoaded("ears")) {
+			velrondevs.botania.client.integration.ears.EarsIntegration.register();
+		}
 		if (velrondevs.botania.integration.catnip.PonderGate.enabled()) {
 			try {
 				velrondevs.botania.client.integration.ponder.BotaniaPonderIntegration.init();
@@ -264,7 +268,7 @@ public class BotaniaClient {
 
 	@SubscribeEvent
 	public static void registerSkullModels(EntityRenderersEvent.CreateSkullModels evt) {
-		evt.registerSkullModel(GaiaHeadBlock.GAIA_TYPE, ModelLayers.PLAYER_HEAD, net.minecraft.resources.Identifier.withDefaultNamespace("textures/entity/player/wide/steve.png"));
+		evt.registerSkullModel(GaiaHeadBlock.GAIA_TYPE, velrondevs.botania.client.model.GaiaHeadModel::new, net.minecraft.resources.Identifier.withDefaultNamespace("textures/entity/player/wide/steve.png"));
 	}
 
 	@SubscribeEvent
@@ -311,5 +315,7 @@ public class BotaniaClient {
 	@SubscribeEvent
 	public static void registerPipelines(RegisterRenderPipelinesEvent evt) {
 		CoreShaders.init(evt::registerPipeline);
+		evt.registerPipeline(velrondevs.botania.client.core.helper.StarfieldPipeline.PIPELINE);
+		velrondevs.botania.client.render.world.SkyDrawHelper.registerPipelines(evt::registerPipeline);
 	}
 }

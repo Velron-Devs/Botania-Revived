@@ -71,6 +71,7 @@
     "client.RecipeBookComponentAccessor",
     "client.RecipeBookComponentMixin",
     "client.RecipeBookPageAccessor",
+    "client.SkullBlockRendererMixin",
     "client.SoundEngineMixin",
     "client.SplashManagerMixin"
   ],

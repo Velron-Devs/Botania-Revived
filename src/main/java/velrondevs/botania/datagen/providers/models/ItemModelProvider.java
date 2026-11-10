@@ -17,7 +17,6 @@ import net.minecraft.client.data.models.model.TextureMapping;
 import net.minecraft.client.data.models.model.TextureSlot;
 import net.minecraft.client.renderer.item.ItemModel;
 import net.minecraft.client.renderer.item.RangeSelectItemModel;
-import net.minecraft.client.renderer.special.SkullSpecialRenderer;
 import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.CachedOutput;
@@ -35,9 +34,12 @@ import org.jetbrains.annotations.NotNull;
 
 import velrondevs.botania.api.BotaniaAPI;
 import velrondevs.botania.client.BotaniaItemProperties;
+import velrondevs.botania.client.model.LexiconItemModel;
 import velrondevs.botania.client.model.ManaBlasterItemModel;
+import velrondevs.botania.client.model.TinyPotatoItemModel;
 import velrondevs.botania.client.render.BlockEntityItemRendererHelper;
 import velrondevs.botania.client.render.ColorHandler;
+import velrondevs.botania.client.render.GaiaHeadSpecialRenderer;
 import velrondevs.botania.common.block.*;
 import velrondevs.botania.common.block.decor.BotaniaMushroomBlock;
 import velrondevs.botania.common.block.decor.FloatingFlowerBlock;
@@ -293,7 +295,10 @@ public class ItemModelProvider implements DataProvider {
 		singleGeneratedOverride(infiniteFruit, prefix("item/dasboot"), BotaniaItemProperties.FlagKind.BOOT);
 		items.remove(infiniteFruit);
 
-		singleGeneratedSuffixOverride(lexicon, "_elven", BotaniaItemProperties.FlagKind.ELVEN);
+		Identifier lexiconElven = ModelLocationUtils.getModelLocation(lexicon, "_elven");
+		ModelTemplates.FLAT_ITEM.create(lexiconElven, TextureMapping.layer0(texture(lexiconElven)), models::put);
+		Identifier lexiconBase = ModelTemplates.FLAT_ITEM.create(ModelLocationUtils.getModelLocation(lexicon), TextureMapping.layer0(lexicon), models::put);
+		definitions.accept(lexicon, new LexiconItemModel.Unbaked(flag(BotaniaItemProperties.FlagKind.ELVEN, model(lexiconElven, lexicon), model(lexiconBase, lexicon))));
 		items.remove(lexicon);
 
 		singleGeneratedSuffixOverride(magnetRing, "_active", BotaniaItemProperties.FlagKind.MAGNET_ACTIVE);
@@ -403,8 +408,11 @@ public class ItemModelProvider implements DataProvider {
 
 		Item gaiaHead = BotaniaBlocks.gaiaHead.asItem();
 		definitions.accept(gaiaHead, ItemModelUtils.specialModel(ModelLocationUtils.decorateItemModelLocation("template_skull"),
-				BlockModelGenerators.SKULL_TRANSFORM, new SkullSpecialRenderer.Unbaked(GaiaHeadBlock.GAIA_TYPE)));
+				BlockModelGenerators.SKULL_TRANSFORM, GaiaHeadSpecialRenderer.Unbaked.INSTANCE));
 		itemBlocks.remove(gaiaHead);
+
+		Item tinyPotato = BotaniaBlocks.tinyPotato.asItem();
+		definitions.accept(tinyPotato, new TinyPotatoItemModel.Unbaked(ModelLocationUtils.getModelLocation(tinyPotato)));
 
 		takeAll(itemBlocks, i -> i.getBlock() instanceof BotaniaDoubleFlowerBlock).forEach(i -> {
 			ModelTemplates.FLAT_ITEM.create(ModelLocationUtils.getModelLocation(i), TextureMapping.layer0(TextureMapping.getBlockTexture(i.getBlock(), "_top")), models::put);

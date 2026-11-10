@@ -6,6 +6,9 @@ import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.phys.Vec3;
+
+import velrondevs.botania.client.core.helper.BotaniaShaders;
+
 public class FXSparkle extends SingleQuadParticle {
 	private final boolean corrupt;
 	public final boolean fake;
@@ -78,7 +81,7 @@ public class FXSparkle extends SingleQuadParticle {
 
 	@Override
 	protected Layer getLayer() {
-		return corrupt ? BotaniaParticleRenderType.CORRUPT : BotaniaParticleRenderType.ADDITIVE;
+		return corrupt && BotaniaShaders.usable(BotaniaShaders.FILM_GRAIN_PARTICLE) ? BotaniaParticleRenderType.CORRUPT : BotaniaParticleRenderType.ADDITIVE;
 	}
 
 	public void setGravity(float value) {

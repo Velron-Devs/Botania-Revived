@@ -3,8 +3,7 @@
     "type": "minecraft:special",
     "base": "minecraft:item/template_skull",
     "model": {
-      "type": "minecraft:head",
-      "kind": "botania:gaia"
+      "type": "botania:gaia_head"
     },
     "transformation": {
       "left_rotation": [
