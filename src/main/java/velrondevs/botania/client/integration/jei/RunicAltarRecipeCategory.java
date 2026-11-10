@@ -10,6 +10,7 @@ import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.resources.Identifier;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.core.RegistryAccess;
@@ -79,8 +80,12 @@ public class RunicAltarRecipeCategory implements IRecipeCategory<RunicAltarRecip
 
 	@Override
 	public void setRecipe(@NotNull IRecipeLayoutBuilder builder, @NotNull RunicAltarRecipe recipe, @NotNull IFocusGroup focusGroup) {
-		PetalApothecaryRecipeCategory.setRecipeLayout(builder, recipe.getIngredients(), BotaniaBlocks.runeAltar,
+		var output = PetalApothecaryRecipeCategory.setRecipeLayout(builder, recipe.getIngredients(), BotaniaBlocks.runeAltar,
 				recipe.getResultItem(RegistryAccess.EMPTY), LIVINGROCK);
+		if (!recipe.returnsRunes()) {
+			output.addRichTooltipCallback((view, tooltip) -> tooltip.add(
+					Component.translatable("botania.nei.runicAltar.consumesRunes").withStyle(ChatFormatting.RED)));
+		}
 	}
 
 	@Override

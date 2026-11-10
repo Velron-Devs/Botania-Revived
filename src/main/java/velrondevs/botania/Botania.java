@@ -128,6 +128,7 @@ import velrondevs.botania.common.loot.LootHandler;
 import velrondevs.botania.common.world.SkyblockChunkGenerator;
 import velrondevs.botania.common.world.SkyblockWorldEvents;
 import velrondevs.botania.config.BotaniaConfigSpec;
+import velrondevs.botania.integration.CreateCompat;
 import velrondevs.botania.integration.corporea.ItemHandlerCorporeaNodeDetector;
 import velrondevs.botania.integration.curios.CurioIntegration;
 import velrondevs.botania.integration.thaumaturge.ThaumaturgeIntegration;
@@ -183,14 +184,20 @@ public class Botania {
 		modBus.addListener(BotaniaRegistryCreation::registerRegistry);
 		modBus.addListener(this::registerCapabilities);
 		registerEvents();
-		if (ModList.get().isLoaded("catnip")) {
+		if (velrondevs.botania.integration.catnip.PonderGate.enabled() && ModList.get().isLoaded("catnip") && !ModList.get().isLoaded(CreateCompat.MOD_ID)) {
 			velrondevs.botania.integration.catnip.CatnipCompat.init(modBus);
+		}
+		if (ModList.get().isLoaded(CreateCompat.MOD_ID)) {
+			CreateCompat.init(modBus, container);
 		}
 		if (ModList.get().isLoaded("kubejs")) {
 			velrondevs.botania.integration.kubejs.BotaniaKubeJSIntegration.init(modBus);
 		}
 		if (ModList.get().isLoaded(ThaumaturgeIntegration.MOD_ID)) {
 			ThaumaturgeIntegration.init(modBus);
+		}
+		if (ModList.get().isLoaded("inventorysorter")) {
+			velrondevs.botania.integration.InventorySorterIntegration.init(modBus);
 		}
 	}
 
@@ -424,6 +431,7 @@ public class Botania {
 			}
 		});
 		bus.addListener((ItemTossEvent e) -> RingOfMagnetizationItem.onTossItem(e.getPlayer()));
+		bus.addListener(RingOfTheAesirItem::onToss);
 		bus.addListener(EventPriority.LOW, (LivingIncomingDamageEvent e) -> {
 			if (e.getEntity() instanceof Player player) {
 				Container worn = EquipmentHandler.getAllWorn(player);
@@ -504,6 +512,7 @@ public class Botania {
 			BotaniaItems.flugelEye, EyeOfTheFlugelItem::makeRelic,
 			BotaniaItems.infiniteFruit, FruitOfGrisaiaItem::makeRelic,
 			BotaniaItems.kingKey, KeyOfTheKingsLawItem::makeRelic,
+			BotaniaItems.aesirRing, RingOfTheAesirItem::makeRelic,
 			BotaniaItems.lokiRing, RingOfLokiItem::makeRelic,
 			BotaniaItems.odinRing, RingOfOdinItem::makeRelic,
 			BotaniaItems.thorRing, RingOfThorItem::makeRelic
@@ -559,6 +568,8 @@ public class Botania {
 		for (var type : BlockEntityConstants.SELF_MANA_RECEIVER_BES) {
 			registerSelf(e, BotaniaCapabilities.MANA_RECEIVER, type, ManaReceiver.class);
 		}
+		e.registerBlockEntity(BotaniaCapabilities.MANA_RECEIVER, BotaniaFlowerBlocks.ENTROPINNYUM,
+				(be, ctx) -> be.acceptsOverflow() ? be : null);
 		for (var type : BlockEntityConstants.SELF_SPARK_ATTACHABLE_BES) {
 			registerSelf(e, BotaniaCapabilities.SPARK_ATTACHABLE, type, SparkAttachable.class);
 		}

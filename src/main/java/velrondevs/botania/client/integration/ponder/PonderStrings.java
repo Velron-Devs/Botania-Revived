@@ -139,6 +139,20 @@ public final class PonderStrings {
 				"The Corporea Funnel asks a Corporea network for an item whenever it receives a Redstone signal. Put a Corporea Spark above it",
 				"Hang an Item Frame with the wanted item on the Funnel. Rotating the item sets the amount: 1, 2, 4, 8, 16, 32, 48 or 64",
 				"The item goes into an inventory one or two blocks below the Funnel, or is dropped if there is none"));
+		SCENES.put("mana_motor", List.of(
+				"Generating Rotation with Mana",
+				"The Mana Motor is a rotation source for Create machines that runs on Mana",
+				"It receives Mana like any other receiver: aim a Mana Spreader at it and its bursts fill the Motor",
+				"Once it has stored enough Mana, it starts turning the shaft on its front face and every machine connected to it",
+				"It can also draw Mana from Mana Pools through Sparks: place a Spark on top of the Motor and another on a nearby Pool",
+				"Use the value panel on its side to set the speed in RPM",
+				"It only spends Mana while the network is actually using its stress. The heavier the load, the more Mana it burns",
+				"Without Mana the Motor stops, and it starts turning again as soon as it is refilled"));
+
+		PonderStringsGenerating.register(SCENES);
+		PonderStringsSpreaders.register(SCENES);
+		PonderStringsLenses.register(SCENES);
+		PonderStringsFunctional.register(SCENES);
 
 		TAGS.put(MANA_NETWORK, List.of("Mana Network", "Moving and storing Mana between blocks"));
 		TAGS.put(CRAFTING_DEVICES, List.of("Crafting Devices", "Machines that craft items with petals, Mana and a little patience"));

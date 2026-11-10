@@ -1,9 +1,12 @@
 package velrondevs.botania.common.block.flower.generating;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.PrimedTnt;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.AABB;
@@ -11,17 +14,22 @@ import net.minecraft.world.phys.Vec3;
 
 import velrondevs.botania.api.block_entity.GeneratingFlowerBlockEntity;
 import velrondevs.botania.api.block_entity.RadiusDescriptor;
+import velrondevs.botania.api.mana.ManaReceiver;
 import velrondevs.botania.client.fx.SparkleParticleData;
 import velrondevs.botania.registry.BotaniaFlowerBlocks;
 import velrondevs.botania.registry.BotaniaSounds;
+import velrondevs.botania.xplat.BotaniaConfig;
 import velrondevs.botania.xplat.XplatAbstractions;
 
 import java.util.List;
 
-public class EntropinnyumBlockEntity extends GeneratingFlowerBlockEntity {
+public class EntropinnyumBlockEntity extends GeneratingFlowerBlockEntity implements ManaReceiver {
 	private static final int RANGE = 12;
 	private static final int EXPLODE_EFFECT_EVENT = 0;
 	private static final int ANGRY_EFFECT_EVENT = 1;
+	private static final String TAG_OVERFLOW_MANA = "overflowMana";
+
+	private int overflowMana = 0;
 
 	public EntropinnyumBlockEntity(BlockPos pos, BlockState state) {
 		super(BotaniaFlowerBlocks.ENTROPINNYUM, pos, state);
@@ -75,6 +83,80 @@ public class EntropinnyumBlockEntity extends GeneratingFlowerBlockEntity {
 			return true;
 		} else {
 			return super.triggerEvent(event, param);
+		}
+	}
+
+	public boolean acceptsOverflow() {
+		var config = BotaniaConfig.common();
+		return config == null || config.entropinnyumAcceptOverflow();
+	}
+
+	@Override
+	public int getMana() {
+		return (int) Math.min(Integer.MAX_VALUE, (long) super.getMana() + overflowMana);
+	}
+
+	@Override
+	public void addMana(int mana) {
+		if (mana < 0 && overflowMana > 0) {
+			int fromOverflow = Math.min(overflowMana, -mana);
+			overflowMana -= fromOverflow;
+			mana += fromOverflow;
+		}
+		super.addMana(mana);
+	}
+
+	@Override
+	public Level getManaReceiverLevel() {
+		return getLevel();
+	}
+
+	@Override
+	public BlockPos getManaReceiverPos() {
+		return getBlockPos();
+	}
+
+	@Override
+	public int getCurrentMana() {
+		return getMana();
+	}
+
+	@Override
+	public boolean isFull() {
+		return !acceptsOverflow() || getMana() >= Integer.MAX_VALUE - getMaxMana();
+	}
+
+	@Override
+	public void receiveMana(int mana) {
+		if (mana == 0 || mana > 0 && !acceptsOverflow()) {
+			return;
+		}
+		if (mana < 0) {
+			addMana(mana);
+		} else {
+			long limit = (long) Integer.MAX_VALUE - getMaxMana() - super.getMana();
+			overflowMana = (int) Math.max(0, Math.min(limit, (long) overflowMana + mana));
+			setChanged();
+		}
+		sync();
+	}
+
+	@Override
+	public boolean canReceiveManaFromBursts() {
+		return acceptsOverflow();
+	}
+
+	@Override
+	public void readFromPacketNBT(CompoundTag cmp, HolderLookup.Provider registries) {
+		super.readFromPacketNBT(cmp, registries);
+		overflowMana = Math.max(0, cmp.getIntOr(TAG_OVERFLOW_MANA, 0));
+	}
+
+	@Override
+	public void writeToPacketNBT(CompoundTag cmp, HolderLookup.Provider registries) {
+		super.writeToPacketNBT(cmp, registries);
+		if (overflowMana > 0) {
+			cmp.putInt(TAG_OVERFLOW_MANA, overflowMana);
 		}
 	}
 

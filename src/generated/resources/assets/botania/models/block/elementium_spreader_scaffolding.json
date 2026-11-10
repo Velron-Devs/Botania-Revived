@@ -1,0 +1,8 @@
+{
+  "parent": "botania:block/shapes/spreader_scaffolding",
+  "textures": {
+    "bottom": "botania:block/elementium_spreader_scaffolding_bottom",
+    "side": "botania:block/elementium_spreader_scaffolding_side",
+    "top": "botania:block/elementium_spreader_scaffolding_top"
+  }
+}

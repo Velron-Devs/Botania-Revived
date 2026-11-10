@@ -26,7 +26,7 @@ public enum AlfheimPortalProvider implements IBlockComponentProvider {
 
 	@Override
 	public void appendTooltip(ITooltip tooltip, BlockAccessor accessor, IPluginConfig config) {
-		if (!JadeManaHelper.enabled(config) || !(accessor.getBlockEntity() instanceof AlfheimPortalBlockEntity)) {
+		if (!JadeManaHelper.enabled(config) || !(accessor.getBlockEntity() instanceof AlfheimPortalBlockEntity portalBe)) {
 			return;
 		}
 		boolean open = accessor.getBlockState().hasProperty(BotaniaStateProperties.ALFPORTAL_STATE)
@@ -43,6 +43,7 @@ public enum AlfheimPortalProvider implements IBlockComponentProvider {
 				JadeManaHelper.addManaBar(tooltip, config, data.getIntOr(JadeManaHelper.MANA, 0), max, JadeManaHelper.manaColor(config, 0x0095FF));
 			}
 		}
+		JadeManaHelper.addNodeBoost(tooltip, portalBe.getNodeBoostMultiplier());
 	}
 
 	@Override

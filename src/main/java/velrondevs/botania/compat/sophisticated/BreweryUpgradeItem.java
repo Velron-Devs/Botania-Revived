@@ -93,7 +93,7 @@ public class BreweryUpgradeItem extends UpgradeItemBase<BreweryUpgradeItem.Wrapp
 			BotanicalBreweryRecipe recipe = holder.get().value();
 			ItemStack output = recipe.getOutput(vessel);
 			int cost = scaleCost(brewContainer.getManaCost(recipe.getBrew(), vessel), SophisticatedConfig.breweryCostPercent());
-			return new Plan(cost, List.of(output), false, () -> {
+			return new Plan(cost, List.of(output), 0, () -> {
 				for (int slot = 0; slot <= INGREDIENT_SLOTS; slot++) {
 					if (!getInventory().getStackInSlot(slot).isEmpty()) {
 						getInventory().setStackInSlot(slot, ItemStack.EMPTY);

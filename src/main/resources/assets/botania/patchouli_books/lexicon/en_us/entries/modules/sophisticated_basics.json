@@ -1,0 +1,21 @@
+{
+  "name": "botania.entry.sophisticatedBasics",
+  "category": "botania:modules",
+  "icon": "botania:mana_pile_upgrade",
+  "flag": "&botania:sophisticated,mod:sophisticatedcore",
+  "sortnum": 5,
+  "pages": [
+    {
+      "type": "text",
+      "text": "botania.page.sophisticatedBasics0"
+    },
+    {
+      "type": "text",
+      "text": "botania.page.sophisticatedBasics1"
+    },
+    {
+      "type": "text",
+      "text": "botania.page.sophisticatedBasics2"
+    }
+  ]
+}

@@ -17,7 +17,9 @@ import net.p3pp3rf1y.sophisticatedstorage.common.gui.StorageContainerMenu;
 import velrondevs.botania.client.integration.jei.BreweryRecipeCategory;
 import velrondevs.botania.client.integration.jei.ElvenTradeRecipeCategory;
 import velrondevs.botania.client.integration.jei.ManaPoolRecipeCategory;
+import velrondevs.botania.client.integration.jei.PetalApothecaryRecipeCategory;
 import velrondevs.botania.client.integration.jei.RunicAltarRecipeCategory;
+import velrondevs.botania.client.integration.jei.TerrestrialAgglomerationRecipeCategory;
 import velrondevs.botania.compat.sophisticated.SophisticatedItems;
 import velrondevs.botania.compat.sophisticated.SophisticatedModule;
 import velrondevs.botania.compat.sophisticated.storage.BotaniaStorageRegistry;
@@ -54,6 +56,8 @@ public final class SophisticatedJei {
 		registry.addRecipeCatalyst(new ItemStack(SophisticatedItems.RUNIC_ALTAR_UPGRADE), RunicAltarRecipeCategory.TYPE);
 		registry.addRecipeCatalyst(new ItemStack(SophisticatedItems.ELVEN_PORTAL_UPGRADE), ElvenTradeRecipeCategory.TYPE);
 		registry.addRecipeCatalyst(new ItemStack(SophisticatedItems.BREWERY_UPGRADE), BreweryRecipeCategory.TYPE);
+		registry.addRecipeCatalyst(new ItemStack(SophisticatedItems.PETAL_APOTHECARY_UPGRADE), PetalApothecaryRecipeCategory.TYPE);
+		registry.addRecipeCatalyst(new ItemStack(SophisticatedItems.TERRA_PLATE_UPGRADE), TerrestrialAgglomerationRecipeCategory.TYPE);
 	}
 
 	public static void registerTransfers(IRecipeTransferRegistration registry) {
@@ -74,5 +78,7 @@ public final class SophisticatedJei {
 		registry.addRecipeTransferHandler(new StationTransferHandler<>(helper, menuClass, StationKind.ELVEN_PORTAL, ElvenTradeRecipeCategory.TYPE), ElvenTradeRecipeCategory.TYPE);
 		registry.addRecipeTransferHandler(new StationTransferHandler<>(helper, menuClass, StationKind.BREWERY, BreweryRecipeCategory.TYPE), BreweryRecipeCategory.TYPE);
 		registry.addRecipeTransferHandler(new StationTransferHandler<>(helper, menuClass, StationKind.MANA_INFUSION, ManaPoolRecipeCategory.TYPE), ManaPoolRecipeCategory.TYPE);
+		registry.addRecipeTransferHandler(new StationTransferHandler<>(helper, menuClass, StationKind.PETAL_APOTHECARY, PetalApothecaryRecipeCategory.TYPE), PetalApothecaryRecipeCategory.TYPE);
+		registry.addRecipeTransferHandler(new StationTransferHandler<>(helper, menuClass, StationKind.TERRA_PLATE, TerrestrialAgglomerationRecipeCategory.TYPE), TerrestrialAgglomerationRecipeCategory.TYPE);
 	}
 }

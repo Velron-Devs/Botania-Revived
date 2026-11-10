@@ -358,6 +358,8 @@ public class BlockTagProvider extends IntrinsicHolderTagsProvider<Block> {
 						|| BuiltInRegistries.BLOCK.getKey(b).getPath().contains(LibBlockNames.SHIMMERWOOD_PLANKS)
 				)
 		);
+		getOrCreateRawBuilder(BlockTags.MINEABLE_WITH_AXE).addOptionalElement(Identifier.fromNamespaceAndPath("botania", LibBlockNames.SPREADER_ALFSTEEL));
+		getOrCreateRawBuilder(BlockTags.MINEABLE_WITH_PICKAXE).addOptionalElement(Identifier.fromNamespaceAndPath("botania", "mana_motor"));
 		BotaniaModules.addBlockTags(this::tag);
 	}
 

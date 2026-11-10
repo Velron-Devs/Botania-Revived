@@ -1,0 +1,42 @@
+{
+  "name": "botania.entry.sophisticatedBackpacks",
+  "category": "botania:modules",
+  "icon": "botania:terrasteel_backpack",
+  "flag": "&botania:sophisticated,mod:sophisticatedbackpacks",
+  "sortnum": 6,
+  "pages": [
+    {
+      "type": "text",
+      "text": "botania.page.sophisticatedBackpacks0"
+    },
+    {
+      "type": "crafting",
+      "text": "botania.page.sophisticatedBackpacks1",
+      "recipe": "botania:sophisticated/manasteel_backpack",
+      "flag": "!mod:sophisticatedatm"
+    },
+    {
+      "type": "crafting",
+      "text": "botania.page.sophisticatedBackpacks2",
+      "recipe": "botania:sophisticated/atm/manasteel_backpack",
+      "flag": "mod:sophisticatedatm"
+    },
+    {
+      "type": "crafting",
+      "text": "botania.page.sophisticatedBackpacks3",
+      "recipe": "botania:sophisticated/elementium_backpack",
+      "recipe2": "botania:sophisticated/terrasteel_backpack"
+    },
+    {
+      "type": "crafting",
+      "text": "botania.page.sophisticatedBackpacks4",
+      "recipe": "botania:sophisticated/gaia_backpack"
+    },
+    {
+      "type": "crafting",
+      "text": "botania.page.sophisticatedBackpacks5",
+      "recipe": "botania:sophisticated/alfsteel_backpack",
+      "flag": "mod:masterfulbotany"
+    }
+  ]
+}

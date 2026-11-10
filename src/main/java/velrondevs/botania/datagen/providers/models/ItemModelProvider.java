@@ -486,7 +486,7 @@ public class ItemModelProvider implements DataProvider {
 			String outside;
 			if (i.getBlock() == BotaniaBlocks.elvenSpreader) {
 				outside = "dreamwood_log_3";
-			} else if (i.getBlock() == BotaniaBlocks.gaiaSpreader) {
+			} else if (i.getBlock() == BotaniaBlocks.gaiaSpreader || i.getBlock() == BotaniaBlocks.elementiumSpreader || i.getBlock() == BotaniaBlocks.terrasteelSpreader) {
 				outside = name + "_outside";
 			} else {
 				outside = "livingwood_log";
@@ -494,7 +494,7 @@ public class ItemModelProvider implements DataProvider {
 			String inside;
 			if (i.getBlock() == BotaniaBlocks.elvenSpreader) {
 				inside = "stripped_dreamwood_log_3";
-			} else if (i.getBlock() == BotaniaBlocks.gaiaSpreader) {
+			} else if (i.getBlock() == BotaniaBlocks.gaiaSpreader || i.getBlock() == BotaniaBlocks.elementiumSpreader || i.getBlock() == BotaniaBlocks.terrasteelSpreader) {
 				inside = name + "_inside";
 			} else {
 				inside = "stripped_livingwood_log";

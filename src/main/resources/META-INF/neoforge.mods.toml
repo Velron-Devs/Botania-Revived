@@ -21,6 +21,9 @@ config="botania.mixins.json"
 [[mixins]]
 config="botania_sophisticated.mixins.json"
 
+[[mixins]]
+config="botania_omnipots.mixins.json"
+
 [[accessTransformers]]
 file="META-INF/accesstransformer.cfg"
 
@@ -146,7 +149,7 @@ file="META-INF/accesstransformer.cfg"
 [[dependencies.${mod_id}]]
     modId="ponder"
     type="optional"
-    versionRange="[${ponder_version},)"
+    versionRange="[1,)"
     ordering="NONE"
     side="CLIENT"
 
@@ -155,4 +158,25 @@ file="META-INF/accesstransformer.cfg"
     type="optional"
     versionRange="[0,)"
     ordering="NONE"
+    side="BOTH"
+
+[[dependencies.${mod_id}]]
+    modId="create"
+    type="optional"
+    versionRange="[6.0.0,)"
+    ordering="AFTER"
+    side="BOTH"
+
+[[dependencies.${mod_id}]]
+    modId="inventorysorter"
+    type="optional"
+    versionRange="[24.0.0,)"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.${mod_id}]]
+    modId="omnipots"
+    type="optional"
+    versionRange="[2.0.0,)"
+    ordering="AFTER"
     side="BOTH"

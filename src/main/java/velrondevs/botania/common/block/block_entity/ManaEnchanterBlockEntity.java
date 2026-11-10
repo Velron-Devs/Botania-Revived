@@ -49,6 +49,8 @@ import velrondevs.botania.api.state.BotaniaStateProperties;
 import velrondevs.botania.client.core.helper.RenderHelper;
 import velrondevs.botania.client.fx.SparkleParticleData;
 import velrondevs.botania.common.lib.BotaniaTags;
+import velrondevs.botania.integration.thaumaturge.NodeBoostApi;
+import velrondevs.botania.integration.thaumaturge.NodeBoostTracker;
 import velrondevs.botania.network.EffectType;
 import velrondevs.botania.network.clientbound.BotaniaEffectPacket;
 import velrondevs.botania.registry.BotaniaBlockEntities;
@@ -66,7 +68,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-public class ManaEnchanterBlockEntity extends BotaniaBlockEntity implements ManaReceiver, SparkAttachable, Wandable, Clearable {
+public class ManaEnchanterBlockEntity extends BotaniaBlockEntity implements ManaReceiver, SparkAttachable, Wandable, Clearable, NodeBoostApi.Boosted {
 	private static final String TAG_STAGE = "stage";
 	private static final String TAG_STAGE_TICKS = "stageTicks";
 	private static final String TAG_STAGE_3_END_TICKS = "stage3EndTicks";
@@ -136,6 +138,12 @@ public class ManaEnchanterBlockEntity extends BotaniaBlockEntity implements Mana
 	public int stage3EndTicks = 0;
 
 	private int idleTicks = 0;
+	private final NodeBoostTracker nodeBoost = new NodeBoostTracker();
+
+	@Override
+	public double getNodeBoostMultiplier() {
+		return nodeBoost.multiplier();
+	}
 
 	private int manaRequired = -1;
 	private int mana = 0;
@@ -260,6 +268,7 @@ public class ManaEnchanterBlockEntity extends BotaniaBlockEntity implements Mana
 
 	public static void commonTick(Level level, BlockPos worldPosition, BlockState state, ManaEnchanterBlockEntity self) {
 		Direction.Axis axis = state.getValue(BotaniaStateProperties.ENCHANTER_DIRECTION);
+		self.nodeBoost.update(level, worldPosition, NodeBoostApi.Target.MANA_ENCHANTER);
 
 		for (BlockPos offset : PYLON_LOCATIONS.get(axis)) {
 			BlockEntity tile = level.getBlockEntity(worldPosition.offset(offset));
@@ -291,28 +300,39 @@ public class ManaEnchanterBlockEntity extends BotaniaBlockEntity implements Mana
 			return;
 		}
 
-		switch (self.stage) {
-			case GATHER_ENCHANTS -> self.gatherEnchants();
-			case GATHER_MANA -> self.gatherMana(axis);
+		self.runStage(axis);
+		if (self.stage != State.IDLE) {
+			int extra = self.nodeBoost.consumeExtraTicks();
+			for (int i = 0; i < extra && self.stage != State.IDLE && !self.isRemoved(); i++) {
+				self.stageTicks++;
+				self.runStage(axis);
+			}
+		}
+	}
+
+	private void runStage(Direction.Axis axis) {
+		switch (stage) {
+			case GATHER_ENCHANTS -> gatherEnchants();
+			case GATHER_MANA -> gatherMana(axis);
 			case DO_ENCHANT -> {
-				if (self.stageTicks >= 100) {
-					for (EnchantmentInstance data : self.enchants) {
-						if (EnchantmentHelper.getItemEnchantmentLevel(data.enchantment(), self.itemToEnchant) == 0) {
-							self.itemToEnchant.enchant(data.enchantment(), data.level());
+				if (stageTicks >= 100) {
+					for (EnchantmentInstance data : enchants) {
+						if (EnchantmentHelper.getItemEnchantmentLevel(data.enchantment(), itemToEnchant) == 0) {
+							itemToEnchant.enchant(data.enchantment(), data.level());
 						}
 					}
 
-					self.enchants.clear();
-					self.manaRequired = -1;
-					self.mana = 0;
+					enchants.clear();
+					manaRequired = -1;
+					mana = 0;
 
 					level.blockEvent(worldPosition, BotaniaBlocks.enchanter, CRAFT_EFFECT_EVENT, 0);
-					self.advanceStage();
+					advanceStage();
 				}
 			}
 			case RESET -> {
-				if (self.stageTicks >= 20) {
-					self.advanceStage();
+				if (stageTicks >= 20) {
+					advanceStage();
 				}
 
 			}

@@ -34,7 +34,6 @@ import velrondevs.botania.api.item.SequentialBreaker;
 import velrondevs.botania.api.item.WireframeCoordinateListProvider;
 import velrondevs.botania.api.mana.ManaItemHandler;
 import velrondevs.botania.common.advancements.LokiPlaceTrigger;
-import velrondevs.botania.common.handler.EquipmentHandler;
 import velrondevs.botania.common.helper.ItemNBTHelper;
 import velrondevs.botania.common.helper.PlayerHelper;
 import velrondevs.botania.common.item.equipment.tool.ToolCommons;
@@ -231,8 +230,8 @@ public class RingOfLokiItem extends RelicBaubleItem implements WireframeCoordina
 		return null;
 	}
 
-	private static ItemStack getLokiRing(Player player) {
-		return EquipmentHandler.findOrEmpty(BotaniaItems.lokiRing, player);
+	public static ItemStack getLokiRing(Player player) {
+		return RingOfTheAesirItem.findWithAesir(BotaniaItems.lokiRing, player);
 	}
 
 	private static BlockPos getBindingCenter(ItemStack stack) {

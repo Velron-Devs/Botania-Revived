@@ -64,7 +64,7 @@ public final class BotaniaReiDisplays {
 				EntryIngredients.ofIngredients(recipe.getIngredients()),
 				List.of(EntryIngredients.of(BotaniaBlocks.livingrock)),
 				List.of(EntryIngredients.of(recipe.getResultItem(RegistryAccess.EMPTY))),
-				holder.id().identifier(), recipe.getManaUsage(), null);
+				holder.id().identifier(), recipe.getManaUsage(), null, !recipe.returnsRunes());
 	}
 
 	public static BotaniaReiDisplay terrestrialAgglomeration(RecipeHolder<? extends TerrestrialAgglomerationRecipe> holder) {

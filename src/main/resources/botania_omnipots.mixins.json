@@ -1,0 +1,14 @@
+{
+  "required": false,
+  "minVersion": "0.8",
+  "package": "velrondevs.botania.integration.omnipots.mixin",
+  "compatibilityLevel": "JAVA_25",
+  "plugin": "velrondevs.botania.integration.omnipots.OmniPotsMixinPlugin",
+  "mixins": [
+    "OmniPotBlockEntityMixin",
+    "OmniPotsModMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 0
+  }
+}

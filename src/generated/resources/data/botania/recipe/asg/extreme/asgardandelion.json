@@ -11,22 +11,21 @@
   ],
   "type": "avaritia:shaped_table",
   "key": {
-    "D": "botania:dragonstone_block",
-    "F": "minecraft:dandelion",
-    "L": "botania:life_essence",
-    "R": "botania:wither_mana_rose",
-    "T": "botania:terrasteel_block"
+    "I": "avaritia:infinity_ingot",
+    "N": "avaritia:neutron_ingot",
+    "U": "avaritia:neutron_nugget",
+    "X": "avaritia:infinity_catalyst"
   },
   "pattern": [
-    "TTTTDTTTT",
-    "TL  D  LT",
-    "T  DRD  T",
-    "T D L D T",
-    "DRDLFLDRD",
-    "T D L D T",
-    "T  DRD  T",
-    "TL  D  LT",
-    "TTTTDTTTT"
+    "   III   ",
+    "  IIIII  ",
+    "  IIXII  ",
+    "  IIIII  ",
+    "   III   ",
+    " UU N UU ",
+    "UUUUNUUUU",
+    " UU N UU ",
+    "    N    "
   ],
   "result": {
     "id": "botania:asgardandelion"

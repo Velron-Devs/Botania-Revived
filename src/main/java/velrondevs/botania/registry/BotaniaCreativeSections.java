@@ -84,8 +84,10 @@ import velrondevs.botania.module.BotaniaModules;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
@@ -108,6 +110,7 @@ public final class BotaniaCreativeSections {
 	private static final String PKG_RODS = "velrondevs.botania.common.item.rod";
 
 	private static final Set<Item> BASE_ITEMS = new LinkedHashSet<>();
+	private static final Map<Item, String> SECTION_OVERRIDES = new HashMap<>();
 	private static final List<Section> BASE_SECTIONS = new ArrayList<>();
 	private static final List<Section> MODULE_SECTIONS = new ArrayList<>();
 
@@ -183,6 +186,11 @@ public final class BotaniaCreativeSections {
 		BASE_ITEMS.add(item);
 	}
 
+	public static void addBaseItem(Item item, String section) {
+		SECTION_OVERRIDES.put(item, section);
+		BASE_ITEMS.add(item);
+	}
+
 	public static Section registerModuleSection(BotaniaModule module, String id, Supplier<ItemStack> icon, Collection<Item> items, @Nullable Consumer<CreativeModeTab.Output> extra) {
 		for (Section existing : BASE_SECTIONS) {
 			if (existing.id.equals(id)) {
@@ -217,6 +225,10 @@ public final class BotaniaCreativeSections {
 	}
 
 	public static String sectionOf(Item item) {
+		String override = SECTION_OVERRIDES.get(item);
+		if (override != null) {
+			return override;
+		}
 		if (item instanceof SpecialFlowerBlockItem) {
 			return isGeneratingFlower(item) ? GENERATING_FLOWERS : FUNCTIONAL_FLOWERS;
 		}

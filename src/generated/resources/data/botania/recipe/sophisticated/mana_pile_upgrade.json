@@ -32,13 +32,13 @@
   "key": {
     "B": "#botania:sophisticated_upgrade_bases",
     "D": "#botania:mana_diamond_gems",
-    "M": "#botania:manasteel_ingots",
-    "P": "botania:mana_pearl"
+    "F": "botania:fabulous_pool",
+    "X": "botania:bifrost_pane"
   },
   "pattern": [
-    "PDP",
-    "MBM",
-    "PDP"
+    "XFX",
+    "DBD",
+    "XFX"
   ],
   "result": {
     "count": 1,

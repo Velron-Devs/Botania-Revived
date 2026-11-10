@@ -46,8 +46,10 @@ import velrondevs.botania.common.helper.ColorHelper;
 import velrondevs.botania.common.lib.LibBlockNames;
 import velrondevs.botania.xplat.XplatAbstractions;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -62,7 +64,7 @@ public class BotaniaBlockEntities {
 			swampAltar, desertAltar, taigaAltar, mesaAltar, mossyAltar,
 			livingrockAltar, deepslateAltar
 	);
-	public static final BlockEntityType<ManaSpreaderBlockEntity> SPREADER = type(prefix(LibBlockNames.SPREADER), ManaSpreaderBlockEntity::new, manaSpreader, redstoneSpreader, elvenSpreader, gaiaSpreader);
+	public static final BlockEntityType<ManaSpreaderBlockEntity> SPREADER = type(prefix(LibBlockNames.SPREADER), ManaSpreaderBlockEntity::new, nonNull(manaSpreader, redstoneSpreader, elvenSpreader, elementiumSpreader, terrasteelSpreader, gaiaSpreader, alfsteelSpreader));
 	public static final BlockEntityType<ManaPoolBlockEntity> POOL = type(prefix(LibBlockNames.POOL), ManaPoolBlockEntity::create, manaPool, dilutedPool, fabulousPool, creativePool);
 	public static final BlockEntityType<RunicAltarBlockEntity> RUNE_ALTAR = type(prefix(LibBlockNames.RUNE_ALTAR), RunicAltarBlockEntity::new, runeAltar);
 	public static final BlockEntityType<PylonBlockEntity> PYLON = type(prefix(LibBlockNames.PYLON), PylonBlockEntity::new, manaPylon, naturaPylon, gaiaPylon);
@@ -119,6 +121,10 @@ public class BotaniaBlockEntities {
 			throw new IllegalArgumentException("Duplicate id " + id);
 		}
 		return ret;
+	}
+
+	private static Block[] nonNull(Block... blocks) {
+		return Arrays.stream(blocks).filter(Objects::nonNull).toArray(Block[]::new);
 	}
 
 	public static void registerTiles(BiConsumer<BlockEntityType<?>, Identifier> r) {

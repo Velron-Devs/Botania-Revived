@@ -41,6 +41,8 @@ import velrondevs.botania.client.gui.HUDHandler;
 import velrondevs.botania.common.helper.EntityHelper;
 import velrondevs.botania.common.helper.InventoryHelper;
 import velrondevs.botania.common.helper.PlayerHelper;
+import velrondevs.botania.integration.thaumaturge.NodeBoostApi;
+import velrondevs.botania.integration.thaumaturge.NodeBoostTracker;
 import velrondevs.botania.common.item.WandOfTheForestItem;
 import velrondevs.botania.common.item.material.RuneItem;
 import velrondevs.botania.common.proxy.Proxy;
@@ -55,7 +57,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class RunicAltarBlockEntity extends SimpleInventoryBlockEntity implements ManaReceiver, Wandable {
+public class RunicAltarBlockEntity extends SimpleInventoryBlockEntity implements ManaReceiver, Wandable, NodeBoostApi.Boosted {
 	private static final String TAG_MANA = "mana";
 	private static final String TAG_MANA_TO_GET = "manaToGet";
 	private static final int SET_KEEP_TICKS_EVENT = 0;
@@ -71,6 +73,12 @@ public class RunicAltarBlockEntity extends SimpleInventoryBlockEntity implements
 
 	private List<ItemStack> lastRecipe = null;
 	private int recipeKeepTicks = 0;
+	private final NodeBoostTracker nodeBoost = new NodeBoostTracker();
+
+	@Override
+	public double getNodeBoostMultiplier() {
+		return nodeBoost.multiplier();
+	}
 
 	public RunicAltarBlockEntity(BlockPos pos, BlockState state) {
 		super(BotaniaBlockEntities.RUNE_ALTAR, pos, state);
@@ -161,6 +169,7 @@ public class RunicAltarBlockEntity extends SimpleInventoryBlockEntity implements
 	}
 
 	public static void serverTick(Level level, BlockPos worldPosition, BlockState state, RunicAltarBlockEntity self) {
+		self.nodeBoost.update(level, worldPosition, NodeBoostApi.Target.RUNIC_ALTAR);
 		if (self.manaToGet == 0) {
 			List<ItemEntity> items = level.getEntitiesOfClass(ItemEntity.class, new AABB(Vec3.atLowerCornerOf(worldPosition), Vec3.atLowerCornerOf(worldPosition.offset(1, 1, 1))));
 			for (ItemEntity item : items) {
@@ -189,9 +198,13 @@ public class RunicAltarBlockEntity extends SimpleInventoryBlockEntity implements
 
 		self.updateRecipe();
 		self.tickCooldown();
+		if (self.cooldown > 0) {
+			self.cooldown = Math.max(0, self.cooldown - self.nodeBoost.consumeExtraTicks());
+		}
 	}
 
 	public static void clientTick(Level level, BlockPos worldPosition, BlockState state, RunicAltarBlockEntity self) {
+		self.nodeBoost.update(level, worldPosition, NodeBoostApi.Target.RUNIC_ALTAR);
 		if (self.manaToGet > 0 && self.mana >= self.manaToGet && level.getRandom().nextInt(20) == 0) {
 			Vec3 vec = Vec3.atCenterOf(self.getBlockPos());
 			Vec3 endVec = vec.add(0, 2.5, 0);
@@ -298,7 +311,7 @@ public class RunicAltarBlockEntity extends SimpleInventoryBlockEntity implements
 				for (int i = 0; i < inventorySize(); i++) {
 					ItemStack stack = getItemHandler().getItem(i);
 					if (!stack.isEmpty()) {
-						if (stack.getItem() instanceof RuneItem && (player == null || !player.getAbilities().instabuild)) {
+						if (recipe.returnsRunes() && stack.getItem() instanceof RuneItem && (player == null || !player.getAbilities().instabuild)) {
 							ItemEntity outputRune = new ItemEntity(level, getBlockPos().getX() + 0.5, getBlockPos().getY() + 1.5, getBlockPos().getZ() + 0.5, stack.copy());
 							XplatAbstractions.INSTANCE.itemFlagsComponent(outputRune).runicAltarSpawned = true;
 							level.addFreshEntity(outputRune);

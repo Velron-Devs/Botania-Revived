@@ -16,6 +16,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModList;
+import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.event.AddPackFindersEvent;
 import net.neoforged.neoforge.registries.RegisterEvent;
@@ -26,6 +27,7 @@ import org.jetbrains.annotations.Nullable;
 
 import velrondevs.botania.api.BotaniaAPI;
 import velrondevs.botania.api.BotaniaCapabilities;
+import velrondevs.botania.integration.thaumaturge.node.NodeBoost;
 import velrondevs.botania.common.lib.LibMisc;
 import velrondevs.botania.module.BotaniaModules;
 import velrondevs.botania.registry.BotaniaCreativeTabs;
@@ -57,6 +59,11 @@ public final class ThaumaturgeIntegration {
 		modBus.addListener(ThaumaturgeIntegration::registerRecipeSerializers);
 		modBus.addListener(ThaumaturgeIntegration::addAspectPack);
 		modBus.addListener(ThaumaturgeIntegration::registerCapabilities);
+		modBus.addListener(ThaumaturgeIntegration::commonSetup);
+	}
+
+	private static void commonSetup(FMLCommonSetupEvent event) {
+		NodeBoost.register();
 	}
 
 	@SuppressWarnings("unchecked")

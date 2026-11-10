@@ -472,7 +472,7 @@ public class BlockstateProvider implements DataProvider {
 				Optional.empty(), TextureSlot.FRONT, TextureSlot.BACK, TextureSlot.SIDE);
 		var spreaderScaffoldingTemplate = new ModelTemplate(Optional.of(prefix("block/shapes/spreader_scaffolding")),
 				Optional.of("_scaffolding"), TextureSlot.TOP, TextureSlot.SIDE, TextureSlot.BOTTOM);
-		takeAll(remainingBlocks, manaSpreader, redstoneSpreader, gaiaSpreader, elvenSpreader).forEach(b -> {
+		takeAll(remainingBlocks, manaSpreader, redstoneSpreader, gaiaSpreader, elvenSpreader, elementiumSpreader, terrasteelSpreader).forEach(b -> {
 			Material outside;
 			if (b == redstoneSpreader || b == manaSpreader) {
 				outside = getBlockTexture(livingwoodLog);

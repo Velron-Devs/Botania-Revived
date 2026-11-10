@@ -26,6 +26,7 @@ import velrondevs.botania.api.block.WandHUD;
 import velrondevs.botania.api.mana.ManaReceiver;
 import velrondevs.botania.client.core.helper.RenderHelper;
 import velrondevs.botania.common.helper.MathHelper;
+import velrondevs.botania.integration.thaumaturge.NodeBoostApi;
 import velrondevs.botania.registry.BotaniaItems;
 import velrondevs.botania.xplat.XplatAbstractions;
 
@@ -215,6 +216,10 @@ public abstract class BindableSpecialFlowerBlockEntity<T> extends SpecialFlowerB
 
 			BotaniaAPIClient.instance().drawComplexManaHUD(gui, color, flower.getMana(), flower.getMaxMana(),
 					name, flower.getHudIcon(), flower.isValidBinding());
+			double boost = flower.getNodeBoostMultiplier();
+			if (boost > 1.0) {
+				RenderHelper.drawCenteredString(gui, mc.font, NodeBoostApi.tooltip(boost), centerX, centerY + Math.max(30, minDown) + 4, NodeBoostApi.HUD_COLOR);
+			}
 		}
 
 		@Override

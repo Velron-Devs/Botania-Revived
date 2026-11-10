@@ -29,9 +29,10 @@ public class BotaniaReiDisplay extends BasicDisplay {
 			EntryIngredient.codec().listOf().fieldOf("extras").forGetter(BotaniaReiDisplay::extras),
 			EntryIngredient.codec().listOf().fieldOf("outputs").forGetter(BotaniaReiDisplay::getOutputEntries),
 			Identifier.CODEC.optionalFieldOf("location").forGetter(BotaniaReiDisplay::getDisplayLocation),
-			Codec.INT.fieldOf("mana").forGetter(BotaniaReiDisplay::mana)
-	).apply(i, (category, ingredients, extras, outputs, location, mana) -> new BotaniaReiDisplay(CategoryIdentifier.of(category),
-			ingredients, extras, outputs, location.orElse(null), mana, null)));
+			Codec.INT.fieldOf("mana").forGetter(BotaniaReiDisplay::mana),
+			Codec.BOOL.optionalFieldOf("consumes_runes", false).forGetter(BotaniaReiDisplay::consumesRunes)
+	).apply(i, (category, ingredients, extras, outputs, location, mana, consumesRunes) -> new BotaniaReiDisplay(CategoryIdentifier.of(category),
+			ingredients, extras, outputs, location.orElse(null), mana, null, consumesRunes)));
 	private static final StreamCodec<RegistryFriendlyByteBuf, List<EntryIngredient>> INGREDIENTS_STREAM =
 			EntryIngredient.streamCodec().apply(ByteBufCodecs.list());
 	public static final StreamCodec<RegistryFriendlyByteBuf, BotaniaReiDisplay> STREAM_CODEC = StreamCodec.of(
@@ -42,11 +43,12 @@ public class BotaniaReiDisplay extends BasicDisplay {
 				INGREDIENTS_STREAM.encode(buf, d.getOutputEntries());
 				ByteBufCodecs.optional(Identifier.STREAM_CODEC).encode(buf, d.getDisplayLocation());
 				ByteBufCodecs.VAR_INT.encode(buf, d.mana);
+				ByteBufCodecs.BOOL.encode(buf, d.consumesRunes);
 			},
 			buf -> new BotaniaReiDisplay(CategoryIdentifier.of(Identifier.STREAM_CODEC.decode(buf)),
 					INGREDIENTS_STREAM.decode(buf), INGREDIENTS_STREAM.decode(buf), INGREDIENTS_STREAM.decode(buf),
 					ByteBufCodecs.optional(Identifier.STREAM_CODEC).decode(buf).orElse(null),
-					ByteBufCodecs.VAR_INT.decode(buf), null));
+					ByteBufCodecs.VAR_INT.decode(buf), null, ByteBufCodecs.BOOL.decode(buf)));
 	public static final DisplaySerializer<BotaniaReiDisplay> SERIALIZER = DisplaySerializer.of(CODEC, STREAM_CODEC, false);
 
 	private final CategoryIdentifier<BotaniaReiDisplay> category;
@@ -55,16 +57,24 @@ public class BotaniaReiDisplay extends BasicDisplay {
 	private final int mana;
 	@Nullable
 	private final OrechidRecipe orechid;
+	private final boolean consumesRunes;
 
 	public BotaniaReiDisplay(CategoryIdentifier<BotaniaReiDisplay> category, List<EntryIngredient> ingredients,
 			List<EntryIngredient> extras, List<EntryIngredient> outputs, @Nullable Identifier id, int mana,
 			@Nullable OrechidRecipe orechid) {
+		this(category, ingredients, extras, outputs, id, mana, orechid, false);
+	}
+
+	public BotaniaReiDisplay(CategoryIdentifier<BotaniaReiDisplay> category, List<EntryIngredient> ingredients,
+			List<EntryIngredient> extras, List<EntryIngredient> outputs, @Nullable Identifier id, int mana,
+			@Nullable OrechidRecipe orechid, boolean consumesRunes) {
 		super(concat(ingredients, extras), outputs, Optional.ofNullable(id));
 		this.category = category;
 		this.ingredients = ingredients;
 		this.extras = extras;
 		this.mana = mana;
 		this.orechid = orechid;
+		this.consumesRunes = consumesRunes;
 	}
 
 	private static List<EntryIngredient> concat(List<EntryIngredient> first, List<EntryIngredient> second) {
@@ -102,5 +112,9 @@ public class BotaniaReiDisplay extends BasicDisplay {
 	@Nullable
 	public OrechidRecipe orechid() {
 		return orechid;
+	}
+
+	public boolean consumesRunes() {
+		return consumesRunes;
 	}
 }

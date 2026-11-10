@@ -30,16 +30,17 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "A": "botania:alfheim_portal",
     "B": "#botania:sophisticated_upgrade_bases",
-    "G": "botania:glimmering_livingwood_log",
-    "P": "botania:mana_pearl",
-    "S": "botania:livingrock"
+    "C": "minecraft:crafting_table",
+    "D": "#botania:mana_diamond_gems",
+    "K": "botania:mana_link_upgrade",
+    "L": "botania:mana_pile_upgrade",
+    "R": "botania:runic_altar"
   },
   "pattern": [
-    "SGS",
-    "PBP",
-    "SAS"
+    "DCD",
+    "LBK",
+    "DRD"
   ],
   "result": {
     "count": 1,

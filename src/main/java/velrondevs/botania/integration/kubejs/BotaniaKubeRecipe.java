@@ -250,6 +250,7 @@ public abstract class BotaniaKubeRecipe<T extends BotaniaKubeRecipe<T>> {
 		private final ItemStackTemplate output;
 		private final Ingredient[] inputs;
 		private int mana = -1;
+		private boolean returnRunes = true;
 
 		public RunicAltar(Context cx, Object output, Object inputs) {
 			super(cx, "runic_altar");
@@ -259,6 +260,11 @@ public abstract class BotaniaKubeRecipe<T extends BotaniaKubeRecipe<T>> {
 
 		public RunicAltar mana(int mana) {
 			this.mana = mana;
+			return this;
+		}
+
+		public RunicAltar returnRunes(boolean returnRunes) {
+			this.returnRunes = returnRunes;
 			return this;
 		}
 
@@ -272,7 +278,7 @@ public abstract class BotaniaKubeRecipe<T extends BotaniaKubeRecipe<T>> {
 			if (mana < 0) {
 				throw missing("mana, call .mana(n)");
 			}
-			return new RunicAltarRecipe(output, mana, inputs);
+			return new RunicAltarRecipe(output, mana, returnRunes, inputs);
 		}
 	}
 

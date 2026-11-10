@@ -27,6 +27,7 @@ import velrondevs.botania.api.block_entity.RadiusDescriptor;
 import velrondevs.botania.common.helper.*;
 import velrondevs.botania.common.internal_caps.ItemFlagsComponent;
 import velrondevs.botania.registry.BotaniaFlowerBlocks;
+import velrondevs.botania.xplat.BotaniaConfig;
 import velrondevs.botania.xplat.XplatAbstractions;
 
 import java.util.ArrayList;
@@ -37,6 +38,7 @@ public class HopperhockBlockEntity extends FunctionalFlowerBlockEntity implement
 	private static final String TAG_FILTER_TYPE = "filterType";
 	private static final int RANGE_MANA = 10;
 	private static final int RANGE = 6;
+	private static final int DEFAULT_INTERVAL = 40;
 
 	private static final int RANGE_MANA_MINI = 2;
 	private static final int RANGE_MINI = 1;
@@ -57,6 +59,14 @@ public class HopperhockBlockEntity extends FunctionalFlowerBlockEntity implement
 
 		if (getLevel().isClientSide() || redstoneSignal > 0) {
 			return;
+		}
+
+		var config = BotaniaConfig.common();
+		if (config == null || config.reducedUpdateFrequency()) {
+			int interval = config == null ? DEFAULT_INTERVAL : config.hopperhockInterval();
+			if (interval > 1 && Math.floorMod(ticksExisted + getBlockPos().hashCode(), interval) != 0) {
+				return;
+			}
 		}
 
 		boolean pulledAny = false;

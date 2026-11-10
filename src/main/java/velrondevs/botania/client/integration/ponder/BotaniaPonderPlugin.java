@@ -13,7 +13,13 @@ import velrondevs.botania.common.lib.LibMisc;
 
 public class BotaniaPonderPlugin implements PonderPlugin {
 	private static void bindMissingComponents() {
-		velrondevs.botania.integration.catnip.CatnipConfigDefaults.init();
+		if (!velrondevs.botania.integration.CreateCompat.isLoaded()) {
+			try {
+				velrondevs.botania.integration.catnip.CatnipConfigDefaults.init();
+			} catch (LinkageError e) {
+				velrondevs.botania.api.BotaniaAPI.LOGGER.warn("The installed Catnip version has no config API", e);
+			}
+		}
 		BuiltInRegistries.ITEM.listElements().forEach(holder -> {
 			try {
 				holder.components();

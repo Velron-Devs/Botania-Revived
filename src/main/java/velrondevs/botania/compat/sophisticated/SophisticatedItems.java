@@ -18,6 +18,8 @@ public final class SophisticatedItems {
 	public static final String RUNIC_ALTAR = "runic_altar_upgrade";
 	public static final String ELVEN_PORTAL = "elven_portal_upgrade";
 	public static final String BREWERY = "brewery_upgrade";
+	public static final String PETAL_APOTHECARY = "petal_apothecary_upgrade";
+	public static final String TERRA_PLATE = "remote_terra_plate_upgrade";
 
 	public static final Item MANASTEEL_STACK_UPGRADE = new BotaniaStackUpgradeItem(1_000_000D);
 	public static final Item ELEMENTIUM_STACK_UPGRADE = new BotaniaStackUpgradeItem(2_000_000D);
@@ -28,6 +30,8 @@ public final class SophisticatedItems {
 	public static final Item RUNIC_ALTAR_UPGRADE = new RunicAltarUpgradeItem();
 	public static final Item ELVEN_PORTAL_UPGRADE = new ElvenPortalUpgradeItem();
 	public static final Item BREWERY_UPGRADE = new BreweryUpgradeItem();
+	public static final Item PETAL_APOTHECARY_UPGRADE = new PetalApothecaryUpgradeItem();
+	public static final Item TERRA_PLATE_UPGRADE = new TerraPlateUpgradeItem();
 
 	private SophisticatedItems() {}
 
@@ -44,6 +48,8 @@ public final class SophisticatedItems {
 		consumer.accept(RUNIC_ALTAR_UPGRADE, id(RUNIC_ALTAR));
 		consumer.accept(ELVEN_PORTAL_UPGRADE, id(ELVEN_PORTAL));
 		consumer.accept(BREWERY_UPGRADE, id(BREWERY));
+		consumer.accept(PETAL_APOTHECARY_UPGRADE, id(PETAL_APOTHECARY));
+		consumer.accept(TERRA_PLATE_UPGRADE, id(TERRA_PLATE));
 	}
 
 	static Identifier id(String path) {

@@ -1,0 +1,50 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:and",
+      "values": [
+        {
+          "type": "botania:module_enabled",
+          "module": "sophisticated"
+        },
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "sophisticatedcore"
+        },
+        {
+          "type": "neoforge:or",
+          "values": [
+            {
+              "type": "neoforge:mod_loaded",
+              "modid": "sophisticatedbackpacks"
+            },
+            {
+              "type": "neoforge:mod_loaded",
+              "modid": "sophisticatedstorage"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": "botania:rune_air",
+    "D": "#botania:mana_diamond_gems",
+    "F": "botania:rune_fire",
+    "M": "botania:rune_mana",
+    "P": "botania:terra_plate",
+    "T": "botania:terrasteel_block",
+    "W": "botania:rune_water"
+  },
+  "pattern": [
+    "WMF",
+    "DTD",
+    "FPA"
+  ],
+  "result": {
+    "count": 1,
+    "id": "botania:remote_terra_plate_upgrade"
+  }
+}

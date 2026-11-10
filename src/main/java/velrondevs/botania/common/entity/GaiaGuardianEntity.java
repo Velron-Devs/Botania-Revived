@@ -86,6 +86,7 @@ import velrondevs.botania.registry.BotaniaBlocks;
 import velrondevs.botania.registry.BotaniaEntities;
 import velrondevs.botania.registry.BotaniaItems;
 import velrondevs.botania.registry.BotaniaSounds;
+import velrondevs.botania.xplat.BotaniaConfig;
 import velrondevs.botania.xplat.XplatAbstractions;
 
 import java.util.*;
@@ -152,7 +153,7 @@ public class GaiaGuardianEntity extends Mob {
 	private static final int MOB_SPAWN_TICKS = MOB_SPAWN_BASE_TICKS + MOB_SPAWN_START_TICKS + MOB_SPAWN_END_TICKS;
 	private static final int MOB_SPAWN_WAVES = 10;
 	private static final int MOB_SPAWN_WAVE_TIME = MOB_SPAWN_BASE_TICKS / MOB_SPAWN_WAVES;
-	private static final int DAMAGE_CAP = 32;
+	private static final int DEFAULT_DAMAGE_CAP = 10000;
 
 	private static final String TAG_INVUL_TIME = "invulTime";
 	private static final String TAG_AGGRO = "aggro";
@@ -433,7 +434,7 @@ public class GaiaGuardianEntity extends Mob {
 				playersWhoAttacked.add(player.getUUID());
 			}
 
-			return super.hurtServer(level, source, Math.min(DAMAGE_CAP, amount));
+			return super.hurtServer(level, source, Math.min(damageCap(), amount));
 		}
 
 		return false;
@@ -441,7 +442,7 @@ public class GaiaGuardianEntity extends Mob {
 
 	@Override
 	protected void actuallyHurt(ServerLevel level, @NotNull DamageSource source, float amount) {
-		super.actuallyHurt(level, source, Math.min(DAMAGE_CAP, amount));
+		super.actuallyHurt(level, source, Math.min(damageCap(), amount));
 
 		Entity attacker = source.getDirectEntity();
 		if (attacker != null) {
@@ -458,9 +459,14 @@ public class GaiaGuardianEntity extends Mob {
 		invulnerableTime = Math.max(invulnerableTime, 20);
 	}
 
+	private static float damageCap() {
+		var config = BotaniaConfig.common();
+		return config == null ? DEFAULT_DAMAGE_CAP : config.gaiaDamageCap();
+	}
+
 	@Override
 	protected float getDamageAfterArmorAbsorb(DamageSource source, float damage) {
-		return super.getDamageAfterArmorAbsorb(source, Math.min(DAMAGE_CAP, damage));
+		return super.getDamageAfterArmorAbsorb(source, Math.min(damageCap(), damage));
 	}
 
 	@Override

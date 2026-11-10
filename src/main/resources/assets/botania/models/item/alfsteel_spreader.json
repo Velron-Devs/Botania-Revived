@@ -1,0 +1,10 @@
+{
+  "parent": "botania:block/shapes/spreader_item",
+  "textures": {
+    "back": "botania:block/alfsteel_spreader_back",
+    "core": "botania:block/alfsteel_spreader_core",
+    "inside": "botania:block/alfsteel_spreader_inside",
+    "outside": "botania:block/alfsteel_spreader_outside",
+    "side": "botania:block/alfsteel_spreader_side"
+  }
+}

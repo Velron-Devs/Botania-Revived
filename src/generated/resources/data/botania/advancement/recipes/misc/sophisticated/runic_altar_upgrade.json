@@ -33,7 +33,7 @@
       "conditions": {
         "items": [
           {
-            "items": "botania:livingrock"
+            "items": "botania:runic_altar"
           }
         ]
       },

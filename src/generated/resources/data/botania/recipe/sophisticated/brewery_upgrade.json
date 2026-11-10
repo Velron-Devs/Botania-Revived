@@ -30,16 +30,16 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "A": "botania:alfheim_portal",
+    "A": "botania:apothecary_default",
     "B": "#botania:sophisticated_upgrade_bases",
-    "F": "botania:flask",
-    "G": "botania:glimmering_livingwood_log",
-    "V": "botania:vial"
+    "D": "#botania:mana_diamond_gems",
+    "L": "botania:mana_pile_upgrade",
+    "W": "botania:brewery"
   },
   "pattern": [
-    "VGV",
-    "FBF",
-    "VAV"
+    "DAD",
+    "LBL",
+    "DWD"
   ],
   "result": {
     "count": 1,

@@ -160,7 +160,7 @@ public class TerraShattererItem extends ManasteelPickaxeItem implements Sequenti
 		int curr = getMana_(stack);
 		float percent = level == 0 ? 0F : level >= maxLevel() ? 1F : (float) curr / (float) max;
 
-		return Optional.of(new ManaBarTooltip(percent, level));
+		return Optional.of(new ManaBarTooltip(percent, level, curr, max));
 	}
 
 	@Override

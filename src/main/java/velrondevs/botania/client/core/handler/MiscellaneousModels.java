@@ -69,6 +69,12 @@ public class MiscellaneousModels {
 	private static final Identifier manaSpreaderScaffoldingId = prefix("block/mana_spreader_scaffolding");
 	private static final Identifier elvenSpreaderScaffoldingId = prefix("block/elven_spreader_scaffolding");
 	private static final Identifier gaiaSpreaderScaffoldingId = prefix("block/gaia_spreader_scaffolding");
+	private static final Identifier elementiumSpreaderCoreId = prefix("block/elementium_spreader_core");
+	private static final Identifier elementiumSpreaderScaffoldingId = prefix("block/elementium_spreader_scaffolding");
+	private static final Identifier terrasteelSpreaderCoreId = prefix("block/terrasteel_spreader_core");
+	private static final Identifier terrasteelSpreaderScaffoldingId = prefix("block/terrasteel_spreader_scaffolding");
+	private static final Identifier alfsteelSpreaderCoreId = prefix("block/alfsteel_spreader_core");
+	private static final Identifier alfsteelSpreaderScaffoldingId = prefix("block/alfsteel_spreader_scaffolding");
 	private static final Map<DyeColor, Identifier> spreaderPaddingIds = new EnumMap<>(ColorHelper.supportedColors().collect(Collectors.toMap(Function.identity(), color -> prefix("block/" + color.getSerializedName() + "_spreader_padding"))));
 
 	public static final MiscellaneousModels INSTANCE = new MiscellaneousModels();
@@ -103,7 +109,13 @@ public class MiscellaneousModels {
 			redstoneSpreaderCore,
 			manaSpreaderScaffolding,
 			elvenSpreaderScaffolding,
-			gaiaSpreaderScaffolding;
+			gaiaSpreaderScaffolding,
+			elementiumSpreaderCore,
+			elementiumSpreaderScaffolding,
+			terrasteelSpreaderCore,
+			terrasteelSpreaderScaffolding,
+			alfsteelSpreaderCore,
+			alfsteelSpreaderScaffolding;
 
 	public final HashMap<DyeColor, BlockStateModelPart> spreaderPaddings = new HashMap<>();
 
@@ -212,6 +224,12 @@ public class MiscellaneousModels {
 		modelConsumers.put(manaSpreaderScaffoldingId, bakedModel -> this.manaSpreaderScaffolding = bakedModel);
 		modelConsumers.put(elvenSpreaderScaffoldingId, bakedModel -> this.elvenSpreaderScaffolding = bakedModel);
 		modelConsumers.put(gaiaSpreaderScaffoldingId, bakedModel -> this.gaiaSpreaderScaffolding = bakedModel);
+		modelConsumers.put(elementiumSpreaderCoreId, bakedModel -> this.elementiumSpreaderCore = bakedModel);
+		modelConsumers.put(elementiumSpreaderScaffoldingId, bakedModel -> this.elementiumSpreaderScaffolding = bakedModel);
+		modelConsumers.put(terrasteelSpreaderCoreId, bakedModel -> this.terrasteelSpreaderCore = bakedModel);
+		modelConsumers.put(terrasteelSpreaderScaffoldingId, bakedModel -> this.terrasteelSpreaderScaffolding = bakedModel);
+		modelConsumers.put(alfsteelSpreaderCoreId, bakedModel -> this.alfsteelSpreaderCore = bakedModel);
+		modelConsumers.put(alfsteelSpreaderScaffoldingId, bakedModel -> this.alfsteelSpreaderScaffolding = bakedModel);
 		for (var color : spreaderPaddingIds.keySet()) {
 			modelConsumers.put(spreaderPaddingIds.get(color), bakedModel -> spreaderPaddings.put(color, bakedModel));
 		}

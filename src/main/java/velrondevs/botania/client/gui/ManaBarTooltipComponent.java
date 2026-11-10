@@ -18,10 +18,12 @@ public class ManaBarTooltipComponent implements ClientTooltipComponent {
 	private static final int TEXT_HEIGHT = 10;
 	private final float percentageFull;
 	private final int pickLevel;
+	private final String manaText;
 
 	public ManaBarTooltipComponent(ManaBarTooltip component) {
 		this.percentageFull = component.getPercentageFull();
 		this.pickLevel = component.getPickLevel();
+		this.manaText = component.getMaxMana() > 0 ? component.getMana() + "/" + component.getMaxMana() : null;
 	}
 
 	@Nullable
@@ -34,12 +36,12 @@ public class ManaBarTooltipComponent implements ClientTooltipComponent {
 
 	@Override
 	public int getHeight(Font font) {
-		return BAR_HEIGHT + 4 + (pickLevel >= 0 ? TEXT_HEIGHT : 0);
+		return BAR_HEIGHT + 4 + (pickLevel >= 0 ? TEXT_HEIGHT : 0) + (manaText != null ? TEXT_HEIGHT : 0);
 	}
 
 	@Override
 	public int getWidth(Font font) {
-		return 0;
+		return manaText != null ? font.width(manaText) : 0;
 	}
 
 	@Override
@@ -54,6 +56,10 @@ public class ManaBarTooltipComponent implements ClientTooltipComponent {
 				gui.text(font, next, x + totalWidth - font.width(next), top, 0xFFFFFFFF, true);
 			}
 			top += TEXT_HEIGHT;
+			if (manaText != null) {
+				gui.text(font, manaText, x, top, 0xFFAAAAAA, true);
+				top += TEXT_HEIGHT;
+			}
 
 			int rainbowWidth = Math.min(totalWidth - (ss ? 0 : 1), (int) (totalWidth * percentageFull));
 			float huePer = totalWidth == 0 ? 0F : 1F / totalWidth;
@@ -65,6 +71,10 @@ public class ManaBarTooltipComponent implements ClientTooltipComponent {
 			}
 			gui.fill(x + rainbowWidth, top, x + totalWidth, top + BAR_HEIGHT, 0xFF555555);
 		} else {
+			if (manaText != null) {
+				gui.text(font, manaText, x, top, 0xFFAAAAAA, true);
+				top += TEXT_HEIGHT;
+			}
 			int manaBarWidth = (int) Math.ceil(totalWidth * percentageFull);
 
 			gui.fill(x - 1, top - 1, x + totalWidth + 1, top + BAR_HEIGHT + 1, 0xFF000000);

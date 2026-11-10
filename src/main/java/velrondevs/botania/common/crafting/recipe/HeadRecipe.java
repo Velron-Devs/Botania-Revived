@@ -70,6 +70,10 @@ public class HeadRecipe extends RunicAltarRecipe {
 		super(output, mana, inputs);
 	}
 
+	public HeadRecipe(ItemStackTemplate output, int mana, boolean returnRunes, Ingredient... inputs) {
+		super(output, mana, returnRunes, inputs);
+	}
+
 	public HeadRecipe(ItemStack output, int mana, Ingredient... inputs) {
 		super(output, mana, inputs);
 	}

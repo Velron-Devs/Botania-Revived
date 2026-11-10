@@ -9,6 +9,7 @@ import me.shedaniel.rei.api.common.entry.EntryIngredient;
 import me.shedaniel.rei.api.common.entry.EntryStack;
 import me.shedaniel.rei.api.common.util.EntryStacks;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
@@ -64,6 +65,10 @@ public final class BotaniaReiCategories {
 	}
 
 	private static void addAltar(List<Widget> widgets, Point origin, BotaniaReiDisplay display, EntryStack<?> altar) {
+		addAltar(widgets, origin, display, altar, display.output());
+	}
+
+	private static void addAltar(List<Widget> widgets, Point origin, BotaniaReiDisplay display, EntryStack<?> altar, EntryIngredient output) {
 		final int centerX = 44;
 		final int centerY = 40;
 		final int posYIngredients = 8;
@@ -90,7 +95,7 @@ public final class BotaniaReiCategories {
 		} else {
 			widgets.add(BotaniaReiCategory.slot(origin, centerX, centerY + 1, altar));
 		}
-		widgets.add(BotaniaReiCategory.slot(origin, centerX + 38, 5, display.output()).markOutput());
+		widgets.add(BotaniaReiCategory.slot(origin, centerX + 38, 5, output).markOutput());
 	}
 
 	private static void addPureDaisy(List<Widget> widgets, Point origin, BotaniaReiDisplay display, EntryStack<?> flower) {
@@ -145,7 +150,12 @@ public final class BotaniaReiCategories {
 		@Override
 		protected void addContent(List<Widget> widgets, BotaniaReiDisplay display, Point origin) {
 			widgets.add(manaBar(origin, 2, 100, display.mana(), ManaPoolBlockEntity.MAX_MANA / 10));
-			addAltar(widgets, origin, display, EntryStacks.of(BotaniaBlocks.runeAltar));
+			EntryIngredient output = display.output();
+			if (display.consumesRunes()) {
+				Component note = Component.translatable("botania.nei.runicAltar.consumesRunes").withStyle(ChatFormatting.RED);
+				output = output.map(stack -> stack.copy().tooltip(note));
+			}
+			addAltar(widgets, origin, display, EntryStacks.of(BotaniaBlocks.runeAltar), output);
 		}
 	}
 

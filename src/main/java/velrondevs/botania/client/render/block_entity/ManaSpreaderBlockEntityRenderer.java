@@ -103,6 +103,9 @@ public class ManaSpreaderBlockEntityRenderer extends BotaniaBlockEntityRenderer<
 	private BlockStateModelPart getCoreModel(ManaSpreaderBlockEntity tile) {
 		return switch (tile.getVariant()) {
 			case GAIA -> MiscellaneousModels.INSTANCE.gaiaSpreaderCore;
+			case ELEMENTIUM -> MiscellaneousModels.INSTANCE.elementiumSpreaderCore;
+			case TERRASTEEL -> MiscellaneousModels.INSTANCE.terrasteelSpreaderCore;
+			case ALFSTEEL -> MiscellaneousModels.INSTANCE.alfsteelSpreaderCore;
 			case REDSTONE -> MiscellaneousModels.INSTANCE.redstoneSpreaderCore;
 			case ELVEN -> MiscellaneousModels.INSTANCE.elvenSpreaderCore;
 			case MANA -> MiscellaneousModels.INSTANCE.manaSpreaderCore;
@@ -118,6 +121,9 @@ public class ManaSpreaderBlockEntityRenderer extends BotaniaBlockEntityRenderer<
 			case MANA, REDSTONE -> MiscellaneousModels.INSTANCE.manaSpreaderScaffolding;
 			case ELVEN -> MiscellaneousModels.INSTANCE.elvenSpreaderScaffolding;
 			case GAIA -> MiscellaneousModels.INSTANCE.gaiaSpreaderScaffolding;
+			case ELEMENTIUM -> MiscellaneousModels.INSTANCE.elementiumSpreaderScaffolding;
+			case TERRASTEEL -> MiscellaneousModels.INSTANCE.terrasteelSpreaderScaffolding;
+			case ALFSTEEL -> MiscellaneousModels.INSTANCE.alfsteelSpreaderScaffolding;
 		};
 	}
 }

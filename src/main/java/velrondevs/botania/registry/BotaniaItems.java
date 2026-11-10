@@ -374,6 +374,7 @@ public final class BotaniaItems {
 	public static final Item thorRing = make(prefix(LibItemNames.THOR_RING), new RingOfThorItem(unstackable().fireResistant().rarity(Rarity.EPIC)));
 	public static final Item odinRing = make(prefix(LibItemNames.ODIN_RING), new RingOfOdinItem(unstackable().fireResistant().rarity(Rarity.EPIC)));
 	public static final Item lokiRing = make(prefix(LibItemNames.LOKI_RING), new RingOfLokiItem(unstackable().fireResistant().rarity(Rarity.EPIC)));
+	public static final Item aesirRing = make(prefix(LibItemNames.AESIR_RING), new RingOfTheAesirItem(unstackable().fireResistant().rarity(Rarity.EPIC)));
 	public static final Item recordGaia1 = make(prefix(LibItemNames.RECORD_GAIA1), new BotaniaRecordItem(ResourceKey.create(Registries.JUKEBOX_SONG, prefix(LibItemNames.RECORD_GAIA1)), unstackable().rarity(Rarity.RARE)));
 	public static final Item recordGaia2 = make(prefix(LibItemNames.RECORD_GAIA2), new BotaniaRecordItem(ResourceKey.create(Registries.JUKEBOX_SONG, prefix(LibItemNames.RECORD_GAIA2)), unstackable().rarity(Rarity.RARE)));
 	public static final Item ancientWillAhrim = make(prefix(LibItemNames.ANCIENT_WILL_PREFIX + "ahrim"), new AncientWillItem(AncientWillContainer.AncientWillType.AHRIM, unstackable().rarity(Rarity.UNCOMMON)));
@@ -480,6 +481,7 @@ public final class BotaniaItems {
 	}
 
 	public static void registerRecipeSerializers(BiConsumer<RecipeSerializer<?>, Identifier> r) {
+		r.accept(AesirRingRecipe.SERIALIZER, prefix("aesir_ring_combine"));
 		r.accept(AncientWillRecipe.SERIALIZER, prefix("ancient_will_attach"));
 		r.accept(ArmorUpgradeRecipe.SERIALIZER, prefix("armor_upgrade"));
 		r.accept(BlackHoleTalismanExtractRecipe.SERIALIZER, prefix("black_hole_talisman_extract"));

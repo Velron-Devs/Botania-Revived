@@ -46,6 +46,8 @@ import velrondevs.botania.common.entity.ManaBurstEntity.PositionProperties;
 import velrondevs.botania.common.handler.ManaNetworkHandler;
 import velrondevs.botania.common.helper.MathHelper;
 import velrondevs.botania.common.item.LexicaBotaniaItem;
+import velrondevs.botania.integration.thaumaturge.NodeBoostApi;
+import velrondevs.botania.integration.thaumaturge.NodeBoostTracker;
 import velrondevs.botania.registry.BotaniaBlockEntities;
 import velrondevs.botania.registry.BotaniaSounds;
 import velrondevs.botania.xplat.BotaniaConfig;
@@ -124,6 +126,7 @@ public class ManaSpreaderBlockEntity extends ExposedSimpleInventoryBlockEntity i
 
 	private List<PositionProperties> lastTentativeBurst;
 	private boolean invalidTentativeBurst = false;
+	private final NodeBoostTracker nodeBoost = new NodeBoostTracker();
 
 	@Override
 	public void preRemoveSideEffects(BlockPos pos, BlockState state) {
@@ -160,6 +163,7 @@ public class ManaSpreaderBlockEntity extends ExposedSimpleInventoryBlockEntity i
 	}
 
 	public static void commonTick(Level level, BlockPos worldPosition, BlockState state, ManaSpreaderBlockEntity self) {
+		self.nodeBoost.update(level, worldPosition, NodeBoostApi.Target.SPREADER);
 		boolean inNetwork = ManaNetworkHandler.instance.isCollectorIn(level, self);
 		boolean wasInNetwork = inNetwork;
 		if (!inNetwork && !self.isRemoved()) {
@@ -496,12 +500,13 @@ public class ManaSpreaderBlockEntity extends ExposedSimpleInventoryBlockEntity i
 	private ManaBurstEntity getBurst(boolean fake) {
 		ManaSpreaderBlock.Variant variant = getVariant();
 		float gravity = 0F;
-		BurstProperties props = new BurstProperties(variant.burstMana, variant.preLossTicks, variant.lossPerTick, gravity, variant.motionModifier, variant.color);
+		BurstProperties props = new BurstProperties(variant.burstMana(), variant.preLossTicks(), variant.lossPerTick(), gravity, variant.motionModifier(), variant.color);
 
 		ItemStack lens = getItemHandler().getItem(0);
 		if (!lens.isEmpty() && lens.getItem() instanceof LensEffectItem lensEffectItem) {
 			lensEffectItem.apply(lens, props, level);
 		}
+		props.maxMana = NodeBoostApi.scale(props.maxMana, getNodeBoostMultiplier());
 
 		if (getCurrentMana() >= props.maxMana || fake) {
 			ManaBurstEntity burst = new ManaBurstEntity(getLevel(), getBlockPos(), getRotationX(), getRotationY(), fake);
@@ -570,7 +575,18 @@ public class ManaSpreaderBlockEntity extends ExposedSimpleInventoryBlockEntity i
 			BotaniaAPIClient.instance().drawSimpleManaHUD(gui, color, spreader.getCurrentMana(), spreader.getMaxMana(), spreaderName);
 			RenderHelper.renderItemWithNameCentered(gui, mc, recieverStack, centerY + 30, color);
 			RenderHelper.renderItemWithNameCentered(gui, mc, lensStack, centerY + (recieverStack.isEmpty() ? 30 : 48), color);
+			if (spreader.getNodeBoostMultiplier() > 1.0) {
+				RenderHelper.drawCenteredString(gui, mc.font, NodeBoostApi.tooltip(spreader.getNodeBoostMultiplier()), centerX, centerY + 12 + height, NodeBoostApi.HUD_COLOR);
+			}
 		}
+	}
+
+	public double getNodeBoostMultiplier() {
+		double boost = nodeBoost.multiplier();
+		if (receiver instanceof NodeBoostApi.Boosted boosted) {
+			boost = Math.max(boost, boosted.getNodeBoostMultiplier());
+		}
+		return boost;
 	}
 
 	@Override
@@ -623,7 +639,7 @@ public class ManaSpreaderBlockEntity extends ExposedSimpleInventoryBlockEntity i
 
 	@Override
 	public int getMaxMana() {
-		return getVariant().manaCapacity;
+		return NodeBoostApi.scale(getVariant().manaCapacity(), getNodeBoostMultiplier());
 	}
 
 	@Override

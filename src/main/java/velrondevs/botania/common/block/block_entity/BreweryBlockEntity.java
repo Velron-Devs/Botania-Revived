@@ -32,6 +32,8 @@ import velrondevs.botania.client.core.helper.RenderHelper;
 import velrondevs.botania.client.fx.SparkleParticleData;
 import velrondevs.botania.client.fx.WispParticleData;
 import velrondevs.botania.common.helper.EntityHelper;
+import velrondevs.botania.integration.thaumaturge.NodeBoostApi;
+import velrondevs.botania.integration.thaumaturge.NodeBoostTracker;
 import velrondevs.botania.registry.BotaniaBlockEntities;
 import velrondevs.botania.registry.BotaniaBlocks;
 import velrondevs.botania.registry.BotaniaBrews;
@@ -41,7 +43,7 @@ import velrondevs.botania.registry.BotaniaSounds;
 import java.util.List;
 import java.util.Optional;
 
-public class BreweryBlockEntity extends SimpleInventoryBlockEntity implements ManaReceiver {
+public class BreweryBlockEntity extends SimpleInventoryBlockEntity implements ManaReceiver, NodeBoostApi.Boosted {
 	private static final String TAG_MANA = "mana";
 	private static final int CRAFT_EFFECT_EVENT = 0;
 
@@ -49,6 +51,12 @@ public class BreweryBlockEntity extends SimpleInventoryBlockEntity implements Ma
 	private int mana = 0;
 	private int manaLastTick = 0;
 	public int signal = 0;
+	private final NodeBoostTracker nodeBoost = new NodeBoostTracker();
+
+	@Override
+	public double getNodeBoostMultiplier() {
+		return nodeBoost.multiplier();
+	}
 
 	public BreweryBlockEntity(BlockPos pos, BlockState state) {
 		super(BotaniaBlockEntities.BREWERY, pos, state);
@@ -95,6 +103,7 @@ public class BreweryBlockEntity extends SimpleInventoryBlockEntity implements Ma
 	}
 
 	public static void commonTick(Level level, BlockPos worldPosition, BlockState state, BreweryBlockEntity self) {
+		self.nodeBoost.update(level, worldPosition, NodeBoostApi.Target.BREWERY);
 		if (self.mana > 0 && self.recipe == null) {
 			self.findRecipe();
 

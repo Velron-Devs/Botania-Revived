@@ -93,6 +93,7 @@ Xplat/logs/latest.log
 /src/generated/resources/.cache/
 
 /pendiente 26.1.2/
+/dev_libs/
 /logs/
 /trabajo.md
 /continuar.md

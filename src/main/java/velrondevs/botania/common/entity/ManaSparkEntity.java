@@ -42,18 +42,23 @@ import velrondevs.botania.client.core.helper.RenderHelper;
 import velrondevs.botania.common.helper.ColorHelper;
 import velrondevs.botania.common.helper.PlayerHelper;
 import velrondevs.botania.common.helper.VecHelper;
+import velrondevs.botania.integration.thaumaturge.NodeBoostApi;
+import velrondevs.botania.integration.thaumaturge.NodeBoostTracker;
 import velrondevs.botania.common.item.SparkAugmentItem;
 import velrondevs.botania.common.item.WandOfTheForestItem;
 import velrondevs.botania.network.EffectType;
 import velrondevs.botania.network.clientbound.BotaniaEffectPacket;
 import velrondevs.botania.registry.BotaniaEntities;
 import velrondevs.botania.registry.BotaniaItems;
+import velrondevs.botania.xplat.BotaniaConfig;
 import velrondevs.botania.xplat.XplatAbstractions;
 
 import java.util.*;
 
 public class ManaSparkEntity extends SparkBaseEntity implements ManaSpark {
 	private static final int TRANSFER_RATE = 1000;
+	private static final int BATCH_INTERVAL = 20;
+	private static final int DEFAULT_BATCH_AMOUNT = 20000;
 	private static final String TAG_UPGRADE = "upgrade";
 	private static final EntityDataAccessor<Integer> UPGRADE = SynchedEntityData.defineId(ManaSparkEntity.class, EntityDataSerializers.INT);
 
@@ -64,6 +69,7 @@ public class ManaSparkEntity extends SparkBaseEntity implements ManaSpark {
 	private boolean shouldFilterTransfers = true;
 	private boolean receiverWasFull = true;
 	private boolean firstTick = true;
+	private final NodeBoostTracker nodeBoost = new NodeBoostTracker();
 
 	public ManaSparkEntity(EntityType<ManaSparkEntity> type, Level world) {
 		super(type, world);
@@ -101,6 +107,11 @@ public class ManaSparkEntity extends SparkBaseEntity implements ManaSpark {
 			return;
 		}
 		var receiver = getAttachedManaReceiver();
+		nodeBoost.update(level(), blockPosition(), NodeBoostApi.Target.SPARK);
+		double boost = nodeBoost.multiplier();
+		if (receiver instanceof NodeBoostApi.Boosted boosted) {
+			boost = Math.max(boost, boosted.getNodeBoostMultiplier());
+		}
 
 		SparkUpgradeType upgrade = getUpgrade();
 		Collection<ManaSpark> outgoingTransfers = getOutgoingTransfers();
@@ -145,7 +156,7 @@ public class ManaSparkEntity extends SparkBaseEntity implements ManaSpark {
 								receivingStacks = receivingPlayers.get(player);
 							}
 
-							int recv = Math.min(receiver.getCurrentMana(), Math.min(TRANSFER_RATE, manaItem.getMaxMana() - manaItem.getMana()));
+							int recv = Math.min(receiver.getCurrentMana(), Math.min(NodeBoostApi.scale(TRANSFER_RATE, boost), manaItem.getMaxMana() - manaItem.getMana()));
 							if (recv > 0) {
 								receivingStacks.put(manaItem, recv);
 								if (add) {
@@ -190,8 +201,28 @@ public class ManaSparkEntity extends SparkBaseEntity implements ManaSpark {
 
 		checkReceiverFull();
 
-		if (!outgoingTransfers.isEmpty()) {
-			int manaTotal = Math.min(TRANSFER_RATE * outgoingTransfers.size(), receiver.getCurrentMana());
+		int transferRate = TRANSFER_RATE;
+		boolean transferThisTick = true;
+		var config = BotaniaConfig.common();
+		if (config == null || config.sparkBatchTransfer()) {
+			transferRate = config == null ? DEFAULT_BATCH_AMOUNT : config.sparkBatchAmount();
+			transferThisTick = Math.floorMod(tickCount + getId(), BATCH_INTERVAL) == 0;
+		}
+		int baseRate = transferRate;
+		transferRate = NodeBoostApi.scale(baseRate, boost);
+
+		if (transferThisTick && !outgoingTransfers.isEmpty()) {
+			int outRate = transferRate;
+			if (NodeBoostApi.isAvailable()) {
+				double outBoost = boost;
+				for (ManaSpark spark : outgoingTransfers) {
+					if (spark.getAttachedManaReceiver() instanceof NodeBoostApi.Boosted boosted) {
+						outBoost = Math.max(outBoost, boosted.getNodeBoostMultiplier());
+					}
+				}
+				outRate = NodeBoostApi.scale(baseRate, outBoost);
+			}
+			int manaTotal = (int) Math.min((long) outRate * outgoingTransfers.size(), receiver.getCurrentMana());
 			int count = outgoingTransfers.size();
 			int manaSpent = 0;
 
@@ -220,8 +251,8 @@ public class ManaSparkEntity extends SparkBaseEntity implements ManaSpark {
 				receiver.receiveMana(-manaSpent);
 			}
 		}
-		if (!inboundTransfers.isEmpty()) {
-			int manaNeeded = Math.min(TRANSFER_RATE * inboundTransfers.size(), tile.getAvailableSpaceForMana());
+		if (transferThisTick && !inboundTransfers.isEmpty()) {
+			int manaNeeded = (int) Math.min((long) transferRate * inboundTransfers.size(), tile.getAvailableSpaceForMana());
 			int count = inboundTransfers.size();
 			int manaRecieved = 0;
 

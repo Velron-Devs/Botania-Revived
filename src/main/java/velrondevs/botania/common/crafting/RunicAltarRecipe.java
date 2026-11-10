@@ -27,16 +27,22 @@ public class RunicAltarRecipe implements velrondevs.botania.api.recipe.RunicAlta
 	private final ItemStackTemplate output;
 	private final NonNullList<Ingredient> inputs;
 	private final int mana;
+	private final boolean returnRunes;
 
 	public RunicAltarRecipe(ItemStack output, int mana, Ingredient... inputs) {
 		this(ItemStackTemplate.fromNonEmptyStack(output), mana, inputs);
 	}
 
 	public RunicAltarRecipe(ItemStackTemplate output, int mana, Ingredient... inputs) {
+		this(output, mana, true, inputs);
+	}
+
+	public RunicAltarRecipe(ItemStackTemplate output, int mana, boolean returnRunes, Ingredient... inputs) {
 		Preconditions.checkArgument(inputs.length <= 16, "Cannot have more than 16 ingredients");
 		this.output = output;
 		this.inputs = RecipeUtils.ingredientList(inputs);
 		this.mana = mana;
+		this.returnRunes = returnRunes;
 	}
 
 	@Override
@@ -79,9 +85,14 @@ public class RunicAltarRecipe implements velrondevs.botania.api.recipe.RunicAlta
 		return mana;
 	}
 
+	@Override
+	public boolean returnsRunes() {
+		return returnRunes;
+	}
+
 	@FunctionalInterface
 	public interface Factory<T extends RunicAltarRecipe> {
-		T create(ItemStackTemplate output, int mana, Ingredient... inputs);
+		T create(ItemStackTemplate output, int mana, boolean returnRunes, Ingredient... inputs);
 	}
 
 	public static class Serializer<T extends RunicAltarRecipe> implements BotaniaRecipeSerializer<T> {
@@ -92,19 +103,22 @@ public class RunicAltarRecipe implements velrondevs.botania.api.recipe.RunicAlta
 			this.codec = RecordCodecBuilder.mapCodec(instance -> instance.group(
 					net.minecraft.world.item.ItemStackTemplate.CODEC.fieldOf("output").forGetter(recipe -> ((RunicAltarRecipe) recipe).output),
 					Codec.INT.fieldOf("mana").forGetter(recipe -> ((RunicAltarRecipe) recipe).mana),
-					RecipeUtils.INGREDIENTS_CODEC.fieldOf("ingredients").forGetter(recipe -> ((RunicAltarRecipe) recipe).inputs)
-			).apply(instance, (output, mana, inputs) -> factory.create(output, mana, inputs.toArray(new Ingredient[0]))));
+					RecipeUtils.INGREDIENTS_CODEC.fieldOf("ingredients").forGetter(recipe -> ((RunicAltarRecipe) recipe).inputs),
+					Codec.BOOL.optionalFieldOf("return_runes", true).forGetter(recipe -> ((RunicAltarRecipe) recipe).returnRunes)
+			).apply(instance, (output, mana, inputs, returnRunes) -> factory.create(output, mana, returnRunes, inputs.toArray(new Ingredient[0]))));
 			this.streamCodec = StreamCodec.of(
 					(buf, recipe) -> {
 						RecipeUtils.INGREDIENTS_STREAM_CODEC.encode(buf, recipe.getIngredients());
 						ItemStackTemplate.STREAM_CODEC.encode(buf, ((RunicAltarRecipe) recipe).output);
 						buf.writeVarInt(recipe.getManaUsage());
+						buf.writeBoolean(recipe.returnsRunes());
 					},
 					buf -> {
 						Ingredient[] inputs = RecipeUtils.INGREDIENTS_STREAM_CODEC.decode(buf).toArray(new Ingredient[0]);
 						ItemStackTemplate output = ItemStackTemplate.STREAM_CODEC.decode(buf);
 						int mana = buf.readVarInt();
-						return factory.create(output, mana, inputs);
+						boolean returnRunes = buf.readBoolean();
+						return factory.create(output, mana, returnRunes, inputs);
 					});
 		}
 

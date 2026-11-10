@@ -15,6 +15,7 @@ import org.jetbrains.annotations.Nullable;
 import velrondevs.botania.api.BotaniaAPI;
 import velrondevs.botania.api.internal.ManaNetwork;
 import velrondevs.botania.api.mana.ManaCollector;
+import velrondevs.botania.integration.thaumaturge.NodeBoostApi;
 
 public abstract class GeneratingFlowerBlockEntity extends BindableSpecialFlowerBlockEntity<ManaCollector> {
 	private static final Identifier SPREADER_ID = Identifier.fromNamespaceAndPath(BotaniaAPI.MODID, "mana_spreader");
@@ -48,6 +49,11 @@ public abstract class GeneratingFlowerBlockEntity extends BindableSpecialFlowerB
 			}
 		}
 		emptyManaIntoCollector();
+	}
+
+	@Override
+	protected NodeBoostApi.Target getNodeBoostTarget() {
+		return NodeBoostApi.Target.GENERATING_FLOWER;
 	}
 
 	@Override

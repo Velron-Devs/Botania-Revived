@@ -24,9 +24,13 @@ public final class CatnipCompat {
 			if (!event.getRegistryKey().equals(Registries.COMMAND_ARGUMENT_TYPE)) {
 				return;
 			}
-			register(event, "catnip_mod_id", ModIdArgument.class, ModIdArgument::modId);
-			register(event, "catnip_config_id", ConfigIdArgument.class, ConfigIdArgument::configId);
-			register(event, "catnip_config_path", ConfigPathArgument.class, ConfigPathArgument::path);
+			try {
+				register(event, "catnip_mod_id", ModIdArgument.class, ModIdArgument::modId);
+				register(event, "catnip_config_id", ConfigIdArgument.class, ConfigIdArgument::configId);
+				register(event, "catnip_config_path", ConfigPathArgument.class, ConfigPathArgument::path);
+			} catch (LinkageError error) {
+				velrondevs.botania.api.BotaniaAPI.LOGGER.warn("The installed Catnip version has no command arguments to register", error);
+			}
 		});
 	}
 

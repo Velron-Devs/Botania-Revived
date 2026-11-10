@@ -24,7 +24,7 @@ public final class CatnipConfigDefaults {
 			valueField.setAccessible(true);
 			apply(PonderClientConfig.INSTANCE, valueField);
 			apply(CatnipModConfig.INSTANCE, valueField);
-		} catch (ReflectiveOperationException | RuntimeException e) {
+		} catch (ReflectiveOperationException | RuntimeException | LinkageError e) {
 			BotaniaAPI.LOGGER.warn("Could not initialize the default Catnip config values", e);
 		}
 	}

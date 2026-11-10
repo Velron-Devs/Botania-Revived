@@ -10,6 +10,7 @@ import net.p3pp3rf1y.sophisticatedcore.upgrades.UpgradeItemBase;
 import net.p3pp3rf1y.sophisticatedcore.upgrades.UpgradeType;
 
 import velrondevs.botania.api.recipe.ElvenTradeRecipe;
+import velrondevs.botania.registry.BotaniaBlocks;
 import velrondevs.botania.registry.BotaniaRecipeTypes;
 
 import java.util.ArrayList;
@@ -38,9 +39,24 @@ public class ElvenPortalUpgradeItem extends UpgradeItemBase<ElvenPortalUpgradeIt
 
 	public static class Wrapper extends StationUpgradeWrapper<Wrapper, ElvenPortalUpgradeItem> {
 		public static final int INPUT_SLOTS = 8;
+		public static final int PYLON_SLOT_A = 8;
+		public static final int PYLON_SLOT_B = 9;
 
 		protected Wrapper(IStorageWrapper storageWrapper, ItemStack upgrade, Consumer<ItemStack> upgradeSaveHandler) {
-			super(storageWrapper, upgrade, upgradeSaveHandler, INPUT_SLOTS);
+			super(storageWrapper, upgrade, upgradeSaveHandler, INPUT_SLOTS + 2);
+		}
+
+		public static boolean isPylon(ItemStack stack) {
+			return stack.is(BotaniaBlocks.naturaPylon.asItem());
+		}
+
+		public static boolean isPylonSlot(int slot) {
+			return slot == PYLON_SLOT_A || slot == PYLON_SLOT_B;
+		}
+
+		private boolean hasPylons() {
+			return !SophisticatedConfig.portalRequirePylons()
+					|| isPylon(getInventory().getStackInSlot(PYLON_SLOT_A)) && isPylon(getInventory().getStackInSlot(PYLON_SLOT_B));
 		}
 
 		@Override
@@ -55,12 +71,12 @@ public class ElvenPortalUpgradeItem extends UpgradeItemBase<ElvenPortalUpgradeIt
 
 		@Override
 		protected boolean accepts(int slot, ItemStack stack) {
-			return true;
+			return isPylonSlot(slot) == isPylon(stack);
 		}
 
 		@Override
 		protected int slotLimit(int slot) {
-			return 64;
+			return isPylonSlot(slot) ? 1 : 64;
 		}
 
 		@Override
@@ -77,6 +93,9 @@ public class ElvenPortalUpgradeItem extends UpgradeItemBase<ElvenPortalUpgradeIt
 			}
 			if (units.isEmpty()) {
 				return null;
+			}
+			if (!hasPylons()) {
+				return new Plan(0, List.of(), StationState.NO_PYLONS, () -> {});
 			}
 			for (RecipeHolder<ElvenTradeRecipe> holder : BotaniaRecipeTypes.getAllRecipesFor(level, BotaniaRecipeTypes.ELVEN_TRADE_TYPE)) {
 				ElvenTradeRecipe recipe = holder.value();
@@ -99,7 +118,7 @@ public class ElvenPortalUpgradeItem extends UpgradeItemBase<ElvenPortalUpgradeIt
 						used[slot]++;
 					}
 				}
-				return new Plan(SophisticatedConfig.portalCostPerTrade(), outputs, false, () -> {
+				return new Plan(SophisticatedConfig.portalCostPerTrade(), outputs, 0,() -> {
 					for (int slot = 0; slot < INPUT_SLOTS; slot++) {
 						if (used[slot] > 0) {
 							ItemStack stack = getInventory().getStackInSlot(slot);

@@ -86,6 +86,12 @@ public class StationReiTransferHandler implements TransferHandler {
 		if (display.getCategoryIdentifier().equals(BotaniaReiCategories.BOTANICAL_BREWERY)) {
 			return StationKind.BREWERY;
 		}
+		if (display.getCategoryIdentifier().equals(BotaniaReiCategories.PETAL_APOTHECARY)) {
+			return StationKind.PETAL_APOTHECARY;
+		}
+		if (display.getCategoryIdentifier().equals(BotaniaReiCategories.TERRESTRIAL_AGGLOMERATION)) {
+			return StationKind.TERRA_PLATE;
+		}
 		if (display.getCategoryIdentifier().equals(BotaniaReiCategories.MANA_INFUSION)) {
 			return StationKind.MANA_INFUSION;
 		}

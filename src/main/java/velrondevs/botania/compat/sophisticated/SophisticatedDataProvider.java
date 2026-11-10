@@ -24,7 +24,8 @@ public final class SophisticatedDataProvider extends JsonFileProvider {
 	private static final List<String> ITEMS = List.of(
 			SophisticatedItems.MANASTEEL_STACK, SophisticatedItems.ELEMENTIUM_STACK, SophisticatedItems.TERRASTEEL_STACK,
 			SophisticatedItems.GAIA_STACK, SophisticatedItems.ALFSTEEL_STACK, SophisticatedItems.MANA_PILE, SophisticatedItems.MANA_LINK,
-			SophisticatedItems.RUNIC_ALTAR, SophisticatedItems.ELVEN_PORTAL, SophisticatedItems.BREWERY);
+			SophisticatedItems.RUNIC_ALTAR, SophisticatedItems.ELVEN_PORTAL, SophisticatedItems.BREWERY, SophisticatedItems.PETAL_APOTHECARY,
+			SophisticatedItems.TERRA_PLATE);
 
 	private final boolean assets;
 
@@ -88,15 +89,15 @@ public final class SophisticatedDataProvider extends JsonFileProvider {
 		stack(files, SophisticatedItems.GAIA_STACK, item(botania("gaia_ingot")), item(botania(SophisticatedItems.TERRASTEEL_STACK)), botania(SophisticatedItems.TERRASTEEL_STACK));
 		stack(files, SophisticatedItems.ALFSTEEL_STACK, item(SophisticatedOptional.ALFSTEEL_INGOT), item(botania(SophisticatedItems.GAIA_STACK)), botania(SophisticatedItems.GAIA_STACK), SophisticatedOptional.MASTERFUL_BOTANY);
 
-		JsonObject pile = recipe(SophisticatedItems.MANA_PILE, "PDP", "MBM", "PDP");
+		JsonObject pile = recipe(SophisticatedItems.MANA_PILE, "XFX", "DBD", "XFX");
 		JsonObject pileKey = new JsonObject();
-		pileKey.add("P", item(botania("mana_pearl")));
+		pileKey.add("X", item(botania("bifrost_pane")));
+		pileKey.add("F", item(botania("fabulous_pool")));
 		pileKey.add("D", tag(LibMisc.MOD_ID + ":mana_diamond_gems"));
-		pileKey.add("M", tag(LibMisc.MOD_ID + ":manasteel_ingots"));
 		pileKey.add("B", tag(BASES_TAG));
 		pile.add("key", pileKey);
 		files.put(id("recipe/sophisticated/" + SophisticatedItems.MANA_PILE), pile);
-		files.put(id("advancement/recipes/misc/sophisticated/" + SophisticatedItems.MANA_PILE), advancement("sophisticated/" + SophisticatedItems.MANA_PILE, botania("mana_pearl")));
+		files.put(id("advancement/recipes/misc/sophisticated/" + SophisticatedItems.MANA_PILE), advancement("sophisticated/" + SophisticatedItems.MANA_PILE, botania("fabulous_pool")));
 
 		JsonObject link = recipe(SophisticatedItems.MANA_LINK, "PRP", "EBE", "PRP");
 		JsonObject linkKey = new JsonObject();
@@ -108,16 +109,17 @@ public final class SophisticatedDataProvider extends JsonFileProvider {
 		files.put(id("recipe/sophisticated/" + SophisticatedItems.MANA_LINK), link);
 		files.put(id("advancement/recipes/misc/sophisticated/" + SophisticatedItems.MANA_LINK), advancement("sophisticated/" + SophisticatedItems.MANA_LINK, botania("rune_mana")));
 
-		JsonObject altar = recipe(SophisticatedItems.RUNIC_ALTAR, "SGS", "PBP", "SAS");
+		JsonObject altar = recipe(SophisticatedItems.RUNIC_ALTAR, "DCD", "LBK", "DRD");
 		JsonObject altarKey = new JsonObject();
-		altarKey.add("S", item(botania("livingrock")));
-		altarKey.add("G", item(botania("glimmering_livingwood_log")));
-		altarKey.add("A", item(botania("alfheim_portal")));
-		altarKey.add("P", item(botania("mana_pearl")));
+		altarKey.add("D", tag(LibMisc.MOD_ID + ":mana_diamond_gems"));
+		altarKey.add("C", item("minecraft:crafting_table"));
+		altarKey.add("L", item(botania(SophisticatedItems.MANA_PILE)));
+		altarKey.add("K", item(botania(SophisticatedItems.MANA_LINK)));
+		altarKey.add("R", item(botania("runic_altar")));
 		altarKey.add("B", tag(BASES_TAG));
 		altar.add("key", altarKey);
 		files.put(id("recipe/sophisticated/" + SophisticatedItems.RUNIC_ALTAR), altar);
-		files.put(id("advancement/recipes/misc/sophisticated/" + SophisticatedItems.RUNIC_ALTAR), advancement("sophisticated/" + SophisticatedItems.RUNIC_ALTAR, botania("livingrock")));
+		files.put(id("advancement/recipes/misc/sophisticated/" + SophisticatedItems.RUNIC_ALTAR), advancement("sophisticated/" + SophisticatedItems.RUNIC_ALTAR, botania("runic_altar")));
 
 		JsonObject portal = recipe(SophisticatedItems.ELVEN_PORTAL, "DGD", "EBE", "DAD");
 		JsonObject portalKey = new JsonObject();
@@ -130,16 +132,40 @@ public final class SophisticatedDataProvider extends JsonFileProvider {
 		files.put(id("recipe/sophisticated/" + SophisticatedItems.ELVEN_PORTAL), portal);
 		files.put(id("advancement/recipes/misc/sophisticated/" + SophisticatedItems.ELVEN_PORTAL), advancement("sophisticated/" + SophisticatedItems.ELVEN_PORTAL, "#botania:dragonstone_gems"));
 
-		JsonObject brewery = recipe(SophisticatedItems.BREWERY, "VGV", "FBF", "VAV");
+		JsonObject brewery = recipe(SophisticatedItems.BREWERY, "DAD", "LBL", "DWD");
 		JsonObject breweryKey = new JsonObject();
-		breweryKey.add("V", item(botania("vial")));
-		breweryKey.add("G", item(botania("glimmering_livingwood_log")));
-		breweryKey.add("A", item(botania("alfheim_portal")));
-		breweryKey.add("F", item(botania("flask")));
+		breweryKey.add("D", tag(LibMisc.MOD_ID + ":mana_diamond_gems"));
+		breweryKey.add("A", item(botania("apothecary_default")));
+		breweryKey.add("L", item(botania(SophisticatedItems.MANA_PILE)));
+		breweryKey.add("W", item(botania("brewery")));
 		breweryKey.add("B", tag(BASES_TAG));
 		brewery.add("key", breweryKey);
 		files.put(id("recipe/sophisticated/" + SophisticatedItems.BREWERY), brewery);
-		files.put(id("advancement/recipes/misc/sophisticated/" + SophisticatedItems.BREWERY), advancement("sophisticated/" + SophisticatedItems.BREWERY, botania("vial")));
+		files.put(id("advancement/recipes/misc/sophisticated/" + SophisticatedItems.BREWERY), advancement("sophisticated/" + SophisticatedItems.BREWERY, botania("brewery")));
+
+		JsonObject apothecary = recipe(SophisticatedItems.PETAL_APOTHECARY, "VUV", "SBS", "VAV");
+		JsonObject apothecaryKey = new JsonObject();
+		apothecaryKey.add("V", item(botania("vial")));
+		apothecaryKey.add("U", item("minecraft:water_bucket"));
+		apothecaryKey.add("S", item(botania("grass_seeds")));
+		apothecaryKey.add("A", item(botania("apothecary_default")));
+		apothecaryKey.add("B", tag(BASES_TAG));
+		apothecary.add("key", apothecaryKey);
+		files.put(id("recipe/sophisticated/" + SophisticatedItems.PETAL_APOTHECARY), apothecary);
+		files.put(id("advancement/recipes/misc/sophisticated/" + SophisticatedItems.PETAL_APOTHECARY), advancement("sophisticated/" + SophisticatedItems.PETAL_APOTHECARY, botania("apothecary_default")));
+
+		JsonObject terra = recipe(SophisticatedItems.TERRA_PLATE, "WMF", "DTD", "FPA");
+		JsonObject terraKey = new JsonObject();
+		terraKey.add("W", item(botania("rune_water")));
+		terraKey.add("M", item(botania("rune_mana")));
+		terraKey.add("F", item(botania("rune_fire")));
+		terraKey.add("A", item(botania("rune_air")));
+		terraKey.add("D", tag(LibMisc.MOD_ID + ":mana_diamond_gems"));
+		terraKey.add("T", item(botania("terrasteel_block")));
+		terraKey.add("P", item(botania("terra_plate")));
+		terra.add("key", terraKey);
+		files.put(id("recipe/sophisticated/" + SophisticatedItems.TERRA_PLATE), terra);
+		files.put(id("advancement/recipes/misc/sophisticated/" + SophisticatedItems.TERRA_PLATE), advancement("sophisticated/" + SophisticatedItems.TERRA_PLATE, botania("terra_plate")));
 	}
 
 	private static void manasteelStack(Map<Identifier, JsonObject> files, String folder, String centerTag, boolean atm) {

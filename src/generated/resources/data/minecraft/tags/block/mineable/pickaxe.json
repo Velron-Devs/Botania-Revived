@@ -236,6 +236,10 @@
     "botania:yellow_pavement_slab",
     "botania:yellow_pavement_stairs",
     {
+      "id": "botania:mana_motor",
+      "required": false
+    },
+    {
       "id": "botania:shimmer_quartz",
       "required": false
     },

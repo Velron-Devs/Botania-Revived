@@ -1,0 +1,20 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "masterfulbotany"
+    }
+  ],
+  "type": "minecraft:crafting_shapeless",
+  "category": "redstone",
+  "group": "botania:spreader",
+  "ingredients": [
+    "botania:gaia_spreader",
+    "masterfulbotany:alfsteel_ingot",
+    "masterfulbotany:alfsteel_ingot",
+    "#botania:dragonstone_gems"
+  ],
+  "result": {
+    "id": "botania:alfsteel_spreader"
+  }
+}

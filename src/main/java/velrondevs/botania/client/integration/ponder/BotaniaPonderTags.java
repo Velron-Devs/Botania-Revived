@@ -3,13 +3,14 @@ package velrondevs.botania.client.integration.ponder;
 import net.createmod.ponder.api.client.registration.PonderTagRegistrationHelper;
 import net.minecraft.resources.Identifier;
 
+import velrondevs.botania.integration.CreateCompat;
 import velrondevs.botania.registry.BotaniaBlocks;
 import velrondevs.botania.registry.BotaniaFlowerBlocks;
 
 import static velrondevs.botania.common.lib.ResourceLocationHelper.prefix;
 
-final class BotaniaPonderTags {
-	static final Identifier MANA_NETWORK = prefix(PonderStrings.MANA_NETWORK);
+public final class BotaniaPonderTags {
+	public static final Identifier MANA_NETWORK = prefix(PonderStrings.MANA_NETWORK);
 	static final Identifier CRAFTING_DEVICES = prefix(PonderStrings.CRAFTING_DEVICES);
 	static final Identifier ALFHEIM = prefix(PonderStrings.ALFHEIM);
 	static final Identifier FLOWERS = prefix(PonderStrings.FLOWERS);
@@ -48,5 +49,8 @@ final class BotaniaPonderTags {
 				.item(BotaniaBlocks.corporeaIndex)
 				.addToIndex()
 				.register();
+		if (CreateCompat.isLoaded()) {
+			CreateCompat.registerPonderTags(PonderTagRegistrationHelper.class, helper);
+		}
 	}
 }

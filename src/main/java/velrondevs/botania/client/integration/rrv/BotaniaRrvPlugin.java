@@ -10,7 +10,10 @@ import cc.cassian.rrv.common.builtin.interaction.WorldInteractionClientRecipe;
 import cc.cassian.rrv.common.extra.FluidStack;
 import cc.cassian.rrv.common.recipe.inventory.SlotContent;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.item.component.ItemLore;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.Holder;
@@ -174,7 +177,14 @@ public class BotaniaRrvPlugin implements ReliableRecipeViewerClientPlugin {
 	private static void addRunicAltar(List<ReliableClientRecipe> list) {
 		for (RecipeHolder<RunicAltarRecipe> holder : recipes(BotaniaRecipeTypes.RUNE_TYPE)) {
 			RunicAltarRecipe recipe = holder.value();
-			addAltarRecipe(list, RUNIC_ALTAR, holder, recipe.getIngredients(), recipe.getResultItem(RegistryAccess.EMPTY),
+			ItemStack output = recipe.getResultItem(RegistryAccess.EMPTY);
+			if (!recipe.returnsRunes()) {
+				output = output.copy();
+				Component note = Component.translatable("botania.nei.runicAltar.consumesRunes")
+						.withStyle(style -> style.withColor(ChatFormatting.RED).withItalic(false));
+				output.set(DataComponents.LORE, output.getOrDefault(DataComponents.LORE, ItemLore.EMPTY).withLineAdded(note));
+			}
+			addAltarRecipe(list, RUNIC_ALTAR, holder, recipe.getIngredients(), output,
 					BotaniaBlocks.runeAltar, List.of(of(BotaniaBlocks.livingrock)), recipe.getManaUsage());
 		}
 	}

@@ -20,6 +20,10 @@ public interface RunicAltarRecipe extends RecipeWithReagent {
 
 	int getManaUsage();
 
+	default boolean returnsRunes() {
+		return true;
+	}
+
 	@SuppressWarnings("unchecked")
 	@NotNull
 	@Override

@@ -34,6 +34,9 @@ neoForge {
 
         client {
             client()
+            if (project.hasProperty("with_ponder")) {
+                systemProperty "botania.ponder", "true"
+            }
             def world = findProperty('vm_world') ?: 'world'
             if (world && file("run/saves/${world}").isDirectory()) {
                 programArguments.addAll '--quickPlaySingleplayer', world.toString()
@@ -73,8 +76,38 @@ sourceSets.main.resources {
     exclude '.cache'
 }
 
+def createAdaptedJar = file(findProperty('create_adapted_jar') ?: 'dev_libs/create-adapted-26.1.2-1.31-public-external-assets.jar')
+def hasCreateAdapted = createAdaptedJar.isFile()
+def withCreate = project.hasProperty('with_create')
+if (withCreate && !hasCreateAdapted) {
+    throw new GradleException("-Pwith_create needs the Create: Adapted jar at ${createAdaptedJar} (or -Pcreate_adapted_jar=<path>)")
+}
+def createEmbeddedDir = file(findProperty('create_embedded_dir') ?: 'dev_libs/create-embedded')
+def createEmbeddedTree = createEmbeddedDir.isDirectory()
+        ? fileTree(createEmbeddedDir)
+        : (hasCreateAdapted ? zipTree(createAdaptedJar) : files().asFileTree)
+def createEmbedded = createEmbeddedTree.matching { include '**/*.jar' }
+def createCompileEmbedded = createEmbeddedTree.matching { include '**/Registrate-*.jar', '**/flywheel-*.jar' }
+if (!hasCreateAdapted) {
+    sourceSets.main.java {
+        exclude 'velrondevs/botania/integration/create/**'
+    }
+}
+sourceSets.main.java {
+    exclude 'velrondevs/botania/integration/arsnouveau/**'
+    exclude 'velrondevs/botania/integration/botanypots/**'
+    exclude 'velrondevs/botania/compat/spectrum/**'
+}
+
 repositories {
     mavenCentral()
+    maven {
+        name = 'ModdingX Maven'
+        url = 'https://maven.moddingx.org/release'
+        content {
+            includeGroup 'org.moddingx'
+        }
+    }
     maven {
         name = 'Jared'
         url = 'https://maven.blamejared.com/'
@@ -103,6 +136,13 @@ repositories {
         }
         filter {
             includeGroup 'curse.maven'
+        }
+    }
+    maven {
+        name = 'NovaCommittee'
+        url = 'https://maven.nova-committee.cn/s3'
+        content {
+            includeGroup 'committee.nova.mods'
         }
     }
     exclusiveContent {
@@ -154,28 +194,49 @@ dependencies {
     compileOnly("net.createmod.catnip:catnip-neoforge:${ponder_version}") { transitive = false }
     compileOnly "maven.modrinth:cloth-config:26.1.154+neoforge"
     compileOnly "maven.modrinth:architectury-api:20.1.17+neoforge"
-    compileOnly("net.createmod.catnip:catnip-neoforge:${ponder_version}") { transitive = false }
-    runtimeOnly("net.createmod.ponder:ponder-neoforge:${ponder_version}") { transitive = false }
-    runtimeOnly("net.createmod.catnip:catnip-neoforge:${ponder_version}") { transitive = false }
-    runtimeOnly("dev.engine-room.flywheel:flywheel-neoforge:${flywheel_version}") { transitive = false }
-    jarJar("net.createmod.ponder:ponder-neoforge") {
-        version { strictly "[${ponder_version},)"; prefer ponder_version }
-        transitive = false
+    if (project.hasProperty("with_ponder") && !withCreate) {
+        runtimeOnly("net.createmod.ponder:ponder-neoforge:${ponder_version}") { transitive = false }
+        runtimeOnly("net.createmod.catnip:catnip-neoforge:${ponder_version}") { transitive = false }
+        runtimeOnly("dev.engine-room.flywheel:flywheel-neoforge:${flywheel_version}") { transitive = false }
     }
-    jarJar("net.createmod.catnip:catnip-neoforge") {
-        version { strictly "[${ponder_version},)"; prefer ponder_version }
-        transitive = false
+    if (hasCreateAdapted) {
+        compileOnly files(createAdaptedJar)
+        compileOnly createCompileEmbedded
     }
-    jarJar("dev.engine-room.flywheel:flywheel-neoforge") {
-        version { strictly "[${flywheel_version},)"; prefer flywheel_version }
-        transitive = false
+    if (withCreate) {
+        runtimeOnly files(createAdaptedJar)
+        if (project.hasProperty("create_runtime_embedded")) {
+            runtimeOnly createEmbedded
+        }
+    }
+
+    if (!project.hasProperty("no_avaritia")) {
+        compileOnly("${avaritia_dependency}") { transitive = false }
+        runtimeOnly("${avaritia_dependency}") { transitive = false }
     }
 
     compileOnly "curse.maven:thaumaturge-1628024:${thaumaturge_file_id}"
+    if (!project.hasProperty("no_thaumaturge")) {
+        runtimeOnly "curse.maven:thaumaturge-1628024:${thaumaturge_file_id}"
+        runtimeOnly "maven.modrinth:lithostitched:${lithostitched_version}"
+    }
     compileOnly "maven.modrinth:lithostitched:${lithostitched_version}"
 
     compileOnly "maven.modrinth:fractal-lib:${fractal_version}"
     runtimeOnly "maven.modrinth:fractal-lib:${fractal_version}"
+
+    if (!project.hasProperty("no_inventorysorter")) {
+        implementation "curse.maven:inventory-sorter-240633:7940779"
+    }
+    if (!project.hasProperty("no_omnipots")) {
+        implementation "curse.maven:omni-pots-1575756:8555242"
+    }
+
+    if (project.hasProperty("with_masterful")) {
+        def masterfulJar = project.findProperty("masterful_jar") ?: "${rootDir}/../botania addons 26.1.2/masterful botany/build/libs/MasterfulBotany-26.1.2-1.0.1-NeoForge.jar"
+        runtimeOnly files(masterfulJar)
+        runtimeOnly("org.moddingx:LibX:${minecraft_version}-${libx_version}") { transitive = false }
+    }
 
     compileOnly 'org.jetbrains:annotations:24.0.1'
 }

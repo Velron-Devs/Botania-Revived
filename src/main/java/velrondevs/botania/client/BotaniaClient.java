@@ -129,8 +129,12 @@ public class BotaniaClient {
 		bus.addListener(WorldOverlays::onSubmitCustomGeometry);
 
 		ClientProxy.initSeasonal();
-		if (net.neoforged.fml.ModList.get().isLoaded("ponder")) {
-			velrondevs.botania.client.integration.ponder.BotaniaPonderIntegration.init();
+		if (velrondevs.botania.integration.catnip.PonderGate.enabled()) {
+			try {
+				velrondevs.botania.client.integration.ponder.BotaniaPonderIntegration.init();
+			} catch (LinkageError error) {
+				velrondevs.botania.api.BotaniaAPI.LOGGER.warn("The installed Ponder version is not compatible with the Botania scenes", error);
+			}
 		}
 	}
 
@@ -141,8 +145,12 @@ public class BotaniaClient {
 
 	@SubscribeEvent
 	public static void registerPictureInPictureRenderers(RegisterPictureInPictureRenderersEvent e) {
-		if (net.neoforged.fml.ModList.get().isLoaded("ponder")) {
-			velrondevs.botania.client.integration.ponder.BotaniaPonderIntegration.registerPictureInPictureRenderers(e);
+		if (velrondevs.botania.integration.catnip.PonderGate.enabled()) {
+			try {
+				velrondevs.botania.client.integration.ponder.BotaniaPonderIntegration.registerPictureInPictureRenderers(e);
+			} catch (LinkageError error) {
+				velrondevs.botania.api.BotaniaAPI.LOGGER.warn("Could not register the Ponder renderers", error);
+			}
 		}
 	}
 

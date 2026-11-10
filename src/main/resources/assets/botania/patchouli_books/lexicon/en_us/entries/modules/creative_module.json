@@ -1,0 +1,36 @@
+{
+  "name": "botania.entry.creativeModule",
+  "category": "botania:modules",
+  "icon": "botania:creative_pool",
+  "flag": "botania:creative",
+  "sortnum": 2,
+  "pages": [
+    {
+      "type": "text",
+      "text": "botania.page.creativeModule0"
+    },
+    {
+      "type": "botania:terrasteel",
+      "recipe": "botania:creative/terra_plate/creative_pool",
+      "text": "botania.page.creativeModule1"
+    },
+    {
+      "type": "text",
+      "text": "botania.page.creativeModule2"
+    },
+    {
+      "type": "botania:terrasteel",
+      "recipe": "botania:creative/terra_plate/infrangible_platform",
+      "text": "botania.page.creativeModule3"
+    },
+    {
+      "type": "text",
+      "text": "botania.page.creativeModule4",
+      "flag": "mod:avaritia"
+    },
+    {
+      "type": "text",
+      "text": "botania.page.creativeModule5"
+    }
+  ]
+}

@@ -32,6 +32,7 @@ import org.jetbrains.annotations.Nullable;
 import velrondevs.botania.api.mana.BasicLensItem;
 import velrondevs.botania.api.state.BotaniaStateProperties;
 import velrondevs.botania.common.block.BotaniaWaterloggedBlock;
+import velrondevs.botania.compat.masterful.MasterfulBotanyCompat;
 import velrondevs.botania.common.block.block_entity.mana.ManaSpreaderBlockEntity;
 import velrondevs.botania.common.helper.ColorHelper;
 import velrondevs.botania.common.item.WandOfTheForestItem;
@@ -47,7 +48,10 @@ public class ManaSpreaderBlock extends BotaniaWaterloggedBlock implements Entity
 		MANA(160, 1000, 0x20FF20, 0x00FF00, 60, 4f, 1f),
 		REDSTONE(160, 1000, 0xFF2020, 0xFF0000, 60, 4f, 1f),
 		ELVEN(240, 1000, 0xFF45C4, 0xFF00AE, 80, 4f, 1.25f),
-		GAIA(640, 6400, 0x20FF20, 0x00FF00, 120, 20f, 2f);
+		GAIA(640, 6400, 0x20FF20, 0x00FF00, 120, 20f, 2f),
+		ELEMENTIUM(320, 2400, 0xE040FF, 0xD000FF, 93, 8f, 1.5f),
+		TERRASTEEL(480, 4000, 0x2EE8A0, 0x00E676, 107, 12f, 1.75f),
+		ALFSTEEL(640, 6400, 0xFF9A2E, 0xFF7A00, 120, 20f, 2f, true);
 
 		public final int burstMana;
 		public final int manaCapacity;
@@ -56,8 +60,13 @@ public class ManaSpreaderBlock extends BotaniaWaterloggedBlock implements Entity
 		public final int preLossTicks;
 		public final float lossPerTick;
 		public final float motionModifier;
+		private final boolean alfsteelScaled;
 
 		Variant(int bm, int mc, int c, int hc, int plt, float lpt, float mm) {
+			this(bm, mc, c, hc, plt, lpt, mm, false);
+		}
+
+		Variant(int bm, int mc, int c, int hc, int plt, float lpt, float mm, boolean scaled) {
 			burstMana = bm;
 			manaCapacity = mc;
 			color = c;
@@ -65,6 +74,39 @@ public class ManaSpreaderBlock extends BotaniaWaterloggedBlock implements Entity
 			preLossTicks = plt;
 			lossPerTick = lpt;
 			motionModifier = mm;
+			alfsteelScaled = scaled;
+		}
+
+		public int burstMana() {
+			if (!alfsteelScaled) {
+				return burstMana;
+			}
+			return (int) Math.min(Integer.MAX_VALUE, Math.round(burstMana * MasterfulBotanyCompat.alfsteelSpreaderManaFactor()));
+		}
+
+		public int manaCapacity() {
+			if (!alfsteelScaled) {
+				return manaCapacity;
+			}
+			return (int) Math.min(Integer.MAX_VALUE, Math.round(manaCapacity * MasterfulBotanyCompat.alfsteelSpreaderSpeedMultiplier()));
+		}
+
+		public int preLossTicks() {
+			return preLossTicks;
+		}
+
+		public float lossPerTick() {
+			if (!alfsteelScaled) {
+				return lossPerTick;
+			}
+			return (float) (lossPerTick * MasterfulBotanyCompat.alfsteelSpreaderManaFactor());
+		}
+
+		public float motionModifier() {
+			if (!alfsteelScaled) {
+				return motionModifier;
+			}
+			return (float) (motionModifier * MasterfulBotanyCompat.alfsteelSpreaderVelocityFactor());
 		}
 	}
 

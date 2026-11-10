@@ -30,14 +30,15 @@ import velrondevs.botania.xplat.XplatAbstractions;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
+import java.util.function.ToIntFunction;
 
 public class OrechidBlockEntity extends FunctionalFlowerBlockEntity {
-	private static final int COST = 17500;
+	private static final int DEFAULT_COST = 100;
 	private static final int COST_GOG = 700;
 	private static final int DELAY = 100;
 	private static final int DELAY_GOG = 2;
-	private static final int RANGE = 5;
-	private static final int RANGE_Y = 3;
+	private static final int DEFAULT_RANGE = 3;
+	private static final int DEFAULT_RANGE_Y = 1;
 
 	protected OrechidBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
 		super(type, pos, state);
@@ -140,7 +141,7 @@ public class OrechidBlockEntity extends FunctionalFlowerBlockEntity {
 	}
 
 	public int getCost() {
-		return XplatAbstractions.INSTANCE.gogLoaded() ? COST_GOG : COST;
+		return XplatAbstractions.INSTANCE.gogLoaded() ? COST_GOG : configOr(DEFAULT_COST, BotaniaConfig.ConfigAccess::orechidCost);
 	}
 
 	public int getDelay() {
@@ -158,11 +159,16 @@ public class OrechidBlockEntity extends FunctionalFlowerBlockEntity {
 	}
 
 	public int getRange() {
-		return RANGE;
+		return configOr(DEFAULT_RANGE, BotaniaConfig.ConfigAccess::orechidRange);
 	}
 
 	public int getRangeY() {
-		return RANGE_Y;
+		return configOr(DEFAULT_RANGE_Y, BotaniaConfig.ConfigAccess::orechidRangeY);
+	}
+
+	protected static int configOr(int fallback, ToIntFunction<BotaniaConfig.ConfigAccess> getter) {
+		var config = BotaniaConfig.common();
+		return config == null ? fallback : getter.applyAsInt(config);
 	}
 
 	@Override

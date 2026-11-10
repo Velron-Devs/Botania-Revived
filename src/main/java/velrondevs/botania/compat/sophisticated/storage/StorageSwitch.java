@@ -6,6 +6,7 @@ import net.neoforged.fml.loading.FMLPaths;
 import net.neoforged.neoforge.data.loading.DatagenModLoader;
 
 import velrondevs.botania.api.BotaniaAPI;
+import velrondevs.botania.common.lib.LibMisc;
 
 import java.io.Reader;
 import java.nio.file.Files;
@@ -27,12 +28,12 @@ public final class StorageSwitch {
 		if (DatagenModLoader.isRunningDataGen()) {
 			return true;
 		}
-		Path file = FMLPaths.CONFIGDIR.get().resolve("botania-sophisticated-common.toml");
+		Path file = FMLPaths.CONFIGDIR.get().resolve(LibMisc.MOD_ID + "-common.toml");
 		if (!Files.isRegularFile(file)) {
 			return true;
 		}
 		try (Reader reader = Files.newBufferedReader(file)) {
-			Object value = new TomlParser().parse(reader).get("storage.enabled");
+			Object value = new TomlParser().parse(reader).get("integrations.sophisticated.storage.enabled");
 			return !(value instanceof Boolean b) || b;
 		} catch (Exception e) {
 			BotaniaAPI.LOGGER.warn("Could not read storage settings from {}, using defaults", file, e);

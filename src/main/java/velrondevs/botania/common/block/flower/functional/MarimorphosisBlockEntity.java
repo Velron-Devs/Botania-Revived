@@ -8,11 +8,13 @@ import net.minecraft.world.level.block.state.BlockState;
 import velrondevs.botania.api.recipe.OrechidRecipe;
 import velrondevs.botania.registry.BotaniaFlowerBlocks;
 import velrondevs.botania.registry.BotaniaRecipeTypes;
+import velrondevs.botania.xplat.BotaniaConfig;
 
 public class MarimorphosisBlockEntity extends OrechidBlockEntity {
-	private static final int COST = 12;
-	private static final int RANGE = 8;
-	private static final int RANGE_Y = 5;
+	private static final int COST = 25;
+	private static final int DELAY = 10;
+	private static final int RANGE = 4;
+	private static final int RANGE_Y = 2;
 
 	private static final int RANGE_MINI = 2;
 	private static final int RANGE_Y_MINI = 1;
@@ -37,22 +39,22 @@ public class MarimorphosisBlockEntity extends OrechidBlockEntity {
 
 	@Override
 	public int getDelay() {
-		return 2;
+		return configOr(DELAY, BotaniaConfig.ConfigAccess::marimorphosisDelay);
 	}
 
 	@Override
 	public int getCost() {
-		return COST;
+		return configOr(COST, BotaniaConfig.ConfigAccess::marimorphosisCost);
 	}
 
 	@Override
 	public int getRange() {
-		return RANGE;
+		return configOr(RANGE, BotaniaConfig.ConfigAccess::marimorphosisRange);
 	}
 
 	@Override
 	public int getRangeY() {
-		return RANGE_Y;
+		return configOr(RANGE_Y, BotaniaConfig.ConfigAccess::marimorphosisRangeY);
 	}
 
 	@Override
@@ -62,7 +64,7 @@ public class MarimorphosisBlockEntity extends OrechidBlockEntity {
 
 	@Override
 	public int getMaxMana() {
-		return 1000;
+		return Math.max(1000, getCost());
 	}
 
 	public static class Mini extends MarimorphosisBlockEntity {

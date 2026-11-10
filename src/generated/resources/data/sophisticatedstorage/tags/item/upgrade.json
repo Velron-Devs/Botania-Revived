@@ -40,6 +40,14 @@
     {
       "id": "botania:brewery_upgrade",
       "required": false
+    },
+    {
+      "id": "botania:petal_apothecary_upgrade",
+      "required": false
+    },
+    {
+      "id": "botania:remote_terra_plate_upgrade",
+      "required": false
     }
   ]
 }

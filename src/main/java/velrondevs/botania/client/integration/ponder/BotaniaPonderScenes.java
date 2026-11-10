@@ -17,6 +17,7 @@ import velrondevs.botania.common.block.flower.ManastarBlockEntity;
 import velrondevs.botania.common.block.flower.PureDaisyBlockEntity;
 import velrondevs.botania.common.lib.LibBlockNames;
 import velrondevs.botania.common.lib.LibMisc;
+import velrondevs.botania.integration.CreateCompat;
 import velrondevs.botania.registry.BotaniaBlocks;
 import velrondevs.botania.registry.BotaniaFlowerBlocks;
 import velrondevs.botania.registry.BotaniaItems;
@@ -48,7 +49,7 @@ final class BotaniaPonderScenes {
 		helper.forComponents(ids(BotaniaBlocks.gaiaPylon, Blocks.BEACON))
 				.addStoryBoard("gaia_ritual", AlfheimScenes::gaiaRitual, BotaniaPonderTags.ALFHEIM);
 
-		helper.forComponents(lensIds())
+		helper.forComponents(itemIds(BotaniaItems.lensNormal))
 				.addStoryBoard("lens", MachineScenes::lenses, BotaniaPonderTags.MANA_NETWORK);
 		helper.forComponents(ids(BotaniaBlocks.prism))
 				.addStoryBoard("prism", MachineScenes::prism, BotaniaPonderTags.MANA_NETWORK);
@@ -60,11 +61,18 @@ final class BotaniaPonderScenes {
 				.addStoryBoard("spark_upgrades", SparkScenes::augments, BotaniaPonderTags.MANA_NETWORK);
 		for (Identifier flowerId : flowerIds(true)) {
 			Block flowerBlock = BuiltInRegistries.BLOCK.getValue(flowerId);
+			if (GeneratingFlowerScenes.covers(flowerBlock)) {
+				continue;
+			}
 			helper.forComponents(List.of(flowerId))
 					.addStoryBoard("generating_flowers", (scene, util) -> FlowerScenes.generating(scene, util, flowerBlock), BotaniaPonderTags.FLOWERS);
 		}
+		FunctionalFlowerPonder.register(helper);
 		for (Identifier flowerId : flowerIds(false)) {
 			Block flowerBlock = BuiltInRegistries.BLOCK.getValue(flowerId);
+			if (FunctionalFlowerPonder.covers(flowerId)) {
+				continue;
+			}
 			helper.forComponents(List.of(flowerId))
 					.addStoryBoard("functional_flowers", (scene, util) -> FlowerScenes.functional(scene, util, flowerBlock), BotaniaPonderTags.FLOWERS);
 		}
@@ -76,6 +84,12 @@ final class BotaniaPonderScenes {
 				.addStoryBoard("corporea_network", CorporeaScenes::network, BotaniaPonderTags.CORPOREA);
 		helper.forComponents(ids(BotaniaBlocks.corporeaFunnel))
 				.addStoryBoard("corporea_funnel", CorporeaScenes::funnel, BotaniaPonderTags.CORPOREA);
+		GeneratingFlowerScenes.register(helper);
+		SpreaderScenes.register(helper);
+		LensScenes.register(helper);
+		if (CreateCompat.isLoaded()) {
+			CreateCompat.registerPonderScenes(PonderSceneRegistrationHelper.class, helper);
+		}
 	}
 
 	private static List<Identifier> ids(Block... blocks) {

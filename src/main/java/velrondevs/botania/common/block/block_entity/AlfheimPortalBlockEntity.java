@@ -42,6 +42,8 @@ import velrondevs.botania.common.advancements.AlfheimPortalTrigger;
 import velrondevs.botania.common.block.block_entity.mana.ManaPoolBlockEntity;
 import velrondevs.botania.common.block.mana.ManaPoolBlock;
 import velrondevs.botania.common.lib.BotaniaTags;
+import velrondevs.botania.integration.thaumaturge.NodeBoostApi;
+import velrondevs.botania.integration.thaumaturge.NodeBoostTracker;
 import velrondevs.botania.registry.BotaniaBlockEntities;
 import velrondevs.botania.registry.BotaniaBlocks;
 import velrondevs.botania.registry.BotaniaRecipeTypes;
@@ -56,7 +58,7 @@ import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.StreamSupport;
 
-public class AlfheimPortalBlockEntity extends BotaniaBlockEntity implements Wandable {
+public class AlfheimPortalBlockEntity extends BotaniaBlockEntity implements Wandable, NodeBoostApi.Boosted {
 	public static final Supplier<IMultiblock> MULTIBLOCK = Suppliers.memoize(() -> {
 		record Matcher(TagKey<Block> tag, Direction.Axis displayedRotation, Block defaultBlock) implements IStateMatcher {
 			@Override
@@ -120,6 +122,12 @@ public class AlfheimPortalBlockEntity extends BotaniaBlockEntity implements Wand
 	private boolean explode = false;
 	@Nullable
 	private UUID breadPlayer = null;
+	private final NodeBoostTracker nodeBoost = new NodeBoostTracker();
+
+	@Override
+	public double getNodeBoostMultiplier() {
+		return nodeBoost.multiplier();
+	}
 
 	public AlfheimPortalBlockEntity(BlockPos pos, BlockState state) {
 		super(BotaniaBlockEntities.ALF_PORTAL, pos, state);
@@ -131,6 +139,7 @@ public class AlfheimPortalBlockEntity extends BotaniaBlockEntity implements Wand
 			self.ticksOpen = 0;
 			return;
 		}
+		self.nodeBoost.update(level, worldPosition, NodeBoostApi.Target.ELVEN_PORTAL);
 		AlfheimPortalState newState = self.getValidState(state);
 
 		self.ticksOpen++;
@@ -167,6 +176,14 @@ public class AlfheimPortalBlockEntity extends BotaniaBlockEntity implements Wand
 
 			if (!level.isClientSide() && !self.stacksIn.isEmpty() && self.ticksSinceLastItem >= 4) {
 				self.resolveRecipes();
+				int extra = self.nodeBoost.consumeExtraTicks();
+				for (int i = 0; i < extra && !self.stacksIn.isEmpty(); i++) {
+					int before = self.stacksIn.size();
+					self.resolveRecipes();
+					if (self.stacksIn.size() == before) {
+						break;
+					}
+				}
 			}
 		}
 
