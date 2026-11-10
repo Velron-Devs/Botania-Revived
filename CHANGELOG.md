@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.0.1 (2026-11-10)
+
+- Fixed the Ponder scenes of the generating and functional flowers, the Mana Spreader tiers and the Mana Lenses showing only the base platform: Ponder discarded every block placed above the floor because the scene structures only contained the floor layer, so the flowers, spreaders, pools and items never appeared. All those scenes now show their blocks.
+
 ## 2.0.0 (2026-11-10)
 
 - New Mana Spreader tiers: the Elementium Spreader and the Terrasteel Spreader sit between the Elven and the Gaia Spreader (Elementium: 320 mana per burst, 2400 capacity; Terrasteel: 480 per burst, 4000 capacity). With Masterful Botany installed there is also the AlfSteel Spreader, made from a Gaia Spreader, 2 Alfsteel Ingots and a Dragonstone: it moves mana 4 times faster than the Gaia Spreader (`integrations.masterful_botany.alfsteel_spreader_speed_multiplier`, 4.0 by default). It does not exist without Masterful Botany.

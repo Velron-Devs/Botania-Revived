@@ -6,6 +6,7 @@ import net.createmod.ponder.api.PonderPalette;
 import net.createmod.ponder.api.element.ElementLink;
 import net.createmod.ponder.api.element.EntityElement;
 import net.createmod.ponder.api.element.TextElementBuilder;
+import net.createmod.ponder.api.level.PonderLevel;
 import net.createmod.ponder.api.scene.SceneBuilder;
 import net.createmod.ponder.api.scene.SceneBuildingUtil;
 import net.createmod.ponder.api.scene.Selection;
@@ -18,6 +19,7 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.phys.Vec3;
 
 import velrondevs.botania.client.fx.WispParticleData;
@@ -35,7 +37,18 @@ final class SceneKit {
 
 	private SceneKit() {}
 
+	static void bounds(SceneBuilder scene, int size) {
+		int height = Math.max(size, 8);
+		scene.addInstruction(ponderScene -> {
+			PonderLevel level = ponderScene.getWorld();
+			BoundingBox box = level.getBounds();
+			level.setBounds(new BoundingBox(Math.min(box.minX(), 0), Math.min(box.minY(), 0), Math.min(box.minZ(), 0),
+					Math.max(box.maxX(), size - 1), Math.max(box.maxY(), height - 1), Math.max(box.maxZ(), size - 1)));
+		});
+	}
+
 	static void plate(SceneBuilder scene, int size) {
+		bounds(scene, size);
 		scene.configureBasePlate(0, 0, size);
 		scene.showBasePlate();
 		scene.idle(5);

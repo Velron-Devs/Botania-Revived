@@ -83,6 +83,13 @@ sourceSets.main.resources {
 
 repositories {
     mavenCentral()
+    maven {
+        name = 'ModdingX Maven'
+        url = 'https://maven.moddingx.org/release'
+        content {
+            includeGroup 'org.moddingx'
+        }
+    }
     exclusiveContent {
         forRepository {
             maven {
@@ -300,6 +307,15 @@ dependencies {
                 runtimeOnly files(jar.trim())
             }
         }
+    }
+
+    if (project.hasProperty("with_masterful")) {
+        def masterfulJar = file(project.findProperty("masterful_jar") ?: "${rootDir}/dev_libs/MasterfulBotany-1.21.1-1.0.1-NeoForge.jar")
+        if (!masterfulJar.isFile()) {
+            throw new GradleException("-Pwith_masterful: no se encuentra el jar de Masterful Botany en ${masterfulJar}. Descargalo de https://github.com/UnnamedUser12/Masterful-Botany/releases o indica la ruta con -Pmasterful_jar=<ruta>")
+        }
+        runtimeOnly files(masterfulJar)
+        runtimeOnly("org.moddingx:LibX:${minecraft_version}-${libx_version}") { transitive = false }
     }
 
     compileOnly("curse.maven:thaumaturge-1628024:${thaumaturge_file_id}") { transitive = false }

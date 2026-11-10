@@ -44,6 +44,7 @@ final class FunctionalSceneKit {
 		String id = PonderStringsFunctional.sceneId(flower);
 		this.text = new PonderText(id);
 		scene.title(id, PonderStrings.title(id));
+		SceneKit.bounds(scene, size);
 		scene.configureBasePlate(0, 0, size);
 		if (size >= 13) {
 			scene.scaleSceneView(0.6F);
