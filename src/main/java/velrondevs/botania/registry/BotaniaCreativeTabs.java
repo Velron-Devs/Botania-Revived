@@ -36,7 +36,6 @@ public final class BotaniaCreativeTabs {
 				.icon(() -> new ItemStack(BotaniaItems.lexicon))
 				.withTabsBefore(CreativeModeTabs.SPAWN_EGGS)
 				.backgroundTexture(Identifier.withDefaultNamespace("textures/gui/container/creative_inventory/tab_botania.png"))
-				.withSearchBar()
 				.displayItems((params, output) -> {
 					if (net.neoforged.fml.ModList.get().isLoaded("fractal")) {
 						velrondevs.botania.compat.fractal.FractalSubTabs.fillParent(params, output);

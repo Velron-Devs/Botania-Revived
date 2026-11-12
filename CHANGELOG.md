@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.0.2 (2026-11-12)
+
+- Botania creative tab: the search field that was drawn in the green banner of the tab texture is gone, and the tab no longer has a search bar.
+- Botania creative tab: the Spanish side tabs "Red de maná" and "Decoración" now use the same thick pixel font as the other tabs, with their accent (the font has no accented letters, so the accent is drawn as a small stroke over the letter).
+
 ## 2.0.1 (2026-11-10)
 
 - Fixed the Ponder scenes of the generating and functional flowers, the Mana Spreader tiers and the Mana Lenses showing only the base platform: Ponder discarded every block placed above the floor because the scene structures only contained the floor layer. Those scenes now show their blocks. With the Ponder bundled in Create: Adapted, the scene texts now follow the game language instead of always showing English.

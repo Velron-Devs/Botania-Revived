@@ -68,6 +68,7 @@
   "client": [
     "client.AbstractContainerScreenAccessor",
     "client.ClientLevelDataMixin",
+    "client.FractalSmallFontRendererMixin",
     "client.RecipeBookComponentAccessor",
     "client.RecipeBookComponentMixin",
     "client.RecipeBookPageAccessor",
