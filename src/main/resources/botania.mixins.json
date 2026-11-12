@@ -67,6 +67,8 @@
     "client.AbstractContainerScreenAccessor",
     "client.BlockRenderDispatcherMixin",
     "client.ClientLevelDataMixin",
+    "client.CreativeModeInventoryScreenMixin",
+    "client.FractalSmallFontRendererMixin",
     "client.ItemInHandRendererMixin",
     "client.LevelRendererAccessor",
     "client.LevelRendererMixin",

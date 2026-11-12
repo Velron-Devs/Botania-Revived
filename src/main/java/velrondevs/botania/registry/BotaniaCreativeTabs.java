@@ -35,9 +35,9 @@ public final class BotaniaCreativeTabs {
 		consumer.accept(CreativeModeTab.builder()
 				.title(Component.translatable("itemGroup.botania").withStyle(style -> style.withColor(ChatFormatting.WHITE)))
 				.icon(() -> new ItemStack(BotaniaItems.lexicon))
+				.hideTitle()
 				.withTabsBefore(CreativeModeTabs.SPAWN_EGGS)
 				.backgroundTexture(ResourceLocation.withDefaultNamespace("textures/gui/container/creative_inventory/tab_botania.png"))
-				.withSearchBar()
 				.displayItems(FractalSubTabs::fillParent)
 				.build(),
 				BotaniaRegistries.BOTANIA_TAB_KEY.location());
