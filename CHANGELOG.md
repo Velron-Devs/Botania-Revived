@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.0.4 (2026-11-19)
+
+- Align version with the 26.1.2 release. No changes in this version.
+
 ## 2.0.3 (2026-11-19)
 
 - Petal Apothecary: pipes, pumps and backpacks can now fill it with water or lava (fluid handler capability, for example Create's Mechanical Pump or Ultimate Transport System fluid cables). Fluid that arrives in small amounts is stored until it adds up to one bucket and then fills the apothecary, and the stored amount is saved with the block. It can be drained again as long as it holds no petals, so a pipe can't wipe a half-made recipe. Buckets keep working as before.
