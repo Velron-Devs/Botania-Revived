@@ -1,0 +1,38 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "sophisticatedcore"
+    },
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "sophisticatedstorage"
+    },
+    {
+      "type": "botania:module_enabled",
+      "module": "sophisticated"
+    },
+    {
+      "type": "botania:storage_enabled"
+    }
+  ],
+  "type": "sophisticatedstorage:storage_tier_upgrade",
+  "category": "misc",
+  "key": {
+    "I": {
+      "tag": "botania:manasteel_ingots"
+    },
+    "S": {
+      "item": "sophisticatedstorage:netherite_tank"
+    }
+  },
+  "pattern": [
+    " I ",
+    "ISI",
+    " I "
+  ],
+  "result": {
+    "count": 1,
+    "id": "botania:manasteel_tank"
+  }
+}

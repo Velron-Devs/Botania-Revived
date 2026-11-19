@@ -6,10 +6,15 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.event.BlockEntityTypeAddBlocksEvent;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.p3pp3rf1y.sophisticatedstorage.block.BarrelBlock;
 import net.p3pp3rf1y.sophisticatedstorage.block.ChestBlock;
+import net.p3pp3rf1y.sophisticatedstorage.block.TankBlock;
+import net.p3pp3rf1y.sophisticatedstorage.block.TankItemStorageWrapper;
 import net.p3pp3rf1y.sophisticatedstorage.init.ModBlocks;
+import net.p3pp3rf1y.sophisticatedstorage.item.TankBlockItem;
 
 import velrondevs.botania.common.lib.LibMisc;
 import velrondevs.botania.compat.sophisticated.SophisticatedConfig;
@@ -23,6 +28,8 @@ import java.util.Map;
 public final class BotaniaStorageRegistry {
 	private static final Map<BotaniaStorageTier, BarrelBlock> BARRELS = new EnumMap<>(BotaniaStorageTier.class);
 	private static final Map<BotaniaStorageTier, ChestBlock> CHESTS = new EnumMap<>(BotaniaStorageTier.class);
+	private static final Map<BotaniaStorageTier, TankBlock> TANKS = new EnumMap<>(BotaniaStorageTier.class);
+	private static final Map<BotaniaStorageTier, TankBlockItem> TANK_ITEMS = new EnumMap<>(BotaniaStorageTier.class);
 	private static final Map<BotaniaStorageTier, BlockItem> BARREL_ITEMS = new EnumMap<>(BotaniaStorageTier.class);
 	private static final Map<BotaniaStorageTier, BlockItem> CHEST_ITEMS = new EnumMap<>(BotaniaStorageTier.class);
 	private static final Map<BotaniaStorageTier, Item> UPGRADES = new EnumMap<>(BotaniaStorageTier.class);
@@ -36,6 +43,7 @@ public final class BotaniaStorageRegistry {
 			for (BotaniaStorageTier tier : BotaniaStorageTier.active()) {
 				consumer.accept(BARRELS.get(tier), id(tier.barrelName()));
 				consumer.accept(CHESTS.get(tier), id(tier.chestName()));
+				consumer.accept(TANKS.get(tier), id(tier.tankName()));
 			}
 		});
 		ctx.bind(Registries.ITEM, consumer -> {
@@ -43,6 +51,7 @@ public final class BotaniaStorageRegistry {
 			for (BotaniaStorageTier tier : BotaniaStorageTier.active()) {
 				consumer.accept(BARREL_ITEMS.get(tier), id(tier.barrelName()));
 				consumer.accept(CHEST_ITEMS.get(tier), id(tier.chestName()));
+				consumer.accept(TANK_ITEMS.get(tier), id(tier.tankName()));
 			}
 		});
 		ctx.bindItems(consumer -> {
@@ -54,6 +63,11 @@ public final class BotaniaStorageRegistry {
 		ctx.modBus().addListener((BlockEntityTypeAddBlocksEvent event) -> {
 			event.modify(ModBlocks.BARREL_BLOCK_ENTITY_TYPE.get(), BARRELS.values().toArray(Block[]::new));
 			event.modify(ModBlocks.CHEST_BLOCK_ENTITY_TYPE.get(), CHESTS.values().toArray(Block[]::new));
+			event.modify(ModBlocks.TANK_BLOCK_ENTITY_TYPE.get(), TANKS.values().toArray(Block[]::new));
+		});
+		ctx.modBus().addListener((RegisterCapabilitiesEvent event) -> {
+			create();
+			event.registerItem(Capabilities.FluidHandler.ITEM, (stack, access) -> TankItemStorageWrapper.getCapability(stack), TANK_ITEMS.values().toArray(Item[]::new));
 		});
 	}
 
@@ -61,6 +75,7 @@ public final class BotaniaStorageRegistry {
 		for (BotaniaStorageTier tier : BotaniaStorageTier.active()) {
 			BotaniaStorageStacks.addCreativeVariants(output, BARRELS.get(tier));
 			BotaniaStorageStacks.addCreativeVariants(output, CHESTS.get(tier));
+			output.accept(TANKS.get(tier));
 		}
 	}
 
@@ -75,6 +90,10 @@ public final class BotaniaStorageRegistry {
 					() -> SophisticatedConfig.storageUpgradeSlots(tier), tier.explosionResistance());
 			BARRELS.put(tier, barrel);
 			CHESTS.put(tier, chest);
+			TankBlock tank = new TankBlock(BotaniaTankConfigs.tankTier(tier));
+			TANKS.put(tier, tank);
+			TANK_ITEMS.put(tier, new TankBlockItem(tank));
+			TIERS.put(tank, tier);
 			BARREL_ITEMS.put(tier, new BotaniaBarrelBlockItem(barrel, properties(tier)));
 			CHEST_ITEMS.put(tier, new BotaniaChestBlockItem(chest, properties(tier)));
 			UPGRADES.put(tier, new BotaniaStorageTierUpgradeItem(tier));
@@ -114,6 +133,18 @@ public final class BotaniaStorageRegistry {
 
 	public static Collection<BlockItem> chestItems() {
 		return CHEST_ITEMS.values();
+	}
+
+	public static TankBlock tank(BotaniaStorageTier tier) {
+		return TANKS.get(tier);
+	}
+
+	public static Collection<TankBlock> tanks() {
+		return TANKS.values();
+	}
+
+	public static Collection<TankBlockItem> tankItems() {
+		return TANK_ITEMS.values();
 	}
 
 	private static ResourceLocation id(String path) {

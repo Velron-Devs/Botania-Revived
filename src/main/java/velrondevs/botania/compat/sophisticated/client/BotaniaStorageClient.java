@@ -1,8 +1,11 @@
 package velrondevs.botania.compat.sophisticated.client;
 
 import net.minecraft.client.renderer.Sheets;
+import net.minecraft.client.resources.model.BuiltInModel;
 import net.minecraft.client.resources.model.Material;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -13,8 +16,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.ChestType;
 import net.minecraft.world.level.block.state.properties.WoodType;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.client.event.ModelEvent;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
+import net.neoforged.neoforge.client.model.data.ModelData;
 import net.p3pp3rf1y.sophisticatedstorage.block.BarrelBlock;
 import net.p3pp3rf1y.sophisticatedstorage.block.BarrelBlockClientExtensions;
 import net.p3pp3rf1y.sophisticatedstorage.block.StorageBlockEntity;
@@ -22,6 +27,7 @@ import net.p3pp3rf1y.sophisticatedstorage.block.StorageWrapper;
 import net.p3pp3rf1y.sophisticatedstorage.block.WoodStorageBlockEntity;
 import net.p3pp3rf1y.sophisticatedstorage.client.GenericWoodStorageTintCache;
 import net.p3pp3rf1y.sophisticatedstorage.client.render.ChestItemRenderer;
+import net.p3pp3rf1y.sophisticatedstorage.client.render.TankItemRenderer;
 import net.p3pp3rf1y.sophisticatedstorage.item.StorageBlockItem;
 import net.p3pp3rf1y.sophisticatedstorage.item.WoodStorageBlockItem;
 import net.p3pp3rf1y.sophisticatedstorage.util.GenericWoodStorageHelper;
@@ -45,6 +51,7 @@ public final class BotaniaStorageClient {
 		modBus.addListener(BotaniaStorageClient::registerExtensions);
 		modBus.addListener(BotaniaStorageClient::registerBlockColors);
 		modBus.addListener(BotaniaStorageClient::registerItemColors);
+		modBus.addListener(BotaniaStorageClient::wrapTankItemModels);
 	}
 
 	public static Material chestMaterial(Block block, ChestType chestType) {
@@ -63,6 +70,15 @@ public final class BotaniaStorageClient {
 			event.registerBlock(new BarrelBlockClientExtensions(barrel), barrel);
 		}
 		event.registerItem(ChestItemRenderer.getItemRenderProperties(), BotaniaStorageRegistry.chestItems().toArray(Item[]::new));
+		event.registerItem(TankItemRenderer.getItemRenderProperties(), BotaniaStorageRegistry.tankItems().toArray(Item[]::new));
+	}
+
+	private static void wrapTankItemModels(ModelEvent.ModifyBakingResult event) {
+		for (Item item : BotaniaStorageRegistry.tankItems()) {
+			ResourceLocation key = BuiltInRegistries.ITEM.getKey(item);
+			event.getModels().computeIfPresent(ModelResourceLocation.inventory(key),
+					(location, model) -> new BuiltInModel(model.getTransforms(), model.getOverrides(), model.getParticleIcon(ModelData.EMPTY), model.usesBlockLight()));
+		}
 	}
 
 	private static void registerBlockColors(RegisterColorHandlersEvent.Block event) {

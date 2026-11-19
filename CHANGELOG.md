@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.0.3 (2026-11-19)
+
+- Petal Apothecary: pipes, pumps and backpacks can now fill it with water or lava (fluid handler capability, for example Create's Mechanical Pump or Ultimate Transport System fluid cables). Fluid that arrives in small amounts is stored until it adds up to one bucket and then fills the apothecary, and the stored amount is saved with the block. It can be drained again as long as it holds no petals, so a pipe can't wipe a half-made recipe. Buckets keep working as before.
+- Sophisticated Storage: new tanks for every Botania tier (Manasteel, Elementium, Terrasteel, Gaia and, with Masterful Botany, Alfsteel), registered as `botania:<tier>_tank`. They are real Sophisticated tanks: they stack, take upgrades and change tier with the tier upgrade items. Capacity and upgrade slots are in the Botania config. The textures are temporary.
+- Sophisticated Core, Storage and Backpacks development dependencies updated to 1.5.39.2489, 1.6.20.2239 and 3.26.22.2257, now from CurseMaven.
+
 ## 2.0.2 (2026-11-12)
 
 - Botania creative tab: the search field that was drawn in the green banner of the tab texture is gone, and the banner now shows only "Botania" in white, without the gray name of the selected section next to it (the section names stay on the side tabs).

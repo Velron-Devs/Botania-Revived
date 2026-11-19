@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import net.neoforged.fml.ModList;
+import net.neoforged.fml.loading.LoadingModList;
 
 public final class SophisticatedOptional {
 	public static final String ATM_TIERS = "sophisticatedatm";
@@ -14,6 +15,14 @@ public final class SophisticatedOptional {
 	public static final String ALFSTEEL_INGOT = MASTERFUL_BOTANY + ":alfsteel_ingot";
 
 	private SophisticatedOptional() {}
+
+	public static boolean storageAvailable() {
+		LoadingModList loading = LoadingModList.get();
+		if (loading != null) {
+			return loading.getModFileById("sophisticatedstorage") != null;
+		}
+		return isLoaded("sophisticatedstorage");
+	}
 
 	public static boolean isLoaded(String modId) {
 		if (modId == null) {

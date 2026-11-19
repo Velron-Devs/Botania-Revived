@@ -258,6 +258,26 @@
     {
       "id": "botania:mana_motor",
       "required": false
+    },
+    {
+      "id": "botania:manasteel_tank",
+      "required": false
+    },
+    {
+      "id": "botania:elementium_tank",
+      "required": false
+    },
+    {
+      "id": "botania:terrasteel_tank",
+      "required": false
+    },
+    {
+      "id": "botania:gaia_tank",
+      "required": false
+    },
+    {
+      "id": "botania:alfsteel_tank",
+      "required": false
     }
   ]
 }

@@ -57,6 +57,40 @@ public class PetalApothecaryBlockEntity extends SimpleInventoryBlockEntity imple
 	private Ingredient lastReagent = Ingredient.EMPTY;
 	private int recipeKeepTicks = 0;
 
+	// Fluid accepted from pipes in small amounts, until it adds up to one bucket and fills the apothecary
+	private State bufferFluid = State.EMPTY;
+	private int bufferAmount = 0;
+
+	public State getBufferFluid() {
+		return bufferFluid;
+	}
+
+	public int getBufferAmount() {
+		return bufferAmount;
+	}
+
+	public void setBuffer(State fluid, int amount) {
+		this.bufferFluid = amount <= 0 ? State.EMPTY : fluid;
+		this.bufferAmount = amount <= 0 ? 0 : amount;
+		setChanged();
+	}
+
+	@Override
+	public void readPacketNBT(net.minecraft.nbt.CompoundTag tag, net.minecraft.core.HolderLookup.Provider registries) {
+		super.readPacketNBT(tag, registries);
+		bufferAmount = tag.getInt("fluidBufferAmount");
+		bufferFluid = bufferAmount > 0 && tag.getBoolean("fluidBufferLava") ? State.LAVA : bufferAmount > 0 ? State.WATER : State.EMPTY;
+	}
+
+	@Override
+	public void writePacketNBT(net.minecraft.nbt.CompoundTag tag, net.minecraft.core.HolderLookup.Provider registries) {
+		super.writePacketNBT(tag, registries);
+		if (bufferAmount > 0) {
+			tag.putInt("fluidBufferAmount", bufferAmount);
+			tag.putBoolean("fluidBufferLava", bufferFluid == State.LAVA);
+		}
+	}
+
 	public PetalApothecaryBlockEntity(BlockPos pos, BlockState state) {
 		super(BotaniaBlockEntities.ALTAR, pos, state);
 	}
@@ -303,6 +337,10 @@ public class PetalApothecaryBlockEntity extends SimpleInventoryBlockEntity imple
 	}
 
 	public void setFluid(State fluid, boolean withVibration) {
+		if (fluid != State.EMPTY) {
+			bufferFluid = State.EMPTY;
+			bufferAmount = 0;
+		}
 		if (withVibration) {
 			level.gameEvent(null, fluid == State.EMPTY ? GameEvent.FLUID_PICKUP : GameEvent.FLUID_PLACE, getBlockPos());
 		}

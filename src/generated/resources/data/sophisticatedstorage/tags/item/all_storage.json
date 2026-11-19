@@ -9,11 +9,19 @@
       "required": false
     },
     {
+      "id": "botania:manasteel_tank",
+      "required": false
+    },
+    {
       "id": "botania:elementium_barrel",
       "required": false
     },
     {
       "id": "botania:elementium_chest",
+      "required": false
+    },
+    {
+      "id": "botania:elementium_tank",
       "required": false
     },
     {
@@ -25,6 +33,10 @@
       "required": false
     },
     {
+      "id": "botania:terrasteel_tank",
+      "required": false
+    },
+    {
       "id": "botania:gaia_barrel",
       "required": false
     },
@@ -33,11 +45,19 @@
       "required": false
     },
     {
+      "id": "botania:gaia_tank",
+      "required": false
+    },
+    {
       "id": "botania:alfsteel_barrel",
       "required": false
     },
     {
       "id": "botania:alfsteel_chest",
+      "required": false
+    },
+    {
+      "id": "botania:alfsteel_tank",
       "required": false
     }
   ]

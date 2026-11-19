@@ -22,7 +22,9 @@ import velrondevs.botania.common.entity.ManaSparkEntity;
 import velrondevs.botania.common.item.equipment.tool.terrasteel.TerraShattererItem;
 import velrondevs.botania.common.lib.LibMisc;
 import velrondevs.botania.compat.sophisticated.backpack.BotaniaBackpackTier;
+import velrondevs.botania.compat.sophisticated.SophisticatedOptional;
 import velrondevs.botania.compat.sophisticated.storage.BotaniaStorageTier;
+import velrondevs.botania.compat.sophisticated.storage.BotaniaTankConfigs;
 import velrondevs.botania.module.BotaniaModule;
 import velrondevs.botania.module.BotaniaModules;
 import velrondevs.botania.xplat.BotaniaConfig;
@@ -827,6 +829,11 @@ public final class BotaniaConfigSpec {
 				builder.push(tier.id());
 				storageSlots.put(tier, builder.defineInRange("inventory_slots", tier.defaultInventorySlots(), 1, MAX_INVENTORY_SLOTS));
 				storageUpgradeSlots.put(tier, builder.defineInRange("upgrade_slots", tier.defaultUpgradeSlots(), 0, 10));
+				builder.pop();
+			}
+			if (SophisticatedOptional.storageAvailable()) {
+				builder.push("tanks");
+				BotaniaTankConfigs.define(builder);
 				builder.pop();
 			}
 			builder.pop();

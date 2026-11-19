@@ -1875,6 +1875,7 @@ public final class BotaniaLanguageProvider implements DataProvider {
 		for (BotaniaStorageTier tier : BotaniaStorageTier.values()) {
 			both("block.botania." + tier.barrelName(), tier.english() + " Barrel", "Barril de " + tier.spanish());
 			both("block.botania." + tier.chestName(), tier.english() + " Chest", "Cofre de " + tier.spanish());
+			both("block.botania." + tier.tankName(), tier.english() + " Tank", "Tanque de " + tier.spanish());
 			both("botania.sophisticated.tier." + tier.id(), tier.english(), tier.spanish());
 			String from = tier.previous() == null ? "Netherite" : tier.previous().english();
 			String fromEs = tier.previous() == null ? "netherita" : tier.previous().spanish();

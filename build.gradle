@@ -280,13 +280,13 @@ dependencies {
         runtimeOnly("software.bernie.geckolib:geckolib-neoforge-1.21.1:${geckolib_version}") { transitive = false }
     }
 
-    compileOnly "maven.modrinth:sophisticated-core:${sophisticated_core_version}"
-    compileOnly "maven.modrinth:sophisticated-storage:${sophisticated_storage_version}"
-    compileOnly "maven.modrinth:sophisticated-backpacks:${sophisticated_backpacks_version}"
+    compileOnly "curse.maven:sophisticated-core-${sophisticated_core_id}:${sophisticated_core_file_id}"
+    compileOnly "curse.maven:sophisticated-storage-${sophisticated_storage_id}:${sophisticated_storage_file_id}"
+    compileOnly "curse.maven:sophisticated-backpacks-${sophisticated_backpacks_id}:${sophisticated_backpacks_file_id}"
     if (devMod('sophisticated')) {
-        runtimeOnly("maven.modrinth:sophisticated-core:${sophisticated_core_version}") { transitive = false }
-        runtimeOnly("maven.modrinth:sophisticated-storage:${sophisticated_storage_version}") { transitive = false }
-        runtimeOnly("maven.modrinth:sophisticated-backpacks:${sophisticated_backpacks_version}") { transitive = false }
+        runtimeOnly("curse.maven:sophisticated-core-${sophisticated_core_id}:${sophisticated_core_file_id}") { transitive = false }
+        runtimeOnly("curse.maven:sophisticated-storage-${sophisticated_storage_id}:${sophisticated_storage_file_id}") { transitive = false }
+        runtimeOnly("curse.maven:sophisticated-backpacks-${sophisticated_backpacks_id}:${sophisticated_backpacks_file_id}") { transitive = false }
     }
 
     if (project.hasProperty("with_spectrum") && !project.hasProperty("no_curios")) {
@@ -318,6 +318,11 @@ dependencies {
         runtimeOnly("org.moddingx:LibX:${minecraft_version}-${libx_version}") { transitive = false }
     }
 
+
+    // ultimate transport system (pipes and pumps for the Petal Apothecary fluid test)
+    if (devMod('uts')) {
+        runtimeOnly("curse.maven:ultimate-transport-system-${uts_id}:${uts_file_id}") { transitive = false }
+    }
     compileOnly("curse.maven:thaumaturge-1628024:${thaumaturge_file_id}") { transitive = false }
     if (project.hasProperty("thaumaturge_jar")) {
         runtimeOnly "maven.modrinth:lithostitched:${lithostitched_version}"

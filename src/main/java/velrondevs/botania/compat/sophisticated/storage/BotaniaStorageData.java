@@ -22,6 +22,7 @@ public final class BotaniaStorageData {
 	private static final String[] FACINGS = {"down", "east", "north", "south", "up", "west"};
 	private static final int[] X_ROTATIONS = {180, 90, 90, 90, 0, 90};
 	private static final int[] Y_ROTATIONS = {0, 90, 0, 180, 0, 270};
+	private static final String[] TANK_FORMS = {"single", "bottom", "middle", "top"};
 
 	private BotaniaStorageData() {}
 
@@ -41,6 +42,12 @@ public final class BotaniaStorageData {
 			files.put(id("models/item/" + tier.chestName()), parent("sophisticatedstorage:item/chest"));
 			files.put(id("blockstates/" + tier.chestName()), chestState());
 			files.put(id("models/item/" + tier.upgradeName()), generated("item/" + tier.upgradeName()));
+			String tank = tier.tankName();
+			for (String form : TANK_FORMS) {
+				files.put(id("models/block/" + tank + "_" + form), tankModel(tier, form));
+			}
+			files.put(id("models/item/" + tank), parent(botania("block/" + tank + "_single")));
+			files.put(id("blockstates/" + tank), tankState(tank));
 		}
 	}
 
@@ -50,8 +57,12 @@ public final class BotaniaStorageData {
 			String chest = tier.chestName();
 			files.put(id("loot_table/blocks/" + barrel), loot(tier, barrel));
 			files.put(id("loot_table/blocks/" + chest), loot(tier, chest));
+			files.put(id("loot_table/blocks/" + tier.tankName()), tankLoot(tier));
 			files.put(id("recipe/sophisticated/" + tier.upgradeName()), tierUpgrade(tier));
 			BotaniaStorageTier previous = tier.previous();
+			String previousTank = previous == null ? "sophisticatedstorage:netherite_tank" : botania(previous.tankName());
+			files.put(id("recipe/sophisticated/" + tier.tankName()), tankUpgrade(tier, previousTank));
+			files.put(id("advancement/recipes/misc/sophisticated/" + tier.tankName()), advancement(tier, Source.ANY, "sophisticated/" + tier.tankName(), previousTank));
 			if (previous == null) {
 				addUpgrades(files, tier, "sophisticatedstorage:netherite_barrel", "sophisticatedstorage:netherite_chest", "", Source.NETHERITE);
 				addUpgrades(files, tier, SophisticatedOptional.ATM_UNOBTAINIUM_BARREL, SophisticatedOptional.ATM_UNOBTAINIUM_CHEST, "atm/", Source.ATM);
@@ -76,11 +87,13 @@ public final class BotaniaStorageData {
 
 	public static void addBlockTags(ModuleTagSink<Block> sink) {
 		var axe = sink.tag(BlockTags.MINEABLE_WITH_AXE);
+		var pickaxe = sink.tag(BlockTags.MINEABLE_WITH_PICKAXE);
 		var barrels = sink.tag(TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath("c", "barrels")));
 		var chests = sink.tag(TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath("c", "chests")));
 		for (BotaniaStorageTier tier : BotaniaStorageTier.values()) {
 			axe.addOptional(id(tier.barrelName()));
 			axe.addOptional(id(tier.chestName()));
+			pickaxe.addOptional(id(tier.tankName()));
 			barrels.addOptional(id(tier.barrelName()));
 			chests.addOptional(id(tier.chestName()));
 		}
@@ -95,6 +108,7 @@ public final class BotaniaStorageData {
 			chests.addOptional(id(tier.chestName()));
 			all.addOptional(id(tier.barrelName()));
 			all.addOptional(id(tier.chestName()));
+			all.addOptional(id(tier.tankName()));
 		}
 	}
 
@@ -136,6 +150,43 @@ public final class BotaniaStorageData {
 		JsonObject state = new JsonObject();
 		state.add("variants", variants);
 		return state;
+	}
+
+	private static JsonObject tankModel(BotaniaStorageTier tier, String form) {
+		JsonObject model = parent("sophisticatedstorage:block/netherite_tank_" + form);
+		JsonObject textures = new JsonObject();
+		textures.addProperty("tier_side", botania("block/" + tier.barrelName() + "_side"));
+		textures.addProperty("tier_top", botania("block/" + tier.barrelName() + "_top"));
+		textures.addProperty("tier_bottom", botania("block/" + tier.barrelName() + "_bottom"));
+		model.add("textures", textures);
+		return model;
+	}
+
+	private static JsonObject tankState(String tank) {
+		JsonArray multipart = new JsonArray();
+		for (String form : TANK_FORMS) {
+			multipart.add(tankPart(Map.of("form", form, "show_tier", "true"), botania("block/" + tank + "_" + form)));
+		}
+		for (String form : TANK_FORMS) {
+			multipart.add(tankPart(Map.of("form", form, "show_tier", "false"), "sophisticatedstorage:block/wood_tank_" + form));
+		}
+		for (String form : TANK_FORMS) {
+			multipart.add(tankPart(Map.of("form", form, "packed", "true"), "sophisticatedstorage:block/tank_packed_" + form));
+		}
+		JsonObject state = new JsonObject();
+		state.add("multipart", multipart);
+		return state;
+	}
+
+	private static JsonObject tankPart(Map<String, String> when, String model) {
+		JsonObject condition = new JsonObject();
+		when.entrySet().stream().sorted(Map.Entry.comparingByKey()).forEach(entry -> condition.addProperty(entry.getKey(), entry.getValue()));
+		JsonObject apply = new JsonObject();
+		apply.addProperty("model", model);
+		JsonObject part = new JsonObject();
+		part.add("apply", apply);
+		part.add("when", condition);
+		return part;
 	}
 
 	private static JsonObject chestState() {
@@ -188,6 +239,30 @@ public final class BotaniaStorageData {
 		pools.add(pool);
 		json.add("pools", pools);
 		json.addProperty("random_sequence", botania("blocks/" + name));
+		return json;
+	}
+
+	private static JsonObject tankLoot(BotaniaStorageTier tier) {
+		JsonObject json = conditioned(tier, Source.ANY);
+		json.addProperty("type", "minecraft:block");
+		json.addProperty("random_sequence", botania("blocks/" + tier.tankName()));
+		return json;
+	}
+
+	private static JsonObject tankUpgrade(BotaniaStorageTier tier, String previous) {
+		JsonObject json = conditioned(tier, Source.ANY);
+		json.addProperty("type", "sophisticatedstorage:storage_tier_upgrade");
+		json.addProperty("category", "misc");
+		JsonArray pattern = new JsonArray();
+		pattern.add(" I ");
+		pattern.add("ISI");
+		pattern.add(" I ");
+		json.add("pattern", pattern);
+		JsonObject key = new JsonObject();
+		key.add("I", ingot(tier));
+		key.add("S", item(previous));
+		json.add("key", key);
+		json.add("result", output(tier.tankName()));
 		return json;
 	}
 

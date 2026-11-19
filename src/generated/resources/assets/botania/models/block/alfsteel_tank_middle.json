@@ -1,0 +1,8 @@
+{
+  "parent": "sophisticatedstorage:block/netherite_tank_middle",
+  "textures": {
+    "tier_side": "botania:block/alfsteel_barrel_side",
+    "tier_top": "botania:block/alfsteel_barrel_top",
+    "tier_bottom": "botania:block/alfsteel_barrel_bottom"
+  }
+}

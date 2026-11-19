@@ -94,6 +94,20 @@ public enum BotaniaStorageTier {
 		return id + "_chest";
 	}
 
+	public String tankName() {
+		return id + "_tank";
+	}
+
+	public int defaultTankCapacity() {
+		return switch (this) {
+			case MANASTEEL -> 192000;
+			case ELEMENTIUM -> 256000;
+			case TERRASTEEL -> 384000;
+			case GAIA -> 512000;
+			case ALFSTEEL -> 768000;
+		};
+	}
+
 	public String previousId() {
 		BotaniaStorageTier previous = previous();
 		return previous == null ? "netherite" : previous.id();

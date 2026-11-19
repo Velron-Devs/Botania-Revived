@@ -81,6 +81,7 @@ import velrondevs.botania.api.item.CoordBoundItem;
 import velrondevs.botania.api.item.Relic;
 import velrondevs.botania.api.mana.*;
 import velrondevs.botania.api.mana.spark.SparkAttachable;
+import velrondevs.botania.capability.ApothecaryFluidHandler;
 import velrondevs.botania.capability.CapabilityUtil;
 import velrondevs.botania.capability.RedStringContainerCapProvider;
 import velrondevs.botania.common.PlayerAccess;
@@ -521,6 +522,9 @@ public class Botania {
 
 		e.registerItem(Capabilities.FluidHandler.ITEM, (stack, ctx) -> new CapabilityUtil.WaterBowlFluidHandler(stack), BotaniaItems.waterBowl);
 		e.registerItem(Capabilities.FluidHandler.ITEM, (stack, ctx) -> new CapabilityUtil.ExtrapolatedBucketFluidHandler(stack), BotaniaItems.openBucket);
+
+		// Pipes and pumps can fill/drain the Petal Apothecary
+		e.registerBlockEntity(Capabilities.FluidHandler.BLOCK, BotaniaBlockEntities.ALTAR, (be, side) -> new ApothecaryFluidHandler(be));
 
 		if (EquipmentHandler.instance instanceof CurioIntegration) {
 			Item[] baubles = BuiltInRegistries.ITEM.stream().filter(i -> i instanceof BaubleItem).toArray(Item[]::new);

@@ -26,6 +26,8 @@ import net.p3pp3rf1y.sophisticatedstorage.block.ChestBlock;
 import net.p3pp3rf1y.sophisticatedstorage.block.ChestBlockEntity;
 import net.p3pp3rf1y.sophisticatedstorage.block.StorageBlockBase;
 import net.p3pp3rf1y.sophisticatedstorage.block.StorageBlockEntity;
+import net.p3pp3rf1y.sophisticatedstorage.block.TankBlock;
+import net.p3pp3rf1y.sophisticatedstorage.block.TankBlockEntity;
 import net.p3pp3rf1y.sophisticatedstorage.block.WoodStorageBlockEntity;
 import net.p3pp3rf1y.sophisticatedstorage.init.ModBlocks;
 
@@ -67,6 +69,9 @@ public class BotaniaStorageTierUpgradeItem extends Item {
 		BlockPos pos = context.getClickedPos();
 		BlockState state = level.getBlockState(pos);
 		Block block = state.getBlock();
+		if (block instanceof TankBlock tankBlock) {
+			return upgradeTank(stack, context, pos, tankBlock);
+		}
 		if (!(block instanceof BarrelBlock) && !(block instanceof ChestBlock)) {
 			return InteractionResult.PASS;
 		}
@@ -124,6 +129,33 @@ public class BotaniaStorageTierUpgradeItem extends Item {
 		return InteractionResult.SUCCESS;
 	}
 
+	private InteractionResult upgradeTank(ItemStack stack, UseOnContext context, BlockPos pos, TankBlock source) {
+		Level level = context.getLevel();
+		Player player = context.getPlayer();
+		if (!isSource(source)) {
+			if (!level.isClientSide && player != null) {
+				player.displayClientMessage(Component.translatable("message.botania.storage_tier_upgrade.wrong_tier",
+						Component.translatable("botania.sophisticated.tier." + sourceTierKey())), true);
+			}
+			return InteractionResult.FAIL;
+		}
+		if (!(level instanceof ServerLevel)) {
+			return InteractionResult.SUCCESS;
+		}
+		if (!(level.getBlockEntity(pos) instanceof TankBlockEntity tank)) {
+			return InteractionResult.PASS;
+		}
+		TankBlock targetBlock = BotaniaStorageRegistry.tank(target);
+		if (!tank.canChangeTier(targetBlock.getTier()) || !tank.changeTier(targetBlock)) {
+			return InteractionResult.FAIL;
+		}
+		level.playSound(null, pos, SoundEvents.SMITHING_TABLE_USE, SoundSource.BLOCKS, 0.8F, 1.0F);
+		if (player == null || !player.getAbilities().instabuild) {
+			stack.shrink(1);
+		}
+		return InteractionResult.SUCCESS;
+	}
+
 	private String sourceTierKey() {
 		return target.previous() == null && SophisticatedOptional.atmTiers() ? "netherite_or_unobtainium" : target.previousId();
 	}
@@ -137,7 +169,7 @@ public class BotaniaStorageTierUpgradeItem extends Item {
 	}
 
 	private static boolean isBaseTier(Block block) {
-		if (block == ModBlocks.NETHERITE_BARREL.get() || block == ModBlocks.NETHERITE_CHEST.get()) {
+		if (block == ModBlocks.NETHERITE_BARREL.get() || block == ModBlocks.NETHERITE_CHEST.get() || block == ModBlocks.NETHERITE_TANK.get()) {
 			return true;
 		}
 		return SophisticatedOptional.atmTiers() && (isRegistered(SophisticatedOptional.ATM_UNOBTAINIUM_BARREL, block)

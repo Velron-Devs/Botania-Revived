@@ -1,0 +1,8 @@
+{
+  "parent": "sophisticatedstorage:block/netherite_tank_bottom",
+  "textures": {
+    "tier_side": "botania:block/terrasteel_barrel_side",
+    "tier_top": "botania:block/terrasteel_barrel_top",
+    "tier_bottom": "botania:block/terrasteel_barrel_bottom"
+  }
+}
