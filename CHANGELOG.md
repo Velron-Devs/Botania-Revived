@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.0.3 (2026-11-19)
+
+- Petal Apothecary: pipes, pumps and backpacks can now fill it with water or lava (fluid capability, for example Create's Mechanical Pump or Ultimate Transport System fluid cables). Fluid that arrives in small amounts is stored until it adds up to one bucket and then fills the apothecary, and the stored amount is saved with the block. It can be drained again as long as it holds no petals, so a pipe can't wipe a half-made recipe. Buckets keep working as before.
+
 ## 2.0.2 (2026-11-12)
 
 - Botania creative tab: the search field that was drawn in the green banner of the tab texture is gone, and the tab no longer has a search bar.

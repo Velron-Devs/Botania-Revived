@@ -61,6 +61,39 @@ public class PetalApothecaryBlockEntity extends SimpleInventoryBlockEntity imple
 	private Ingredient lastReagent = null;
 	private int recipeKeepTicks = 0;
 
+	private State bufferFluid = State.EMPTY;
+	private int bufferAmount = 0;
+
+	public State getBufferFluid() {
+		return bufferFluid;
+	}
+
+	public int getBufferAmount() {
+		return bufferAmount;
+	}
+
+	public void setBuffer(State fluid, int amount) {
+		this.bufferFluid = amount <= 0 ? State.EMPTY : fluid;
+		this.bufferAmount = amount <= 0 ? 0 : amount;
+		setChanged();
+	}
+
+	@Override
+	public void readPacketNBT(net.minecraft.nbt.CompoundTag tag, net.minecraft.core.HolderLookup.Provider registries) {
+		super.readPacketNBT(tag, registries);
+		bufferAmount = tag.getIntOr("fluidBufferAmount", 0);
+		bufferFluid = bufferAmount > 0 && tag.getBooleanOr("fluidBufferLava", false) ? State.LAVA : bufferAmount > 0 ? State.WATER : State.EMPTY;
+	}
+
+	@Override
+	public void writePacketNBT(net.minecraft.nbt.CompoundTag tag, net.minecraft.core.HolderLookup.Provider registries) {
+		super.writePacketNBT(tag, registries);
+		if (bufferAmount > 0) {
+			tag.putInt("fluidBufferAmount", bufferAmount);
+			tag.putBoolean("fluidBufferLava", bufferFluid == State.LAVA);
+		}
+	}
+
 	public PetalApothecaryBlockEntity(BlockPos pos, BlockState state) {
 		super(BotaniaBlockEntities.ALTAR, pos, state);
 	}
@@ -307,6 +340,10 @@ public class PetalApothecaryBlockEntity extends SimpleInventoryBlockEntity imple
 	}
 
 	public void setFluid(State fluid, boolean withVibration) {
+		if (fluid != State.EMPTY) {
+			bufferFluid = State.EMPTY;
+			bufferAmount = 0;
+		}
 		if (fluid != State.WATER && !level.isClientSide()) {
 			net.minecraft.world.Containers.dropContents(level, getBlockPos(), getItemHandler());
 		}
