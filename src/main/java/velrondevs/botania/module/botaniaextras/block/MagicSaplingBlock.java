@@ -20,6 +20,7 @@ import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
+import velrondevs.botania.common.helper.SoilHelper;
 import velrondevs.botania.module.botaniaextras.BotaniaExtrasMagicWoods;
 
 public class MagicSaplingBlock extends VegetationBlock implements BonemealableBlock {
@@ -47,7 +48,7 @@ public class MagicSaplingBlock extends VegetationBlock implements BonemealableBl
 
 	private static boolean canGrowOn(BlockGetter level, BlockPos pos) {
 		BlockState below = level.getBlockState(pos.below());
-		return below.is(BlockTags.DIRT) || below.is(Blocks.FARMLAND);
+		return SoilHelper.isDirtLike(below) || below.is(Blocks.FARMLAND);
 	}
 
 	@Override

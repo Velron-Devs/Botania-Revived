@@ -16,6 +16,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
 import velrondevs.botania.client.fx.WispParticleData;
+import velrondevs.botania.common.helper.SoilHelper;
 import velrondevs.botania.common.lib.BotaniaTags;
 
 import java.util.ArrayList;
@@ -101,6 +102,6 @@ public class FloralFertilizerItem extends Item {
 	}
 
 	private static boolean canPlaceFlower(BlockState belowState, Level world) {
-		return belowState.is(BlockTags.DIRT) && !world.environmentAttributes().getDimensionValue(EnvironmentAttributes.WATER_EVAPORATES);
+		return SoilHelper.isDirtLike(belowState) && !world.environmentAttributes().getDimensionValue(EnvironmentAttributes.WATER_EVAPORATES);
 	}
 }
